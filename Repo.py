@@ -6,12 +6,13 @@ class Repo:
     def __init__(self):
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                    "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
-        self.domain = "127.0.0.1"
+
+        self.domain = "192.168.1.51"
         self.port = 8888
 
     @staticmethod
     def GetAccount(cateId, interval, limit):
-        path = "/repo/account/get?cate_id=" + cateId + "&interval=" + interval + "&limit=" + limit;
+        path = "/repo_api/account/get?cate_id=" + cateId + "&interval=" + interval + "&limit=" + limit;
         conn = httplib.HTTPConnection(Repo.domain)
 
         conn.request("GET", path, "", Repo.headers)

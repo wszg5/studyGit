@@ -43,7 +43,7 @@ class ImpContact:
 
 if __name__ == "__main__":
     c = ImpContact()
-    d = Device("FA49TSR02728")
+    d = Device("HT49PSK05055")
     d.dump(compressed=False)
-    args = {"cate_id":"14","length":"50"};
+    args = {"cate_id":"13","length":"50"};
     c.action(d, args)

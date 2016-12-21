@@ -1,0 +1,125 @@
+# coding:utf-8
+# wxApp.py
+import math
+import time
+from uiautomator import Device
+from Repo import *
+import os, uuid, datetime, random
+
+
+class ImpContact:
+    def __init__(self):
+        self.repo = Repo()
+
+    def GetUnique(self):
+        nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
+        randomNum = random.randint(0, 1000);  # 生成的随机整数n，其中0<=n<=100
+        if randomNum <= 10:
+            randomNum = str(00) + str(randomNum);
+        uniqueNum = str(nowTime) + str(randomNum);
+        return uniqueNum
+
+
+    def action(self, d, args):
+        import time
+        str = d.info  # 获取屏幕大小等信息
+        print (str)
+        height = str["displayHeight"]
+        width = str["displayWidth"]
+        print (height)  # 屏幕的款
+        print(width)  # 屏幕的高
+        d.server.adb.cmd("shell", "am force-stop com.tencent.qqlite").wait()  # 将qq强制停止
+        d.server.adb.cmd("shell", "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").communicate()[0]  # 将qq拉起来
+        time.sleep(2)
+        d(text='我', index=0, className='android.widget.TextView').click()
+        time.sleep(2)
+        d(text='我', index=0, className='android.widget.TextView').click()
+
+        d(text='附近的人').click()
+        d(resourceId='com.tencent.qqlite:id/ivTitleBtnRightImage').click()
+        d(text='筛选附近的人').click()
+        gender = args["gender"]
+        print (gender)
+        d(text=''+gender+'').click()  # 性别
+        Appeartime = args["Appeartime"]
+        d(text=Appeartime).click()
+        d(text='年龄').click()
+        print (time)
+        time.sleep(2)
+        age = args["age"]
+        if d(text=age).exists:  # True if exists, else Falsegit
+            d(text=age).click()  # 由外界设定
+            d(text='完成').click()
+        else:
+            d.swipe(width / 2, height * 1 / 2, width / 2, height / 4);
+            time.sleep(1)
+            d(text=age).click()  # 由外界设定
+            d(text='完成').click()
+            time.sleep(1)
+        d(text='职业').click()
+        time.sleep(2)
+        profession = args["profession"]
+        if d(text=profession, resourceId='com.tencent.qqlite:id/0').exists:
+            time.sleep(2)
+            d(text=profession, resourceId='com.tencent.qqlite:id/0').click()
+            time.sleep(2)
+        else:
+            d.swipe(width / 2, height * 1 / 2, width / 2, height / 4, 10)
+            time.sleep(2)
+            d(text=profession, resourceId='com.tencent.qqlite:id/0').click()
+        d(text='完成').click()
+        time.sleep(3)
+        global list
+        list = list()
+        StartIndex = args['StartIndex']
+        EndIndex = args['EndIndex']
+        i = StartIndex  # 点击第i个人
+        t = StartIndex  # t是结束条件
+        while i < EndIndex:
+            if t < EndIndex:
+                try:
+                    d(className='android.widget.RelativeLayout', clickable='true', index=i).click()  # 点击屏幕的第i个人
+                    obj = d(resourceId='com.tencent.qqlite:id/0', index=0,className='android.widget.TextView')  # 获得第i个人的所有信息
+                    obj = obj.info
+                    print (obj)
+                    obj1 = obj["text"]  # 要保存到集合唯一标志
+                    print (obj1)
+                    if obj1 in list:
+                        i = i + 1
+                        print (i)
+                        d(resourceId='com.tencent.qqlite:id/ivTitleBtnLeft', description='向上导航').click()
+                        continue
+                    else:
+                        list.append(obj1)
+                    d(text='发消息', className='android.widget.TextView').click()
+                    material_id = args["material_id"]
+                    d(resourceId='com.tencent.qqlite:id/input', className='android.widget.EditText',
+                      description='文本框  连按两次来编辑').set_text(material_id)  # 发中文问题
+                    d(text='发送', resourceId='com.tencent.qqlite:id/fun_btn').click()
+                    t = t + 1
+                    i = i + 1
+                    d(resourceId='com.tencent.qqlite:id/ivTitleBtnLeft', description='向上导航').click()
+                    d(resourceId='com.tencent.qqlite:id/ivTitleBtnLeft', description='向上导航').click()
+                except Exception:
+                    if d(text='显示更多', resourceId='com.tencent.qqlite:id/0').exists:
+                        d(text='显示更多', resourceId='com.tencent.qqlite:id/0').click()
+                        d.swipe(width / 2, height * 3 / 5, width / 2, height / 5)
+                        d.swipe(width / 2, height * 3 / 5, width / 2, height / 5)
+                        i = 1
+                        time.sleep(3)
+                    elif d(text='暂无更多附近的人', resourceId='com.tencent.qqlite:id/0'):
+                         return  # 放到方法里要改为结束方法
+                    else:
+                        d.swipe(width / 2, height * 3 / 5, width / 2, height / 5)
+                        d.swipe(width / 2, height * 3 / 5, width / 2, height / 5)
+                        i = 1
+            else:
+                return  # 放到代码里改为结束方法
+
+
+if __name__ == "__main__":
+    c = ImpContact()
+    d = Device("HT4AVSK01106")
+    d.dump(compressed=False)              #显示详细信息
+    args = {"material_id": "", "gender": "女", "Appeartime": "4小时", "age": "35岁以上", "profession": "学生", 'StartIndex': 1,'EndIndex': 20}; #别忘了加要发送的消息
+    c.action(d, args)
