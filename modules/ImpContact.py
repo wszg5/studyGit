@@ -38,6 +38,7 @@ class ImpContact:
             d.server.adb.cmd("shell", "am", "start", "-a", "tb.clear.connacts").wait()
             d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").wait()
             d.server.adb.cmd("shell", "am", "start", "-n", "jp.co.cyberagent.stf/.ImportActivity", "-t", "text/plain",  "-d", "file:///data/local/tmp/contacts.txt").wait()
+            os.remove(filename)
         if (args["time_delay"]):
             time.sleep(args["time_delay"])
 

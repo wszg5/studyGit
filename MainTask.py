@@ -197,6 +197,8 @@ def deviceTask(deviceid, port):
                             return
                         if (new_taskid != taskid): #设备对应的taskid发生了变化
                             return
+                        if task.get("status") != "running": #任务状态已停止
+                            return
     else :
         time.sleep(5)
 

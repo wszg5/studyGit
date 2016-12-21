@@ -9,19 +9,32 @@ class Repo:
         self.domain = "127.0.0.1"
         self.port = 8888
 
-    @staticmethod
-    def GetAccount(cateId, interval, limit):
-        path = "/repo/account/get?cate_id=" + cateId + "&interval=" + interval + "&limit=" + limit;
+    def GetAccount(self, cateId, interval, limit):
+        path = "/repo_api/account/pick?status=normal&cate_id=%s&interval=%s&limit=%s" % (cateId,interval,limit)
         conn = httplib.HTTPConnection(Repo.domain)
 
-        conn.request("GET", path, "", Repo.headers)
+        conn.request("GET", path)
         response = conn.getresponse()
         if response.status == 200:
-            usersdata = response.read()
-            user = json.loads(usersdata)
-
+            data = response.read()
+            numbers = json.loads(data)
+            return  numbers
         else:
-            print "Error sending message,check your account"
+            print "Error Getting Account, Please check your repo"
+
+
+    def GetMaterial(self, cateId, interval, limit):
+        path = "/repo_api/material/pick?status=normal&cate_id=%s&interval=%s&limit=%s" % (cateId,interval,limit)
+        conn = httplib.HTTPConnection(Repo.domain)
+
+        conn.request("GET", path)
+        response = conn.getresponse()
+        if response.status == 200:
+            data = response.read()
+            numbers = json.loads(data)
+            return  numbers
+        else:
+            print "Error Getting Account, Please check your repo"
 
 
     def GetNumber(self, cateId, interval, limit):
