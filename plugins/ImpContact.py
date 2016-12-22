@@ -41,8 +41,6 @@ class ImpContact:
         if (args["time_delay"]):
             time.sleep(args["time_delay"])
 
-def getPluginClass():
-    return ImpContact
 
 if __name__ == "__main__":
     c = ImpContact()
