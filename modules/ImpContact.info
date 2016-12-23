@@ -12,7 +12,7 @@
 	"name":"号码库分类",
 	"type":"repo",
 	"source":"number",
-	"source_cate":"phone"
+	"top_cate_id":"1"
 	},
 	{
 	"id": "number_count",
