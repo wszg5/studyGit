@@ -7,20 +7,16 @@ from Repo import *
 import os, uuid, datetime, random
 
 
-class ImpContact:
+class QQLiteNearBy:
     def __init__(self):
         self.repo = Repo()
 
-    def GetUnique(self):
-        nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
-        randomNum = random.randint(0, 1000);  # 生成的随机整数n，其中0<=n<=100
-        if randomNum <= 10:
-            randomNum = str(00) + str(randomNum);
-        uniqueNum = str(nowTime) + str(randomNum);
-        return uniqueNum
-
 
     def action(self, d, args):
+        cate_id = args["cate_id"]
+        numbers = self.repo.GetMaterial(cate_id, 0, 1)
+        repo_material_id = numbers[0]['content']
+
         import time
         str = d.info  # 获取屏幕大小等信息
         print (str)
@@ -92,14 +88,15 @@ class ImpContact:
                     else:
                         list.append(obj1)
                     d(text='发消息', className='android.widget.TextView').click()
-                    material_id = args["material_id"]
                     d(resourceId='com.tencent.qqlite:id/input', className='android.widget.EditText',
-                      description='文本框  连按两次来编辑').set_text(material_id)  # 发中文问题
+                      description='文本框  连按两次来编辑').set_text(repo_material_id)  # 发中文问题
                     d(text='发送', resourceId='com.tencent.qqlite:id/fun_btn').click()
                     t = t + 1
                     i = i + 1
                     d(resourceId='com.tencent.qqlite:id/ivTitleBtnLeft', description='向上导航').click()
+                    time.sleep(1)
                     d(resourceId='com.tencent.qqlite:id/ivTitleBtnLeft', description='向上导航').click()
+                    time.sleep(1)
                 except Exception:
                     if d(text='显示更多', resourceId='com.tencent.qqlite:id/0').exists:
                         d(text='显示更多', resourceId='com.tencent.qqlite:id/0').click()
@@ -113,13 +110,18 @@ class ImpContact:
                         d.swipe(width / 2, height * 3 / 5, width / 2, height / 5)
                         d.swipe(width / 2, height * 3 / 5, width / 2, height / 5)
                         i = 1
+                        time.sleep(2)
             else:
                 return  # 放到代码里改为结束方法
 
+        if (args["time_delay"]):
+            time.sleep(args["time_delay"])
+def getPluginClass(self):
+    return QQLiteNearBy
 
 if __name__ == "__main__":
-    c = ImpContact()
-    d = Device("HT4AVSK01106")
-    d.dump(compressed=False)              #显示详细信息
-    args = {"material_id": "", "gender": "女", "Appeartime": "4小时", "age": "35岁以上", "profession": "学生", 'StartIndex': 1,'EndIndex': 20}; #别忘了加要发送的消息
+    c = QQLiteNearBy()
+    d = Device("HT49PSK05055")
+    # d.dump(compressed=False)              #显示详细信息
+    args = {"cate_id":"13", "gender": "女", "Appeartime": "4小时", "age": "35岁以上", "profession": "学生", 'StartIndex': 1,'EndIndex': 20}; #别忘了加要发送的消息
     c.action(d, args)

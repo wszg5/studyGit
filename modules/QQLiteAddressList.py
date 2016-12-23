@@ -8,20 +8,18 @@ import json
 from uiautomator import Device, AutomatorDeviceUiObject
 import traceback
 
-class ImpContact:
+class QQLiteAddressList:
     def __init__(self):
         self.repo = Repo()
 
-    def GetUnique(self):
-        nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
-        randomNum = random.randint(0, 1000);  # 生成的随机整数n，其中0<=n<=100
-        if randomNum <= 10:
-            randomNum = str(00) + str(randomNum);
-        uniqueNum = str(nowTime) + str(randomNum);
-        return uniqueNum
+
 
 
     def action(self, d, args):
+        cate_id = args["cate_id"]
+        numbers = self.repo.GetMaterial(cate_id, 0, 1)
+        repo_material_id = numbers[0]['content']
+
         str = d.info  # 获取屏幕大小等信息
         print (str)
         # info= json.loads(str)
@@ -29,26 +27,28 @@ class ImpContact:
         width = str["displayWidth"]
         print (height)  # 屏幕的款
         print(width)  # 屏幕的高
+        time.sleep(2)
         d.server.adb.cmd("shell", "am force-stop com.tencent.qqlite").wait()  # 将qq强制停止
-        d.server.adb.cmd("shell",
-                         "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").wait()  # 将qq拉起来
+        d.server.adb.cmd("shell", "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").wait()  # 将qq拉起来
         # print(d.dump(compressed=False))
-        #  time.sleep(8)
+        time.sleep(3)
         d(text='联系人').click()
         d(text='通讯录').click()
         if d(text="启用").exists:
-            d.press.home()  # 出现过该点home却点击返回的情况，放入方法之后改为return
+            return
         time.sleep(1)
         if d(text="匹配通讯录").exists:
             d(text="匹配通讯录").click()
-            time.sleep(3)
-        time.sleep(2)
-
+            time.sleep(4)
+            print (123)
+        StartIndex = args["StartIndex"]
+        EndIndex = args["EndIndex"]
+        global list
         list = list()
-        StartIndex = 9  # 外界获得
-        EndIndex = 20  # 外界获得
         t = StartIndex
         i = StartIndex
+        print (StartIndex)
+        print (EndIndex)
         while i < EndIndex:
             if t < EndIndex:
                 obj = d(descriptionContains="发消息", descriptionStartsWith='向')  # 定位作用
@@ -68,8 +68,7 @@ class ImpContact:
                         obj[i].click()  # 直接进入发消息页面(不知道为什么)不需要再点击发消息，
                         time.sleep(1)
                         # d(text='发消息').click()
-                        d(resourceId='com.tencent.qqlite:id/input', className='android.widget.EditText').set_text(
-                            '')  # 发中文问题
+                        d(resourceId='com.tencent.qqlite:id/input', className='android.widget.EditText').set_text(repo_material_id)  # 发中文问题
                         d(text='发送', resourceId='com.tencent.qqlite:id/fun_btn').click()
                         time.sleep(2)
                         i = i + 1
@@ -84,12 +83,15 @@ class ImpContact:
                     # EndIndex = EndIndex-i
                     i = 0
                     continue
+        if (args["time_delay"]):
+            time.sleep(args["time_delay"])
 
-
+def getPluginClass(self):
+    return QQLiteAddressList
 
 if __name__ == "__main__":
-    c = ImpContact()
-    d = Device("HT4AVSK01106")
-    d.dump(compressed=False)
-    args = {"repo_material_id":"你好！",StartIndex:1,EndIndex:7};
+    c = QQLiteAddressList()
+    d = Device("HT49PSK05055")
+    # d.dump(compressed=False)
+    args = {"cate_id":"8","StartIndex":0,"EndIndex":8};
     c.action(d, args)

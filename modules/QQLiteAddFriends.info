@@ -1,0 +1,45 @@
+{
+"id": "QQLiteAddFriends",
+"cate":"基础模块",
+"name":"QQ轻聊版添加好友",
+"url": "http://www.bejson.com",
+"verison": "1.0",
+"icon": "vcard-o",
+"remark":"添加好友",
+"setting":[
+	{
+	"id": "repo_number_cate_id",
+	"name":"号码库分类",
+	"type":"repo",
+	"source":"number"
+	},
+	{
+    	"id": "repo_material_cate_id",
+    	"name":"验证信息素材库",
+    	"type":"repo",
+    	"source":"material"
+    },
+	{
+	"id": "gender",
+	"name":"性别",
+	"type":"select",
+	"list":{"男":"男","女":"女","不限":"不限"},
+	"defaultValue":"B",
+	"remark":"性别要求"
+	},
+    {
+	"id": "add_count",
+	"name":"添加好友个数",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：个"
+	},
+    {
+     	"id": "time_delay",
+     	"name":"延时",
+     	"type":"textbox",
+     	"defaultValue":"3",
+     	"remark":"单位：秒"
+    }
+]
+}

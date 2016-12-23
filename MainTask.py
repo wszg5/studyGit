@@ -7,12 +7,14 @@ from uiautomator import Device
 import traceback
 import log, logging
 import threading
-import redis
 import json
+import rethinkdb as r
+#https://github.com/lucidfrontier45/RethinkPool
+from rethinkpool import RethinkPool
 
-
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379)
-
+pool = RethinkPool(max_conns=120, initial_conns=10, host='127.0.0.1',
+                     port=28015,
+                     db='stf')
 
 
 optpath = os.getcwd()  # 获取当前操作目录
@@ -159,22 +161,47 @@ def uninstall(deviceid, packname, timeout=20):
                 return False
 
 def runStep(d, step):
-    pluginName = step["step_name"]
+    pluginName = step["mid"]
     plugin = __import__("plugins." + pluginName, fromlist=[pluginName])
     clazz = plugin.getPluginClass()
     o = clazz()
-    o.action(d, step)
+    o.action(d, step["arg"])
 
 def deviceTask(deviceid, port):
-    r = redis.Redis(connection_pool=pool)
-    device = json.loads(r.get(deviceid))
-    taskid = device["task_id"]
-    task = json.loads(r.get("task_" + taskid))
-    steps = json.loads(r.get("task_steps_" + taskid))
-    d = Device(deviceid, port)
-    d.dump(compressed=False)
-    for step in steps:
-        runStep(d, step)
+    with pool.get_resource() as res:
+        device = r.table('devices').get(deviceid).run(res.conn)
+    taskid = device.get("task_id")
+
+    if  taskid :
+        with pool.get_resource() as res:
+            task = r.table('tasks').get(taskid).run(res.conn)
+
+        #if (task.get("status") and task["status"] == "running"):
+        if (True):
+            d = Device(deviceid, port)
+
+            while True:
+                with pool.get_resource() as res:
+                    steps = r.table('taskSteps').get_all(taskid, index='task_id').run(res.conn)
+                for step in steps:
+                    try:
+                        runStep(d, step)
+                    except Exception, e:
+                        logger.error(traceback.format_exc())
+                        time.sleep(3)
+                    #检查设备对应的任务状态
+                    with pool.get_resource() as res:
+                        task = r.table('tasks').get(taskid).run(res.conn)
+                        new_taskid = device.get("task_id")
+                        if new_taskid is None or new_taskid == "": #任务中删除了该设备
+                            return
+                        if (new_taskid != taskid): #设备对应的taskid发生了变化
+                            return
+                        if task.get("status") != "running": #任务状态已停止
+                            return
+    else :
+        time.sleep(5)
+
 
 
 def deviceThread(deviceid, port):
@@ -183,6 +210,8 @@ def deviceThread(deviceid, port):
             deviceTask(deviceid, port)
         except Exception, e:
             logger.error(traceback.format_exc())
+        time.sleep(5)
+    print("%s thread finished"%deviceid)
 
 
 # 需要配置好adb 环境变量
@@ -202,11 +231,10 @@ if __name__ == "__main__":
         for deviceid in devicelist:
             if (threadDict.has_key(deviceid)): continue
             port = port + 1
-            t = threading.Thread(target=deviceTask, args=(deviceid, port))
-            t.setName(deviceid)
-            t.setDaemon(True)
-            t.start()
-            threadDict[deviceid] = t
+            threadDict[deviceid] = threading.Thread(target=deviceThread, args=(deviceid, port))
+            threadDict[deviceid].setName(deviceid)
+            threadDict[deviceid].setDaemon(True)
+            threadDict[deviceid].start()
 
         #for k,v in threadDict: ##循环线程dictionary，对于已经被移除的手机删除线程
           #  t.

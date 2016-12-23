@@ -38,16 +38,15 @@ class ImpContact:
             d.server.adb.cmd("shell", "am", "start", "-a", "tb.clear.connacts").wait()
             d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").wait()
             d.server.adb.cmd("shell", "am", "start", "-n", "jp.co.cyberagent.stf/.ImportActivity", "-t", "text/plain",  "-d", "file:///data/local/tmp/contacts.txt").wait()
-            os.remove(filename)
         if (args["time_delay"]):
             time.sleep(args["time_delay"])
 
-def getPluginClass(self):
+def getPluginClass():
     return ImpContact
 
 if __name__ == "__main__":
     c = ImpContact()
-    d = Device("HT49PSK05055")
+    d = Device("FA49TSR02728")
     d.dump(compressed=False)
-    args = {"cate_id":"13","length":"50"};    #cate_id是仓库号，length是数量
+    args = {"cate_id":"14","length":"50"};
     c.action(d, args)
