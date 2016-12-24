@@ -161,11 +161,13 @@ def uninstall(deviceid, packname, timeout=20):
                 return False
 
 def runStep(d, step):
+    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"%s\""%step["name"])
     pluginName = step["mid"]
     plugin = __import__("plugins." + pluginName, fromlist=[pluginName])
     clazz = plugin.getPluginClass()
     o = clazz()
-    o.action(d, step["arg"])
+    if step.has_key("arg"):
+        o.action(d, json.loads(step["arg"]))
 
 def deviceTask(deviceid, port):
     with pool.get_resource() as res:
@@ -182,11 +184,15 @@ def deviceTask(deviceid, port):
 
             while True:
                 with pool.get_resource() as res:
-                    steps = r.table('taskSteps').get_all(taskid, index='task_id').run(res.conn)
+                    steps = r.table('taskSteps').get_all(taskid, index='task_id').order_by('sort').run(res.conn)
+                    #设置zime输入法
+                    d.server.adb.cmd("shell",
+                                 "ime set com.zunyun.qk/.ZImeService").wait()
                 for step in steps:
                     try:
                         runStep(d, step)
                     except Exception, e:
+                        logger.error(step)
                         logger.error(traceback.format_exc())
                         time.sleep(3)
                     #检查设备对应的任务状态

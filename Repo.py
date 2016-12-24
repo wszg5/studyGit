@@ -7,7 +7,7 @@ class Repo:
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                    "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
 
-        self.domain = "192.168.1.51"
+        self.domain = "127.0.0.1"
         self.port = 8888
 
 
@@ -22,7 +22,7 @@ class Repo:
             numbers = json.loads(data)
             return  numbers
         else:
-            print "Error Getting Account, Please check your repo"
+            return "Error Getting Account, Please check your repo"
 
 
     def GetMaterial(self, cateId, interval, limit):
@@ -36,12 +36,11 @@ class Repo:
             numbers = json.loads(data)
             return  numbers
         else:
-            print "Error Getting material, Please check your repo"
+            return "Error Getting material, Please check your repo"
 
 
     def GetNumber(self, cateId, interval, limit):
         path = "/repo_api/number/pick?status=normal&cate_id=%s&interval=%s&limit=%s" % (cateId,interval,limit)
-        #path = "/repo/number/get?status=normal&cate_id=" + cateId + "&interval=" + interval + "&limit=" + limit;
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
 
         conn.request("GET", path)
@@ -51,7 +50,7 @@ class Repo:
             numbers = json.loads(data)
             return  numbers
         else:
-            print "Error Getting Number, Please check your repo"
+            return "Error Getting Number, Please check your repo"
 
 
 if __name__ == '__main__':

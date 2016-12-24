@@ -9,19 +9,19 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 import traceback
 
-class QQLiteAddMyFriend:
+class QQLiteAddFriends:
 
 
     def __init__(self):
         self.repo = Repo()
 
     def action(self, d, args):
-        cate_id1 = args["cate_id1"]
-        Material = self.repo.GetMaterial(cate_id1, 0, 1)
+        repo_material_cate_id = args["repo_material_cate_id"]
+        Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
         repo_material_id = Material[0]['content']         #取出发消息的内容
-        cate_id2 = args["cate_id2"]
-        add_count = args['add_count']
-        numbers = self.repo.GetNumber(cate_id2,120,add_count)     #取出add_count条两小时内没有用过的号码
+        repo_number_cate_id = args["repo_number_cate_id"]
+        add_count = int(args['add_count'])
+        numbers = self.repo.GetNumber(repo_number_cate_id,120,add_count)     #取出add_count条两小时内没有用过的号码
         for i in range(0, add_count, +1):          #循环遍历add_count条号码
             numbers = numbers[i]
             d.server.adb.cmd("shell", "am force-stop com.tencent.qqlite").wait()  # 将qq强制停止
@@ -85,11 +85,11 @@ class QQLiteAddMyFriend:
         if (args["time_delay"]):
             time.sleep(args["time_delay"])
 
-def QQLiteAddMyFriend(self):
-    return QQLiteAddMyFriend
+def getPluginClass():
+    return QQLiteAddFriends
 
 if __name__ == "__main__":
-    c = QQLiteAddMyFriend()
+    c = QQLiteAddFriends()
     d = Device("HT49PSK05055")
     d.dump(compressed=False)
     args = {"cate_id1":"8","cate_id2":"13"}   #cate_id是仓库号，发中文问题

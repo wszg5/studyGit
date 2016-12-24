@@ -11,7 +11,8 @@
 "id": "repo_cate_id",
 "name":"账号库分类",
 "type":"repo",
-"source":"account"
+"source":"account",
+"top_cate_id":"2"
 },
 {
 "id": "time_limit",
