@@ -16,10 +16,10 @@ class QQLiteAddFriends:
         self.repo = Repo()
 
     def action(self, d, args):
-        cate_id1 = args["cate_id1"]
+        cate_id1 = args["repo_material_cate_id"]
         Material = self.repo.GetMaterial(cate_id1, 0, 1)
         repo_material_id = Material[0]['content']         #取出发消息的内容
-        cate_id2 = args["cate_id2"]
+        cate_id2 = args["repo_number_cate_id"]
         add_count = args['add_count']
         numbers = self.repo.GetNumber(cate_id2,120,add_count)     #取出add_count条两小时内没有用过的号码
         for i in range(0, add_count, +1):          #循环遍历add_count条号码
@@ -40,6 +40,8 @@ class QQLiteAddFriends:
             d(text='QQ号/手机号/邮箱/群', resourceId='com.tencent.qqlite:id/et_search_keyword').set_text(numbers)       #添加好友的号码
             d(text='找人:', resourceId='com.tencent.qqlite:id/0', className='android.widget.TextView').click()
             time.sleep(2)
+            if d(text='没有找到相关结果',className='android.widget.TextView'):
+                continue
             d(className='android.widget.RelativeLayout', index=1).click()
             if d(descriptionContains='基本信息'):
                 obj = d(descriptionContains='基本信息').info
@@ -85,12 +87,13 @@ class QQLiteAddFriends:
         if (args["time_delay"]):
             time.sleep(args["time_delay"])
 
-def QQLiteAddFriends(self):
+def getPluginClass():
     return QQLiteAddFriends
 
 if __name__ == "__main__":
-    c = QQLiteAddFriends()
+    clazz = getPluginClass()
+    o = clazz()
     d = Device("HT49PSK05055")
     d.dump(compressed=False)
-    args = {"cate_id1":"8","cate_id2":"13"}   #cate_id是仓库号，发中文问题
-    c.action(d, args)
+    args = {"repo_material_cate_id":"8","repo_number_cate_id":"13"}   #cate_id是仓库号，发中文问题
+    o.action(d, args)

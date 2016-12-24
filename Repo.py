@@ -22,7 +22,7 @@ class Repo:
             numbers = json.loads(data)
             return  numbers
         else:
-            print "Error Getting Account, Please check your repo"
+            print ("Error Getting Account, Please check your repo")
 
 
     def GetMaterial(self, cateId, interval, limit):
@@ -36,7 +36,7 @@ class Repo:
             numbers = json.loads(data)
             return  numbers
         else:
-            print "Error Getting material, Please check your repo"
+            print ("Error Getting material, Please check your repo")
 
 
     def GetNumber(self, cateId, interval, limit):
@@ -51,16 +51,19 @@ class Repo:
             numbers = json.loads(data)
             return  numbers
         else:
-            print "Error Getting Number, Please check your repo"
+            print ("Error Getting Number, Please check your repo")
+
+    def SetNumber(self,cateId,Status,QQNumber):
+        print()
 
 
 if __name__ == '__main__':
     repo = Repo()
-    # result = repo.GetAccount("36", 120, 2)
+    result = repo.GetAccount("6", 120, 1)
     # result = repo.GetMaterial("8",120,1)
-    result = repo.GetNumber("13",0,200)              #意思是取13号仓库2小时内没有用过的号码，一次取16个
-    print  result[0]
+    # result = repo.GetNumber("13",0,200)              #意思是取13号仓库2小时内没有用过的号码，一次取16个
+    # print (result[0])
     # print  result[0]["content"]
-    # print result[0]["number"]
-    # print result[0]["password"]
-    print result
+    print (result)
+    print (result[0]['number'])
+    print(result[0]["password"])

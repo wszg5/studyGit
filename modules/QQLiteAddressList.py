@@ -16,7 +16,7 @@ class QQLiteAddressList:
 
 
     def action(self, d, args):
-        cate_id = args["cate_id"]
+        cate_id = args["repo_material_id"]
         numbers = self.repo.GetMaterial(cate_id, 0, 1)
         repo_material_id = numbers[0]['content']
 
@@ -86,12 +86,13 @@ class QQLiteAddressList:
         if (args["time_delay"]):
             time.sleep(args["time_delay"])
 
-def getPluginClass(self):
+def getPluginClass():
     return QQLiteAddressList
 
 if __name__ == "__main__":
-    c = QQLiteAddressList()
+    clazz = getPluginClass()
+    o = clazz()
     d = Device("HT49PSK05055")
     # d.dump(compressed=False)
     args = {"cate_id":"8","StartIndex":0,"EndIndex":8};
-    c.action(d, args)
+    o.action(d, args)

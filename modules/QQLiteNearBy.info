@@ -20,7 +20,7 @@
 	"id": "gender",
 	"name":"性别",
 	"type":"textbox",
-	"list":{"M":"男","F":"女","B":"全部"},
+	"list":{"男":"男","女":"女","全部":"全部"},
 	"defaultValue":"B",
 	"remark":"性别要求"
 	},

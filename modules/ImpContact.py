@@ -42,12 +42,13 @@ class ImpContact:
         if (args["time_delay"]):
             time.sleep(args["time_delay"])
 
-def getPluginClass(self):
+def getPluginClass():
     return ImpContact
 
 if __name__ == "__main__":
-    c = ImpContact()
+    clazz = getPluginClass()
+    o = clazz()
     d = Device("HT49PSK05055")
     d.dump(compressed=False)
     args = {"cate_id":"13","length":"50"};    #cate_id是仓库号，length是数量
-    c.action(d, args)
+    o.action(d, args)
