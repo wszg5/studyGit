@@ -27,8 +27,8 @@ class QQLiteLogin:
         sourcePng = os.path.join(base_dir, "%s_s.png"%(self.GetUnique()) )
         codePng = os.path.join(base_dir, "%s_c.png"%(self.GetUnique()) )
 
-        t = 1
-        while t==1:
+
+        while True:
             d.server.adb.cmd("shell", "pm clear com.tencent.qqlite").wait()  # 清除缓存
             d.server.adb.cmd("shell",
                              "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").wait()  # 将qq拉起来
@@ -36,7 +36,15 @@ class QQLiteLogin:
 
             cate_id = args["repo_cate_id"]
             numbers = self.repo.GetAccount(cate_id, 120, 1)
-            QQNumber = numbers[0]['number']
+            try:
+                QQNumber = numbers[0]['number']
+            except Exception :
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
+                time.sleep(8)
+                cate_id = args["repo_cate_id"]
+                numbers = self.repo.GetAccount(cate_id, 120, 1)
+                QQNumber = numbers[0]['number']
+
             QQPassword = numbers[0]['password']
             d(text='登 录').click()
             time.sleep(1)
@@ -101,7 +109,6 @@ class QQLiteLogin:
                     break
 
                 if d(text='QQ轻聊版').exists:
-                    t == 2
                     return  # 放到方法里改为return
                 # region = region.transpose(Image.ROTATE_180)    #用来将图片旋转
                 # region.show()
@@ -119,5 +126,5 @@ if __name__ == "__main__":
 
     d = Device("HT49PSK05055")
     d.dump(compressed=False)
-    args = {"repo_cate_id":"6","length":"1"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"111","length":"1"};    #cate_id是仓库号，length是数量
     o.action(d, args)

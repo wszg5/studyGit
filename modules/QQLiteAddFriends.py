@@ -95,5 +95,5 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("HT49PSK05055")
     d.dump(compressed=False)
-    args = {"repo_material_cate_id":"8","repo_number_cate_id":"13"}   #cate_id是仓库号，发中文问题
+    args = {"repo_number_cate_id":"62","repo_material_cate_id":"8","gender":"女","add_count":"3","time_delay":"3"}   #cate_id是仓库号，发中文问题
     o.action(d, args)
