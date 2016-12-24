@@ -120,9 +120,8 @@ def getPluginClass():
     return QQLiteNearBy
 
 if __name__ == "__main__":
-    clazz = getPluginClass()
-    o = clazz()
+    c = QQLiteNearBy()
     d = Device("HT49PSK05055")
     # d.dump(compressed=False)              #显示详细信息
-    args = {"repo_material_id":"13", "gender": "女", "Appeartime": "4小时", "age": "35岁以上", "profession": "学生", 'StartIndex': 1,'EndIndex': 20}; #别忘了加要发送的消息
-    o.action(d, args)
+    args = {"cate_id":"13", "gender": "女", "Appeartime": "4小时", "age": "35岁以上", "profession": "学生", 'StartIndex': 1,'EndIndex': 20}; #别忘了加要发送的消息
+    c.action(d, args)

@@ -90,9 +90,8 @@ def getPluginClass():
     return QQLiteAddressList
 
 if __name__ == "__main__":
-    clazz = getPluginClass()
-    o = clazz()
+    c = QQLiteAddressList()
     d = Device("HT49PSK05055")
     # d.dump(compressed=False)
     args = {"cate_id":"8","StartIndex":0,"EndIndex":8};
-    o.action(d, args)
+    c.action(d, args)

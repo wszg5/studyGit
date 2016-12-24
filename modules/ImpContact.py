@@ -24,7 +24,7 @@ class ImpContact:
         filename = os.path.join(base_dir, "%s.txt"%(self.GetUnique()) )
 
 
-        cate_id = args["cate_id"]
+        cate_id = args["repo_cate_id"]
         numbers = self.repo.GetNumber(cate_id, 0, 50)
         if numbers:
             file_object = open(filename, 'w')
@@ -40,7 +40,7 @@ class ImpContact:
             d.server.adb.cmd("shell", "am", "start", "-n", "jp.co.cyberagent.stf/.ImportActivity", "-t", "text/plain",  "-d", "file:///data/local/tmp/contacts.txt").wait()
             os.remove(filename)
         if (args["time_delay"]):
-            time.sleep(args["time_delay"])
+            time.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return ImpContact

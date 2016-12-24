@@ -12,9 +12,10 @@
 	"id": "repo_material_id",
 	"name":"发送消息内容仓库",
 	"type":"repo",
-	"source":"material"
+	"source":"material",
+	"top_cate_id":"5"
 	},
-     {"id": "startIndex",
+     {"id": "StartIndex",
      "name":"发消息从第几个人开始",
      "type":"textbox",
      "defaultValue":"0",
