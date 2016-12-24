@@ -182,6 +182,8 @@ def deviceTask(deviceid, port):
         if (True):
             d = Device(deviceid, port)
 
+            d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
+
             while True:
                 with pool.get_resource() as res:
                     steps = r.table('taskSteps').get_all(taskid, index='task_id').order_by('sort').run(res.conn)
