@@ -42,7 +42,7 @@ class QQLiteLogin:
             time.sleep(1)
             d(text='QQ号/手机号/邮箱').set_text(QQNumber)    #QQNumber
             time.sleep(2)
-            d(resourceId='com.tencent.qqlite:id/password').set_text(1234)     #QQPassword
+            d(resourceId='com.tencent.qqlite:id/password').set_text(QQPassword)     #QQPassword
             time.sleep(2)
             d(text='登 录').click()
             time.sleep(2)
