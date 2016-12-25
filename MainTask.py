@@ -178,8 +178,7 @@ def deviceTask(deviceid, port):
         with pool.get_resource() as res:
             task = r.table('tasks').get(taskid).run(res.conn)
 
-        #if (task.get("status") and task["status"] == "running"):
-        if (True):
+        if (task.get("status") and task["status"] == "running"):
             d = Device(deviceid, port)
 
             d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
