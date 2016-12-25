@@ -52,15 +52,12 @@ class QQLiteAddressList:
         list = list()
         t = StartIndex
         i = StartIndex
-        print (StartIndex)
-        print (EndIndex)
         while i < EndIndex:
             if t < EndIndex:
                 obj = d(descriptionContains="发消息", descriptionStartsWith='向')  # 定位作用
                 # count = obj.count  # 统计当前屏幕上的人数
                 # print(count)
                 try:
-                    print (i)
                     obj1 = obj[i].info  # 打印出第i行联系人的信息,报错则滑动
                     obj1 = obj1["contentDescription"]  # 要保存的唯一属性，向×××号码发消息
                     print (obj1)

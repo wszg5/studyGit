@@ -70,7 +70,7 @@ class QQLiteLogin:
             co = RClient()
             im_id = ""
 
-            for i in range(0, 10, +1):
+            for i in range(0, 30 , +1):
                 if i > 0:
                     co.rk_report_error(im_id)
                 obj = d(resourceId='com.tencent.qqlite:id/0', className='android.widget.ImageView')
@@ -129,7 +129,7 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT49PSK05055")
+    d = Device("HT523SK00620")
     d.dump(compressed=False)
     args = {"repo_cate_id":"6","repo_cate_id1":"66","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d, args)
