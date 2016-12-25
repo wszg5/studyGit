@@ -41,11 +41,11 @@
     "defaultValue":"不限",
     "remark":"单位：岁"
     },
-    {"id": "startIndex",
+    {"id": "StartIndex",
      "name":"发消息从第几个人开始",
      "type":"textbox",
-     "defaultValue":"0",
-     "remark":"单位：个"
+     "defaultValue":"1",
+     "remark":"单位：个,不小于于１"
     },
     {"id": "EndIndex",
        "name":"给多少人发消息总数",

@@ -28,24 +28,28 @@ class QQLiteLogin:
         codePng = os.path.join(base_dir, "%s_c.png"%(self.GetUnique()) )
 
 
+
+        d.server.adb.cmd("shell", "pm clear com.tencent.qqlite").wait()  # 清除缓存
         while True:
-            d.server.adb.cmd("shell", "pm clear com.tencent.qqlite").wait()  # 清除缓存
+            d.server.adb.cmd("shell", "am force-stop com.tencent.qqlite").wait()  # 将qq强制停止
             d.server.adb.cmd("shell",
                              "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").wait()  # 将qq拉起来
             time.sleep(3)
 
             cate_id = args["repo_cate_id"]
             numbers = self.repo.GetAccount(cate_id, 120, 1)
-            try:
-                QQNumber = numbers[0]['number']
-            except Exception :
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
-                time.sleep(8)
-                cate_id = args["repo_cate_id"]
-                numbers = self.repo.GetAccount(cate_id, 120, 1)
-                QQNumber = numbers[0]['number']
+            print(numbers)
+
+            wait = 1
+            while wait==1:                   #判断仓库是否有东西
+                try:
+                    QQNumber = numbers[0]['number']       #即将登陆的QQ号
+                    wait=0
+                except Exception :
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
 
             QQPassword = numbers[0]['password']
+            time.sleep(1)
             d(text='登 录').click()
             time.sleep(1)
             d(text='QQ号/手机号/邮箱').set_text(QQNumber)    #QQNumber
@@ -102,9 +106,11 @@ class QQLiteLogin:
                 d(text='完成',resourceId='com.tencent.qqlite:id/ivTitleBtnRightText').click()
                 time.sleep(2)
                 if d(text='登 录').exists:    #密码错误
+                    self.repo.SetAccount(cate_id,'passwordEror',QQNumber)
                     break
 
                 if d(text='帐号无法登录',resourceId='com.tencent.qqlite:id/dialogTitle').exists:         #帐号被冻结
+                    self.repo.SetAccount(cate_id,'frozen',QQNumber)
                     break
 
                 if d(text='QQ轻聊版').exists:
@@ -125,5 +131,5 @@ if __name__ == "__main__":
 
     d = Device("HT49PSK05055")
     d.dump(compressed=False)
-    args = {"repo_cate_id":"111","length":"1"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"6","repo_cate_id1":"66","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d, args)

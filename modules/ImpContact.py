@@ -26,6 +26,7 @@ class ImpContact:
 
         cate_id = args["repo_cate_id"]
         numbers = self.repo.GetNumber(cate_id, 0, 50)
+        print(numbers)
         if numbers:
             file_object = open(filename, 'w')
             lines = ""
@@ -50,5 +51,5 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("HT49PSK05055")
     d.dump(compressed=False)
-    args = {"cate_id":"13","length":"50"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"131","length":"50","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d, args)
