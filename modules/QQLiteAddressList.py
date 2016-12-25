@@ -18,8 +18,13 @@ class QQLiteAddressList:
     def action(self, d, args):
         cate_id = args["repo_material_id"]
         numbers = self.repo.GetMaterial(cate_id, 0, 1)
-        repo_material_id = numbers[0]['content']
-
+        wait = 1
+        while wait==1:
+            try:
+                repo_material_id = numbers[0]['content']        #从素材库取出的要发的材料
+                wait = 0
+            except Exception:
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
         str = d.info  # 获取屏幕大小等信息
         print (str)
         # info= json.loads(str)
@@ -77,14 +82,14 @@ class QQLiteAddressList:
                         time.sleep(1)
                 except Exception:
                     if d(text='未启用通讯录的联系人', description='未启用通讯录的联系人', resourceId='com.tencent.qqlite:id/0'):
-                        d.press.home()  # 这个要改成结束方法
+                        return  # 这个要改成结束方法
                     d.swipe(width / 2, height * 3 / 5, width / 2, height / 5)
                     d.swipe(width / 2, height * 3 / 5, width / 2, height / 5)
                     # EndIndex = EndIndex-i
                     i = 0
                     continue
         if (args["time_delay"]):
-            time.sleep(args["time_delay"])
+            time.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return QQLiteAddressList
@@ -94,5 +99,5 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("HT49PSK05055")
     # d.dump(compressed=False)
-    args = {"cate_id":"8","StartIndex":0,"EndIndex":8};
+    args = {"repo_material_id":"8","StartIndex":"0","EndIndex":"7","time_delay":"3"};
     o.action(d, args)
