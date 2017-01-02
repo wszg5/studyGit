@@ -27,8 +27,7 @@ class TIMLogin:
         d.server.adb.cmd("shell", "settings put global airplane_mode_on 1 ").wait()  # 打开飞行模式
         d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE –ez state true ").wait()  # 打开飞行模式
 
-        d.server.adb.cmd("shell", "settings put global airplane_mode_on 0am broadcast -a android.intent.action.AIRPLANE_MODE –ez state false").wait()   #关闭飞行模式
-
+        d.server.adb.cmd("shell", "settings put global airplane_mode_on 0 am broadcast -a android.intent.action.AIRPLANE_MODE –ez state false").wait()   #关闭飞行模式
 
 
 

@@ -17,7 +17,7 @@ class ImpContact:
         return uniqueNum
 
 
-    def action(self, d, args):
+    def action(self, d,z, args):
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)

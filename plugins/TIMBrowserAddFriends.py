@@ -2,6 +2,7 @@
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
+from zservice import ZDevice
 
 
 class TIMBrowserAddFriends:
@@ -11,7 +12,7 @@ class TIMBrowserAddFriends:
 
 
 
-    def action(self, d, args):
+    def action(self, d,z,args):
         repo_material_cate_id = args["repo_material_cate_id"]
         Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
         wait = 1  # 判断素材仓库里是否由素材
@@ -72,14 +73,15 @@ class TIMBrowserAddFriends:
             print(obj)
             obj = obj['text']
             length = len(obj)
-            z = 0
-            while z<length:
+            k = 0
+            while k<length:
                 length = length-1
                 d.press.delete()
             print(material.encode("utf-7"))
             print(material)
             time.sleep(2)
-            d(resourceId='com.tencent.tim:id/name',className='android.widget.EditText').set_text(material)        #要发的消息
+            d(resourceId='com.tencent.tim:id/name',className='android.widget.EditText').click()        #要发的消息
+            z.input(material)
             d(text='下一步',resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
             d(text='发送',resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
             if d(resourceId='com.tencent.tim:id/name', text='添加失败，请勿频繁操作').exists:  # 操作过于频繁的情况
@@ -99,7 +101,8 @@ if __name__ == "__main__":
     d = Device("HT524SK03149")
     # material=u'有空聊聊吗'
 
-
+    z = ZDevice("HT4A3SK00853")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     args = {"repo_number_cate_id":"37","repo_material_cate_id":"33","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
 
-    o.action(d, args)
+    o.action(d,z, args)
