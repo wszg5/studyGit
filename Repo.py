@@ -1,13 +1,13 @@
 # coding:utf-8
 import httplib, json
-
+import const
 class Repo:
 
     def __init__(self):
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                    "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
 
-        self.domain = "192.168.1.51"
+        self.domain = const.REPO_API_IP
         self.port = 8888
 
 
