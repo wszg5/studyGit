@@ -15,8 +15,14 @@ class QQLiteNearBy:
     def action(self, d, args):
         cate_id = args["repo_material_id"]
         numbers = self.repo.GetMaterial(cate_id, 0, 1)
-        repo_material_content = numbers[0]['content']
-
+        print(numbers)
+        wait = 1
+        while wait==1:                   #判断仓库是否有东西
+            try:
+                repo_material_content = numbers[0]['content']
+                wait=0
+            except Exception:
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
         import time
         str = d.info  # 获取屏幕大小等信息
         print (str)
@@ -25,23 +31,24 @@ class QQLiteNearBy:
         print (height)  # 屏幕的款
         print(width)  # 屏幕的高
         d.server.adb.cmd("shell", "am force-stop com.tencent.qqlite").wait()  # 将qq强制停止
-        d.server.adb.cmd("shell", "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").communicate()[0]  # 将qq拉起来
-        time.sleep(2)
+        d.server.adb.cmd("shell", "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").wait()  # 将qq拉起来
+        time.sleep(1)
         d(text='我', index=0, className='android.widget.TextView').click()
-        time.sleep(2)
+        time.sleep(1)
         d(text='我', index=0, className='android.widget.TextView').click()
-
         d(text='附近的人').click()
         d(resourceId='com.tencent.qqlite:id/ivTitleBtnRightImage').click()
         d(text='筛选附近的人').click()
-        gender = args["gender"]
-        print (gender)
-        d(text=''+gender+'').click()  # 性别
+
         Appeartime = args["Appeartime"]
         d(text=Appeartime).click()
+        time.sleep(1)
+        gender = args["gender"]
+        print(gender)
+        d(text='' + gender + '').click()  # 性别
+        time.sleep(1)
         d(text='年龄').click()
-        print (time)
-        time.sleep(2)
+        time.sleep(1)
         age = args["age"]
         if d(text=age).exists:  # True if exists, else Falsegit
             d(text=age).click()  # 由外界设定
@@ -67,8 +74,8 @@ class QQLiteNearBy:
         time.sleep(3)
         global list
         list = list()
-        StartIndex = args['StartIndex']
-        EndIndex = args['EndIndex']
+        StartIndex = int(args['StartIndex'])
+        EndIndex = int(args['EndIndex'])
         i = StartIndex  # 点击第i个人
         t = StartIndex  # t是结束条件
         while i < EndIndex:
@@ -96,7 +103,7 @@ class QQLiteNearBy:
                     d(resourceId='com.tencent.qqlite:id/ivTitleBtnLeft', description='向上导航').click()
                     time.sleep(1)
                     d(resourceId='com.tencent.qqlite:id/ivTitleBtnLeft', description='向上导航').click()
-                    time.sleep(1)
+
                 except Exception:
                     if d(text='显示更多', resourceId='com.tencent.qqlite:id/0').exists:
                         d(text='显示更多', resourceId='com.tencent.qqlite:id/0').click()
@@ -115,13 +122,14 @@ class QQLiteNearBy:
                 return  # 放到代码里改为结束方法
 
         if (args["time_delay"]):
-            time.sleep(args["time_delay"])
+            time.sleep(int(args["time_delay"]))
 def getPluginClass():
     return QQLiteNearBy
 
 if __name__ == "__main__":
-    c = QQLiteNearBy()
+    clazz = getPluginClass()
+    o = clazz()
     d = Device("HT49PSK05055")
     # d.dump(compressed=False)              #显示详细信息
-    args = {"cate_id":"13", "gender": "女", "Appeartime": "4小时", "age": "35岁以上", "profession": "学生", 'StartIndex': 1,'EndIndex': 20}; #别忘了加要发送的消息
-    c.action(d, args)
+    args = {"repo_material_id":"8","gender":"全部","Appeartime":"4小时","age":"35岁以上","StartIndex":"1","EndIndex":"7","profession":"学生"} #别忘了加要发送的消息
+    o.action(d, args)

@@ -17,11 +17,11 @@ class QQLiteAddressList:
 
     def action(self, d, args):
         cate_id = args["repo_material_id"]
-        numbers = self.repo.GetMaterial(cate_id, 0, 1)
+        Material = self.repo.GetMaterial(cate_id, 0, 1)
         wait = 1
         while wait==1:
             try:
-                repo_material_id = numbers[0]['content']        #从素材库取出的要发的材料
+                Material = Material[0]['content']        #从素材库取出的要发的材料
                 wait = 0
             except Exception:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
@@ -70,7 +70,7 @@ class QQLiteAddressList:
                         obj[i].click()  # 直接进入发消息页面(不知道为什么)不需要再点击发消息，
                         time.sleep(1)
                         # d(text='发消息').click()
-                        d(resourceId='com.tencent.qqlite:id/input', className='android.widget.EditText').set_text(repo_material_id)  # 发中文问题
+                        d(resourceId='com.tencent.qqlite:id/input', className='android.widget.EditText').set_text(Material)  # 发中文问题
                         d(text='发送', resourceId='com.tencent.qqlite:id/fun_btn').click()
                         time.sleep(2)
                         i = i + 1

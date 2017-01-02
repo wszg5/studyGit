@@ -15,6 +15,12 @@ class ImpContact:
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
         time.sleep(5)
+    # RunApp "com.tencent.mm", ".plugin.sns.ui.SnsTimeLineUI" '朋友圈
+        d.server.adb.cmd("shell", "am start -n com.tencent.mm/.plugin.sns.ui.SnsTimeLineUI").wait()  # 将微信拉起来
+
+
+
+
         d(description='更多功能按钮',className='android.widget.RelativeLayout').click()
         time.sleep(1)
         if d(text='添加朋友',resourceId='com.tencent.mm:id/f6').exists:

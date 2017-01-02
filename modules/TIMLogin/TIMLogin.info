@@ -1,0 +1,18 @@
+{
+"id": "TIMQQLogin",
+"cate":"TIMQQ登录模块",
+"name":"TIM登录QQ",
+"url": "http://www.bejson.com",
+"verison": "1.0",
+"icon":"vcard-o",
+"remark":"TIM登录QQ",
+"setting":[
+{
+"id": "time_delay",
+"name":"延时",
+"type":"textbox",
+"defaultValue":"3",
+"remark":"单位：秒"
+}
+]
+}

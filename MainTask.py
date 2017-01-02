@@ -12,7 +12,7 @@ import rethinkdb as r
 #https://github.com/lucidfrontier45/RethinkPool
 from rethinkpool import RethinkPool
 
-pool = RethinkPool(max_conns=120, initial_conns=10, host='127.0.0.1',
+pool = RethinkPool(max_conns=120, initial_conns=10, host='192.168.1.33',
                      port=28015,
                      db='stf')
 
@@ -67,7 +67,7 @@ def installapk(apklist, d, device):
         times = 10
         while (times):
             if d(textContains=u'取消安装').count:
-                print d(textContains=u'取消安装', className='android.widget.Button').info['text']
+                print (d(textContains=u'取消安装', className='android.widget.Button').info['text'])
                 d(textContains=u'取消安装', className='android.widget.Button').click()
                 rstlogger.info(device + '测试成功，有弹出取消安装对话框')
                 break
@@ -113,7 +113,7 @@ def installapk(apklist, d, device):
                 cmd = 'adb -s %s install -r "%s"' % (device, apkpath)
             util.doInThread(checkcancel, d, sucapp, errapp)
             rst = util.exccmd(cmd)
-    except Exception, e:
+    except Exception :
         logger.error(traceback.format_exc())
         data = 1
     data = 1
@@ -122,7 +122,7 @@ def installapk(apklist, d, device):
 
 def finddevices():
     deviceIds = []
-    rst = util.exccmd('adb devices')
+    rst = util.exccmd('/home/zunyun/soft/android-sdk-linux/platform-tools/adb devices')
     devices = re.findall(r'(.*?)\s+device', rst)
     if len(devices) > 1:
         deviceIds = devices[1:]
@@ -180,7 +180,7 @@ def deviceTask(deviceid, port):
 
         if (task.get("status") and task["status"] == "running"):
             d = Device(deviceid, port)
-
+            util.doInThread(runwatch, d, 0, t_setDaemon=True)
             d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
 
             while True:
@@ -192,7 +192,7 @@ def deviceTask(deviceid, port):
                 for step in steps:
                     try:
                         runStep(d, step)
-                    except Exception, e:
+                    except Exception :
                         logger.error(step)
                         logger.error(traceback.format_exc())
                         time.sleep(3)
@@ -215,7 +215,7 @@ def deviceThread(deviceid, port):
     while True:
         try:
             deviceTask(deviceid, port)
-        except Exception, e:
+        except Exception:
             logger.error(traceback.format_exc())
         time.sleep(5)
     print("%s thread finished"%deviceid)
