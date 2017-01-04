@@ -83,8 +83,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT536SK01667")
-    z = ZDevice("HT536SK01667")
+    d = Device("HT4AVSK01106")
+    z = ZDevice("HT4AVSK01106")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     # d.dump(compressed=False)
     args = {"repo_material_id":"8","StartIndex":"0","EndIndex":"7","time_delay":"3"};

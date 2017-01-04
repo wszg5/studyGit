@@ -24,7 +24,7 @@ class EIMLogin:
         uniqueNum = str(nowTime) + str(randomNum);
         return uniqueNum
 
-    def login(self):
+    def login(self,d):
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -180,7 +180,7 @@ class EIMLogin:
                 #     else:
                 #         time.sleep(2)
 
-                info = self.login()  # 帐号无法登陆则登陆,重新注册登陆
+                info = self.login(d)  # 帐号无法登陆则登陆,重新注册登陆
                 self.slot.backup(d, name, info)  # 登陆之后备份
 
             else:
@@ -209,7 +209,7 @@ class EIMLogin:
             #     else:
             #         time.sleep(2)
 
-            info = self.login()
+            info = self.login(d)
             self.slot.backup(d, name, info)
 
 

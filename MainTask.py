@@ -48,8 +48,6 @@ def runwatch(d, data):
             time.sleep(0.5)
 
 
-
-
 def finddevices():
     deviceIds = []
     rst = util.exccmd('/home/zunyun/soft/android-sdk-linux/platform-tools/adb devices')

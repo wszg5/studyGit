@@ -12,14 +12,14 @@
 	"name":"号码库分类",
 	"type":"repo",
 	"source":"number",
-	"top_cate_id":"36"
+	"top_cate_id":"22"
 	},
 	{
     	"id": "repo_material_cate_id",
     	"name":"验证信息素材库",
     	"type":"repo",
     	"source":"material",
-	    "top_cate_id":"5"
+	    "top_cate_id":"12"
     },
 
     {

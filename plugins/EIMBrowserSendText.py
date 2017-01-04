@@ -13,15 +13,6 @@ class EIMBrowserSendText:
 
 
     def action(self, d,z, args):
-        repo_material_cate_id = args["repo_material_cate_id"]
-        Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
-        wait = 1  # 判断素材仓库里是否由素材
-        while wait == 1:
-            try:
-                material = Material[0]['content']  # 取出验证消息的内容
-                wait = 0
-            except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"")
 
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
 
@@ -38,9 +29,19 @@ class EIMBrowserSendText:
         d.server.adb.cmd("shell", "am force-stop com.android.chrome").wait()  # 强制停止
 
         for i in range (0,totalNumber,+1):
+            repo_material_cate_id = args["repo_material_cate_id"]
+            Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
+            wait = 1  # 判断素材仓库里是否由素材
+            while wait == 1:
+                try:
+                    material = Material[0]['content']  # 取出验证消息的内容
+                    wait = 0
+                except Exception:
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"")
+
             numbers = list[i]
             d.server.adb.cmd("shell","am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").wait()  # 拉起来
-            time.sleep(2)
+            time.sleep(3)
             d(className='android.widget.EditText',index=1,clickable='false').click()
 
             if d(className='android.widget.EditText',index=1,clickable='false').exists:              #看会不会弹出键盘

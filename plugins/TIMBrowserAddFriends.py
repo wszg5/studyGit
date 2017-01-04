@@ -45,7 +45,7 @@ class TIMBrowserAddFriends:
             numbers = list[i]
             print(numbers)
             time.sleep(1)
-            d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").wait()  # 拉起来
+            d.server.adb.cmd("shell","am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").wait()  # 拉起来
             time.sleep(3)
             d(className='android.widget.Button',index=2,description='清空号码').click()
             d(className='android.widget.EditText',index=1,clickable='false').click()

@@ -29,7 +29,11 @@ class TIMBrowserSendText:
         wait = 1
         while wait == 1:
             numbers = self.repo.GetNumber(repo_number_cate_id, 120, totalNumber)  # 取出add_count条两小时内没有用过的号码
+            lenth = len(numbers)
             if "Error" in numbers:  #如果没有拿到号码的情况
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
+                continue
+            elif lenth==0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
                 continue
             wait = 0
@@ -43,7 +47,7 @@ class TIMBrowserSendText:
             print(numbers)
             time.sleep(1)
 
-            d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").wait()  # 拉起来
+            d.server.adb.cmd("shell","am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").wait()  # 拉起来
             time.sleep(1)
             d(className='android.widget.Button',index=2,description='清空号码').click()
             time.sleep(1)
@@ -59,6 +63,7 @@ class TIMBrowserSendText:
             if d(className='android.widget.Button',index=3,description='开始聊天').exists:
                 continue
             d(resourceId='com.tencent.tim:id/input',className='android.widget.EditText').click()
+            print(material)
             z.input(material)
             d(text='发送',resourceId='com.tencent.tim:id/fun_btn').click()
 
@@ -73,8 +78,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A3SK00853")
-    z = ZDevice("HT4A3SK00853")
+    d = Device("HT4A5SK00291")
+    z = ZDevice("HT4A5SK00291")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    args = {"repo_number_cate_id":"13","repo_material_cate_id":"8","totalNumber":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"49","repo_material_cate_id":"33","totalNumber":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d, z,args)

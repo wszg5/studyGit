@@ -6,7 +6,6 @@ from Repo import *
 from XunMa import *
 import time
 from slot import slot
-from dbapi import *
 
 
 class TIMLogin:
@@ -15,10 +14,10 @@ class TIMLogin:
         self.XunMa = XunMa()
         self.cardslot = CardSlot()
         self.slot = slot('tim')
-        self.dbapi = dbapi()
 
 
-    def login(self):
+    def login(self,d):
+
         d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()  # 清除缓存
         d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
         time.sleep(8)
@@ -65,14 +64,13 @@ class TIMLogin:
                 time.sleep(30)
                 name = self.slot.getSlot(d,120)
 
-            device = dbapi.GetDevice(d.server.adb.device_serial())
-            device["airplaneMode"]
             d.open.quick_settings()
             d(text='飞行模式', resourceId='com.android.systemui:id/quick_setting_text').click()
             if d(text='不要再显示此内容。', resourceId='android:id/text1').exists:
                 d(text='不要再显示此内容。', resourceId='android:id/text1').click()
                 d(text='确定').click()
                 d.open.quick_settings()
+
 
             self.slot.restore(d,name)                      #有２小时没用过的卡槽情况，切换卡槽
 
@@ -81,13 +79,13 @@ class TIMLogin:
 
             d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
             if d(text='帐号无法登录').exists:
-                info = self.login()                                             #帐号无法登陆则登陆,重新注册登陆
-                self.slot.backup(d,name,info)                                   #登陆之后备份
+                info = self.login(d)                                             #帐号无法登陆则登陆,重新注册登陆
+                self.slot.backup(d,name,info)                                 #登陆之后备份
             else:
                 return
 
         else:                                     #有空卡槽的情况
-            info = self.login()
+            info = self.login(d)
             self.slot.backup(d,name,info)
 
 
@@ -102,12 +100,13 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4AVSK01106")
+    d = Device("HT536SK01667")
+    z = ZDevice("HT536SK01667")
     # print(d.dump(compressed=False))
     # print(d.info)
-    z = ZDevice("HT4AVSK01106")
+
     d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").wait()
-    d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()  # 清除缓存
+    # d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()  # 清除缓存
     args = {"time_delay":"3"};    #cate_id是仓库号，length是数量
     # o.slot.restore(d,1)
     o.action(d,z,args)

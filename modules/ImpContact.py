@@ -3,6 +3,8 @@ from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
 import json
+from zservice import ZDevice
+
 
 class ImpContact:
     def __init__(self):
@@ -59,6 +61,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
+    z = ZDevice("HT4AVSK01106")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     # d.dump(compressed=False)
     args = {"repo_cate_id":"36","length":"30","time_delay":"3"}    #cate_id是仓库号，length是数量
-    o.action(d, args)
+    o.action(d,z, args)

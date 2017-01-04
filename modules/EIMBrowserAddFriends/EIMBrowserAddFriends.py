@@ -40,7 +40,7 @@ class EIMBrowserAddFriends:
         d.server.adb.cmd("shell", "am force-stop com.android.chrome").wait()  # 强制停止
         for i in range (1,add_count,+1):
             numbers = list[i]
-            d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").wait()  # 拉起来
+            d.server.adb.cmd("shell","am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").wait()  # 拉起来
             time.sleep(3)
             d(className='android.widget.Button',index=2,description='清空号码').click()
             d(className='android.widget.EditText',index=1,clickable='false').click()
@@ -68,8 +68,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4AVSK01106")
-    z = ZDevice("HT4AVSK01106")
+    d = Device("HT536SK01667")
+    z = ZDevice("HT536SK01667")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     args = {"repo_number_cate_id":"49","repo_material_cate_id":"34","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

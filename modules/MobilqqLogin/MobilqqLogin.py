@@ -9,6 +9,7 @@ from Repo import *
 from RClient import *
 import time, datetime, random
 from zservice import ZDevice
+from slot import slot
 
 class MobilqqLogin:
     def __init__(self):
@@ -23,13 +24,12 @@ class MobilqqLogin:
         return uniqueNum
 
 
-    def action(self, d,z, args):
+    def login(self,d):
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
         sourcePng = os.path.join(base_dir, "%s_s.png" % (self.GetUnique()))
         codePng = os.path.join(base_dir, "%s_c.png" % (self.GetUnique()))
-
 
         cate_id = args["repo_cate_id"]
         numbers = self.repo.GetAccount(cate_id, 120, 1)
@@ -44,20 +44,19 @@ class MobilqqLogin:
                 time.sleep(20)
         QQPassword = numbers[0]['password']
         time.sleep(1)
-        t=1
-        while t ==1:
-            d.server.adb.cmd("shell","pm clear com.tencent.mobileqq").wait()  # 清除缓存
-            d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+        t = 1
+        while t == 1:
+            d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").wait()  # 清除缓存
+            d.server.adb.cmd("shell",
+                             "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
             time.sleep(5)
-            d(text='登 录',resourceId='com.tencent.mobileqq:id/btn_login').click()
-            d(className='android.widget.EditText',text='QQ号/手机号/邮箱').set_text(836201593)    #﻿1918697054----xiake1234.  QQNumber
-            d(resourceId='com.tencent.mobileqq:id/password',description='密码 安全').set_text('13141314abc')    #Bn2kJq5l     QQPassword
-            d(text='登 录',resourceId='com.tencent.mobileqq:id/login').click()
+            d(text='登 录', resourceId='com.tencent.mobileqq:id/btn_login').click()
+            d(className='android.widget.EditText', text='QQ号/手机号/邮箱').set_text(836201593)  # ﻿1918697054----xiake1234.  QQNumber
+            d(resourceId='com.tencent.mobileqq:id/password', description='密码 安全').set_text('13141314abc')  # Bn2kJq5l     QQPassword
+            d(text='登 录', resourceId='com.tencent.mobileqq:id/login').click()
             while d(className='android.widget.LinearLayout').child(text='登录中',resourceId='com.tencent.mobileqq:id/name').exists:
                 time.sleep(1)
-            # time.sleep(6)
-            d.watcher('pop').when(text= u'马上绑定').click(text=u'消息')
-
+            d.watcher('pop').when(text=u'马上绑定').click(text=u'消息')
 
             # d.watcher('success').when(text='搜索').when(resourceId='com.tencent.tim:id/name')
 
@@ -69,10 +68,10 @@ class MobilqqLogin:
             #     self.repo.SetAccount(cate_id, 'frozen', QQNumber)
             #     break
 
-            if d(resourceId='com.tencent.mobileqq:id/name', index='2', className="android.widget.EditText").exists:        #需要验证码的情况
+            if d(resourceId='com.tencent.mobileqq:id/name', index='2',className="android.widget.EditText").exists:  # 需要验证码的情况
                 co = RClient()
                 im_id = ""
-                for i in range(0, 30, +1):         #打码循环
+                for i in range(0, 30, +1):  # 打码循环
                     if i > 0:
                         co.rk_report_error(im_id)
                     obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.ImageView')
@@ -102,11 +101,11 @@ class MobilqqLogin:
                     os.remove(sourcePng)
                     os.remove(codePng)
 
-                    d(resourceId='com.tencent.mobileqq:id/name', index='2', className="android.widget.EditText").set_text(code)
+                    d(resourceId='com.tencent.mobileqq:id/name', index='2',
+                      className="android.widget.EditText").set_text(code)
                     time.sleep(3)
                     d(text='完成', resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText').click()
                     time.sleep(2)
-
 
                     if d(text='登 录').exists:  # 密码错误
                         self.repo.SetAccount(cate_id, 'locked', QQNumber)
@@ -115,25 +114,65 @@ class MobilqqLogin:
                     if d(text='帐号无法登录', resourceId='com.tencent.mobileqq:id/dialogTitle').exists:  # 帐号被冻结
                         self.repo.SetAccount(cate_id, 'frozen', QQNumber)
                         break
-                    if d(text='身份过期',resourceId='com.tencent.mobileqq:id/dialogTitle').exists:
+                    if d(text='身份过期', resourceId='com.tencent.mobileqq:id/dialogTitle').exists:
                         break
 
                     d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
-                    d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+                    d.server.adb.cmd("shell",
+                                     "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
 
-
-
-
-            if d(text='搜索', resourceId='com.tencent.mobileqq:id/name').exists:       #不需要验证码的情况
+            if d(text='搜索', resourceId='com.tencent.mobileqq:id/name').exists:  # 不需要验证码的情况
                 # t=2
                 return  # 放到方法里改为return
             if d(text='马上绑定').exists:
                 # t=2
                 return
 
-
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
+
+    def action(self, d,z, args):
+        name = self.slot.getEmpty(d)  # 取空卡槽
+        self.slot = slot('qq')
+
+        if name == 0:
+            name = self.slot.getSlot(d, 120)  # 没有空卡槽，取２小时没用过的卡槽
+            while name == 0:  # 2小时没有用过的卡槽也为空的情况
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无2小时未用\"")
+                time.sleep(30)
+                name = self.slot.getSlot(d, 120)
+
+            # d.open.quick_settings()
+            # d(text='飞行模式', resourceId='com.android.systemui:id/quick_setting_text').click()
+            # if d(text='不要再显示此内容。', resourceId='android:id/text1').exists:
+            #     d(text='不要再显示此内容。', resourceId='android:id/text1').click()
+            #     d(text='确定').click()
+            #     d.open.quick_settings()
+
+            self.slot.restore(d, name)  # 有２小时没用过的卡槽情况，切换卡槽
+
+            # d.open.quick_settings()
+            # d(text='飞行模式', resourceId='com.android.systemui:id/quick_setting_text').click()
+
+            d.server.adb.cmd("shell",
+                             "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+            if d(text='帐号无法登录').exists:
+                info = self.login(d)  # 帐号无法登陆则登陆,重新注册登陆
+                self.slot.backup(d, name, info)  # 登陆之后备份
+            else:
+                return
+
+        else:  # 有空卡槽的情况
+            info = self.login(d)
+            self.slot.backup(d, name, info)
+
+
+
+
+
+
+
+
 
 def runwatch(d, data):                                  #watcher除了点击还可以做什么，watcher到可以结束方法吗，可以改变参数吗
     times = 120
