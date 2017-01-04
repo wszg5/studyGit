@@ -63,13 +63,13 @@ class Repo:
 
 if __name__ == '__main__':
     repo = Repo()
-    result = repo.GetAccount("6", 120, 1)
+    # result = repo.GetAccount("6", 120, 1)
     # result = repo.SetAccount("6", "ddkf", "1918697054")
 
-    # result = repo.GetMaterial("8",120,1)
+    result = repo.GetMaterial("54",120,5)
     print(result)
     # print(result[0]["content"])
-    # result1 = repo.GetNumber("13",0,10)              #意思是取13号仓库2小时内没有用过的号码，一次取16个
+    # result1 = repo.GetNumber("37",0,10)              #意思是取13号仓库2小时内没有用过的号码，一次取16个
     # print(result1[0])
 
     # print (result[0])

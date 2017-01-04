@@ -103,7 +103,7 @@ def deviceTask(deviceid, port, zport):
                     try:
 
                         runStep(d, z, step)
-                    except Exception, e:
+                    except Exception:
                         logger.error(step)
                         logger.error(traceback.format_exc())
                         time.sleep(3)
@@ -129,7 +129,7 @@ def deviceThread(deviceid, port, zport):
         try:
 
             deviceTask(deviceid, port, zport)
-        except Exception, e:
+        except Exception:
             logger.error(traceback.format_exc())
         time.sleep(5)
     print("%s thread finished"%deviceid)

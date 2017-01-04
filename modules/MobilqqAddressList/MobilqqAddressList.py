@@ -2,6 +2,7 @@
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
+from zservice import ZDevice
 
 
 class TIMAddressList:
@@ -11,7 +12,7 @@ class TIMAddressList:
 
 
 
-    def action(self, d, args):
+    def action(self, d,z, args):
         cate_id = args["repo_material_id"]
         Material = self.repo.GetMaterial(cate_id, 0, 1)
         wait = 1
@@ -74,7 +75,8 @@ class TIMAddressList:
                         else:
                             list.append(obj1)
                         d(resourceId='com.tencent.mobileqq:id/txt',text='发消息').click()
-                        d(resourceId='com.tencent.mobileqq:id/input',className='android.widget.EditText').set_text('')#Material
+                        d(resourceId='com.tencent.mobileqq:id/input',className='android.widget.EditText').click()#Material
+                        z.input(Material)
                         time.sleep(1)
                         d(resourceId='com.tencent.mobileqq:id/fun_btn',text='发送').click()
                         t = t+1
@@ -98,5 +100,7 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A3SK00853")
+    z = ZDevice("HT4AVSK01106")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     args = {"repo_material_id":"8","time_delay":"3"};    #cate_id是仓库号，length是数量
-    o.action(d, args)
+    o.action(d,z, args)

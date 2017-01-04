@@ -3,7 +3,7 @@ from uiautomator import Device, AutomatorDeviceUiObject
 from Repo import *
 import os, time, datetime, random,math
 import json
-import traceback
+from zservice import ZDevice
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -15,13 +15,13 @@ class QQLiteAddFriends:
     def __init__(self):
         self.repo = Repo()
 
-    def action(self, d, args):
+    def action(self, d,z, args):
         repo_material_cate_id = args["repo_material_cate_id"]
         Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
         wait = 1                  #判断素材仓库里是否由素材
         while wait==1:
             try:
-                repo_material_id = Material[0]['content']         #取出验证消息的内容
+                material = Material[0]['content']         #取出验证消息的内容
                 wait=0
             except Exception:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"")
@@ -76,7 +76,8 @@ class QQLiteAddFriends:
                     else:
                         obj1 = d(resourceId='com.tencent.qqlite:id/0', className='android.widget.EditText')
                         if obj1.exists:          # 有的要发送验证消息，有的不需要
-                            obj1.set_text(repo_material_id)       #发送验证消息
+                            obj1.click()
+                            z.input(material)       #发送验证消息
                             time.sleep(2)
                             d(text='下一步', resourceId='com.tencent.qqlite:id/ivTitleBtnRightText',
                               className='android.widget.TextView').click()
@@ -95,7 +96,8 @@ class QQLiteAddFriends:
                     else:
                         obj = d(resourceId='com.tencent.qqlite:id/0',className='android.widget.EditText')
                         if obj.exists:
-                            obj.set_text(repo_material_id)
+                            obj.click()
+                            z.input(material)
                             time.sleep(2)
                             d(text='下一步', resourceId='com.tencent.qqlite:id/ivTitleBtnRightText',
                               className='android.widget.TextView').click()  # 有的要发送验证消息，有的不需要
@@ -115,6 +117,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT49PSK05055")
-    d.dump(compressed=False)
+    z = ZDevice("HT4AVSK01106")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    # d.dump(compressed=False)
     args = {"repo_number_cate_id":"62","repo_material_cate_id":"8","gender":"女","add_count":"9","time_delay":"3"}   #cate_id是仓库号，发中文问题
-    o.action(d, args)
+    o.action(d,z, args)

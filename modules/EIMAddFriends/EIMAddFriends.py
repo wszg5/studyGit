@@ -5,14 +5,14 @@ from PIL import Image
 from uiautomator import Device
 import os,re,subprocess
 from Repo import *
-from RClient import *
+from zservice import ZDevice
 import time, datetime, random
 class EIMAddFriends:
     def __init__(self):
         self.repo = Repo()
 
 
-    def action(self, d, args):
+    def action(self, d,z, args):
         repo_material_cate_id = args["repo_material_cate_id"]
         Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
         wait = 1  # 判断素材仓库里是否由素材
@@ -83,7 +83,8 @@ class EIMAddFriends:
             while t<lenth:
                 d.press.delete()
                 t = t + 1
-            d(className='android.widget.EditText',text='请输入验证信息').set_text(material)            #验证信息
+            d(className='android.widget.EditText',text='请输入验证信息').click()            #验证信息
+            z.input(material)
             d(text='下一步',resourceId='com.tencent.eim:id/ivTitleBtnRightText').click()
             d(text='发送',resourceId='com.tencent.eim:id/ivTitleBtnRightText').click()
             d(text='添加好友', resourceId='com.tencent.eim:id/name').click()
@@ -99,6 +100,9 @@ if __name__ == "__main__":
     o = clazz()
 
     d = Device("HT4A3SK00853")
+    z = ZDevice("HT4AVSK01106")
+    d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").wait()
+
     # d.dump(compressed=False)
     args = {"repo_number_cate_id":"13","repo_material_cate_id":"8","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
-    o.action(d, args)
+    o.action(d,z, args)

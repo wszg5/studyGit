@@ -6,6 +6,7 @@ from Repo import *
 import os, time, datetime, random
 import util
 from PIL import Image
+from zservice import ZDevice
 
 class TIMAddFriends:
     def __init__(self):
@@ -22,7 +23,7 @@ class TIMAddFriends:
 
 
 
-    def action(self, d, args):
+    def action(self, d, z,args):
 
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
@@ -97,30 +98,6 @@ class TIMAddFriends:
             if d(className='android.widget.AbsListView').child(index=1,resourceId='com.tencent.tim:id/name').exists:      #在同一查条件有多个人
                 d(className='android.widget.AbsListView').child(index=1, resourceId='com.tencent.tim:id/name').click()
 
-            # obj = d(resourceId='com.tencent.tim:id/name', className='android.widget.ImageView', index=1)
-            # obj = obj.info
-            # print(obj)
-            # obj = obj['bounds']  # 验证码处的信息
-            # left = obj["left"]  # 验证码的位置信息
-            # top = obj['top']
-            # right = obj['right']
-            # bottom = obj['bottom']
-            #
-            # d.screenshot(sourcePng)  # 截取整个输入验证码时的屏幕
-            #
-            # img = Image.open(sourcePng)
-            # box = (left, top, right, bottom)  # left top right bottom
-            # region = img.crop(box)  # 截取验证码的图片
-            # show (region)
-            #
-            # img = Image.new('RGBA', (right - left, bottom - top))
-            # img.paste(region, (0, 0))
-            # img.save(genderPng)
-            # im = open(genderPng, 'rb').read()
-
-
-
-
 
             d(text='加好友',resourceId='com.tencent.tim:id/name').click()
             time.sleep(1)
@@ -182,8 +159,9 @@ class TIMAddFriends:
             while t < lenth:
                 d.press.delete()
                 t = t + 1
-            time.sleep(1)
-            d(className='android.widget.EditText',resourceId='com.tencent.tim:id/name').set_text(Material.encode("utf-7"))   #发送验证消息  material
+            time.sleep(2)
+            d(className='android.widget.EditText',resourceId='com.tencent.tim:id/name').click()   #发送验证消息  material
+            z.input(material)
             d(text='下一步',resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
             d(text='发送',resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
             if d(text='添加失败，请勿频繁操作', resourceId='com.tencent.tim:id/name').exists:
@@ -226,8 +204,10 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A3SK00853")
+    d = Device("HT54WSK00081")
+    z = ZDevice("HT54WSK00081")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     # print(d.dump(compressed=False))
-    args = {"repo_number_cate_id":"13","repo_material_cate_id":"8","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"37","repo_material_cate_id":"33","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
-    o.action(d, args)
+    o.action(d, z,args)

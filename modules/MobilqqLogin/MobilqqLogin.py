@@ -8,6 +8,8 @@ import util
 from Repo import *
 from RClient import *
 import time, datetime, random
+from zservice import ZDevice
+
 class MobilqqLogin:
     def __init__(self):
         self.repo = Repo()
@@ -21,7 +23,7 @@ class MobilqqLogin:
         return uniqueNum
 
 
-    def action(self, d, args):
+    def action(self, d,z, args):
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -44,12 +46,12 @@ class MobilqqLogin:
         time.sleep(1)
         t=1
         while t ==1:
-            d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").wait()  # 清除缓存
-            d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
-            time.sleep(3)
+            d.server.adb.cmd("shell","pm clear com.tencent.mobileqq").wait()  # 清除缓存
+            d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+            time.sleep(5)
             d(text='登 录',resourceId='com.tencent.mobileqq:id/btn_login').click()
-            d(className='android.widget.EditText',text='QQ号/手机号/邮箱').set_text(2659476719)    #3001313499    3030327691   QQNumber 3001339706----Bn2kJq5l
-            d(resourceId='com.tencent.mobileqq:id/password',description='密码 安全').set_text('520626cheng')    #Bn2kJq5l
+            d(className='android.widget.EditText',text='QQ号/手机号/邮箱').set_text(836201593)    #﻿1918697054----xiake1234.  QQNumber
+            d(resourceId='com.tencent.mobileqq:id/password',description='密码 安全').set_text('13141314abc')    #Bn2kJq5l     QQPassword
             d(text='登 录',resourceId='com.tencent.mobileqq:id/login').click()
             while d(className='android.widget.LinearLayout').child(text='登录中',resourceId='com.tencent.mobileqq:id/name').exists:
                 time.sleep(1)
@@ -115,13 +117,10 @@ class MobilqqLogin:
                         break
                     if d(text='身份过期',resourceId='com.tencent.mobileqq:id/dialogTitle').exists:
                         break
-                    #
-                    if d(text='搜索',resourceId='com.tencent.mobileqq:id/name').exists:
-                        return  # 放到方法里改为return
-                    if d(text='马上绑定').exists:
-                        d(text=u'消息',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').click()
-                        # t=2
-                        return
+
+                    d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
+                    d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+
 
 
 
@@ -156,9 +155,13 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4A4SK00901")
+    d = Device("HT536SK01667")
+    z = ZDevice("HT536SK01667")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+
+
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"32","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"53","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
-    o.action(d, args)
+    o.action(d,z, args)

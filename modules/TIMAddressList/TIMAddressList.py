@@ -2,6 +2,7 @@
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
+from zservice import ZDevice
 
 
 class TIMAddressList:
@@ -11,7 +12,7 @@ class TIMAddressList:
 
 
 
-    def action(self, d, args):
+    def action(self, d, z,args):
         cate_id = args["repo_material_id"]
         Material = self.repo.GetMaterial(cate_id, 0, 1)
         wait = 1
@@ -39,9 +40,14 @@ class TIMAddressList:
             else:
                 time.sleep(1)
                 d(resourceId='com.tencent.tim:id/group_item_layout', index=8).click()    #未展开的情况，先点击展开
+
                 if d(text='验证手机号码',resourceId='com.tencent.tim:id/ivTitleName').exists:      #判断手机是否启用通讯录
                     return
-                d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+                if d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(
+                        className='android.widget.RelativeLayout', index=10).exists:
+                    d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+                else:
+                    return                                                         #通讯录没有好友的情况
                 # d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
                 # d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
 
@@ -69,7 +75,7 @@ class TIMAddressList:
         t = 1
         global list
         list = list()
-        EndIndex = 5
+        EndIndex = int(args['EndIndex'])
         while t < EndIndex:
             time.sleep(2)
             obj = d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=i)  # 点击第ｉ个人
@@ -85,7 +91,8 @@ class TIMAddressList:
                     list.append(text)
                     d(resourceId='com.tencent.tim:id/txt', text='发消息').click()
                     time.sleep(2)
-                    d(resourceId='com.tencent.tim:id/input', className='android.widget.EditText').set_text(Material.encode("utf-7"))  # Material
+                    d(resourceId='com.tencent.tim:id/input', className='android.widget.EditText').click()  # Material
+                    z.input(Material)
                     time.sleep(1)
                     d(resourceId='com.tencent.tim:id/fun_btn', text='发送').click()
                     i = i+1
@@ -110,5 +117,7 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT54WSK00081")
-    args = {"repo_material_id":"33","time_delay":"3"};    #cate_id是仓库号，length是数量
-    o.action(d, args)
+    z = ZDevice("HT54WSK00081")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    args = {"repo_material_id":"33","time_delay":"3","EndIndex":"4"};    #cate_id是仓库号，length是数量
+    o.action(d,z, args)

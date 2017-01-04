@@ -32,79 +32,117 @@ class TIMAddressList:
         d(className='android.widget.TabWidget',resourceId='android:id/tabs',index=1).child(className='android.widget.FrameLayout',index=1).click()     #点击到联系人
         time.sleep(3)
         if d(text='联系人',resourceId='com.tencent.tim:id/ivTitleName').exists:       #如果已经到联系人界面
-            time.sleep(1)
-            if d(resourceId='com.tencent.tim:id/elv_buddies',className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=10).exists:  #看通讯录是否已经展开，已经展开的话直接滑动
-                d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
-                # d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
-                # d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
-            else:
+            time.sleep(2)
+            d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=9).click()
+            if d(text='发消息',resourceId='com.tencent.tim:id/txt').exists:                     #通讯录已经展开
+                d(text='返回',resourceId='com.tencent.tim:id/ivTitleBtnLeft').click()
                 time.sleep(1)
-                d(resourceId='com.tencent.tim:id/group_item_layout', index=8).click()    #未展开的情况，先点击展开
-
-                if d(text='验证手机号码',resourceId='com.tencent.tim:id/ivTitleName').exists:      #判断手机是否启用通讯录
+                # d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+                d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
+                d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
+                time.sleep(2)
+            else:
+                d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=9).click()
+                d(resourceId='com.tencent.tim:id/group_item_layout', index=8).click()  # 未展开的情况，先点击展开
+                if d(text='验证手机号码', resourceId='com.tencent.tim:id/ivTitleName').exists:  # 判断手机是否启用通讯录
                     return
-                if d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(
-                        className='android.widget.RelativeLayout', index=10).exists:
-                    d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
                 else:
-                    return                                                         #通讯录没有好友的情况
-                # d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
-                # d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
-
+                    # d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+                    d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
+                    d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
+                    time.sleep(2)
 
         else:                                                                             #没有在联系人界面的话
+            d(className='android.widget.TabWidget', resourceId='android:id/tabs', index=1).child(className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
             time.sleep(2)
-            d(className='android.widget.TabWidget', resourceId='android:id/tabs', index=1).child(
-                className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
-            if d(resourceId='com.tencent.tim:id/elv_buddies',className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=10) .exists:    #看通讯录是否已经展开，已经展开的话直接滑动
-                d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
-                # d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
-                # d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
-
+            d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(
+                className='android.widget.RelativeLayout', index=9).click()
+            if d(text='发消息', resourceId='com.tencent.tim:id/txt').exists:
+                d(text='返回', resourceId='com.tencent.tim:id/ivTitleBtnLeft').click()
+                # d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+                d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
+                d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
+                time.sleep(2)
             else:
-                time.sleep(1)
-                d(resourceId='com.tencent.tim:id/group_item_layout', index=8).click()
-                if d(text='验证手机号码', resourceId='com.tencent.tim:id/ivTitleName').exists:
+                d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(
+                    className='android.widget.RelativeLayout', index=9).click()
+                d(resourceId='com.tencent.tim:id/group_item_layout', index=8).click()  # 未展开的情况，先点击展开
+                if d(text='验证手机号码', resourceId='com.tencent.tim:id/ivTitleName').exists:  # 判断手机是否启用通讯录
                     return
-                # d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
-                # d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
-                d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
-
-
-        i = 1
-        t = 1
+                else:
+                    # d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+                    d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
+                    d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
+                    time.sleep(2)
+        i = 8
+        t = 8
         global list
         list = list()
         EndIndex = int(args['EndIndex'])
         while t < EndIndex:
             time.sleep(2)
+            obj = d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(resourceId='com.tencent.tim:id/group_item_layout',index=10)
+            if obj.exists and i ==10:      #通讯录好友已经到底的情况
+                return
             obj = d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=i)  # 点击第ｉ个人
+
             if obj.exists:
                 obj.click()
+                # if d(text='我的电脑').exists:
+                #     return
+
                 time.sleep(2)
-                obj = d(resourceId='com.tencent.tim:id/name', descriptionContains='昵称:')
-                if obj.exists:
-                    obj = obj.info
-                    text = obj['text']
-                    if obj in list:
-                        continue
-                    list.append(text)
-                    d(resourceId='com.tencent.tim:id/txt', text='发消息').click()
-                    time.sleep(2)
-                    d(resourceId='com.tencent.tim:id/input', className='android.widget.EditText').click()  # Material
-                    z.input(Material)
-                    time.sleep(1)
-                    d(resourceId='com.tencent.tim:id/fun_btn', text='发送').click()
-                    i = i+1
-                    t = t+1
-                    d(resourceId='com.tencent.tim:id/ivTitleBtnLeft', description='返回消息界面').click()
-                    d(className='android.widget.TabWidget', resourceId='android:id/tabs', index=1).child(className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
-                else:
-                    return
             else:
-                d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
-                i = 1
+                i = i+1
                 continue
+
+            obj = d(resourceId='com.tencent.tim:id/name', descriptionContains='昵称:')
+            if obj.exists:
+                obj = obj.info
+                text = obj['text']
+                if obj in list:
+                    i = i+1
+                    continue
+            else:
+                obj = d(resourceId='com.tencent.tim:id/elv_buddies',className='android.widget.AbsListView',index=1).child(resourceId='com.tencent.tim:id/group_item_layout', index=8,clickable='true',className='android.widget.RelativeLayout')
+                if obj.exists:
+                    print(obj.info)
+                    obj.click()  # 未展开的情况，先点击展开
+                    # d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+                    d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
+                    d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
+                    i = i+1
+                    continue
+                else:
+                    i = i+1
+                    continue
+
+
+            list.append(text)
+            d(resourceId='com.tencent.tim:id/txt', text='发消息').click()
+            time.sleep(2)
+            d(resourceId='com.tencent.tim:id/input', className='android.widget.EditText').click()  # Material
+            z.input(Material)
+            time.sleep(1)
+            d(resourceId='com.tencent.tim:id/fun_btn', text='发送').click()
+            i = i+1
+            t = t+1
+            d(resourceId='com.tencent.tim:id/ivTitleBtnLeft', description='返回消息界面').click()
+            d(className='android.widget.TabWidget', resourceId='android:id/tabs', index=1).child(className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
+            continue
+
+
+            #     d(className='android.widget.TabWidget', resourceId='android:id/tabs', index=1).child(className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
+            # else:
+            #     return
+            # elif d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=i+1).exists:
+            #
+            #     # d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+            #     d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
+            #     d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
+            #     i = 1
+            #     time.sleep(3)
+            #     continue
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -116,8 +154,9 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54WSK00081")
-    z = ZDevice("HT54WSK00081")
+    d = Device("HT536SK01667")
+    z = ZDevice("HT536SK01667")
+    # print(d.dump(compressed=False))
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    args = {"repo_material_id":"33","time_delay":"3","EndIndex":"4"};    #cate_id是仓库号，length是数量
+    args = {"repo_material_id":"33","time_delay":"3","EndIndex":"20"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

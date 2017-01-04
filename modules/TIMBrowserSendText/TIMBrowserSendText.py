@@ -2,6 +2,7 @@
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
+from zservice import ZDevice
 
 
 class TIMBrowserSendText:
@@ -11,7 +12,7 @@ class TIMBrowserSendText:
 
 
 
-    def action(self, d, args):
+    def action(self, d,z, args):
         repo_material_cate_id = args["repo_material_cate_id"]
         Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
         wait = 1  # 判断素材仓库里是否由素材
@@ -57,7 +58,8 @@ class TIMBrowserSendText:
             time.sleep(2)
             if d(className='android.widget.Button',index=3,description='开始聊天').exists:
                 continue
-            d(resourceId='com.tencent.tim:id/input',className='android.widget.EditText').set_text(material.encode("utf-7"))
+            d(resourceId='com.tencent.tim:id/input',className='android.widget.EditText').click()
+            z.input(material)
             d(text='发送',resourceId='com.tencent.tim:id/fun_btn').click()
 
 
@@ -72,5 +74,7 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A3SK00853")
+    z = ZDevice("HT4A3SK00853")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     args = {"repo_number_cate_id":"13","repo_material_cate_id":"8","totalNumber":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
-    o.action(d, args)
+    o.action(d, z,args)

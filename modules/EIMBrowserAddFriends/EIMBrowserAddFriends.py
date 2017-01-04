@@ -2,6 +2,7 @@
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
+from zservice import ZDevice
 
 
 class EIMBrowserAddFriends:
@@ -11,7 +12,7 @@ class EIMBrowserAddFriends:
 
 
 
-    def action(self, d, args):
+    def action(self, d,z, args):
         repo_material_cate_id = args["repo_material_cate_id"]
         Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
         wait = 1  # 判断素材仓库里是否由素材
@@ -49,7 +50,8 @@ class EIMBrowserAddFriends:
             # d(resourceId='com.tencent.eim:id/ivTitleBtnRightImage',className='android.widget.ImageView').click()
             # d(text='加为好友',resourceId='com.tencent.eim:id/name').click()
             d(text='加为好友',className='android.widget.TextView',index=1).click()
-            d(resourceId='com.tencent.eim:id/name',className='android.widget.EditText').set_text(material)
+            d(resourceId='com.tencent.eim:id/name',className='android.widget.EditText').click()
+            z.input(material)
             d(text='下一步',resourceId='com.tencent.eim:id/ivTitleBtnRightText').click()
             d(text='发送',resourceId='com.tencent.eim:id/ivTitleBtnRightText').click()
 
@@ -66,6 +68,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A3SK00853")
-    args = {"repo_number_cate_id":"13","repo_material_cate_id":"8","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
-    o.action(d, args)
+    d = Device("HT4AVSK01106")
+    z = ZDevice("HT4AVSK01106")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    args = {"repo_number_cate_id":"49","repo_material_cate_id":"34","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
+    o.action(d,z, args)
