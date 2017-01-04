@@ -76,8 +76,6 @@ class TIMAddressList:
                     time.sleep(2)
         i = 8
         t = 8
-        global list
-        list = list()
         EndIndex = int(args['EndIndex'])
         while t < EndIndex:
             time.sleep(2)
@@ -96,29 +94,29 @@ class TIMAddressList:
                 i = i+1
                 continue
 
-            obj = d(resourceId='com.tencent.tim:id/name', descriptionContains='昵称:')
+            # obj = d(resourceId='com.tencent.tim:id/name', descriptionContains='昵称:')
+            # if obj.exists:
+            #     obj = obj.info
+            #     text = obj['text']
+            #     if obj in list:
+            #         i = i+1
+            #         continue
+
+            obj = d(resourceId='com.tencent.tim:id/elv_buddies',className='android.widget.AbsListView',index=1).child(resourceId='com.tencent.tim:id/group_item_layout', index=8,clickable='true',className='android.widget.RelativeLayout')
             if obj.exists:
-                obj = obj.info
-                text = obj['text']
-                if obj in list:
-                    i = i+1
-                    continue
+                print(obj.info)
+                obj.click()  # 未展开的情况，先点击展开
+                # d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+                d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
+                d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
+                i = i+1
+                continue
             else:
-                obj = d(resourceId='com.tencent.tim:id/elv_buddies',className='android.widget.AbsListView',index=1).child(resourceId='com.tencent.tim:id/group_item_layout', index=8,clickable='true',className='android.widget.RelativeLayout')
-                if obj.exists:
-                    print(obj.info)
-                    obj.click()  # 未展开的情况，先点击展开
-                    # d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
-                    d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
-                    d.swipe(width / 2, height * 3 / 5, width / 2, height / 4)
-                    i = i+1
-                    continue
-                else:
-                    i = i+1
-                    continue
+                i = i+1
+                continue
 
 
-            list.append(text)
+            # list.append(text)
             d(resourceId='com.tencent.tim:id/txt', text='发消息').click()
             time.sleep(2)
             d(resourceId='com.tencent.tim:id/input', className='android.widget.EditText').click()  # Material

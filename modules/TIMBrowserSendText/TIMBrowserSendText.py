@@ -23,6 +23,7 @@ class TIMBrowserSendText:
             except Exception:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"")
 
+
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
 
         repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
@@ -43,6 +44,7 @@ class TIMBrowserSendText:
 
         d.server.adb.cmd("shell", "am force-stop com.android.chrome").wait()  # 强制停止
         for i in range (0,totalNumber,+1):
+
             numbers = list[i]
             print(numbers)
             time.sleep(1)

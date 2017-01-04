@@ -77,7 +77,7 @@ class TIMAddressList:
         i = 8
         t = 8
         global list
-        list = list()
+        list = dict()
         EndIndex = int(args['EndIndex'])
         while t < EndIndex:
             time.sleep(2)

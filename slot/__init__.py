@@ -14,6 +14,18 @@ class slot:
         if (self.type == "tim"):
             self.package = "com.tencent.tim"
             self.paths = ['databases','shared_prefs','txlib','files']
+        elif (self.type == "wechat"):
+            self.package = "com.tencent.mm"
+            self.paths = ['MicroMsg','shared_prefs']
+        elif (self.type == "mobileqq"):
+            self.package = "com.tencent.mobileqq"
+            self.paths = ['databases','shared_prefs','txlib','files']
+        elif (self.type == "qqlite"):
+            self.package = "com.tencent.qqlite"
+            self.paths = ['databases','shared_prefs','txlib','files']
+        elif (self.type == "eim"):
+            self.package = "com.tencent.eim"
+            self.paths = ['databases','shared_prefs','txlib','files']
         else:
             raise SyntaxError("目前还不支持%s卡槽"%self.type)
 

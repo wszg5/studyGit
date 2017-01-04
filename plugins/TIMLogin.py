@@ -1,7 +1,6 @@
 # coding:utf-8
 from uiautomator import Device
 from zservice import ZDevice
-from CardSlot import*
 from Repo import *
 from XunMa import *
 import time
@@ -12,7 +11,6 @@ class TIMLogin:
     def __init__(self):
         self.repo = Repo()
         self.XunMa = XunMa()
-        self.cardslot = CardSlot()
         self.slot = slot('tim')
 
 

@@ -51,8 +51,8 @@ class EIMLogin:
                              "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
             time.sleep(8)
             d(className='android.widget.Button', index=1, clickable='true').click()
-            d(className='android.widget.EditText', text='企业QQ号/手机号/邮箱').set_text(QQNumber)  # 3001313499  QQNumber
-            d(resourceId='com.tencent.eim:id/password', description='请输入密码').set_text(QQPassword)  # Bn2kJq5l   QQPassword
+            d(className='android.widget.EditText', text='企业QQ号/手机号/邮箱').set_text(3001346198)  # 3001313499  QQNumber  3001346198
+            d(resourceId='com.tencent.eim:id/password', description='请输入密码').set_text('Bn2kJq5l')  # Bn2kJq5l   QQPassword
             d(text='登 录', resourceId='com.tencent.eim:id/login').click()
 
             if d(text='搜索', resourceId='com.tencent.eim:id/name').exists:  # 直接登陆成功的情况
@@ -98,7 +98,7 @@ class EIMLogin:
                 d(resourceId='com.tencent.eim:id/name', index='2', className="android.widget.EditText").set_text(code)
                 time.sleep(1)
                 d(text='完成', resourceId='com.tencent.eim:id/ivTitleBtnRightText').click()
-                time.sleep(2)
+                time.sleep(4)
 
                 if d(text='登 录').exists:  # 密码错误
                     self.repo.SetAccount(cate_id, 'locked', QQNumber)
@@ -116,7 +116,7 @@ class EIMLogin:
 
     def action(self, d,z, args):
         name = self.slot.getEmpty(d)  # 取空卡槽
-
+        print(name)
         if name == 0:
             name = self.slot.getSlot(d, 120)  # 没有空卡槽，取２小时没用过的卡槽
             while name == 0:  # 2小时没有用过的卡槽也为空的情况
@@ -157,7 +157,7 @@ class EIMLogin:
             #         time.sleep(2)
 
             d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
-            if d(text='帐号无法登录').exists:
+            if d(text='帐号无法登录') or d(text='身份过期').exists:
                 # d.open.quick_settings()
                 # d(text='飞行模式').click()  # 飞行模式开
                 # on = 1
@@ -187,27 +187,27 @@ class EIMLogin:
                 return
 
         else:  # 有空卡槽的情况
-            # d.open.quick_settings()
-            # d(text='飞行模式').click()  # 飞行模式开
-            # on = 1
-            # while on == 1:
-            #     device = self.dbapi.GetDevice(d.server.adb.device_serial())
-            #     obj = device["airplaneMode"]
-            #     print(obj)
-            #     if obj == 'true':  # 飞行模式打开成功
-            #         on = 0
-            #     else:
-            #         time.sleep(2)
-            # d(text='飞行模式').click()  # 飞行模式关
-            # on = 1
-            # while on == 1:
-            #     device = self.dbapi.GetDevice(d.server.adb.device_serial())
-            #     obj = device["airplaneMode"]
-            #     print(obj)
-            #     if obj == 'true':  # 飞行模式打开成功
-            #         on = 0
-            #     else:
-            #         time.sleep(2)
+            d.open.quick_settings()
+            d(text='飞行模式').click()  # 飞行模式开
+            on = 1
+            while on == 1:
+                device = self.dbapi.GetDevice(d.server.adb.device_serial())
+                obj = device["airplaneMode"]
+                print(obj)
+                if obj == 'true':  # 飞行模式打开成功
+                    on = 0
+                else:
+                    time.sleep(2)
+            d(text='飞行模式').click()  # 飞行模式关
+            on = 1
+            while on == 1:
+                device = self.dbapi.GetDevice(d.server.adb.device_serial())
+                obj = device["airplaneMode"]
+                print(obj)
+                if obj == 'true':  # 飞行模式打开成功
+                    on = 0
+                else:
+                    time.sleep(2)
 
             info = self.login(d)
             self.slot.backup(d, name, info)
@@ -223,9 +223,14 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4A3SK00853")
-    z = ZDevice("HT4AVSK01106")
+    d = Device("HT4A6SK01589")
+    z = ZDevice("HT4A6SK01589")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     # d.dump(compressed=False)
+    slot = slot('eim')
+
+    slot.restore(d, 2)  # 有２小时没用过的卡槽情况，切换卡槽
+
+
     args = {"repo_cate_id":"55","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)
