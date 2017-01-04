@@ -12,6 +12,10 @@ class dbapi:
                      port=28015,
                      db=const.RETHINKDB_NAME)
 
+    def finddevices(self):
+        with self.pool.get_resource() as res:
+            devices = r.table('devices').filter({'present': True, 'ready': True}).order_by('statusChangedAt').run(res.conn)
+            return devices
 
     def GetDevice(self, serial):
         with self.pool.get_resource() as res:
@@ -27,7 +31,6 @@ class dbapi:
         with self.pool.get_resource() as res:
             steps = r.table('taskSteps').get_all(taskid, index='task_id').order_by('sort').run(res.conn)
             return steps
-
 
     def GetSlotInfo(self, serial, appType, slotNum):
         id = '%s_%s_%s'%(serial,appType,slotNum)
@@ -62,7 +65,7 @@ class dbapi:
 
     def ListSlotsInterval(self, serial, type, interval):
         with self.pool.get_resource() as res:
-            list = r.table("slots").get_all(serial, index='serial').filter((r.row["type"] == type) & ( r.row["last_pick"] + int(interval) < r.now()  ) ).order_by('name').run(res.conn)
+            list = r.table("slots").get_all(serial, index='serial').filter((r.row["type"] == type) & (r.row["empty"] == 'false') & ( r.row["last_pick"] + int(interval) < r.now()  ) ).order_by('name').run(res.conn)
             return list;
 
     def GetCodeSetting(self):

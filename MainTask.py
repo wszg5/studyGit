@@ -1,16 +1,12 @@
 # coding:utf-8
 
 import os, sys, time, re, csv
-import log
 import util
-from uiautomator import Device
-from zservice import ZDevice
+
 import traceback
-import log, logging
 import threading
 import json
 from dbapi import dbapi
-from const import const
 
 
 optpath = os.getcwd()  # 获取当前操作目录
@@ -50,7 +46,8 @@ def runwatch(d, data):
 
 def finddevices():
     deviceIds = []
-    rst = util.exccmd('adb devices')
+    adb_cmd = os.path.join(os.environ["ANDROID_HOME"], "platform-tools", 'adb devices')
+    rst = util.exccmd(adb_cmd)
     devices = re.findall(r'(.*?)\s+device', rst)
     if len(devices) > 1:
         deviceIds = devices[1:]
@@ -79,12 +76,16 @@ def deviceTask(deviceid, port, zport):
     device = dbapi.GetDevice(deviceid)
     taskid = device.get("task_id")
 
+    from uiautomator import Device
+    from zservice import ZDevice
+
     if  taskid :
         task = dbapi.GetTask(taskid)
 
-        if (task.get("status") and task["status"] == "running"):
+        if (task and task.get("status") and task["status"] == "running"):
             d = Device(deviceid, port)
 
+            d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
             d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
 
             z = ZDevice(deviceid, zport)
@@ -141,9 +142,9 @@ if __name__ == "__main__":
     zport = 33000
     threadDict = {}
     while True:
-        devicelist = finddevices()
-        print("find devices : %s" % len(devicelist) )
-        for deviceid in devicelist:
+        devicelist = dbapi.finddevices()
+        for device in devicelist:
+            deviceid = device["serial"]
             if (threadDict.has_key(deviceid)): continue
             port = port + 1
             zport = zport + 1
