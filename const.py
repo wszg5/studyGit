@@ -12,7 +12,7 @@ class _const:
       self.__dict__[name] = value
 
 const = _const()
-const.SERVER_IP = '127.0.0.1'
+const.SERVER_IP = '192.168.1.33'
 const.RETHINKDB_NAME = 'stf'
-const.REPO_API_IP = '127.0.0.1'
+const.REPO_API_IP = '192.168.1.33'
 const.MAX_SLOTS=60

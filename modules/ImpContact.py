@@ -26,7 +26,6 @@ class ImpContact:
 
         cate_id = args["repo_cate_id"]
         numbers = self.repo.GetNumber(cate_id, 0, 50)
-        print(numbers)
         if numbers:
             file_object = open(filename, 'w')
             lines = ""
@@ -38,7 +37,7 @@ class ImpContact:
             file_object.close()
             d.server.adb.cmd("shell", "am", "start", "-a", "tb.clear.connacts").wait()
             d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").wait()
-            d.server.adb.cmd("shell", "am", "start", "-n", "jp.co.cyberagent.stf/.ImportActivity", "-t", "text/plain",  "-d", "file:///data/local/tmp/contacts.txt").wait()
+            d.server.adb.cmd("shell", "am", "start", "-n", "com.zunyun.qk/.ImportActivity", "-t", "text/plain",  "-d", "file:///data/local/tmp/contacts.txt").wait()
             os.remove(filename)
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -49,7 +48,7 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT49PSK05055")
+    d = Device("HT4A3SK00853")
     d.dump(compressed=False)
-    args = {"repo_cate_id":"131","length":"50","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"21","length":"50","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d, args)

@@ -6,6 +6,7 @@ import util
 import traceback
 import threading
 import json
+
 from dbapi import dbapi
 
 
@@ -41,6 +42,7 @@ def runwatch(d, data):
             break
         else:
             time.sleep(0.5)
+
 
 
 
@@ -84,7 +86,7 @@ def deviceTask(deviceid, port, zport):
 
         if (task and task.get("status") and task["status"] == "running"):
             d = Device(deviceid, port)
-
+            util.doInThread(runwatch, d, 0, t_setDaemon=True)
             d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
             d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
 
@@ -95,8 +97,12 @@ def deviceTask(deviceid, port, zport):
                 #设置zime输入法
                 d.server.adb.cmd("shell",
                              "ime set com.zunyun.qk/.ZImeService").wait()
+                d.server.adb.cmd("shell",
+                                 "am broadcast -a com.zunyun.qk.unlock").wait()
+
                 for step in steps:
                     try:
+
                         runStep(d, z, step)
                     except Exception, e:
                         logger.error(step)
@@ -122,6 +128,7 @@ def deviceTask(deviceid, port, zport):
 def deviceThread(deviceid, port, zport):
     while True:
         try:
+
             deviceTask(deviceid, port, zport)
         except Exception, e:
             logger.error(traceback.format_exc())

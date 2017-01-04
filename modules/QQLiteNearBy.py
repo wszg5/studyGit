@@ -38,7 +38,9 @@ class QQLiteNearBy:
         d(text='我', index=0, className='android.widget.TextView').click()
         d(text='附近的人').click()
         d(resourceId='com.tencent.qqlite:id/ivTitleBtnRightImage').click()
+        time.sleep(1)
         d(text='筛选附近的人').click()
+
 
         Appeartime = args["Appeartime"]
         d(text=Appeartime).click()
@@ -129,7 +131,7 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT49PSK05055")
+    d = Device("HT4A3SK00853")
     # d.dump(compressed=False)              #显示详细信息
     args = {"repo_material_id":"8","gender":"全部","Appeartime":"4小时","age":"35岁以上","StartIndex":"1","EndIndex":"7","profession":"学生"} #别忘了加要发送的消息
     o.action(d, args)

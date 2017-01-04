@@ -45,8 +45,8 @@ class dbapi:
             stats = r.table("slots").get(id).update(slot).run(res.conn)
             if stats["skipped"]:
                 import time
-                slot.createdAt = r.now().run(res.conn, time_format="raw")
-                slot.last_pick = r.now().run(res.conn, time_format="raw")
+                slot["createdAt"] = r.now().run(res.conn, time_format="raw")
+                slot["last_pick"] = r.now().run(res.conn, time_format="raw")
                 r.table("slots").insert(slot).run(res.conn)
 
     def PickSlot(self, serial, type, name):

@@ -35,13 +35,14 @@ class QQLiteLogin:
         d.server.adb.cmd("shell", "pm clear com.tencent.qqlite").wait()  # 清除缓存
         while True:
             d.server.adb.cmd("shell", "am force-stop com.tencent.qqlite").wait()  # 将qq强制停止
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"上一轮没有登陆成功，再次登陆QQ\"")
+
             d.server.adb.cmd("shell",
                              "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").wait()  # 将qq拉起来
             time.sleep(3)
 
             cate_id = args["repo_cate_id"]
             numbers = self.repo.GetAccount(cate_id, 120, 1)
-            print(numbers)
 
             wait = 1
             while wait==1:                   #判断仓库是否有东西
@@ -50,7 +51,7 @@ class QQLiteLogin:
                     wait=0
                 except Exception :
                     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
-
+                    time.sleep(20)
             QQPassword = numbers[0]['password']
             time.sleep(1)
             d(text='登 录').click()
@@ -73,7 +74,7 @@ class QQLiteLogin:
             co = RClient()
             im_id = ""
 
-            for i in range(0, 10, +1):
+            for i in range(0, 30 , +1):
                 if i > 0:
                     co.rk_report_error(im_id)
                 obj = d(resourceId='com.tencent.qqlite:id/0', className='android.widget.ImageView')
@@ -109,7 +110,7 @@ class QQLiteLogin:
                 d(text='完成',resourceId='com.tencent.qqlite:id/ivTitleBtnRightText').click()
                 time.sleep(2)
                 if d(text='登 录').exists:    #密码错误
-                    self.repo.SetAccount(cate_id,'passwordEror',QQNumber)
+                    self.repo.SetAccount(cate_id,'locked',QQNumber)
                     break
 
                 if d(text='帐号无法登录',resourceId='com.tencent.qqlite:id/dialogTitle').exists:         #帐号被冻结
@@ -141,10 +142,6 @@ if __name__ == "__main__":
     z.input(s)
 
 
-
-
-#    d(text='QQ号/手机号/邮箱').set_text(s)
-    d(text='QQ号/手机号/邮箱').clear_text()
     d.dump(compressed=False)
-    args = {"repo_cate_id":"6","repo_cate_id1":"66","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
-    o.action(d, args)
+    args = {"repo_cate_id":"6","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    o.action(d,z, args)
