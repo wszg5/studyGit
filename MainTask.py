@@ -8,7 +8,11 @@ import threading
 import json
 
 from dbapi import dbapi
+import sys
 
+reload(sys)
+
+sys.setdefaultencoding('utf8')
 
 optpath = os.getcwd()  # 获取当前操作目录
 imgpath = os.path.join(optpath, 'img')  # 截图目录
