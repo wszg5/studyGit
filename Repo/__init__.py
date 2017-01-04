@@ -1,6 +1,9 @@
 # coding:utf-8
 import httplib, json
 from const import const
+
+
+
 class Repo:
 
     def __init__(self):
@@ -60,10 +63,8 @@ class Repo:
 
 
 
-
 if __name__ == '__main__':
     repo = Repo()
-
     result = repo.GetAccount("6", 120, 1)
     # result = repo.SetAccount("6", "ddkf", "1918697054")
 

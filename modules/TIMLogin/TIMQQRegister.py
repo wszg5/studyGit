@@ -30,6 +30,8 @@ class TIMQQRegister:
                     d(resourceId='com.tencent.tim:id/btn_register', index=1, text='新用户').click()
                     break
 
+            if k==35:
+                continue
             token = self.XunMa640.GetToken()
             phoneNumber = self.XunMa640.GetPhoneNumber(token, '640')
 
@@ -86,20 +88,10 @@ class TIMQQRegister:
 
 
             self.TIMUploadAccount(qqNumber, password, phoneNumber)
+            z.set_mobile_data(False)
+            time.sleep(8)
+            z.set_mobile_data(True)
 
-            d.open.quick_settings()
-            d(text='飞行模式').click()
-            time.sleep(1)
-
-            if d(text='不要再显示此内容。', resourceId='android:id/text1').exists:
-                d(text='不要再显示此内容。', resourceId='android:id/text1').click()
-                d(text='确定').click()
-            d.open.quick_settings()
-            d(text='飞行模式').click()
-            time.sleep(3)
-            d.open.quick_settings()
-            d(text='飞行模式').click()
-            time.sleep(35)
 
 
 
@@ -139,11 +131,12 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54WSK00015")
-    z = ZDevice("HT54WSK00015")
+    d = Device("HT4A4SK00901")
+    from zservice import ZDevice
+    z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").wait()
-    d.server.adb.cmd("shell", "am start -n io.appium.settings/.Settings -e data off").wait()
+    # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").wait()
+    z.set_mobile_data(False)
     # o.action(d, z)
 
     # repo = Repo()
