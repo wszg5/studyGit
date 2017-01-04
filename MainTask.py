@@ -12,7 +12,7 @@ import rethinkdb as r
 #https://github.com/lucidfrontier45/RethinkPool
 from rethinkpool import RethinkPool
 
-pool = RethinkPool(max_conns=120, initial_conns=10, host='127.0.0.1',
+pool = RethinkPool(max_conns=120, initial_conns=10, host='192.168.1.33',
                      port=28015,
                      db='stf')
 
@@ -122,7 +122,7 @@ def installapk(apklist, d, device):
 
 def finddevices():
     deviceIds = []
-    rst = util.exccmd('adb devices')
+    rst = util.exccmd('/home/zunyun/soft/android-sdk-linux/platform-tools/adb devices')
     devices = re.findall(r'(.*?)\s+device', rst)
     if len(devices) > 1:
         deviceIds = devices[1:]
@@ -180,7 +180,7 @@ def deviceTask(deviceid, port):
 
         if (task.get("status") and task["status"] == "running"):
             d = Device(deviceid, port)
-
+            util.doInThread(runwatch, d, 0, t_setDaemon=True)
             d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
 
             while True:

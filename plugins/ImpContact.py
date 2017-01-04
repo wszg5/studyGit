@@ -37,7 +37,7 @@ class ImpContact:
             file_object.close()
             d.server.adb.cmd("shell", "am", "start", "-a", "tb.clear.connacts").wait()
             d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").wait()
-            d.server.adb.cmd("shell", "am", "start", "-n", "jp.co.cyberagent.stf/.ImportActivity", "-t", "text/plain",  "-d", "file:///data/local/tmp/contacts.txt").wait()
+            d.server.adb.cmd("shell", "am", "start", "-n", "com.zunyun.qk/.ImportActivity", "-t", "text/plain",  "-d", "file:///data/local/tmp/contacts.txt").wait()
             os.remove(filename)
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -46,8 +46,9 @@ def getPluginClass():
     return ImpContact
 
 if __name__ == "__main__":
-    c = ImpContact()
-    d = Device("FA49TSR02728")
+    clazz = getPluginClass()
+    o = clazz()
+    d = Device("HT524SK02829")
     d.dump(compressed=False)
-    args = {"cate_id":"14","length":"50"};
-    c.action(d, args)
+    args = {"repo_cate_id":"13","length":"50","time_delay":"3"};    #cate_id是仓库号，length是数量
+    o.action(d, args)
