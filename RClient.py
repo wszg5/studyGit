@@ -3,24 +3,18 @@
 
 import requests
 from hashlib import md5
-import rethinkdb as r
-from rethinkpool import RethinkPool
-
+from dbapi import dbapi
+dbapi = dbapi()
 class RClient(object):
 
     def __init__(self):
-        pool = RethinkPool(max_conns=120, initial_conns=10, host='192.168.1.33',
-                           port=28015,
-                           db='stf')
-        with pool.get_resource() as res:
-            rk_user = r.table('setting').get('rk_user').run(res.conn)
-            rk_pwd = r.table('setting').get('rk_password').run(res.conn)
+        rk = dbapi.GetCodeSetting()
+        rk_user = rk["rk_user"]
+        rk_pwd = rk["rk_pwd"]
 
-        if rk_user["value"] and rk_pwd["value"]:
-            self.username = rk_user["value"]
-            self.password = md5(rk_pwd["value"]).hexdigest()
-        else:
-            return
+        self.username = rk_user
+        self.password = md5(rk_pwd).hexdigest()
+
 
         self.soft_id = '72358'
         self.soft_key = 'a6b010fff6d247669c4b4bde98673709'

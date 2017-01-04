@@ -40,7 +40,7 @@ class XunMa640:
 
         # ip = 144
     def UploadPhoneNumber(self, number, token):
-        print token
+
         path = "/getPhone?ItemId=144&token=" + token + "&Phone="+number+""
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
@@ -57,8 +57,8 @@ class XunMa640:
 
 
     def GetCode(self, number, token):
-        print token
-        for i in range(0, 72, +1):
+
+        for i in range(0, 70, +1):
             time.sleep(1)
             path = "/getQueue?token=" + token + ""
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
@@ -69,16 +69,16 @@ class XunMa640:
                 print data
                 if data.startswith('MSG'):
                     break
-                else:
-                    data = ""
             else:
                 return "Error Getting Account, Please check your repo"
-        if data == "":
-            return 0;
-        data = data.decode('GBK')
-        res = re.findall(r"MSG&144&" + number + "&(.+?)\[End]", data)
-        res = re.findall("\d{6}", res[0])
-        return res[0]
+        if data.startswith('MSG'):
+
+            data = data.decode('GBK')
+            res = re.findall(r"MSG&144&" + number + "&(.+?)\[End]", data)
+            res = re.findall("\d{6}", res[0])
+            return res[0]
+        else:
+            return ""
 
 
 

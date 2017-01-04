@@ -1,13 +1,13 @@
 # coding:utf-8
 import httplib, json
-
+from const import const
 class Repo:
 
     def __init__(self):
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                    "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
 
-        self.domain = "192.168.1.33"
+        self.domain = const.REPO_API_IP
         self.port = 8888
 
 
@@ -60,20 +60,20 @@ class Repo:
         conn.request("GET",path)
 
 
-    def TIMUploadAccount(self,qqNumber,password,phomeNumber):
-        path = "/repo_api/register/numberInfo?QQNumber=%s&QQPassword=%s&PhoneNumber=%s" % (qqNumber,password,phomeNumber)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET",path)
 
 
 if __name__ == '__main__':
     repo = Repo()
-    #result = repo.GetAccount("6", 120, 1)
+
+    result = repo.GetAccount("6", 120, 1)
     # result = repo.SetAccount("6", "ddkf", "1918697054")
 
     # result = repo.GetMaterial("8",120,1)
-    result = repo.GetNumber("13",0,1)              #意思是取13号仓库2小时内没有用过的号码，一次取16个
     print(result)
+    # print(result[0]["content"])
+    # result1 = repo.GetNumber("13",0,10)              #意思是取13号仓库2小时内没有用过的号码，一次取16个
+    # print(result1[0])
+
     # print (result[0])
     # print  result[0]["content"]
     # print (result)

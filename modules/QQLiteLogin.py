@@ -7,6 +7,9 @@ import os,re,subprocess
 from Repo import *
 from RClient import *
 import time, datetime, random
+from dbapi import dbapi
+from const import const
+
 class QQLiteLogin:
     def __init__(self):
         self.repo = Repo()
@@ -129,8 +132,16 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
+    d = Device("HT4AVSK01106")
+    import base64
+    s=u'在吗？朋友.。。交流空间来看'
+    d.server.adb.cmd("shell",
+                     "ime set com.zunyun.qk/.ZImeService").wait()
+    from zservice import ZDevice
+    z = ZDevice("HT4AVSK01106")
+    z.input(s)
 
-    d = Device("HT523SK00620")
+
     d.dump(compressed=False)
-    args = {"repo_cate_id":"6","repo_cate_id1":"66","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
-    o.action(d, args)
+    args = {"repo_cate_id":"6","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    o.action(d,z, args)

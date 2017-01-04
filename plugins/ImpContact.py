@@ -2,7 +2,7 @@
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
-
+import json
 
 class ImpContact:
     def __init__(self):
@@ -17,7 +17,7 @@ class ImpContact:
         return uniqueNum
 
 
-    def action(self, d, args):
+    def action(self, d,z, args):
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -25,7 +25,16 @@ class ImpContact:
 
 
         cate_id = args["repo_cate_id"]
+        print(cate_id)
         numbers = self.repo.GetNumber(cate_id, 0, 50)
+        wait = 1  # 判断素材仓库里是否由素材
+        while wait == 1:
+            try:
+                t = numbers[0]  # 取出验证消息的内容
+                wait = 0
+            except Exception:
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，等待中\"")
+
         if numbers:
             file_object = open(filename, 'w')
             lines = ""
@@ -46,9 +55,18 @@ def getPluginClass():
     return ImpContact
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT524SK02829")
     d.dump(compressed=False)
     args = {"repo_cate_id":"13","length":"50","time_delay":"3"};    #cate_id是仓库号，length是数量
+=======
+    # global args
+    clazz = getPluginClass()
+    o = clazz()
+    d = Device("HT4A4SK00901")
+    # d.dump(compressed=False)
+    args = {"repo_cate_id":"36","length":"30","time_delay":"3"}    #cate_id是仓库号，length是数量
+>>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
     o.action(d, args)

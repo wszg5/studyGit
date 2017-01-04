@@ -5,6 +5,12 @@ import re
 
 class XunMa:
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
     def __init__(self):
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                    "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
@@ -38,6 +44,24 @@ class XunMa:
             return "Error Getting Account, Please check your repo"
 
 
+<<<<<<< HEAD
+=======
+    def GetBindNumber(self, res):
+        path = "/getPhone?ItemId=153&token=" + res + "&Count=1"
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
+        response = conn.getresponse()
+        if response.status == 200:
+            data = response.read()
+            data = re.findall("\d{11}", str(data))
+            data = data[0]
+            return data
+        else:
+            return "Error Getting Account, Please check your repo"
+
+
+
+>>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
     def GetCode(self,number,res):
         for i in range(0,32,+1):
             time.sleep(2)
@@ -61,6 +85,12 @@ class XunMa:
 
 
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
 if __name__ == '__main__':
     xunma = XunMa()
     # a = xunma.GetToken()
@@ -71,3 +101,7 @@ if __name__ == '__main__':
 
     # result = repo.GetMaterial("8",120,1)
     # result = repo.GetNumber("13",0,1)              #意思是取13号仓库2小时内没有用过的号码，一次取16个
+<<<<<<< HEAD
+=======
+    xunma.lj()
+>>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2

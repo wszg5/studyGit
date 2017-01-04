@@ -48,7 +48,7 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT524SK02829")
+    d = Device("HT4A3SK00853")
     d.dump(compressed=False)
-    args = {"repo_cate_id":"13","length":"50","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"21","length":"50","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d, args)

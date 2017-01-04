@@ -16,23 +16,6 @@ def exccmd(cmd):
         return None
 
 
-# 遍历目录内的文件列表
-def listFile(path, isDeep=True):
-    _list = []
-    if isDeep:
-        try:
-            for root, dirs, files in os.walk(path):
-                for fl in files:
-                    _list.append('%s\%s' % (root, fl))
-        except:
-            pass
-    else:
-        for fn in glob.glob(path + os.sep + '*'):
-            if not os.path.isdir(fn):
-                _list.append('%s' % path + os.sep + fn[fn.rfind('\\') + 1:])
-    return _list
-
-
 # 线程函数
 class FuncThread(threading.Thread):
     def __init__(self, func, *params, **paramMap):
