@@ -8,24 +8,33 @@ from const import const
 """Python wrapper for Zunyun Service."""
 class slot:
     def __init__(self, type):
-        self.maxSlot = const.MAX_SLOTS
         self.dbapi = dbapi()
         self.type = type
         if (self.type == "tim"):
             self.package = "com.tencent.tim"
             self.paths = ['shared_prefs','txlib','files']
+            self.maxSlot = const.MAX_SLOTS_TIM
+
         elif (self.type == "wechat"):
             self.package = "com.tencent.mm"
             self.paths = ['MicroMsg','shared_prefs']
+            self.maxSlot = const.MAX_SLOTS_WECHAT
+
         elif (self.type == "mobileqq"):
             self.package = "com.tencent.mobileqq"
             self.paths = ['shared_prefs','txlib','files', 'ar', 'config','txPttlib']
+            self.maxSlot = const.MAX_SLOTS_MOBILEQQ
+
         elif (self.type == "qqlite"):
             self.package = "com.tencent.qqlite"
             self.paths = ['shared_prefs','txlib','files']
+            self.maxSlot = const.MAX_SLOTS_QQLITE
+
         elif (self.type == "eim"):
             self.package = "com.tencent.eim"
             self.paths = ['shared_prefs','txlib','files']
+            self.maxSlot = const.MAX_SLOTS_EIM
+
         else:
             raise SyntaxError("目前还不支持%s卡槽"%self.type)
 
