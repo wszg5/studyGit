@@ -1,18 +1,18 @@
 {
 "id": "EIMQQLogin",
 "cate":"EIMQQ登录模块",
-"name":"登录QQ",
+"name":"EIM登录QQ",
 "url": "http://www.bejson.com",
 "verison": "1.0",
 "icon":"vcard-o",
-"remark":"登录QQ",
+"remark":"EIM登录QQ",
 "setting":[
 {
 "id": "repo_cate_id",
 "name":"账号库分类",
 "type":"repo",
 "source":"account",
-"top_cate_id":"2"
+"top_cate_id":"1"
 },
 {
 "id": "time_limit",

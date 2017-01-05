@@ -15,10 +15,13 @@ class TIMLogin:
 
 
     def login(self,d):
-
+        cateId = args['repo_material_cate_id']
+        name = self.repo.GetMaterial(cateId,120,1)
+        name = name[0]['content']
         d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()  # 清除缓存
         d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
         time.sleep(8)
+
         d(text='新用户', resourceId='com.tencent.tim:id/btn_register').click()
         token = self.XunMa.GetToken()
         phoneNumber = self.XunMa.GetPhoneNumber(token)
@@ -38,16 +41,18 @@ class TIMLogin:
         time.sleep(1)
         if d(text='绑定新QQ号码', resourceId='com.tencent.tim:id/action_sheet_button').exists:
             d(text='绑定新QQ号码', resourceId='com.tencent.tim:id/action_sheet_button').click()
-        d(resourceId='com.tencent.tim:id/name', className='android.widget.EditText').set_text('cindy')
+
+        d(resourceId='com.tencent.tim:id/name', className='android.widget.EditText').click()
+        z.input(name)
         d(text='完成', resourceId='com.tencent.tim:id/name').click()
         obj = d(resourceId='com.tencent.tim:id/name',className='android.widget.TextView',index=1).info
         info = obj['text']                             #要保存的qq号
 
         d(text='登录', resourceId='com.tencent.tim:id/name').click()
-        time.sleep(8)
-        d.server.adb.cmd("shell", "am force-stop com.tencent.tim").wait()  # 强制停止
-        d.server.adb.cmd("shell",
-                         "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+        time.sleep(6)
+        # d.server.adb.cmd("shell", "am force-stop com.tencent.tim").wait()  # 强制停止
+        # d.server.adb.cmd("shell",
+        #                  "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
         return info
 
 
@@ -62,18 +67,11 @@ class TIMLogin:
                 time.sleep(30)
                 name = self.slot.getSlot(d,120)
 
-            d.open.quick_settings()
-            d(text='飞行模式', resourceId='com.android.systemui:id/quick_setting_text').click()
-            if d(text='不要再显示此内容。', resourceId='android:id/text1').exists:
-                d(text='不要再显示此内容。', resourceId='android:id/text1').click()
-                d(text='确定').click()
-                d.open.quick_settings()
-
-
+            z.set_mobile_data(False)
+            time.sleep(2)
             self.slot.restore(d,name)                      #有２小时没用过的卡槽情况，切换卡槽
-
-            d.open.quick_settings()
-            d(text='飞行模式', resourceId='com.android.systemui:id/quick_setting_text').click()
+            z.set_mobile_data(True)
+            time.sleep(8)
 
             d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
             if d(text='帐号无法登录').exists:
@@ -83,6 +81,10 @@ class TIMLogin:
                 return
 
         else:                                     #有空卡槽的情况
+            z.set_mobile_data(False)
+            time.sleep(2)
+            z.set_mobile_data(True)
+            time.sleep(8)
             info = self.login(d)
             self.slot.backup(d,name,info)
 
@@ -98,13 +100,13 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT536SK01667")
-    z = ZDevice("HT536SK01667")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
     # print(d.dump(compressed=False))
     # print(d.info)
 
     d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").wait()
     # d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()  # 清除缓存
-    args = {"time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_material_cate_id":"56","time_delay":"3"};    #cate_id是仓库号，length是数量
     # o.slot.restore(d,1)
     o.action(d,z,args)

@@ -5,7 +5,7 @@
 "url": "http://www.bejson.com",
 "verison": "1.0",
 "icon": "vcard-o",
-"remark":"添加好友",
+"remark":"TIM版浏览器发消息",
 "setting":[
 	{
 	"id": "repo_number_cate_id",

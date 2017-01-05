@@ -34,14 +34,7 @@ class EIMAddFriends:
         d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
         time.sleep(1)
         d(resourceId='com.tencent.eim:id/name',description='发起多人聊天等功能').click()
-        time.sleep(2)
-        obj = d(text='加好友',resourceId='com.tencent.eim:id/name')
-        if obj.exists:
-            obj.click()
-        else:
-            d(resourceId='com.tencent.eim:id/name', description='发起多人聊天等功能').click()
-            obj.click()
-        # d(text='加好友',resourceId='com.tencent.eim:id/name').click()
+        d(text='加好友',resourceId='com.tencent.eim:id/name').click()
         d(text='添加好友',resourceId='com.tencent.eim:id/name').click()
 
         for i in range(0,add_count,+1):
@@ -85,7 +78,7 @@ class EIMAddFriends:
                     d.press.delete()
                     t = t + 1
                 continue
-            time.sleep(1)
+
             obj = d(resourceId='com.tencent.eim:id/name',className='android.widget.EditText').info             #删除之前文本框的验证消息
             obj = obj['text']
             lenth = len(obj)
@@ -93,7 +86,7 @@ class EIMAddFriends:
             while t<lenth:
                 d.press.delete()
                 t = t + 1
-            time.sleep(2)
+            time.sleep(1)
             d(className='android.widget.EditText',text='请输入验证信息').click()            #验证信息
             z.input(material)
             d(text='下一步',resourceId='com.tencent.eim:id/ivTitleBtnRightText').click()

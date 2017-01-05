@@ -195,12 +195,12 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT536SK01667")
-    z = ZDevice("HT536SK01667")
+    d = Device("HT54WSK00015")
+    z = ZDevice("HT54WSK00015")
     # slot = slot('mobileqq')
     # slot.restore(d, 1)  # 有２小时没用过的卡槽情况，切换卡槽
-    # slot = slot('mobileqq')
-    # slot.restore(d, 2)  # 有２小时没用过的卡槽情况，切换卡槽
+    slot = slot('mobileqq')
+    slot.restore(d, 5)  # 有２小时没用过的卡槽情况，切换卡槽
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 

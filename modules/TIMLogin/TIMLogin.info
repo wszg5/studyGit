@@ -8,6 +8,13 @@
 "remark":"TIM登录QQ",
 "setting":[
 {
+"id": "repo_material_cate_id",
+"name":"QQ昵称",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
+{
 "id": "time_delay",
 "name":"延时",
 "type":"textbox",

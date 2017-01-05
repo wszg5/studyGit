@@ -13,15 +13,6 @@ class EIMBrowserSendText:
 
 
     def action(self, d,z, args):
-        repo_material_cate_id = args["repo_material_cate_id"]
-        Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
-        wait = 1  # 判断素材仓库里是否由素材
-        while wait == 1:
-            try:
-                material = Material[0]['content']  # 取出验证消息的内容
-                wait = 0
-            except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"")
 
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
 
@@ -35,9 +26,19 @@ class EIMBrowserSendText:
             wait = 0
 
         list = numbers  # 将取出的号码保存到一个新的集合
-        d.server.adb.cmd("shell", "am force-stop com.android.chrome").wait()  # 强制停止
-
+        # d.server.adb.cmd("shell", "am force-stop com.android.chrome").wait()  # 强制停止
+        d.server.adb.cmd("shell", "pm clear com.android.chrome").wait()  # 清除缓存
         for i in range (0,totalNumber,+1):
+            repo_material_cate_id = args["repo_material_cate_id"]
+            Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
+            wait = 1  # 判断素材仓库里是否由素材
+            while wait == 1:
+                try:
+                    material = Material[0]['content']  # 取出验证消息的内容
+                    wait = 0
+                except Exception:
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"")
+
             numbers = list[i]
             d.server.adb.cmd("shell","am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").wait()  # 拉起来
             time.sleep(2)
@@ -65,8 +66,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT536SK01667")
-    z = ZDevice("HT536SK01667")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     args = {"repo_number_cate_id":"49","repo_material_cate_id":"33","totalNumber":"4","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d, z,args)

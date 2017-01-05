@@ -429,10 +429,9 @@ class ZRemoteDevice(object):
         else:
             raise AttributeError("%s attribute not found!" % attr)
 
-    @property
-    def info(self):
+    def set_mobile_data(self, status):
         '''Get the device info.'''
-        return self.server.jsonrpc.deviceInfo()
+        return self.server.jsonrpc.setMobileData(status)
 
     def input(self, text):
         '''click at arbitrary coordinates.'''

@@ -67,6 +67,7 @@ class XunMa:
         if response.status == 200:
             data = response.read()
             data = re.findall("\d{11}", str(data))
+            time.sleep(1)
             data = data[0]
             return data
         else:

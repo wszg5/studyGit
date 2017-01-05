@@ -6,9 +6,13 @@ import util
 import traceback
 import threading
 import json
-
+from uiautomator import Device
 from dbapi import dbapi
 
+import sys
+
+
+sys.setdefaultencoding('utf8')
 
 optpath = os.getcwd()  # 获取当前操作目录
 imgpath = os.path.join(optpath, 'img')  # 截图目录
@@ -76,7 +80,6 @@ def deviceTask(deviceid, port, zport):
     device = dbapi.GetDevice(deviceid)
     taskid = device.get("task_id")
 
-    from uiautomator import Device
     from zservice import ZDevice
 
     if  taskid :
