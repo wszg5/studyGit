@@ -54,7 +54,7 @@ class Repo:
             numbers = json.loads(data)
             return  numbers
         else:
-            return "Error Getting Number, Please check your repo"
+            return []
 
     def SetAccount(self,cateId,status,QQNumber):
         path = "/repo_api/account/questionInfo?cate_id=%s&status=%s&QQNumber=%s" % (cateId,status,QQNumber)

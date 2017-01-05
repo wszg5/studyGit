@@ -24,7 +24,7 @@ class EIMLogin:
         uniqueNum = str(nowTime) + str(randomNum);
         return uniqueNum
 
-    def login(self,d):
+    def login(self,d,args):
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -130,7 +130,7 @@ class EIMLogin:
             d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
             if d(text='帐号无法登录') or d(text='身份过期').exists:
 
-                info = self.login(d)  # 帐号无法登陆则登陆,重新注册登陆
+                info = self.login(d,args)  # 帐号无法登陆则登陆,重新注册登陆
                 self.slot.backup(d, name, info)  # 登陆之后备份
 
             else:
@@ -138,9 +138,10 @@ class EIMLogin:
 
         else:  # 有空卡槽的情况
             z.set_mobile_data(False)
+            time.sleep(3)
             z.set_mobile_data(True)
             time.sleep(8)
-            info = self.login(d)
+            info = self.login(d,args)
             self.slot.backup(d, name, info)
 
 

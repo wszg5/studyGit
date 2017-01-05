@@ -14,7 +14,7 @@ class TIMLogin:
         self.slot = slot('tim')
 
 
-    def login(self,d):
+    def login(self,d,z,args):
         cateId = args['repo_material_cate_id']
         name = self.repo.GetMaterial(cateId,120,1)
         name = name[0]['content']
@@ -68,14 +68,14 @@ class TIMLogin:
                 name = self.slot.getSlot(d,120)
 
             z.set_mobile_data(False)
-            time.sleep(2)
+            time.sleep(3)
             self.slot.restore(d,name)                      #有２小时没用过的卡槽情况，切换卡槽
             z.set_mobile_data(True)
             time.sleep(8)
 
             d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
             if d(text='帐号无法登录').exists:
-                info = self.login(d)                                             #帐号无法登陆则登陆,重新注册登陆
+                info = self.login(d,args)                                             #帐号无法登陆则登陆,重新注册登陆
                 self.slot.backup(d,name,info)                                 #登陆之后备份
             else:
                 return
@@ -85,7 +85,7 @@ class TIMLogin:
             time.sleep(2)
             z.set_mobile_data(True)
             time.sleep(8)
-            info = self.login(d)
+            info = self.login(d,args)
             self.slot.backup(d,name,info)
 
 

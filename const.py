@@ -15,4 +15,5 @@ const = _const()
 const.SERVER_IP = '192.168.1.33'
 const.RETHINKDB_NAME = 'stf'
 const.REPO_API_IP = '192.168.1.51'
-const.MAX_SLOTS=10
+const.MAX_SLOTS=60
+const.WAIT_START_TIME=360

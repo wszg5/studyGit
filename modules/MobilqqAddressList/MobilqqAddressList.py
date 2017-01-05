@@ -28,7 +28,10 @@ class TIMAddressList:
 
             time.sleep(1)
             d(text='下一步').click()
-            time.sleep(1)
+            time.sleep(2)
+            if d(text='下一步',resourceId='com.tencent.mobileqq:id/name',index=2).exists:
+                return 'false'
+
             if d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').exists:
                 d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').click()
 
@@ -41,12 +44,8 @@ class TIMAddressList:
                 continue
         d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
         d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
+        return 'true'
 
-
-
-
-
-        print()
 
 
     def action(self, d,z, args):
@@ -72,10 +71,10 @@ class TIMAddressList:
 
             wait = 1
             while wait == 1:
-                obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.CheckBox',
+                obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.CheckBox',      #刚进联系人界面看是否有展开的列表
                         checked='true')  # 看是否有展开的
                 if obj.exists:
-                    obj.click()
+                    obj.click()                     #将展开的全部收起来
                     continue
                 d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
                 time.sleep(2)
@@ -85,23 +84,25 @@ class TIMAddressList:
             wait1 = 1
             while wait1 == 1:
                 obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.CheckBox',
-                        checked='true')  # 看是否有展开的
+                        checked='true')  # 防止有多列分组，滑动之后再看有没有展开的列表
                 time.sleep(2)
                 if obj.exists:
                     obj.click()
                     continue
                 wait1 = 0
 
-            for i in range(11, 1, -1):
+            for i in range(11, 1, -1):       #收起通讯录之后，再倒序确定通讯录的位置，点击展开并滑动，未绑定通讯录的
                 if d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i).exists:
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies', className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
                     if d(resourceId='com.tencent.mobileqq:id/name',className='android.widget.EditText',index=2).exists:
-                        self.Bind(d)
 
+                        text = self.Bind(d)                                 #未开启通讯录的，现绑定通讯录
+                        if text=='false':
+                            return
 
-
-
-
+                        time.sleep(4)
+                        d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
+                        time.sleep(1)
                     d.swipe(width / 2, height * 5 / 6, width / 2, height / 5)
                     break
                 else:

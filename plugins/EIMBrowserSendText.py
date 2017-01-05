@@ -20,14 +20,15 @@ class EIMBrowserSendText:
         wait = 1
         while wait == 1:
             numbers = self.repo.GetNumber(repo_number_cate_id, 120, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
-            if "Error" in numbers:  # 如果没有拿到号码的情况
+            if len(numbers)==0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
+                time.sleep(5)
                 continue
             wait = 0
 
         list = numbers  # 将取出的号码保存到一个新的集合
-        # d.server.adb.cmd("shell", "am force-stop com.android.chrome").wait()  # 强制停止
-        d.server.adb.cmd("shell", "pm clear com.android.chrome").wait()  # 清除缓存
+        d.server.adb.cmd("shell", "am force-stop com.android.chrome").wait()  # 强制停止
+        # d.server.adb.cmd("shell", "pm clear com.android.chrome").wait()  # 清除缓存
         for i in range (0,totalNumber,+1):
             repo_material_cate_id = args["repo_material_cate_id"]
             Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)

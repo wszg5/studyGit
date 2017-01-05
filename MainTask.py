@@ -7,6 +7,8 @@ import traceback
 import threading
 import json
 from uiautomator import Device
+from const import const
+
 from dbapi import dbapi
 
 import sys
@@ -144,15 +146,16 @@ def deviceThread(deviceid, port, zport):
 # 4.再安装测试的样本
 # 5.检查是否有取消安装的按钮出现，出现说明测试通过，没出现说明测试失败
 if __name__ == "__main__":
+    time.sleep(const.WAIT_START_TIME)
     cleanEnv()
     logger = util.logger
     port = 30000
     zport = 33000
     threadDict = {}
     while True:
-        devicelist = dbapi.finddevices()
+        devicelist = finddevices()
         for device in devicelist:
-            deviceid = device["serial"]
+            deviceid = device
             if (threadDict.has_key(deviceid)): continue
             port = port + 1
             zport = zport + 1

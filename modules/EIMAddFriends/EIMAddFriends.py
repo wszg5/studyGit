@@ -21,9 +21,11 @@ class EIMAddFriends:
         wait = 1
         while wait == 1:
             numbers = self.repo.GetNumber(repo_number_cate_id, 120, add_count)  # 取出add_count条两小时内没有用过的号码
-            if "Error" in numbers:  #
+            if len(numbers)==0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
+                time.sleep(5)
                 continue
+
             wait = 0
 
         list = numbers  # 将取出的号码保存到一个新的集合
@@ -32,7 +34,7 @@ class EIMAddFriends:
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.eim").wait()  # 强制停止   3001369923  Bn2kJq5l
         d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
-        time.sleep(1)
+        time.sleep(5)
         d(resourceId='com.tencent.eim:id/name',description='发起多人聊天等功能').click()
         d(text='加好友',resourceId='com.tencent.eim:id/name').click()
         d(text='添加好友',resourceId='com.tencent.eim:id/name').click()
@@ -103,8 +105,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT536SK01667")
-    z = ZDevice("HT536SK01667")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").wait()
 
     # d.dump(compressed=False)
