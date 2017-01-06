@@ -3,6 +3,8 @@ from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
 import json
+from zservice import ZDevice
+
 
 class ImpContact:
     def __init__(self):
@@ -33,7 +35,7 @@ class ImpContact:
                 t = numbers[0]  # 取出验证消息的内容
                 wait = 0
             except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，等待中\"")
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，等待中\"").communicate()
 
         if numbers:
             file_object = open(filename, 'w')
@@ -44,9 +46,9 @@ class ImpContact:
             file_object.writelines(lines)
             lines=""
             file_object.close()
-            d.server.adb.cmd("shell", "am", "start", "-a", "tb.clear.connacts").wait()
-            d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").wait()
-            d.server.adb.cmd("shell", "am", "start", "-n", "com.zunyun.qk/.ImportActivity", "-t", "text/plain",  "-d", "file:///data/local/tmp/contacts.txt").wait()
+            d.server.adb.cmd("shell", "am", "start", "-a", "tb.clear.connacts").communicate()
+            d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").communicate()
+            d.server.adb.cmd("shell", "am", "start", "-n", "com.zunyun.qk/.ImportActivity", "-t", "text/plain",  "-d", "file:///data/local/tmp/contacts.txt").communicate()
             os.remove(filename)
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -59,6 +61,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
+    z = ZDevice("HT4AVSK01106")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.dump(compressed=False)
     args = {"repo_cate_id":"36","length":"30","time_delay":"3"}    #cate_id是仓库号，length是数量
-    o.action(d, args)
+    o.action(d,z, args)
