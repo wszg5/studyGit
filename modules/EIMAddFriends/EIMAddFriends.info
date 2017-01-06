@@ -3,7 +3,7 @@
 "cate":"基础模块",
 "name":"EIM版QQ添加好友",
 "url": "http://www.bejson.com",
-"verison": "1.0",
+"version": "1.0",
 "icon": "vcard-o",
 "remark":"添加好友",
 "setting":[

@@ -87,6 +87,10 @@ class slot:
             return int(slots[0]["name"])
         return None
 
+    def getSlotInfo(self, d, name):
+        return self.dbapi.GetSlotInfo(d.server.adb.device_serial(), self.type, name)
+
+
 
 def getPluginClass():
     return slot

@@ -3,7 +3,7 @@
 "cate":"EIMQQ登录模块",
 "name":"EIM登录QQ",
 "url": "http://www.bejson.com",
-"verison": "1.0",
+"version": "1.0",
 "icon":"vcard-o",
 "remark":"EIM登录QQ",
 "setting":[

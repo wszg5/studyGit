@@ -3,7 +3,7 @@
 "cate":"基础模块",
 "name":"普通QQ浏览器发消息",
 "url": "http://www.bejson.com",
-"verison": "1.0",
+"version": "1.0",
 "icon": "vcard-o",
 "remark":"普通QQ发临时会话",
 "setting":[

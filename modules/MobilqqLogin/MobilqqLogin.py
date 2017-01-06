@@ -158,6 +158,7 @@ class MobilqqLogin:
             time.sleep(3)
             if d(text='搜索',resourceId='com.tencent.mobileqq:id/name').exists:
                 print()
+                self.slot.getSlotInfo(d,name)
                 # info = self.login(d, args)
                 #info为QQ号，等待restore传过来
                 # self.repo.BackupInfo(cate_id, 'using', info, '%s_%s' % (d.server.adb.device_serial(), name))  # 将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
@@ -227,9 +228,9 @@ if __name__ == "__main__":
     slot = slot('mobileqq')
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    # d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
-    # slot.restore(d, 9)
-
+    d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
+    slot.restore(d, 9)
+    print(slot.getSlotInfo(d, 9))
     # d.dump(compressed=False)
     args = {"repo_cate_id":"59","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
