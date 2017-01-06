@@ -15,14 +15,10 @@ const = _const()
 const.WAIT_START_TIME=200
 const.SERVER_IP = '192.168.1.33'
 const.RETHINKDB_NAME = 'stf'
-<<<<<<< HEAD
 
-const.WAIT_START_TIME=200
 const.REPO_API_IP = '192.168.1.51'
 
-=======
-const.REPO_API_IP = '192.168.1.33'
->>>>>>> c39f01a810a719069d3cb0780abfb00d6c4d473a
+
 const.MAX_SLOTS_TIM=100
 const.MAX_SLOTS_WECHAT=20
 const.MAX_SLOTS_MOBILEQQ=100

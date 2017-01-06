@@ -74,7 +74,7 @@ class TIMLogin:
             self.slot.restore(d,name)                      #有２小时没用过的卡槽情况，切换卡槽
             z.set_mobile_data(True)
             time.sleep(8)
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"TIM卡槽成功切换成"+name+"\"").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"TIM卡槽成功切换成"+name+"号\"").communicate()
 
             d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             if d(text='帐号无法登录').exists:
