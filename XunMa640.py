@@ -44,7 +44,12 @@ class XunMa640:
         path = "/getPhone?ItemId=144&token=" + token + "&Phone="+number+""
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
-        response = conn.getresponse()
+        try:
+            response = conn.getresponse()
+        except Exception, e:
+            print e
+            return 0
+
         if response.status == 200:
             data = response.read()
             data = data.decode('GBK')
@@ -58,7 +63,7 @@ class XunMa640:
 
     def GetCode(self, number, token):
 
-        for i in range(0, 70, +1):
+        for i in range(1, 60):
             time.sleep(1)
             path = "/getQueue?token=" + token + ""
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)

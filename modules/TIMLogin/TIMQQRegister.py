@@ -14,15 +14,15 @@ class TIMQQRegister:
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                         "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
 
-        self.domain = "192.168.1.51"
+        self.domain = "192.168.1.33"
         self.port = 8888
 
     def action(self, d,z):
 
         for i in range(1, 1000):
 
-            d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()  # 清除缓存
-            d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+            d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate()  # 清除缓存
+            d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             # time.sleep(2)
             for k in range(1, 35):
                 time.sleep(1)
@@ -32,14 +32,27 @@ class TIMQQRegister:
 
             if k==35:
                 continue
-            token = self.XunMa640.GetToken()
-            phoneNumber = self.XunMa640.GetPhoneNumber(token, '640')
+
+
+            try:
+                token = self.XunMa640.GetToken()
+                phoneNumber = self.XunMa640.GetPhoneNumber(token, '640')
+            except Exception, e:
+                print Exception, ":", e
+                continue
 
 
             print phoneNumber
+            time.sleep(2)
+            if d(resourceId='com.tencent.tim:id/btn_register', index=1, text='新用户').exists:
+                d(resourceId='com.tencent.tim:id/btn_register', index=1, text='新用户').click()
 
-            d(text='请输入你的手机号码',resourceId='com.tencent.tim:id/name').set_text(phoneNumber)
-            d(text='下一步',resourceId='com.tencent.tim:id/name').click()
+            try:
+                d(text='请输入你的手机号码', resourceId='com.tencent.tim:id/name').set_text(str(phoneNumber))
+                d(text='下一步', resourceId='com.tencent.tim:id/name').click()
+            except Exception, e:
+                continue
+
 
             for j in range(1, 35):
                 time.sleep(1)
@@ -50,6 +63,7 @@ class TIMQQRegister:
             # 关闭设备锁
             if d(description='开启设备锁，保障QQ帐号安全。', className='android.widget.CheckBox').exists:
                 continue
+
             else:
 
                 data = self.XunMa640.UploadPhoneNumber(phoneNumber, token)
@@ -57,7 +71,12 @@ class TIMQQRegister:
                     print "************匹配号码失败**************"
                     continue
 
-                vertifyCode = self.XunMa640.GetCode(phoneNumber,token)             #获取验证码
+                try:
+                    vertifyCode = self.XunMa640.GetCode(phoneNumber, token)  # 获取验证码
+                except Exception, e:
+                    print Exception, ":", e
+                    continue
+
 
                 if vertifyCode == "":
                     print "************+++++++++验证码请求失败++++++**************"
@@ -65,11 +84,18 @@ class TIMQQRegister:
                 d(text='请输入短信验证码', resourceId='com.tencent.tim:id/name').set_text(vertifyCode)
 
                 nickNameList = self.GetMaterial(56, 0, 1)
+                if len(nickNameList)==0:
+                    continue
                 nickName = nickNameList[0]["content"]
-
-                d(text='下一步', resourceId='com.tencent.tim:id/name').click()
                 time.sleep(1)
-                d(className='android.widget.RelativeLayout', index=2).click()
+                d(text='下一步', resourceId='com.tencent.tim:id/name').click()
+                time.sleep(2)
+
+                try:
+                    d(resourceId='com.tencent.tim:id/action_sheet_button',textContains='维持绑定').click()  # ****有问题，会crash****
+                except Exception, e:
+                    print Exception, ":", e
+                    continue
 
                 print nickName
                 d(text='昵称', className='android.widget.EditText').click()
@@ -131,13 +157,23 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
+    d = Device("HT536SK01667")
     from zservice import ZDevice
-    z = ZDevice("HT4A4SK00901")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").wait()
-    z.set_mobile_data(False)
-    # o.action(d, z)
+    z = ZDevice("HT536SK01667")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+    # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").communicate()    #打开android设置页面
+
+    # try:
+    o.action(d, z)
+    # except Exception, e:
+    #     print Exception, ":", e
+    #     if d(className = 'android.widget.Button', text='确定').exists:
+    #         d(className='android.widget.Button', text='确定').click()
+    #         print 'TIM崩了'
+    #         o.action(d, z)
+    #     else:
+    #         print '未知错误'
+    #         o.action(d, z)
 
     # repo = Repo()
     # nickNameList = repo.GetMaterial(56, 0, 1)
