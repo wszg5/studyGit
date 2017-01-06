@@ -22,7 +22,7 @@ class EIMAddFriends:
         while wait == 1:
             numbers = self.repo.GetNumber(repo_number_cate_id, 120, add_count)  # 取出add_count条两小时内没有用过的号码
             if len(numbers)==0:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"").communicate()
                 time.sleep(5)
                 continue
 
@@ -32,8 +32,8 @@ class EIMAddFriends:
         print(list)
 
 
-        d.server.adb.cmd("shell", "am force-stop com.tencent.eim").wait()  # 强制停止   3001369923  Bn2kJq5l
-        d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+        d.server.adb.cmd("shell", "am force-stop com.tencent.eim").communicate()  # 强制停止   3001369923  Bn2kJq5l
+        d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(5)
         d(resourceId='com.tencent.eim:id/name',description='发起多人聊天等功能').click()
         d(text='加好友',resourceId='com.tencent.eim:id/name').click()
@@ -48,7 +48,7 @@ class EIMAddFriends:
                     material = Material[0]['content']  # 取出验证消息的内容
                     wait = 0
                 except Exception:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"")
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"").communicate()
 
 
             numbers = list[i]
@@ -107,7 +107,7 @@ if __name__ == "__main__":
 
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-    d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").wait()
+    d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").communicate()
 
     # d.dump(compressed=False)
     args = {"repo_number_cate_id":"49","repo_material_cate_id":"33","add_count":"6","time_delay":"3"};    #cate_id是仓库号，length是数量

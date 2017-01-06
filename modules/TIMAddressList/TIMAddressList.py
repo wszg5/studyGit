@@ -18,8 +18,8 @@ class TIMAddressList:
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
-        d.server.adb.cmd("shell", "am force-stop com.tencent.tim").wait()  # 强制停止
-        d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+        d.server.adb.cmd("shell", "am force-stop com.tencent.tim").communicate()  # 强制停止
+        d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(5)
         d(className='android.widget.TabWidget',resourceId='android:id/tabs',index=1).child(className='android.widget.FrameLayout',index=1).click()     #点击到联系人
         time.sleep(3)
@@ -48,7 +48,7 @@ class TIMAddressList:
         i = 1
         t = 1
         EndIndex = int(args['EndIndex'])
-        while t < EndIndex:
+        while t < EndIndex+1:
             cate_id = args["repo_material_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
             wait = 1
@@ -57,7 +57,8 @@ class TIMAddressList:
                     Material = Material[0]['content']  # 从素材库取出的要发的材料
                     wait = 0
                 except Exception:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到消息\"")
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到消息\"").communicate()
+                    time.sleep(30)
 
             time.sleep(2)
             obj = d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(resourceId='com.tencent.tim:id/group_item_layout',index=10)
@@ -105,6 +106,6 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     # print(d.dump(compressed=False))
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_material_id":"33","time_delay":"3","EndIndex":"8"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

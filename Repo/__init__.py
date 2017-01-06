@@ -62,6 +62,11 @@ class Repo:
         conn.request("GET",path)
 
 
+    def BackupInfo(self,cateId,devices,slot,QQNumber):      #登陆时的异常状态
+        path = "/repo_api/account/cardInfo?cate_id=%s&devices=%s&slot=%s&QQNumber=%s" % (cateId,devices,slot,QQNumber)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET",path)
+
 
 if __name__ == '__main__':
     repo = Repo()

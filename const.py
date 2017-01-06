@@ -14,6 +14,12 @@ class _const:
 const = _const()
 const.SERVER_IP = '192.168.1.33'
 const.RETHINKDB_NAME = 'stf'
+
+const.WAIT_START_TIME=200
 const.REPO_API_IP = '192.168.1.51'
-const.MAX_SLOTS=60
-const.WAIT_START_TIME=360
+
+const.MAX_SLOTS_TIM=100
+const.MAX_SLOTS_WECHAT=20
+const.MAX_SLOTS_MOBILEQQ=100
+const.MAX_SLOTS_QQLITE=100
+const.MAX_SLOTS_EIM=30

@@ -15,11 +15,11 @@ class TIMLogin:
 
 
     def login(self,d,z,args):
-        cateId = args['repo_material_cate_id']
+        cateId = args['repo_cate_id']
         name = self.repo.GetMaterial(cateId,120,1)
         name = name[0]['content']
-        d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()  # 清除缓存
-        d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+        d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate()  # 清除缓存
+        d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(8)
 
         d(text='新用户', resourceId='com.tencent.tim:id/btn_register').click()
@@ -58,24 +58,30 @@ class TIMLogin:
 
 
     def action(self, d, z,args):
+        time_limit = args['time_limit']
+        cate_id = args["repo_cate_id"]
         name = self.slot.getEmpty(d)                    #取空卡槽
 
         if name ==0:
-            name = self.slot.getSlot(d,120)              #没有空卡槽，取２小时没用过的卡槽
+            name = self.slot.getSlot(d,time_limit)              #没有空卡槽，取２小时没用过的卡槽
             while name==0:                               #2小时没有用过的卡槽也为空的情况
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无2小时未用\"")
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无2小时未用\"").communicate()
                 time.sleep(30)
-                name = self.slot.getSlot(d,120)
+                name = self.slot.getSlot(d,time_limit)
 
             z.set_mobile_data(False)
             time.sleep(3)
             self.slot.restore(d,name)                      #有２小时没用过的卡槽情况，切换卡槽
             z.set_mobile_data(True)
             time.sleep(8)
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"TIM卡槽成功切换成"+name+"\"").communicate()
 
-            d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+            d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             if d(text='帐号无法登录').exists:
-                info = self.login(d,args)                                             #帐号无法登陆则登陆,重新注册登陆
+                info = self.login(d,z,args)                                             #帐号无法登陆则登陆,重新注册登陆
+
+                # self.repo.BackupInfo(cate_id, d, name, info)  # 将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
+
                 self.slot.backup(d,name,info)                                 #登陆之后备份
             else:
                 return
@@ -85,8 +91,12 @@ class TIMLogin:
             time.sleep(2)
             z.set_mobile_data(True)
             time.sleep(8)
-            info = self.login(d,args)
+            info = self.login(d,z,args)
+
+            # self.repo.BackupInfo(cate_id, d, name, info)  # 将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
+
             self.slot.backup(d,name,info)
+
 
 
         if (args["time_delay"]):
@@ -105,8 +115,8 @@ if __name__ == "__main__":
     # print(d.dump(compressed=False))
     # print(d.info)
 
-    d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").wait()
+    d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()  # 清除缓存
-    args = {"repo_material_cate_id":"56","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"56","time_delay":"3","time_limit":"120"};    #cate_id是仓库号，length是数量
     # o.slot.restore(d,1)
     o.action(d,z,args)

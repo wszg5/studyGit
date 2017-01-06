@@ -40,14 +40,14 @@ class EIMLogin:
                 QQNumber = numbers[0]['number']  # 即将登陆的QQ号
                 wait = 0
             except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"").communicate()
                 time.sleep(20)
         QQPassword = numbers[0]['password']
         time.sleep(1)
         t = 1
         while t == 1:
-            d.server.adb.cmd("shell", "pm clear com.tencent.eim").wait()  # 清除缓存
-            d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+            d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
+            d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             time.sleep(8)
             d(className='android.widget.Button', index=1, clickable='true').click()
             d(className='android.widget.EditText', text='企业QQ号/手机号/邮箱').set_text(QQNumber)  # 3001313499  QQNumber  3001346198
@@ -114,23 +114,25 @@ class EIMLogin:
 
 
     def action(self, d,z, args):
+        cate_id = args["repo_cate_id"]
         name = self.slot.getEmpty(d)  # 取空卡槽
         print(name)
         if name == 0:
             name = self.slot.getSlot(d, 120)  # 没有空卡槽，取２小时没用过的卡槽
             while name == 0:  # 2小时没有用过的卡槽也为空的情况
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无2小时未用\"")
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无2小时未用\"").communicate()
                 time.sleep(30)
                 name = self.slot.getSlot(d, 120)
 
             z.set_mobile_data(False)
+            time.sleep(3)
             self.slot.restore(d, name)  # 有２小时没用过的卡槽情况，切换卡槽
             z.set_mobile_data(True)
-            time.sleep(5)
-            d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+            time.sleep(8)
+            d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             if d(text='帐号无法登录') or d(text='身份过期').exists:
-
                 info = self.login(d,args)  # 帐号无法登陆则登陆,重新注册登陆
+                self.repo.BackupInfo(cate_id,d,name,info)      #将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
                 self.slot.backup(d, name, info)  # 登陆之后备份
 
             else:
@@ -142,6 +144,8 @@ class EIMLogin:
             z.set_mobile_data(True)
             time.sleep(8)
             info = self.login(d,args)
+            self.repo.BackupInfo(cate_id, d, name, info)  # 将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
+
             self.slot.backup(d, name, info)
 
 
@@ -157,7 +161,7 @@ if __name__ == "__main__":
 
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.dump(compressed=False)
     slot = slot('eim')
 
