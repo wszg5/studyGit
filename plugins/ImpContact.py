@@ -36,6 +36,10 @@ class ImpContact:
                 wait = 0
             except Exception:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，等待中\"").communicate()
+<<<<<<< HEAD
+=======
+                time.sleep(30)
+>>>>>>> 82d6a12b22ce36568cb542d03c10029a964b232b
 
         if numbers:
             file_object = open(filename, 'w')

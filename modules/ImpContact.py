@@ -2,6 +2,8 @@
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
+import json
+from zservice import ZDevice
 
 
 class ImpContact:
@@ -17,7 +19,7 @@ class ImpContact:
         return uniqueNum
 
 
-    def action(self, d, args):
+    def action(self, d,z, args):
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -25,7 +27,17 @@ class ImpContact:
 
 
         cate_id = args["repo_cate_id"]
+        print(cate_id)
         numbers = self.repo.GetNumber(cate_id, 0, 50)
+        wait = 1  # 判断素材仓库里是否由素材
+        while wait == 1:
+            try:
+                t = numbers[0]  # 取出验证消息的内容
+                wait = 0
+            except Exception:
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，等待中\"").communicate()
+                time.sleep(30)
+
         if numbers:
             file_object = open(filename, 'w')
             lines = ""
@@ -35,9 +47,9 @@ class ImpContact:
             file_object.writelines(lines)
             lines=""
             file_object.close()
-            d.server.adb.cmd("shell", "am", "start", "-a", "tb.clear.connacts").wait()
-            d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").wait()
-            d.server.adb.cmd("shell", "am", "start", "-n", "com.zunyun.qk/.ImportActivity", "-t", "text/plain",  "-d", "file:///data/local/tmp/contacts.txt").wait()
+            d.server.adb.cmd("shell", "am", "start", "-a", "tb.clear.connacts").communicate()
+            d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").communicate()
+            d.server.adb.cmd("shell", "am", "start", "-n", "com.zunyun.qk/.ImportActivity", "-t", "text/plain",  "-d", "file:///data/local/tmp/contacts.txt").communicate()
             os.remove(filename)
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -46,9 +58,12 @@ def getPluginClass():
     return ImpContact
 
 if __name__ == "__main__":
+    # global args
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A3SK00853")
-    d.dump(compressed=False)
-    args = {"repo_cate_id":"21","length":"50","time_delay":"3"};    #cate_id是仓库号，length是数量
-    o.action(d, args)
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4AVSK01106")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+    # d.dump(compressed=False)
+    args = {"repo_cate_id":"36","length":"30","time_delay":"3"}    #cate_id是仓库号，length是数量
+    o.action(d,z, args)

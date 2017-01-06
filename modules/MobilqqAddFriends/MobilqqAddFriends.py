@@ -6,6 +6,8 @@ from Repo import *
 import os, time, datetime, random
 import util
 from PIL import Image
+from zservice import ZDevice
+
 
 class TIMAddFriends:
     def __init__(self):
@@ -22,7 +24,7 @@ class TIMAddFriends:
 
 
 
-    def action(self, d, args):
+    def action(self, d,z, args):
         str = d.info  # 获取屏幕大小等信息
         print(str)
         height = str["displayHeight"]
@@ -73,7 +75,7 @@ class TIMAddFriends:
         time.sleep(3)
         d(text='QQ号/手机号/群/公众号', resourceId='com.tencent.mobileqq:id/name').click()
         d(text='QQ号/手机号/群/公众号', resourceId='com.tencent.mobileqq:id/et_search_keyword').click()
-        d(text='QQ号/手机号/群/公众号', resourceId='com.tencent.mobileqq:id/et_search_keyword').set_text(75800508)  # 第一次添加的帐号 list[0]
+        d(text='QQ号/手机号/群/公众号', resourceId='com.tencent.mobileqq:id/et_search_keyword').set_text(list[0])  # 第一次添加的帐号 list[0]
 
         d(text='找人:', resourceId='com.tencent.mobileqq:id/name').click()
         time.sleep(2)
@@ -169,7 +171,8 @@ class TIMAddFriends:
                 d.press.delete()
                 t = t + 1
 
-            d(className='android.widget.EditText',resourceId='com.tencent.mobileqq:id/name').set_text('material')   #发送验证消息  material
+            d(className='android.widget.EditText',resourceId='com.tencent.mobileqq:id/name').click()   #发送验证消息  material
+            z.input(material)
             d(text='下一步',resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText').click()
             d(text='发送',resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText').click()
             if d(text='添加失败，请勿频繁操作', resourceId='com.tencent.mobileqq:id/name').exists:
@@ -215,8 +218,9 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A3SK00853")
-
+    z = ZDevice("HT4AVSK01106")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     # print(d.dump(compressed=False))
     args = {"repo_number_cate_id":"13","repo_material_cate_id":"8","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
-    o.action(d, args)
+    o.action(d,z, args)

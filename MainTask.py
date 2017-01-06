@@ -6,6 +6,7 @@ import util
 import traceback
 import threading
 import json
+from uiautomator import Device
 from const import const
 
 time.sleep(const.WAIT_START_TIME)
@@ -13,9 +14,9 @@ time.sleep(const.WAIT_START_TIME)
 
 
 from dbapi import dbapi
+
 import sys
 
-reload(sys)
 
 sys.setdefaultencoding('utf8')
 
@@ -53,8 +54,6 @@ def runwatch(d, data):
             time.sleep(0.5)
 
 
-
-
 def finddevices():
     deviceIds = []
     adb_cmd = os.path.join(os.environ["ANDROID_HOME"], "platform-tools", 'adb devices')
@@ -87,7 +86,6 @@ def deviceTask(deviceid, port, zport):
     device = dbapi.GetDevice(deviceid)
     taskid = device.get("task_id")
 
-    from uiautomator import Device
     from zservice import ZDevice
 
     if  taskid :
@@ -111,7 +109,7 @@ def deviceTask(deviceid, port, zport):
                     try:
 
                         runStep(d, z, step)
-                    except Exception, e:
+                    except Exception:
                         logger.error(step)
                         logger.error(traceback.format_exc())
                         time.sleep(3)
@@ -137,7 +135,7 @@ def deviceThread(deviceid, port, zport):
         try:
 
             deviceTask(deviceid, port, zport)
-        except Exception, e:
+        except Exception:
             logger.error(traceback.format_exc())
         time.sleep(5)
     print("%s thread finished"%deviceid)

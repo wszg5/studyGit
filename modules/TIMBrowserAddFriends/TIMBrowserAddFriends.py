@@ -2,6 +2,7 @@
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
+from zservice import ZDevice
 
 
 class TIMBrowserAddFriends:
@@ -11,7 +12,7 @@ class TIMBrowserAddFriends:
 
 
 
-    def action(self, d, args):
+    def action(self, d,z,args):
         repo_material_cate_id = args["repo_material_cate_id"]
         Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
         wait = 1  # 判断素材仓库里是否由素材
@@ -44,7 +45,7 @@ class TIMBrowserAddFriends:
             numbers = list[i]
             print(numbers)
             time.sleep(1)
-            d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").wait()  # 拉起来
+            d.server.adb.cmd("shell","am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").wait()  # 拉起来
             time.sleep(3)
             d(className='android.widget.Button',index=2,description='清空号码').click()
             d(className='android.widget.EditText',index=1,clickable='false').click()
@@ -72,14 +73,15 @@ class TIMBrowserAddFriends:
             print(obj)
             obj = obj['text']
             length = len(obj)
-            z = 0
-            while z<length:
+            k = 0
+            while k<length:
                 length = length-1
                 d.press.delete()
             print(material.encode("utf-7"))
             print(material)
             time.sleep(2)
-            d(resourceId='com.tencent.tim:id/name',className='android.widget.EditText').set_text(material.encode("utf-7"))        #要发的消息
+            d(resourceId='com.tencent.tim:id/name',className='android.widget.EditText').click()        #要发的消息
+            z.input(material)
             d(text='下一步',resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
             d(text='发送',resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
             if d(resourceId='com.tencent.tim:id/name', text='添加失败，请勿频繁操作').exists:  # 操作过于频繁的情况
@@ -99,7 +101,8 @@ if __name__ == "__main__":
     d = Device("HT524SK03149")
     # material=u'有空聊聊吗'
 
-
+    z = ZDevice("HT4A3SK00853")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     args = {"repo_number_cate_id":"37","repo_material_cate_id":"33","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
 
-    o.action(d, args)
+    o.action(d,z, args)

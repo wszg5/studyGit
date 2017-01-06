@@ -3,23 +3,23 @@
 "cate":"基础模块",
 "name":"EIM版QQ浏览器发消息",
 "url": "http://www.bejson.com",
-"verison": "1.0",
+"version": "1.0",
 "icon": "vcard-o",
-"remark":"添加好友",
+"remark":"EIM发临时会话",
 "setting":[
 	{
 	"id": "repo_number_cate_id",
 	"name":"号码库分类",
 	"type":"repo",
 	"source":"number",
-	"top_cate_id":"36"
+	"top_cate_id":"22"
 	},
 	{
     	"id": "repo_material_cate_id",
     	"name":"验证信息素材库",
     	"type":"repo",
     	"source":"material",
-	    "top_cate_id":"5"
+	    "top_cate_id":"12"
     },
 
     {

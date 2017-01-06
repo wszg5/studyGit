@@ -34,7 +34,7 @@ class MobilqqLogin:
         codePng = os.path.join(base_dir, "%s_c.png" % (self.GetUnique()))
 
         cate_id = args["repo_cate_id"]
-        numbers = self.repo.GetAccount(cate_id,120,1)
+        numbers = self.repo.GetAccount(cate_id,0 , 1)
         print(numbers)
         wait = 1
         while wait == 1:  # 判断仓库是否有东西
@@ -43,7 +43,7 @@ class MobilqqLogin:
                 wait = 0
             except Exception:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"").communicate()
-                time.sleep(30)
+                time.sleep(20)
         QQPassword = numbers[0]['password']
         time.sleep(1)
         t = 1
@@ -97,7 +97,7 @@ class MobilqqLogin:
                     d(resourceId='com.tencent.mobileqq:id/name', index='2',className="android.widget.EditText").set_text(code)
                     time.sleep(3)
                     d(text='完成', resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText').click()
-                    time.sleep(5)
+                    time.sleep(2)
 
                     if d(text='登 录').exists:  # 密码错误
                         self.repo.SetAccount(cate_id, 'locked', QQNumber)

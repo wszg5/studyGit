@@ -40,22 +40,6 @@ class XunMa:
         else:
             return "Error Getting Account, Please check your repo"
 
-
-    def GetBindNumber(self, res):
-        path = "/getPhone?ItemId=153&token=" + res + "&Count=1"
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET", path)
-        response = conn.getresponse()
-        if response.status == 200:
-            data = response.read()
-            data = re.findall("\d{11}", str(data))
-            data = data[0]
-            return data
-        else:
-            return "Error Getting Account, Please check your repo"
-
-
-
     def GetCode(self,number,res):
         for i in range(0,32,+1):
             time.sleep(2)
@@ -69,13 +53,45 @@ class XunMa:
                     break
             else:
                 return "Error Getting Account, Please check your repo"
-
-
         data = data.decode('GBK')
         res = re.findall(r"MSG&144&"+number+"&(.+?)\[End]", data)
         res = re.findall("\d{6}",res[0])
         return res[0]
 
+
+    def GetBindNumber(self, res):
+        path = "/getPhone?ItemId=153&token=" + res + "&Count=1"
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
+        response = conn.getresponse()
+        if response.status == 200:
+            data = response.read()
+            data = re.findall("\d{11}", str(data))
+            time.sleep(1)
+            data = data[0]
+            return data
+        else:
+            return "Error Getting Account, Please check your repo"
+
+
+    def GetBindCode(self,number,res):
+        for i in range(0,32,+1):
+            time.sleep(2)
+            path = "/getQueue?token="+res+""
+            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+            conn.request("GET", path)
+            response = conn.getresponse()
+            if response.status == 200:
+                data = response.read()
+                if data.startswith('MSG'):
+                    break
+            else:
+                return "Error Getting Account, Please check your repo"
+        data = data.decode('GBK')
+        res = re.findall(r"MSG&153&"+number+"&(.+?)\[End]", data)
+        res = re.findall("\d{4}",res[0])
+        print(res[0])
+        return res[0]
 
 
 
