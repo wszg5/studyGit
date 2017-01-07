@@ -35,17 +35,17 @@ class TIMAddressList:
             if d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').exists:
                 d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').click()
 
-            try:
+
                 code = self.xuma.GetBindCode(GetBindNumber, token)
                 newStart = 0
 
-            except Exception:
-                print(traceback.format_exc())
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"没有取到验证码，重新获取\"").communicate()
-                time.sleep(2)
-                d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft',className='android.widget.TextView').click()
-                d(className='android.view.View',descriptionContains='删除').click()
-                continue
+            # except Exception:
+            #     print(traceback.format_exc())
+            #     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"没有取到验证码，重新获取\"").communicate()
+            #     time.sleep(2)
+            #     d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft',className='android.widget.TextView').click()
+            #     d(className='android.view.View',descriptionContains='删除').click()
+            #     continue
         d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
         d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
 
@@ -101,7 +101,9 @@ class TIMAddressList:
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies', className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()    #点击通讯录
                     time.sleep(2)
                     if d(resourceId='com.tencent.mobileqq:id/name',className='android.widget.EditText',index=2).exists:       #检查到尚未 启用通讯录
-
+                        if d(text=' +null',resourceId='com.tencent.mobileqq:id/name').exists:
+                            d(text=' +null', resourceId='com.tencent.mobileqq:id/name').click()
+                            d(text='中国',resourceId='com.tencent.mobileqq:id/name').click()
                         text = self.Bind(d)                                 #未开启通讯录的，现绑定通讯录
                         if text=='false':                          #操作过于频繁的情况
                             return

@@ -34,7 +34,7 @@ class TIMBrowserSendText:
 
         # d.server.adb.cmd("shell", "am force-stop com.android.chrome").wait()  # 强制停止
         d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
-
+        time.sleep(3)
         if d(description='清空号码', className='android.widget.Button').exists:
             for i in range (0,totalNumber,+1):
                 repo_material_cate_id = args["repo_material_cate_id"]

@@ -36,7 +36,8 @@ class MobilqqLogin:
         cate_id = args["repo_cate_id"]
 
         while True:
-            numbers = self.repo.GetAccount(cate_id, 120, 1)
+            time_limit1 = args['time_limit1']
+            numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
             print(numbers)
             wait = 1
             while wait == 1:  # 判断仓库是否有东西
@@ -210,7 +211,7 @@ if __name__ == "__main__":
     # slot.restore(d, 9)
 
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"59","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"59","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)
