@@ -4,6 +4,7 @@ from Repo import *
 import os, time, datetime, random
 from zservice import ZDevice
 from XunMa import *
+import traceback
 
 
 class TIMAddressList:
@@ -37,13 +38,17 @@ class TIMAddressList:
             try:
                 code = self.xuma.GetBindCode(GetBindNumber, token)
                 newStart = 0
+
             except Exception:
+                print(traceback.format_exc())
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"没有取到验证码，重新获取\"").communicate()
                 time.sleep(2)
                 d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft',className='android.widget.TextView').click()
                 d(className='android.view.View',descriptionContains='删除').click()
                 continue
         d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
         d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
+
         return 'true'
 
 
@@ -57,13 +62,13 @@ class TIMAddressList:
                 Material = Material[0]['content']  # 从素材库取出的要发的材料
                 wait = 0
             except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到消息\"")
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到消息\"").communicate()
 
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
-        d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+        d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(2)
         d(className='android.widget.TabWidget',resourceId='android:id/tabs').child(className='android.widget.FrameLayout').child(className='android.widget.RelativeLayout').click()     #点击到联系人
         time.sleep(3)
@@ -101,10 +106,10 @@ class TIMAddressList:
                         if text=='false':                          #操作过于频繁的情况
                             return
 
-                        time.sleep(3)
+                        time.sleep(5)
                         d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
                         time.sleep(1)
-                    d.swipe(width / 2, height * 7 / 8, width / 2, height / 4)
+                    d.swipe(width / 2, height * 5 / 6, width / 2, height / 3)
                     time.sleep(2)
                     break
                 else:
@@ -114,6 +119,7 @@ class TIMAddressList:
         else:                                                                             #没有在联系人界面的话
             d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(
                 className='android.widget.FrameLayout').child(className='android.widget.RelativeLayout').click()  # 点击到联系人
+
             wait = 1
             while wait == 1:
                 obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.CheckBox',
@@ -137,7 +143,7 @@ class TIMAddressList:
             for i in range(12, 1, -1):
                 if d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i).exists:
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies', className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
-                    d.swipe(width / 2, height * 7 / 8, width / 2, height / 4)
+                    d.swipe(width / 2, height * 5 / 6, width / 2, height / 3)
                     break
                 else:
                     continue
@@ -189,10 +195,13 @@ class TIMAddressList:
             i = i + 1
             t = t + 1
             d(resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft', description='返回消息界面').click()
-            d(className='android.widget.TabWidget', resourceId='android:id/tabs', index=2).child(
-                className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
 
+            # d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(
+            #     className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
 
+            d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(
+                className='android.widget.FrameLayout').child(
+                className='android.widget.RelativeLayout').click()  # 发完消息后点击到联系人
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -208,6 +217,6 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     # print(d.dump(compressed=False))
 
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_material_id":"33",'EndIndex':'5',"time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

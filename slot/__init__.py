@@ -59,7 +59,8 @@ class slot:
         #d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()
         d.server.adb.cmd("shell", "rm -r -f  /data/data/com.zy.bak/%s/zy_name_*"%type).wait()
         for path in self.paths:
-            d.server.adb.cmd("shell", "cp -r -f -p /data/data/com.zy.bak/%s/%s/%s/ /data/data/%s/"%(self.type, name, path, self.package)).wait()
+            d.server.adb.cmd("shell", "rm -r -f /data/data/%s/%s" % (self.package, path)).communicate()
+            d.server.adb.cmd("shell", "cp -r -f -p /data/data/com.zy.bak/%s/%s/%s/ /data/data/%s/"%(self.type, name, path, self.package)).communicate()
 
         #d.server.adb.cmd("shell", "cp -r -f -p /data/data/com.zy.bak/tim/%s/databases/ /data/data/com.tencent.tim/"%name).wait()
 
@@ -85,7 +86,7 @@ class slot:
         slots = self.dbapi.ListSlotsInterval(d.server.adb.device_serial(), self.type, int(interval) * 60)
         if (len(slots) > 0):
             return int(slots[0]["name"])
-        return None
+        return 0
 
     def getSlotInfo(self, d, name):
         return self.dbapi.GetSlotInfo(d.server.adb.device_serial(), self.type, name)

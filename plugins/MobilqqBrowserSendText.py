@@ -63,10 +63,16 @@ class TIMBrowserSendText:
                     d(className='android.widget.EditText',index=1,clickable='false').set_text(numbers)
                 d(className='android.widget.Button',index=3,description='开始聊天').click()
                 time.sleep(2)
+                if d(text='QQ',resourceId='android:id/text1').exists:
+                    d(text='QQ', resourceId='android:id/text1').click()
+                    if d(text='仅此一次',resourceId='android:id/button_once').exists:
+                        d(text='仅此一次',resourceId='android:id/button_once').click()
                 if d(className='android.widget.Button',index=3,description='开始聊天').exists:           #不存在该联系人的情况
                     continue
                 d(resourceId='com.tencent.mobileqq:id/input',className='android.widget.EditText').click()
+                print(material)
                 z.input(material)
+
                 d(text='发送',resourceId='com.tencent.mobileqq:id/fun_btn').click()
                 d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
 
@@ -99,6 +105,10 @@ class TIMBrowserSendText:
                     d(className='android.widget.EditText', index=1, clickable='false').set_text(numbers)
                 d(className='android.widget.Button', index=3, description='开始聊天').click()
                 time.sleep(2)
+                if d(text='QQ', resourceId='android:id/text1').exists:
+                    d(text='QQ', resourceId='android:id/text1').click()
+                    if d(text='仅此一次', resourceId='android:id/button_once').exists:
+                        d(text='仅此一次', resourceId='android:id/button_once').click()
                 if d(className='android.widget.Button', index=3, description='开始聊天').exists:  # 不存在该联系人的情况
                     continue
                 d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()

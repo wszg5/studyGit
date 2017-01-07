@@ -1,6 +1,6 @@
 {
 "id": "MobilqqLogin",
-"cate":"普通QQ登录模块",
+"cate":"QQ模块",
 "name":"登录普通QQ",
 "url": "http://www.bejson.com",
 "version": "1.0",
