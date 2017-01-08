@@ -59,7 +59,7 @@ class Repo:
 
 
     def BackupInfo(self,cateId,status,Number,remark):           #仓库号，状态，QQ号，备注设备id_卡槽id
-        path = "/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&remark=%s" % (cateId,status,Number,remark)
+        path = "/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&cardslot=%s" % (cateId,status,Number,remark)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET",path)
 

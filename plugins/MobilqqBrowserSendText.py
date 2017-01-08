@@ -70,15 +70,20 @@ class TIMBrowserSendText:
                 if d(className='android.widget.Button',index=3,description='开始聊天').exists:           #不存在该联系人的情况
                     continue
                 d(resourceId='com.tencent.mobileqq:id/input',className='android.widget.EditText').click()
-                print(material)
                 z.input(material)
 
                 d(text='发送',resourceId='com.tencent.mobileqq:id/fun_btn').click()
                 d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
 
         else:
+            time.sleep(2)
             d.server.adb.cmd("shell","am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").communicate()  # 不在聊了页面时输入聊天页面地址
-
+            if d(description='清空号码', className='android.widget.Button').exists:
+                print()
+            else:
+                d(resourceId='com.android.chrome:id/url_bar',className='android.widget.EditText').set_text('http://www.jianli58.com/qq.html')
+                time.sleep(1)
+                d.press.enter()
             for i in range(0, totalNumber, +1):
                 repo_material_cate_id = args["repo_material_cate_id"]
                 Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
@@ -129,8 +134,10 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT4AZSK00872")
+    z = ZDevice("HT4AZSK00872")
+
+
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     args = {"repo_number_cate_id":"37","repo_material_cate_id":"34","totalNumber":"4","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d, z,args)

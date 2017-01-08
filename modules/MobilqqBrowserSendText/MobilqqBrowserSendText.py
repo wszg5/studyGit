@@ -15,10 +15,11 @@ class TIMBrowserSendText:
     def action(self, d,z, args):
 
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
+
         repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
         wait = 1
         while wait == 1:
-            numbers = self.repo.GetNumber(repo_number_cate_id, 120, totalNumber)  # 取出totalNumber条time_limit时间内没有用过的号码
+            numbers = self.repo.GetNumber(repo_number_cate_id, 0, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
             lenth = len(numbers)
             if "Error" in numbers:  # 没有取到号码的时候
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"").communicate()
@@ -33,7 +34,7 @@ class TIMBrowserSendText:
 
         # d.server.adb.cmd("shell", "am force-stop com.android.chrome").wait()  # 强制停止
         d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
-
+        time.sleep(3)
         if d(description='清空号码', className='android.widget.Button').exists:
             for i in range (0,totalNumber,+1):
                 repo_material_cate_id = args["repo_material_cate_id"]
@@ -64,23 +65,25 @@ class TIMBrowserSendText:
                 time.sleep(2)
                 if d(text='QQ',resourceId='android:id/text1').exists:
                     d(text='QQ', resourceId='android:id/text1').click()
-                    d(text='仅此一次',resourceId='android:id/button_once').click()
+                    if d(text='仅此一次',resourceId='android:id/button_once').exists:
+                        d(text='仅此一次',resourceId='android:id/button_once').click()
                 if d(className='android.widget.Button',index=3,description='开始聊天').exists:           #不存在该联系人的情况
                     continue
-                time.sleep(1)
-                if d(resourceId='com.tencent.mobileqq:id/input',className='android.widget.EditText').exists:
-                    d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()
-                    print(material)
-                    z.input(material)
-                    d(text='发送', resourceId='com.tencent.mobileqq:id/fun_btn').click()
-                    d.server.adb.cmd("shell", "am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
-                else:
-                    return 2             #中途掉线的情况
+                d(resourceId='com.tencent.mobileqq:id/input',className='android.widget.EditText').click()
+                z.input(material)
 
+                d(text='发送',resourceId='com.tencent.mobileqq:id/fun_btn').click()
+                d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
 
         else:
+            time.sleep(2)
             d.server.adb.cmd("shell","am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").communicate()  # 不在聊了页面时输入聊天页面地址
-
+            if d(description='清空号码', className='android.widget.Button').exists:
+                print()
+            else:
+                d(resourceId='com.android.chrome:id/url_bar',className='android.widget.EditText').set_text('http://www.jianli58.com/qq.html')
+                time.sleep(1)
+                d.press.enter()
             for i in range(0, totalNumber, +1):
                 repo_material_cate_id = args["repo_material_cate_id"]
                 Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
@@ -107,20 +110,17 @@ class TIMBrowserSendText:
                     d(className='android.widget.EditText', index=1, clickable='false').set_text(numbers)
                 d(className='android.widget.Button', index=3, description='开始聊天').click()
                 time.sleep(2)
-                if d(text='QQ',resourceId='android:id/text1').exists:
+                if d(text='QQ', resourceId='android:id/text1').exists:
                     d(text='QQ', resourceId='android:id/text1').click()
-                    d(text='仅此一次',resourceId='android:id/button_once').click()
+                    if d(text='仅此一次', resourceId='android:id/button_once').exists:
+                        d(text='仅此一次', resourceId='android:id/button_once').click()
                 if d(className='android.widget.Button', index=3, description='开始聊天').exists:  # 不存在该联系人的情况
                     continue
-                time.sleep(1)
-                if d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').exists:# 中途掉线的情况
-                    d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()
-                    z.input(material)
-                    d(text='发送', resourceId='com.tencent.mobileqq:id/fun_btn').click()
-                    d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
-
-                else:
-                    return 2
+                d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()
+                z.input(material)
+                d(text='发送', resourceId='com.tencent.mobileqq:id/fun_btn').click()
+                d.server.adb.cmd("shell",
+                                 "am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
 
 
 
@@ -134,8 +134,10 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT4AZSK00872")
+    z = ZDevice("HT4AZSK00872")
+
+
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     args = {"repo_number_cate_id":"37","repo_material_cate_id":"34","totalNumber":"4","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d, z,args)

@@ -32,12 +32,12 @@ class TIMAddressList:
             if d(text='下一步',resourceId='com.tencent.mobileqq:id/name',index=2).exists:       #操作过于频繁的情况
                 return 'false'
 
-            if d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').exists:
+            if d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').exists:     #提示该号码已经与另一个ｑｑ绑定，是否改绑
                 d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').click()
 
 
-                code = self.xuma.GetBindCode(GetBindNumber, token)
-                newStart = 0
+            code = self.xuma.GetBindCode(GetBindNumber, token)
+            newStart = 0
 
             # except Exception:
             #     print(traceback.format_exc())
@@ -46,8 +46,9 @@ class TIMAddressList:
             #     d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft',className='android.widget.TextView').click()
             #     d(className='android.view.View',descriptionContains='删除').click()
             #     continue
-        d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
-        d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
+
+            d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
+            d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
 
         return 'true'
 
@@ -69,7 +70,11 @@ class TIMAddressList:
         width = str["displayWidth"]
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        time.sleep(2)
+        time.sleep(4)
+        if d(text='消息',resourceId='com.tencent.mobileqq:id/name').exists:                    #到了通讯录这步后看号有没有被冻结
+            print()
+        else:
+            return 2
         d(className='android.widget.TabWidget',resourceId='android:id/tabs').child(className='android.widget.FrameLayout').child(className='android.widget.RelativeLayout').click()     #点击到联系人
         time.sleep(3)
         if d(text='联系人',resourceId='com.tencent.mobileqq:id/ivTitleName').exists:       #如果已经到联系人界面
@@ -107,6 +112,9 @@ class TIMAddressList:
                         text = self.Bind(d)                                 #未开启通讯录的，现绑定通讯录
                         if text=='false':                          #操作过于频繁的情况
                             return
+                        time.sleep(5)
+                        if d(resourceId='com.tencent.mobileqq:id/nickname',className='android.widget.TextView').exists:
+                            d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').click()
 
                         time.sleep(5)
                         d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
