@@ -3,7 +3,7 @@
 "cate":"QQ轻聊版登录模块",
 "name":"登录QQ",
 "url": "http://www.bejson.com",
-"verison": "1.0",
+"version": "1.0",
 "icon":"vcard-o",
 "remark":"登录QQ",
 "setting":[

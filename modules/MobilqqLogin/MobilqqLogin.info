@@ -1,9 +1,9 @@
 {
 "id": "MobilqqLogin",
-"cate":"普通QQ登录模块",
+"cate":"QQ模块",
 "name":"登录普通QQ",
 "url": "http://www.bejson.com",
-"verison": "1.0",
+"version": "1.0",
 "icon":"vcard-o",
 "remark":"登录普通QQ",
 "setting":[
@@ -16,12 +16,18 @@
 },
 {
 "id": "time_limit",
-"name":"提取间隔（单位分钟）",
+"name":"QQ卡槽提取间隔（单位分钟）",
 "type":"textbox",
 "defaultValue":"120",
 "remark":"注：如果没有符合条件账号，调度将一直等待至有可用账号"
 },
-
+{
+"id": "time_limit1",
+"name":"QQ账号提取间隔（单位分钟）",
+"type":"textbox",
+"defaultValue":"120",
+"remark":"注：如果没有符合条件账号，调度将一直等待至有可用账号"
+},
 {
 "id": "time_delay",
 "name":"延时",

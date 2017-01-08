@@ -1,10 +1,10 @@
 {
 "id": "MobilqqAddressList",
 "name":"普通QQ通讯录",
-"cate":"通讯录模块",
+"cate":"QQ模块",
 "font": "qq",
 "url": "http://www.bejson.com",
-"verison": "1.0",
+"version": "1.0",
 "icon":"vcard-o",
 "remark":"TIM版QQ通讯录的人发消息",
 "setting":[

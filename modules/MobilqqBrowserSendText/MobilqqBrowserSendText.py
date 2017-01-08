@@ -15,11 +15,10 @@ class TIMBrowserSendText:
     def action(self, d,z, args):
 
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
-
         repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
         wait = 1
         while wait == 1:
-            numbers = self.repo.GetNumber(repo_number_cate_id, 0, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
+            numbers = self.repo.GetNumber(repo_number_cate_id, 120, totalNumber)  # 取出totalNumber条time_limit时间内没有用过的号码
             lenth = len(numbers)
             if "Error" in numbers:  # 没有取到号码的时候
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"").communicate()
@@ -63,12 +62,21 @@ class TIMBrowserSendText:
                     d(className='android.widget.EditText',index=1,clickable='false').set_text(numbers)
                 d(className='android.widget.Button',index=3,description='开始聊天').click()
                 time.sleep(2)
+                if d(text='QQ',resourceId='android:id/text1').exists:
+                    d(text='QQ', resourceId='android:id/text1').click()
+                    d(text='仅此一次',resourceId='android:id/button_once').click()
                 if d(className='android.widget.Button',index=3,description='开始聊天').exists:           #不存在该联系人的情况
                     continue
-                d(resourceId='com.tencent.mobileqq:id/input',className='android.widget.EditText').click()
-                z.input(material)
-                d(text='发送',resourceId='com.tencent.mobileqq:id/fun_btn').click()
-                d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
+                time.sleep(1)
+                if d(resourceId='com.tencent.mobileqq:id/input',className='android.widget.EditText').exists:
+                    d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()
+                    print(material)
+                    z.input(material)
+                    d(text='发送', resourceId='com.tencent.mobileqq:id/fun_btn').click()
+                    d.server.adb.cmd("shell", "am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
+                else:
+                    return 2             #中途掉线的情况
+
 
         else:
             d.server.adb.cmd("shell","am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").communicate()  # 不在聊了页面时输入聊天页面地址
@@ -99,13 +107,20 @@ class TIMBrowserSendText:
                     d(className='android.widget.EditText', index=1, clickable='false').set_text(numbers)
                 d(className='android.widget.Button', index=3, description='开始聊天').click()
                 time.sleep(2)
+                if d(text='QQ',resourceId='android:id/text1').exists:
+                    d(text='QQ', resourceId='android:id/text1').click()
+                    d(text='仅此一次',resourceId='android:id/button_once').click()
                 if d(className='android.widget.Button', index=3, description='开始聊天').exists:  # 不存在该联系人的情况
                     continue
-                d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()
-                z.input(material)
-                d(text='发送', resourceId='com.tencent.mobileqq:id/fun_btn').click()
-                d.server.adb.cmd("shell",
-                                 "am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
+                time.sleep(1)
+                if d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').exists:# 中途掉线的情况
+                    d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()
+                    z.input(material)
+                    d(text='发送', resourceId='com.tencent.mobileqq:id/fun_btn').click()
+                    d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
+
+                else:
+                    return 2
 
 
 

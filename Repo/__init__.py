@@ -56,16 +56,15 @@ class Repo:
         else:
             return []
 
-    def SetAccount(self,cateId,status,QQNumber):
-        path = "/repo_api/account/questionInfo?cate_id=%s&status=%s&QQNumber=%s" % (cateId,status,QQNumber)
+
+
+    def BackupInfo(self,cateId,status,Number,remark):           #仓库号，状态，QQ号，备注设备id_卡槽id
+        path = "/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&remark=%s" % (cateId,status,Number,remark)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET",path)
 
 
-    def BackupInfo(self,cateId,devices,slot,QQNumber):      #登陆时的异常状态
-        path = "/repo_api/account/cardInfo?cate_id=%s&devices=%s&slot=%s&QQNumber=%s" % (cateId,devices,slot,QQNumber)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET",path)
+
 
 
 if __name__ == '__main__':

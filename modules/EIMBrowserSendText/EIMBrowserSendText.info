@@ -1,9 +1,9 @@
 {
 "id": "EIMBrowserSendText",
-"cate":"基础模块",
+"cate":"EIM模块",
 "name":"EIM版QQ浏览器发消息",
 "url": "http://www.bejson.com",
-"verison": "1.0",
+"version": "1.0",
 "icon": "vcard-o",
 "remark":"EIM发临时会话",
 "setting":[
