@@ -142,6 +142,7 @@ class XunMa:
             else:
                 return "Error Getting Account, Please check your repo"
         data = data.decode('GBK')
+        print(data)
         res = re.findall(r"MSG&153&"+number+"&(.+?)\[End]", data)
         res = re.findall("\d{4}",res[0])
         print(res[0])

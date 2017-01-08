@@ -34,8 +34,11 @@ class EIMAddFriends:
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.eim").communicate()  # 强制停止   3001369923  Bn2kJq5l
         d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        time.sleep(5)
-        d(resourceId='com.tencent.eim:id/name',description='发起多人聊天等功能').click()
+        time.sleep(6)
+        if d(resourceId='com.tencent.eim:id/name',description='发起多人聊天等功能').exists:
+            d(resourceId='com.tencent.eim:id/name',description='发起多人聊天等功能').click()
+        else:
+            return 2
         d(text='加好友',resourceId='com.tencent.eim:id/name').click()
         d(text='添加好友',resourceId='com.tencent.eim:id/name').click()
 
@@ -52,7 +55,6 @@ class EIMAddFriends:
 
 
             numbers = list[i]
-            print(numbers)
             d(resourceId='com.tencent.eim:id/name',className='android.widget.EditText').set_text(numbers)
             d(text='查找',resourceId='com.tencent.eim:id/name',className='android.widget.Button').click()
             time.sleep(2)
@@ -79,7 +81,23 @@ class EIMAddFriends:
                 while t < lenth:
                     d.press.delete()
                     t = t + 1
+                    continue
                 continue
+
+            if d(text='必填',resourceId='com.tencent.eim:id/name').exists:
+                d(text='返回',resourceId='com.tencent.eim:id/ivTitleBtnLeft').click()
+                d(text='返回',resourceId='com.tencent.eim:id/name').click()
+                obj = d(className='android.widget.EditText', resourceId='com.tencent.eim:id/name').info  # 将文本框已有的东西删除重来
+                obj = obj['text']
+                lenth = len(obj)
+                t = 0
+                while t < lenth:
+                    d.press.delete()
+                    t = t + 1
+                    continue
+                continue
+
+
 
             obj = d(resourceId='com.tencent.eim:id/name',className='android.widget.EditText').info             #删除之前文本框的验证消息
             obj = obj['text']

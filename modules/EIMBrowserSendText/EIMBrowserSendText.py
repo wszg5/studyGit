@@ -43,7 +43,7 @@ class EIMBrowserSendText:
                         wait = 0
                     except Exception:
                         d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"").communicate()
-                        time.sleep(5)
+                        time.sleep(30)
 
                 numbers = list[i]
                 # d.server.adb.cmd("shell","am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").communicate()  # 拉起来
@@ -58,8 +58,16 @@ class EIMBrowserSendText:
                     d(className='android.widget.EditText',index=1,clickable='false').set_text(numbers)
                 d(className='android.widget.Button',index=3,description='开始聊天').click()
                 time.sleep(1)
-                d(resourceId='com.tencent.eim:id/input',className='android.widget.EditText').click()
-                z.input(material)
+                if d(text='企业QQ',resourceId='android:id/text1').exists:
+                    d(text='企业QQ', resourceId='android:id/text1').click()
+                if d(text='仅此一次',resourceId='android:id/button_once').exists:
+                    d(text='仅此一次', resourceId='android:id/button_once').click()
+
+                if d(resourceId='com.tencent.eim:id/input', className='android.widget.EditText').exists:
+                    d(resourceId='com.tencent.eim:id/input', className='android.widget.EditText').click()
+                    z.input(material)
+                else:
+                    return 2
                 d(text='发送',resourceId='com.tencent.eim:id/fun_btn').click()
                 d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
 
@@ -92,11 +100,18 @@ class EIMBrowserSendText:
                     d(className='android.widget.EditText', index=1, clickable='false').set_text(numbers)
                 d(className='android.widget.Button', index=3, description='开始聊天').click()
                 time.sleep(1)
-                d(resourceId='com.tencent.eim:id/input', className='android.widget.EditText').click()
-                z.input(material)
+                if d(text='企业QQ', resourceId='android:id/text1').exists:
+                    d(text='企业QQ', resourceId='android:id/text1').click()
+                if d(text='仅此一次', resourceId='android:id/button_once').exists:
+                    d(text='仅此一次', resourceId='android:id/button_once').click()
+                if d(resourceId='com.tencent.eim:id/input', className='android.widget.EditText').exists:
+                    d(resourceId='com.tencent.eim:id/input', className='android.widget.EditText').click()
+                    z.input(material)
+                else:
+                    return 2
                 d(text='发送', resourceId='com.tencent.eim:id/fun_btn').click()
                 d.server.adb.cmd("shell",
-                                 "am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
+                                     "am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
 
 
 
@@ -111,8 +126,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT58DSK00066")
+    z = ZDevice("HT58DSK00066")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_cate_id":"49","repo_material_cate_id":"33","totalNumber":"4","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d, z,args)
