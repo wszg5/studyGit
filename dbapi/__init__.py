@@ -1,3 +1,4 @@
+# coding:utf-8
 import rethinkdb as r
 #https://github.com/lucidfrontier45/RethinkPool
 from rethinkpool import RethinkPool
@@ -17,10 +18,12 @@ class dbapi:
             devices = r.table('devices').filter({'present': True, 'ready': True}).order_by('statusChangedAt').run(res.conn)
             return devices
 
-    def GetDevice(self, serial):
-        with self.pool.get_resource() as res:
-            device = r.table('devices').get(serial).run(res.conn)
-            return device
+    def GetDeviceTask(self, serial):
+            with self.pool.get_resource() as res:
+                device = r.table('devices').get(serial).run(res.conn)
+                if device and device.get("task_id"):
+                    return device["task_id"]
+            return None
 
     def GetTask(self, taskid):
         with self.pool.get_resource() as res:

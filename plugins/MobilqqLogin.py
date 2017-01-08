@@ -27,6 +27,9 @@ class MobilqqLogin:
 
 
     def login(self,d,args):
+        while True:
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无间隔时间段未用\"").communicate()
+            time.sleep(10)
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -129,6 +132,9 @@ class MobilqqLogin:
                 return QQNumber
 
     def action(self, d,z, args):
+        while True:
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无间隔时间段未用\"").communicate()
+            time.sleep(3)
         time_limit = args['time_limit']
         cate_id = args["repo_cate_id"]
         name = self.slot.getEmpty(d)  # 取空卡槽
