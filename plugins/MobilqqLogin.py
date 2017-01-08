@@ -139,9 +139,9 @@ class MobilqqLogin:
                 continue
 
     def action(self, d,z, args):
-        while True:
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无间隔时间段未用\"").communicate()
-            time.sleep(3)
+        # while True:
+        #     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无间隔时间段未用\"").communicate()
+        #     time.sleep(3)
         time_limit = args['time_limit']
         cate_id = args["repo_cate_id"]
         name = self.slot.getEmpty(d)  # 取空卡槽
