@@ -16,12 +16,12 @@ class EIMBrowserSendText:
 
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
 
-        repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
+        cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
         wait = 1
         while wait == 1:
-            numbers = self.repo.GetNumber(repo_number_cate_id, 120, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
+            numbers = self.repo.GetNumber(cate_id, 120, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
             if len(numbers)==0:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"").communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"QQ%s号码库为空，等待中\""%cate_id).communicate()
                 time.sleep(5)
                 continue
             wait = 0
@@ -34,15 +34,15 @@ class EIMBrowserSendText:
         if d(description='清空号码',className='android.widget.Button').exists:
 
             for i in range (0,totalNumber,+1):
-                repo_material_cate_id = args["repo_material_cate_id"]
-                Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
+                cate_id = args["repo_material_cate_id"]
+                Material = self.repo.GetMaterial(cate_id, 0, 1)
                 wait = 1  # 判断素材仓库里是否由素材
                 while wait == 1:
                     try:
                         material = Material[0]['content']  # 取出验证消息的内容
                         wait = 0
                     except Exception:
-                        d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"").communicate()
+                        d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"%s号消息素材库为空，等待中\""%cate_id).communicate()
                         time.sleep(30)
 
                 numbers = list[i]
@@ -75,16 +75,16 @@ class EIMBrowserSendText:
         else:
             d.server.adb.cmd("shell","am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").communicate()  # 不在聊了页面时输入聊天页面地址
             for i in range(0, totalNumber, +1):
-                repo_material_cate_id = args["repo_material_cate_id"]
-                Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
+                cate_id = args["repo_material_cate_id"]
+                Material = self.repo.GetMaterial(cate_id, 0, 1)
                 wait = 1  # 判断素材仓库里是否由素材
                 while wait == 1:
                     try:
                         material = Material[0]['content']  # 取出验证消息的内容
                         wait = 0
                     except Exception:
-                        d.server.adb.cmd("shell",
-                                         "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"").communicate()
+                        d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"%s号消息素材库为空，等待中\""%cate_id).communicate()
+
                         time.sleep(5)
 
                 numbers = list[i]

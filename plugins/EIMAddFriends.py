@@ -17,12 +17,12 @@ class EIMAddFriends:
 
         add_count = int(args['add_count'])  # 要添加多少人
 
-        repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
+        cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
         wait = 1
         while wait == 1:
-            numbers = self.repo.GetNumber(repo_number_cate_id, 120, add_count)  # 取出add_count条两小时内没有用过的号码
+            numbers = self.repo.GetNumber(cate_id, 120, add_count)  # 取出add_count条两小时内没有用过的号码
             if len(numbers)==0:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"").communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"QQ号码库%s号仓库为空，等待中\""%cate_id).communicate()
                 time.sleep(5)
                 continue
 
@@ -43,15 +43,15 @@ class EIMAddFriends:
         d(text='添加好友',resourceId='com.tencent.eim:id/name').click()
 
         for i in range(0,add_count,+1):
-            repo_material_cate_id = args["repo_material_cate_id"]
-            Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
+            cate_id = args["repo_material_cate_id"]
+            Material = self.repo.GetMaterial(cate_id, 0, 1)
             wait = 1  # 判断素材仓库里是否由素材
             while wait == 1:
                 try:
                     material = Material[0]['content']  # 取出验证消息的内容
                     wait = 0
                 except Exception:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"").communicate()
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"验证信息%s号仓库为空，等待中\""%cate_id).communicate()
 
 
             numbers = list[i]

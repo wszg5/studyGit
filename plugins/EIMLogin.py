@@ -45,7 +45,7 @@ class EIMLogin:
                     QQNumber = numbers[0]['number']  # 即将登陆的QQ号
                     wait = 0
                 except Exception:
-                    d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到EIM账号\"").communicate()
+                    d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"EIM%s号帐号库为空，等待中\""%cate_id).communicate()
                     time.sleep(20)
             QQPassword = numbers[0]['password']
             d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
@@ -120,7 +120,7 @@ class EIMLogin:
         if name == 0:
             name = self.slot.getSlot(d, time_limit)  # 没有空卡槽，取time_limit小时没用过的卡槽
             while name == 0:  # 2小时没有用过的卡槽也为空的情况
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无间隔时间段未用\"").communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"EIM卡槽全满，无间隔时间段未用\"").communicate()
                 time.sleep(30)
                 name = self.slot.getSlot(d, time_limit)
 
