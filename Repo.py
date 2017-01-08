@@ -53,10 +53,19 @@ class Repo:
         else:
             return "Error Getting Number, Please check your repo"
 
-    def SetAccount(self,cateId,status,QQNumber):
+
+    def SetAccount(self,cateId,status,QQNumber):      #登陆时的异常状态
         path = "/repo_api/account/questionInfo?cate_id=%s&status=%s&QQNumber=%s" % (cateId,status,QQNumber)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET",path)
+
+
+    def BackupInfo(self,cateId,devices,slot,QQNumber):      #登陆时的异常状态
+        path = "/repo_api/account/cardInfo?cate_id=%s&devices=%s&slot=%s&QQNumber=%s" % (cateId,devices,slot,QQNumber)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET",path)
+
+
 
 
 
@@ -67,10 +76,12 @@ if __name__ == '__main__':
     result = repo.GetAccount("6", 120, 1)
     # result = repo.SetAccount("6", "ddkf", "1918697054")
 
-    # result = repo.GetMaterial("8",120,1)
+    result = repo.GetMaterial("56",120,1)
+    print(result)
+    result = result[0]['content']
     print(result)
     # print(result[0]["content"])
-    # result1 = repo.GetNumber("13",0,10)              #意思是取13号仓库2小时内没有用过的号码，一次取16个
+    # result1 = repo.GetNumber("37",0,10)              #意思是取13号仓库2小时内没有用过的号码，一次取16个
     # print(result1[0])
 
     # print (result[0])

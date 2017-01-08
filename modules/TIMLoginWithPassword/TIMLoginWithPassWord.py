@@ -8,6 +8,8 @@ import util
 from Repo import *
 from RClient import *
 import time, datetime, random
+from zservice import ZDevice
+
 class EIMLogin:
     def __init__(self):
         self.repo = Repo()
@@ -21,7 +23,7 @@ class EIMLogin:
         return uniqueNum
 
 
-    def action(self, d, args):
+    def action(self, d,z, args):
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -49,8 +51,8 @@ class EIMLogin:
             time.sleep(5)
             d(text='QQ号登录',resourceId='com.tencent.tim:id/btn_login').click()
 
-            d(className='android.widget.EditText',text='QQ号/手机号/邮箱').set_text(3030327691)    #3001313499    3030327691   QQNumber
-            d(resourceId='com.tencent.tim:id/password',description='密码 安全').set_text('13141314abc')    #Bn2kJq5l
+            d(className='android.widget.EditText',text='QQ号/手机号/邮箱').set_text(QQNumber)    #3001313499    3030327691   QQNumber
+            d(resourceId='com.tencent.tim:id/password',description='密码 安全').set_text(QQPassword)    #Bn2kJq5l
             d(text='登 录',resourceId='com.tencent.tim:id/login').click()
             while d(className='android.widget.LinearLayout').child(text='登录中',resourceId='com.tencent.tim:id/name').exists:
                 time.sleep(1)
@@ -154,7 +156,9 @@ if __name__ == "__main__":
 
     d = Device("HT4A3SK00853")
     # d.dump(compressed=False)
+    z = ZDevice("HT4A3SK00853")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     args = {"repo_cate_id":"6","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
-    o.action(d, args)
+    o.action(d,z, args)

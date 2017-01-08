@@ -3,32 +3,46 @@ from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
 # import httplib, json
-# import urllib
+from zservice import ZDevice
 import time
 import re
+from dbapi import *
 
 class TIMLogin:
     def __init__(self):
         self.repo = Repo()
+        self.dbapi = dbapi()
 
 
 
-    def action(self, d, args):
-        #
-        # d.open.quick_settings()
-        # d(text='飞行模式', resourceId='com.android.systemui:id/quick_setting_text').click()
-        # if d(text='不要再显示此内容。',resourceId='android:id/text1').exists:
-        #     d(text='不要再显示此内容。', resourceId='android:id/text1').click()
-        #     d(text='确定').click()
-        #     d.open.quick_settings()
-        # time.sleep(1)
-        # d(text='飞行模式',resourceId='com.android.systemui:id/quick_setting_text').click()
+    def action(self, d,z, args):
 
-        d.server.adb.cmd("shell", "settings put global airplane_mode_on 1 ").wait()  # 打开飞行模式
-        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE –ez state true ").wait()  # 打开飞行模式
 
-        d.server.adb.cmd("shell", "settings put global airplane_mode_on 0 am broadcast -a android.intent.action.AIRPLANE_MODE –ez state false").wait()   #关闭飞行模式
 
+        d.open.quick_settings()
+        d(text='飞行模式').click()     #打开飞行开关
+        time.sleep(2)
+        if d(text='不要再显示此内容。',resourceId='android:id/text1').exists:
+            d(text='不要再显示此内容。', resourceId='android:id/text1').click()
+            d(text='确定').click()
+            d.open.quick_settings()
+            time.sleep(1)
+            d(text='飞行模式').click()
+
+        device = self.dbapi.GetDevice(d.server.adb.device_serial())
+        obj = device["airplaneMode"]
+        print(obj)
+        on = 1
+        while on==1:
+            device = self.dbapi.GetDevice(d.server.adb.device_serial())
+            obj = device["airplaneMode"]
+            print(obj)
+            if obj=='true':
+                on = 0
+            else:
+                time.sleep(2)
+
+        print(on)
 
 
 
@@ -40,6 +54,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A3SK00853")
+    d = Device("HT536SK01667")
+    z = ZDevice("HT4AVSK01106")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     args = {"repo_cate_id":"131","length":"50","time_delay":"3"};    #cate_id是仓库号，length是数量
-    o.action(d, args)
+    o.action(d,z, args)

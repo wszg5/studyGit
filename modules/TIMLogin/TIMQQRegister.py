@@ -14,7 +14,7 @@ class TIMQQRegister:
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                         "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
 
-        self.domain = "192.168.1.33"
+        self.domain = "192.168.1.88"
         self.port = 8888
 
     def action(self, d,z):

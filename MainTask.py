@@ -1,29 +1,15 @@
 # coding:utf-8
-
 import os, sys, time, re, csv
 import util
-
 import traceback
 import threading
 import json
-
-<<<<<<< HEAD
-pool = RethinkPool(max_conns=120, initial_conns=10, host='192.168.1.33',
-                     port=28015,
-                     db='stf')
-=======
-from dbapi import dbapi
-<<<<<<< HEAD
 from const import const
->>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
-=======
+time.sleep(const.WAIT_START_TIME)
+from dbapi import dbapi
 import sys
 
-reload(sys)
->>>>>>> 6bd88d048104b7d8df072cc8c10e176fe304b9da
-
-sys.setdefaultencoding('utf8')
-
+# sys.setdefaultencoding('utf8')
 optpath = os.getcwd()  # 获取当前操作目录
 imgpath = os.path.join(optpath, 'img')  # 截图目录
 dbapi = dbapi()
@@ -43,7 +29,6 @@ def cleanEnv():
     if not os.path.isdir('tmp'):
         os.mkdir('tmp')
 
-
 def runwatch(d, data):
     times = 120
     while True:
@@ -56,9 +41,6 @@ def runwatch(d, data):
             break
         else:
             time.sleep(0.5)
-
-
-
 
 def finddevices():
     deviceIds = []
@@ -74,10 +56,7 @@ def finddevices():
     else:
         logger.error('没有找到手机，请检查')
         return []
-
         # needcount:需要安装的apk数量，默认为0，既安所有
-
-
 
 def runStep(d, z, step):
     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"%s\""%step["name"])
@@ -91,38 +70,26 @@ def runStep(d, z, step):
 def deviceTask(deviceid, port, zport):
     device = dbapi.GetDevice(deviceid)
     taskid = device.get("task_id")
-
     from uiautomator import Device
     from zservice import ZDevice
-
     if  taskid :
         task = dbapi.GetTask(taskid)
-
         if (task and task.get("status") and task["status"] == "running"):
             d = Device(deviceid, port)
-            util.doInThread(runwatch, d, 0, t_setDaemon=True)
-            d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
-            d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
-
+            #d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
             z = ZDevice(deviceid, zport)
             while True:
                 steps = dbapi.GetTaskSteps(taskid)
-
                 #设置zime输入法
-                d.server.adb.cmd("shell",
-                             "ime set com.zunyun.qk/.ZImeService").wait()
-                d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.qk.unlock").wait()
-
+                d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").wait()
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.unlock").wait()
                 for step in steps:
                     try:
-
                         runStep(d, z, step)
-                    except Exception, e:
+                    except Exception:
                         logger.error(step)
                         logger.error(traceback.format_exc())
                         time.sleep(3)
-
                     #检查设备对应的任务状态
                     device = dbapi.GetDevice(deviceid)
                     new_taskid = device.get("task_id")
@@ -130,7 +97,6 @@ def deviceTask(deviceid, port, zport):
                         return
                     if (new_taskid != taskid): #设备对应的taskid发生了变化
                         return
-
                     task = dbapi.GetTask(new_taskid)
                     if task.get("status") != "running": #任务状态已停止
                         return
@@ -138,16 +104,15 @@ def deviceTask(deviceid, port, zport):
         time.sleep(5)
 
 
-
 def deviceThread(deviceid, port, zport):
     while True:
         try:
-
             deviceTask(deviceid, port, zport)
-        except Exception, e:
+        except Exception:
             logger.error(traceback.format_exc())
         time.sleep(5)
     print("%s thread finished"%deviceid)
+
 
 
 # 需要配置好adb 环境变量
@@ -163,9 +128,9 @@ if __name__ == "__main__":
     zport = 33000
     threadDict = {}
     while True:
-        devicelist = dbapi.finddevices()
+        devicelist = finddevices()
         for device in devicelist:
-            deviceid = device["serial"]
+            deviceid = device
             if (threadDict.has_key(deviceid)): continue
             port = port + 1
             zport = zport + 1
@@ -173,7 +138,6 @@ if __name__ == "__main__":
             threadDict[deviceid].setName(deviceid)
             threadDict[deviceid].setDaemon(True)
             threadDict[deviceid].start()
-
         #for k,v in threadDict: ##循环线程dictionary，对于已经被移除的手机删除线程
           #  t.
          #   x =5

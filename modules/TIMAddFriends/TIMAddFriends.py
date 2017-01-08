@@ -1,26 +1,15 @@
 # coding:utf-8
-<<<<<<< HEAD
-=======
 from PIL.ImageShow import show
->>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
 from requests import delete
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
 import util
-<<<<<<< HEAD
-
-class TIMAddressList:
-    def __init__(self):
-        self.repo = Repo()
-
-=======
 from PIL import Image
-
+from zservice import ZDevice
 class TIMAddFriends:
     def __init__(self):
         self.repo = Repo()
-
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
         randomNum = random.randint(0, 1000);  # 生成的随机整数n，其中0<=n<=100
@@ -28,23 +17,12 @@ class TIMAddFriends:
             randomNum = str(00) + str(randomNum);
         uniqueNum = str(nowTime) + str(randomNum);
         return uniqueNum
-
-
->>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
-
-
-    def action(self, d, args):
-
-<<<<<<< HEAD
-=======
+    def action(self, d, z,args):
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
         sourcePng = os.path.join(base_dir, "%s_s.png" % (self.GetUnique()))
         genderPng = os.path.join(base_dir, "%s_c.png" % (self.GetUnique()))
-
-
-
         repo_material_cate_id = args["repo_material_cate_id"]
         Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
         wait = 1  # 判断素材仓库里是否由素材
@@ -54,9 +32,7 @@ class TIMAddFriends:
                 wait = 0
             except Exception:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"")
-
         add_count = int(args['add_count'])  # 要添加多少人
-
         repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
         wait = 1
         while wait == 1:
@@ -65,12 +41,8 @@ class TIMAddFriends:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
                 continue
             wait = 0
-
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
-
-
->>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
         d.server.adb.cmd("shell", "am force-stop com.tencent.tim").wait()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
         time.sleep(1)
@@ -81,45 +53,12 @@ class TIMAddFriends:
         else:
             d(resourceId='com.tencent.tim:id/name', description='快捷入口').click()
             d(text='加好友',resourceId='com.tencent.tim:id/name').click()
-<<<<<<< HEAD
-        time.sleep(2)
-        d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/name').click()
-        d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword').click()
-        d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword').set_text(23457)  # 要改为从库里取
-        d(text='找人:', resourceId='com.tencent.tim:id/name').click()
-
-        time.sleep(2)
-        for i in range(0,3,+1):
-            if d(text='没有找到相关结果',className='android.widget.TextView').exists:
-                d(resourceId='com.tencent.tim:id/ib_clear_text',description='清空').click()
-                obj = d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword')
-                if obj.exists:
-                    obj.set_text(3053760992+i)  # 要改为从库里取
-                obj = d(text='网络查找人', resourceId='com.tencent.tim:id/et_search_keyword')
-                if obj.exists:
-                    obj.set_text(3053760992 + i)  # 要改为从库里取
-
-                d(text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search').click()
-                continue
-
-            time.sleep(2)
-            if d(className='android.widget.AbsListView').child(index=1,resourceId='com.tencent.tim:id/name').exists:      #在同一查条件有多个人
-
-                d(className='android.widget.AbsListView').child(index=1, resourceId='com.tencent.tim:id/name').click()
-
-            d(text='加好友',resourceId='com.tencent.tim:id/name').click()
-            time.sleep(1)
-            if d(text='加好友',resourceId='com.tencent.tim:id/name').exists:
-=======
         time.sleep(3)
         d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/name').click()
         d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword').click()
         d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword').set_text(list[0])  # 第一次添加的帐号 list[0]
-
         d(text='找人:', resourceId='com.tencent.tim:id/name').click()
         time.sleep(2)
-
-
         for i in range(1,add_count,+1):                   #给多少人发消息
             numbers = list[i]
             print(numbers)
@@ -136,58 +75,16 @@ class TIMAddFriends:
                 time.sleep(1)
                 continue
             time.sleep(2)
-
-
             if d(className='android.widget.AbsListView').child(index=1,resourceId='com.tencent.tim:id/name').exists:      #在同一查条件有多个人
                 d(className='android.widget.AbsListView').child(index=1, resourceId='com.tencent.tim:id/name').click()
-
-            # obj = d(resourceId='com.tencent.tim:id/name', className='android.widget.ImageView', index=1)
-            # obj = obj.info
-            # print(obj)
-            # obj = obj['bounds']  # 验证码处的信息
-            # left = obj["left"]  # 验证码的位置信息
-            # top = obj['top']
-            # right = obj['right']
-            # bottom = obj['bottom']
-            #
-            # d.screenshot(sourcePng)  # 截取整个输入验证码时的屏幕
-            #
-            # img = Image.open(sourcePng)
-            # box = (left, top, right, bottom)  # left top right bottom
-            # region = img.crop(box)  # 截取验证码的图片
-            # show (region)
-            #
-            # img = Image.new('RGBA', (right - left, bottom - top))
-            # img.paste(region, (0, 0))
-            # img.save(genderPng)
-            # im = open(genderPng, 'rb').read()
-
-
-
-
-
             d(text='加好友',resourceId='com.tencent.tim:id/name').click()
             time.sleep(1)
-
             if d(text='加好友',resourceId='com.tencent.tim:id/name').exists:                        #拒绝被添加为好友的情况
->>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
                 time.sleep(1)
                 d(text='返回',resourceId='com.tencent.tim:id/ivTitleBtnLeft').click()
                 d(resourceId='com.tencent.tim:id/ib_clear_text', description='清空').click()
                 obj = d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword')
                 if obj.exists:
-<<<<<<< HEAD
-                    obj.set_text(152267 + i)  # 要改为从库里取
-                obj = d(text='网络查找人', resourceId='com.tencent.tim:id/et_search_keyword')
-                if obj.exists:
-                    obj.set_text(23456 + i)
-                time.sleep(1)
-                d(text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search').click()
-                continue
-
-            time.sleep(2)
-            if d(text='必填',resourceId='com.tencent.tim:id/name').exists:
-=======
                     obj.set_text(numbers)  # 要改为从库里取------------------------------
                 obj = d(text='网络查找人', resourceId='com.tencent.tim:id/et_search_keyword')
                 if obj.exists:
@@ -196,115 +93,64 @@ class TIMAddFriends:
                 d(text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search').click()
                 continue
             time.sleep(2)
-
-
             if d(text='必填',resourceId='com.tencent.tim:id/name').exists:                     #要回答问题的情况
->>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
                 d(text='返回',resourceId='com.tencent.tim:id/ivTitleBtnLeft').click()
                 time.sleep(1)
                 d(text='返回',resourceId='com.tencent.tim:id/ivTitleBtnLeft').click()
                 d(resourceId='com.tencent.tim:id/ib_clear_text', description='清空').click()
                 obj = d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword')
                 if obj.exists:
-<<<<<<< HEAD
-                    obj.set_text(152267+i)  # 要改为从库里取
-                obj = d(text='网络查找人',resourceId='com.tencent.tim:id/et_search_keyword')
-                if obj.exists:
-                    obj.set_text(23456+i)
-=======
                     obj.set_text(numbers)  # 下次要添加的号码-
                 obj = d(text='网络查找人',resourceId='com.tencent.tim:id/et_search_keyword')
                 if obj.exists:
                     obj.set_text(numbers)
->>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
                 time.sleep(1)
                 d(text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search').click()
                 continue
-
             time.sleep(1)
-<<<<<<< HEAD
-            obj = d(text='发送',resourceId='com.tencent.tim:id/ivTitleBtnRightText')
-=======
             obj = d(text='发送',resourceId='com.tencent.tim:id/ivTitleBtnRightText')            #不需要验证可直接添加为好友的情况
->>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
             if obj.exists:
                 obj.click()
                 if d(text='添加失败，请勿频繁操作',resourceId='com.tencent.tim:id/name').exists:
                     return
-<<<<<<< HEAD
-=======
                 time.sleep(1)
->>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
                 d(text='返回', resourceId='com.tencent.tim:id/ivTitleBtnLeft').click()
                 d(resourceId='com.tencent.tim:id/ib_clear_text', description='清空').click()
                 obj = d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword')
                 if obj.exists:
-<<<<<<< HEAD
-                    obj.set_text(305376099 + i)  # 要改为从库里取
-                obj = d(text='网络查找人', resourceId='com.tencent.tim:id/et_search_keyword')
-                if obj.exists:
-                    obj.set_text(305376099 + i)
-=======
                     obj.set_text(numbers)  # 要改为从库里取-------------------------------
                 obj = d(text='网络查找人', resourceId='com.tencent.tim:id/et_search_keyword')
                 if obj.exists:
                     obj.set_text(numbers)
->>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
                 d(text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search').click()
                 continue
-
             time.sleep(2)
-<<<<<<< HEAD
-
-            obj = d(className='android.widget.EditText', resourceId='com.tencent.tim:id/name').info
-=======
             obj = d(className='android.widget.EditText', resourceId='com.tencent.tim:id/name').info           #将之前消息框的内容删除
->>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
             obj = obj['text']
             lenth = len(obj)
             t = 0
             while t < lenth:
                 d.press.delete()
                 t = t + 1
-<<<<<<< HEAD
-            d(className='android.widget.EditText',resourceId='com.tencent.tim:id/name').set_text('do you uuu')
-=======
-            time.sleep(1)
-            d(className='android.widget.EditText',resourceId='com.tencent.tim:id/name').set_text(Material.encode("utf-7"))   #发送验证消息  material
->>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
+            time.sleep(2)
+            d(className='android.widget.EditText',resourceId='com.tencent.tim:id/name').click()   #发送验证消息  material
+            z.input(material)
             d(text='下一步',resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
             d(text='发送',resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
+            time.sleep(1)
             if d(text='添加失败，请勿频繁操作', resourceId='com.tencent.tim:id/name').exists:
                 return
             d(text='返回',resourceId='com.tencent.tim:id/ivTitleBtnLeft').click()
             d(resourceId='com.tencent.tim:id/ib_clear_text',description='清空').click()
             obj = d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword')
             if obj.exists:
-<<<<<<< HEAD
-                obj.set_text(305376099+i)  # 要改为从库里取
-            obj = d(text='网络查找人', resourceId='com.tencent.tim:id/et_search_keyword')
-            if obj.exists:
-                obj.set_text(305376099+i)
-            d(text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search').click()
-            # d(text='搜索',resourceId='com.tencent.tim:id/btn_cancel_search').click()
-
-
-=======
                 obj.set_text(numbers)
             obj = d(text='网络查找人', resourceId='com.tencent.tim:id/et_search_keyword')
             if obj.exists:
                 obj.set_text(numbers)
             d(text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search').click()
-
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
->>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
-
-
-
-
-
-
 def runwatch(d, data):
     times = 120
     while True:
@@ -317,24 +163,15 @@ def runwatch(d, data):
             break
         else:
             time.sleep(0.5)
-
 def getPluginClass():
-<<<<<<< HEAD
-    return TIMAddressList
-=======
     return TIMAddFriends
->>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
-
 if __name__ == "__main__":
-
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A3SK00853")
-<<<<<<< HEAD
-    args = {"repo_cate_id":"131","length":"50","time_delay":"3"};    #cate_id是仓库号，length是数量
-=======
+    d = Device("HT4BDSK00858")
+    z = ZDevice("HT4BDSK00858")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     # print(d.dump(compressed=False))
-    args = {"repo_number_cate_id":"13","repo_material_cate_id":"8","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
->>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
+    args = {"repo_number_cate_id":"37","repo_material_cate_id":"33","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
-    o.action(d, args)
+    o.action(d, z,args)
