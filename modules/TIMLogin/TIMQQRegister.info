@@ -1,7 +1,7 @@
 {
 "id": "TIMQQRegister",
 "cate":"TIM模块",
-"name":"TIM登录QQ",
+"name":"TIM批量注册QQ",
 "url": "http://www.bejson.com",
 "version": "1.0",
 "icon":"vcard-o",

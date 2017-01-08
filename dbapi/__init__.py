@@ -38,13 +38,10 @@ class dbapi:
     def GetSlotInfo(self, serial, appType, slotNum):
         id = '%s_%s_%s'%(serial,appType,slotNum)
         with self.pool.get_resource() as res:
-<<<<<<< HEAD
+
             info = r.table("slots").get(id)
             return info
-=======
-            info = r.table("slots").get(id).run(res.conn)
-            return info;
->>>>>>> f25c54b5c934fa4745f20bd56bf16b6af32a4106
+
 
     def SaveSlotInfo(self, serial, type, name,empty, current, info):
         id = '%s_%s_%s'%(serial,type,name)

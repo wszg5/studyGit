@@ -1,28 +1,15 @@
 # coding:utf-8
 import os, sys, time, re, csv
 import util
-<<<<<<< HEAD
-=======
-import multiprocessing
->>>>>>> f25c54b5c934fa4745f20bd56bf16b6af32a4106
 import traceback
+import threading
 import json
-<<<<<<< HEAD
-=======
-
->>>>>>> f25c54b5c934fa4745f20bd56bf16b6af32a4106
 from const import const
 time.sleep(const.WAIT_START_TIME)
 from dbapi import dbapi
 import sys
 
-<<<<<<< HEAD
 # sys.setdefaultencoding('utf8')
-=======
-reload(sys)
-sys.setdefaultencoding('utf8')
-
->>>>>>> f25c54b5c934fa4745f20bd56bf16b6af32a4106
 optpath = os.getcwd()  # 获取当前操作目录
 imgpath = os.path.join(optpath, 'img')  # 截图目录
 dbapi = dbapi()
@@ -63,8 +50,8 @@ def finddevices():
     if len(devices) > 1:
         deviceIds = devices[1:]
         logger.info('共找到%s个手机' % str(len(devices) - 1))
-        #for i in deviceIds:
-            #logger.info('ID为%s' % i)
+        for i in deviceIds:
+            logger.info('ID为%s' % i)
         return deviceIds
     else:
         logger.error('没有找到手机，请检查')
@@ -81,12 +68,7 @@ def runStep(d, z, step):
         o.action(d, z, json.loads(step["arg"]))
 
 def deviceTask(deviceid, port, zport):
-<<<<<<< HEAD
-    device = dbapi.GetDevice(deviceid)
-    taskid = device.get("task_id")
-=======
     taskid = dbapi.GetDeviceTask(deviceid)
->>>>>>> f25c54b5c934fa4745f20bd56bf16b6af32a4106
     from uiautomator import Device
     from zservice import ZDevice
     if  taskid :
@@ -121,7 +103,6 @@ def deviceTask(deviceid, port, zport):
 
 
 def deviceThread(deviceid, port, zport):
-
     while True:
         try:
             deviceTask(deviceid, port, zport)
@@ -132,38 +113,19 @@ def deviceThread(deviceid, port, zport):
 
 
 
-<<<<<<< HEAD
 # 需要配置好adb 环境变量
 # 1.先确定有几台手机
 # 2.再确定有多少个应用
 # 3.先安装mkiller,启动mkiller
 # 4.再安装测试的样本
 # 5.检查是否有取消安装的按钮出现，出现说明测试通过，没出现说明测试失败
-=======
-
-def StartProcess(deviceid):
-    device_port = portDict[deviceid]
-    port = device_port["port"]
-    zport = device_port["zport"]
-    processDict[deviceid] = multiprocessing.Process(target=deviceThread, args=(deviceid, port, zport))
-    processDict[deviceid].name = deviceid
-    processDict[deviceid].daemon = True
-    processDict[deviceid].start()
-
-
-
-processDict = {}
-portDict = {}
-
-
->>>>>>> f25c54b5c934fa4745f20bd56bf16b6af32a4106
 if __name__ == "__main__":
     cleanEnv()
     logger = util.logger
     port = 30000
     zport = 33000
+    threadDict = {}
     while True:
-<<<<<<< HEAD
         devicelist = finddevices()
         for device in devicelist:
             deviceid = device
@@ -175,35 +137,6 @@ if __name__ == "__main__":
             threadDict[deviceid].setDaemon(True)
             threadDict[deviceid].start()
         #for k,v in threadDict: ##循环线程dictionary，对于已经被移除的手机删除线程
-=======
-        try:
-
-            devicelist = finddevices()
-            for device in devicelist:
-                deviceid = device
-
-                taskid = dbapi.GetDeviceTask(deviceid)
-                if taskid:
-                    task = dbapi.GetTask(taskid)
-                    if (task and task.get("status") and task["status"] == "running"):
-                        if (not processDict.has_key(deviceid)):
-                            port = port + 1
-                            zport = zport + 1
-                            portDict[deviceid] = {"port": port, "zport": zport}
-                            StartProcess(deviceid)
-                        else:
-                            p = processDict[deviceid]
-                            if (not p.is_alive()):
-                                StartProcess(deviceid)
-                    else:
-                        if (processDict.has_key(deviceid) and processDict.get(deviceid).is_alive()):
-                            processDict[deviceid].terminate()
-
-
-        except Exception:
-            logger.error(traceback.format_exc())
-
->>>>>>> f25c54b5c934fa4745f20bd56bf16b6af32a4106
           #  t.
          #   x =5
-        time.sleep(30)
+        time.sleep(60)
