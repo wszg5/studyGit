@@ -5,9 +5,6 @@ import re
 
 class XunMa:
 
-
-
-
     def __init__(self):
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                    "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
@@ -16,7 +13,13 @@ class XunMa:
         self.port = 8080
 
     def GetToken(self):
-        path = "/Login?uName=powerman&pWord=13141314&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"
+        from dbapi import dbapi
+        dbapi = dbapi()
+        rk = dbapi.GetCodeSetting()
+        xm_user = rk["xm_user"]
+        xm_pwd = rk["xm_pwd"]
+
+        path = "/Login?uName=%s&pWord=%s&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"%(xm_user, xm_pwd)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         response = conn.getresponse()
@@ -49,6 +52,7 @@ class XunMa:
             response = conn.getresponse()
             if response.status == 200:
                 data = response.read()
+                print data
                 if data.startswith('MSG'):
                     break
             else:
@@ -72,6 +76,7 @@ class XunMa:
             return data
         else:
             return "Error Getting Account, Please check your repo"
+
 
 
     def GetBindCode(self,number,res):
@@ -98,7 +103,6 @@ class XunMa:
 
 
 
-
 if __name__ == '__main__':
     xunma = XunMa()
     # a = xunma.GetToken()
@@ -109,4 +113,3 @@ if __name__ == '__main__':
 
     # result = repo.GetMaterial("8",120,1)
     # result = repo.GetNumber("13",0,1)              #意思是取13号仓库2小时内没有用过的号码，一次取16个
-    xunma.lj()

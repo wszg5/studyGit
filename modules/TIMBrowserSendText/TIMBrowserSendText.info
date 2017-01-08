@@ -1,6 +1,6 @@
 {
 "id": "TIMBrowserSendText",
-"cate":"基础模块",
+"cate":"TIM模块",
 "name":"TIM版浏览器发消息",
 "url": "http://www.bejson.com",
 "version": "1.0",

@@ -1,6 +1,6 @@
 {
 "id": "TIMQQLogin",
-"cate":"TIMQQ登录模块",
+"cate":"TIM模块",
 "name":"TIM登录QQ",
 "url": "http://www.bejson.com",
 "version": "1.0",

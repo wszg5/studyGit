@@ -1,24 +1,29 @@
 # coding:utf-8
-
 import os, sys, time, re, csv
 import util
-
+import multiprocessing
 import traceback
-import threading
 import json
 
 from const import const
 
-time.sleep(const.WAIT_START_TIME)
 
-
+try:
+    rst = int(util.exccmd("awk -F. '{print $1}' /proc/uptime"))
+    if rst < 500:
+        time.sleep(const.WAIT_START_TIME)
+    else:
+        print '系统已启动超过500秒，不再等待，直接拉起'
+except:
+    #noting to do
+    ok = 'ok'
 
 from dbapi import dbapi
-
 import sys
 
 
-# sys.setdefaultencoding('utf8')
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 optpath = os.getcwd()  # 获取当前操作目录
 imgpath = os.path.join(optpath, 'img')  # 截图目录
@@ -39,7 +44,6 @@ def cleanEnv():
     if not os.path.isdir('tmp'):
         os.mkdir('tmp')
 
-
 def runwatch(d, data):
     times = 120
     while True:
@@ -53,7 +57,6 @@ def runwatch(d, data):
         else:
             time.sleep(0.5)
 
-
 def finddevices():
     deviceIds = []
     adb_cmd = os.path.join(os.environ["ANDROID_HOME"], "platform-tools", 'adb devices')
@@ -62,16 +65,13 @@ def finddevices():
     if len(devices) > 1:
         deviceIds = devices[1:]
         logger.info('共找到%s个手机' % str(len(devices) - 1))
-        for i in deviceIds:
-            logger.info('ID为%s' % i)
+        #for i in deviceIds:
+            #logger.info('ID为%s' % i)
         return deviceIds
     else:
         logger.error('没有找到手机，请检查')
         return []
-
         # needcount:需要安装的apk数量，默认为0，既安所有
-
-
 
 def runStep(d, z, step):
     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"%s\""%step["name"])
@@ -83,45 +83,33 @@ def runStep(d, z, step):
         o.action(d, z, json.loads(step["arg"]))
 
 def deviceTask(deviceid, port, zport):
-    device = dbapi.GetDevice(deviceid)
-    taskid = device.get("task_id")
+    taskid = dbapi.GetDeviceTask(deviceid)
     from uiautomator import Device
     from zservice import ZDevice
-
     if  taskid :
         task = dbapi.GetTask(taskid)
-
         if (task and task.get("status") and task["status"] == "running"):
             d = Device(deviceid, port)
             #d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
-
             z = ZDevice(deviceid, zport)
             while True:
                 steps = dbapi.GetTaskSteps(taskid)
-
                 #设置zime输入法
-                d.server.adb.cmd("shell",
-                             "ime set com.zunyun.qk/.ZImeService").wait()
-                d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.qk.unlock").wait()
-
+                d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").wait()
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.unlock").wait()
                 for step in steps:
                     try:
-
                         runStep(d, z, step)
                     except Exception:
                         logger.error(step)
                         logger.error(traceback.format_exc())
                         time.sleep(3)
-
                     #检查设备对应的任务状态
-                    device = dbapi.GetDevice(deviceid)
-                    new_taskid = device.get("task_id")
+                    new_taskid = dbapi.GetDeviceTask(deviceid)
                     if new_taskid is None or new_taskid == "": #任务中删除了该设备
                         return
                     if (new_taskid != taskid): #设备对应的taskid发生了变化
                         return
-
                     task = dbapi.GetTask(new_taskid)
                     if task.get("status") != "running": #任务状态已停止
                         return
@@ -129,11 +117,10 @@ def deviceTask(deviceid, port, zport):
         time.sleep(5)
 
 
-
 def deviceThread(deviceid, port, zport):
+
     while True:
         try:
-
             deviceTask(deviceid, port, zport)
         except Exception:
             logger.error(traceback.format_exc())
@@ -141,31 +128,53 @@ def deviceThread(deviceid, port, zport):
     print("%s thread finished"%deviceid)
 
 
-# 需要配置好adb 环境变量
-# 1.先确定有几台手机
-# 2.再确定有多少个应用
-# 3.先安装mkiller,启动mkiller
-# 4.再安装测试的样本
-# 5.检查是否有取消安装的按钮出现，出现说明测试通过，没出现说明测试失败
+
+
+def StartProcess(deviceid):
+    device_port = portDict[deviceid]
+    port = device_port["port"]
+    zport = device_port["zport"]
+    processDict[deviceid] = multiprocessing.Process(target=deviceThread, args=(deviceid, port, zport))
+    processDict[deviceid].name = deviceid
+    processDict[deviceid].daemon = True
+    processDict[deviceid].start()
+
+
+
+processDict = {}
+portDict = {}
+
+
 if __name__ == "__main__":
     cleanEnv()
     logger = util.logger
     port = 30000
     zport = 33000
-    threadDict = {}
     while True:
-        devicelist = finddevices()
-        for device in devicelist:
-            deviceid = device
-            if (threadDict.has_key(deviceid)): continue
-            port = port + 1
-            zport = zport + 1
-            threadDict[deviceid] = threading.Thread(target=deviceThread, args=(deviceid, port, zport))
-            threadDict[deviceid].setName(deviceid)
-            threadDict[deviceid].setDaemon(True)
-            threadDict[deviceid].start()
+        try:
+            devicelist = finddevices()
+            for device in devicelist:
+                deviceid = device
 
-        #for k,v in threadDict: ##循环线程dictionary，对于已经被移除的手机删除线程
-          #  t.
-         #   x =5
-        time.sleep(60)
+                taskid = dbapi.GetDeviceTask(deviceid)
+                if taskid:
+                    task = dbapi.GetTask(taskid)
+                    if (task and task.get("status") and task["status"] == "running"):
+                        if (not processDict.has_key(deviceid)):
+                            port = port + 1
+                            zport = zport + 1
+                            portDict[deviceid] = {"port": port, "zport": zport}
+                            StartProcess(deviceid)
+                        else:
+                            p = processDict[deviceid]
+                            if (not p.is_alive()):
+                                StartProcess(deviceid)
+                    else:
+                        if (processDict.has_key(deviceid) and processDict.get(deviceid).is_alive()):
+                            processDict[deviceid].terminate()
+
+
+        except Exception:
+            logger.error(traceback.format_exc())
+
+        time.sleep(30)
