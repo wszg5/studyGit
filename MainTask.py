@@ -1,5 +1,4 @@
 # coding:utf-8
-
 import os, sys, time, re, csv
 import util
 import multiprocessing
@@ -19,10 +18,9 @@ except:
     #noting to do
     ok = 'ok'
 
-
 from dbapi import dbapi
-
 import sys
+
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -46,7 +44,6 @@ def cleanEnv():
     if not os.path.isdir('tmp'):
         os.mkdir('tmp')
 
-
 def runwatch(d, data):
     times = 120
     while True:
@@ -59,7 +56,6 @@ def runwatch(d, data):
             break
         else:
             time.sleep(0.5)
-
 
 def finddevices():
     deviceIds = []
@@ -75,10 +71,7 @@ def finddevices():
     else:
         logger.error('没有找到手机，请检查')
         return []
-
         # needcount:需要安装的apk数量，默认为0，既安所有
-
-
 
 def runStep(d, z, step):
     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"%s\""%step["name"])
@@ -93,46 +86,35 @@ def deviceTask(deviceid, port, zport):
     taskid = dbapi.GetDeviceTask(deviceid)
     from uiautomator import Device
     from zservice import ZDevice
-
     if  taskid :
         task = dbapi.GetTask(taskid)
-
         if (task and task.get("status") and task["status"] == "running"):
             d = Device(deviceid, port)
             #d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
-
             z = ZDevice(deviceid, zport)
             while True:
                 steps = dbapi.GetTaskSteps(taskid)
-
                 #设置zime输入法
-                d.server.adb.cmd("shell",
-                             "ime set com.zunyun.qk/.ZImeService").wait()
-                d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.qk.unlock").wait()
-
+                d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").wait()
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.unlock").wait()
                 for step in steps:
                     try:
-
                         runStep(d, z, step)
                     except Exception:
                         logger.error(step)
                         logger.error(traceback.format_exc())
                         time.sleep(3)
-
                     #检查设备对应的任务状态
                     new_taskid = dbapi.GetDeviceTask(deviceid)
                     if new_taskid is None or new_taskid == "": #任务中删除了该设备
                         return
                     if (new_taskid != taskid): #设备对应的taskid发生了变化
                         return
-
                     task = dbapi.GetTask(new_taskid)
                     if task.get("status") != "running": #任务状态已停止
                         return
     else :
         time.sleep(5)
-
 
 
 def deviceThread(deviceid, port, zport):
@@ -170,7 +152,6 @@ if __name__ == "__main__":
     zport = 33000
     while True:
         try:
-
             devicelist = finddevices()
             for device in devicelist:
                 deviceid = device
@@ -196,6 +177,4 @@ if __name__ == "__main__":
         except Exception:
             logger.error(traceback.format_exc())
 
-          #  t.
-         #   x =5
         time.sleep(30)

@@ -59,6 +59,13 @@ def getPluginClass():
     return ImpContact
 
 if __name__ == "__main__":
+<<<<<<< HEAD
+    clazz = getPluginClass()
+    o = clazz()
+    d = Device("HT524SK02829")
+    d.dump(compressed=False)
+    args = {"repo_cate_id":"13","length":"50","time_delay":"3"};    #cate_id是仓库号，length是数量
+=======
     # global args
     clazz = getPluginClass()
     o = clazz()
@@ -67,4 +74,9 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.dump(compressed=False)
     args = {"repo_cate_id":"36","length":"30","time_delay":"3"}    #cate_id是仓库号，length是数量
+<<<<<<< HEAD
+>>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
+    o.action(d, args)
+=======
     o.action(d,z, args)
+>>>>>>> 82d6a12b22ce36568cb542d03c10029a964b232b

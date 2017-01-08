@@ -52,7 +52,8 @@ class dbapi:
                            db=const.RETHINKDB_NAME)
         with pool.get_resource() as res:
             info = r.table("slots").get(id).run(res.conn)
-            return info;
+            return info
+
 
     def SaveSlotInfo(self, serial, type, name,empty, current, info):
         id = '%s_%s_%s'%(serial,type,name)

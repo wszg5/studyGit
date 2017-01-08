@@ -16,6 +16,17 @@ class EIMLogin:
         self.slot = slot('eim')
 
 
+<<<<<<< HEAD
+
+
+
+    def action(self, d, args):
+        d.server.adb.cmd("shell", "pm clear com.tencent.eim").wait()  # 清除缓存
+        # d.server.adb.cmd("shell", "am force-stop com.tencent.eim").wait()  # 强制停止   3001369923  Bn2kJq5l
+        d.server.adb.cmd("shell",
+                         "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+        d()
+=======
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
         randomNum = random.randint(0, 1000);  # 生成的随机整数n，其中0<=n<=100
@@ -167,8 +178,12 @@ class EIMLogin:
                 self.repo.BackupInfo(cate_id,d,name,info)      #将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
                 self.slot.backup(d, name, info)  # 登陆之后备份
 
+<<<<<<< HEAD
+>>>>>>> 8f9b11ca2ef866b4e9aad3b3b58faea961148ab2
+=======
             else:
                 return
+>>>>>>> 82d6a12b22ce36568cb542d03c10029a964b232b
 
         else:  # 有空卡槽的情况
             z.set_mobile_data(False)

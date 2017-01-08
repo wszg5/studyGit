@@ -4,7 +4,7 @@ import time
 import re
 
 
-class XunMa640:
+class XunMa2356:
 
     def __init__(self):
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
@@ -14,12 +14,7 @@ class XunMa640:
         self.port = 8080
 
     def GetToken(self):
-        from dbapi import dbapi
-        dbapi = dbapi()
-        rk = dbapi.GetCodeSetting()
-        xm_user = rk["xm_user"]
-        xm_pwd = rk["xm_pwd"]
-        path = "/Login?uName=%s&pWord=%s&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"%(xm_user, xm_pwd)
+        path = "/Login?uName=powerman&pWord=13141314&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         response = conn.getresponse()
@@ -29,9 +24,9 @@ class XunMa640:
         else:
             return "Error Getting Account, Please check your repo"
 
-        #ip = 640
-    def GetPhoneNumber(self, token, ip):
-        path = "/getPhone?ItemId="+ip+"&token=" + token + "&Count=1"
+        #ip = 2356
+    def GetPhoneNumber(self, token):
+        path = "/getPhone?ItemId=2356&token=" + token + "&Count=1"
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         response = conn.getresponse()
@@ -43,33 +38,10 @@ class XunMa640:
         else:
             return "Error Getting Account, Please check your repo"
 
-        # ip = 144
-    def UploadPhoneNumber(self, number, token):
-
-        path = "/getPhone?ItemId=144&token=" + token + "&Phone="+number+""
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET", path)
-        try:
-            response = conn.getresponse()
-        except Exception, e:
-            print e
-            return 0
-
-        if response.status == 200:
-            data = response.read()
-            data = data.decode('GBK')
-            if len(data) == 12:
-                return data
-            else:
-                return 0
-        else:
-            return "Error Getting Account, Please check your repo"
-
-
     def GetCode(self, number, token):
-
-        for i in range(1, 60):
-            time.sleep(1)
+        print token
+        for i in range(0, 55, +1):
+            time.sleep(2)
             path = "/getQueue?token=" + token + ""
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
@@ -81,18 +53,18 @@ class XunMa640:
                     break
             else:
                 return "Error Getting Account, Please check your repo"
-        if data.startswith('MSG'):
-
-            data = data.decode('GBK')
-            res = re.findall(r"MSG&144&" + number + "&(.+?)\[End]", data)
-            res = re.findall("\d{6}", res[0])
-            return res[0]
-        else:
-            return ""
+        if data is None:
+            return 0;
+        data = data.decode('GBK')
+        res = re.findall(r"MSG&2356&" + number + "&(.+?)\[End]", data)
+        res = re.findall("\d{6}", res[0])
+        res.append(i)
+        print  i
+        return res
 
 
 
 
 
 if __name__ == '__main__':
-    xunma640 = XunMa640()
+    xunma2356 = XunMa2356()

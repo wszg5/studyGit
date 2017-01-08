@@ -5,9 +5,6 @@ import re
 
 class XunMa:
 
-
-
-
     def __init__(self):
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                    "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
@@ -55,6 +52,7 @@ class XunMa:
             response = conn.getresponse()
             if response.status == 200:
                 data = response.read()
+                print data
                 if data.startswith('MSG'):
                     break
             else:
@@ -80,6 +78,7 @@ class XunMa:
             return "Error Getting Account, Please check your repo"
 
 
+
     def GetBindCode(self,number,res):
         for i in range(0,32,+1):
             time.sleep(2)
@@ -103,7 +102,6 @@ class XunMa:
 
 
 
-
 if __name__ == '__main__':
     xunma = XunMa()
     # a = xunma.GetToken()
@@ -114,4 +112,3 @@ if __name__ == '__main__':
 
     # result = repo.GetMaterial("8",120,1)
     # result = repo.GetNumber("13",0,1)              #意思是取13号仓库2小时内没有用过的号码，一次取16个
-    xunma.lj()
