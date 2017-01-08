@@ -16,7 +16,13 @@ class XunMa:
         self.port = 8080
 
     def GetToken(self):
-        path = "/Login?uName=powerman&pWord=13141314&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"
+        from dbapi import dbapi
+        dbapi = dbapi()
+        rk = dbapi.GetCodeSetting()
+        xm_user = rk["xm_user"]
+        xm_pwd = rk["xm_pwd"]
+
+        path = "/Login?uName=%s&pWord=%s&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"%(xm_user, xm_pwd)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         response = conn.getresponse()

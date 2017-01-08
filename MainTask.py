@@ -8,8 +8,16 @@ import json
 
 from const import const
 
-time.sleep(const.WAIT_START_TIME)
 
+try:
+    rst = int(util.exccmd("awk -F. '{print $1}' /proc/uptime"))
+    if rst < 500:
+        time.sleep(const.WAIT_START_TIME)
+    else:
+        print '系统已启动超过500秒，不再等待，直接拉起'
+except:
+    #noting to do
+    ok = 'ok'
 
 
 from dbapi import dbapi
