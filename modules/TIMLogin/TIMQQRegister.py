@@ -1,6 +1,6 @@
 # coding:utf-8
 from uiautomator import Device
-from XunMa640 import *
+from XunMa import *
 from Repo import *
 import time
 from zservice import ZDevice
@@ -9,7 +9,7 @@ import string,random
 
 class TIMQQRegister:
     def __init__(self):
-        self.XunMa640 = XunMa640()
+        self.XunMa = XunMa()
         self.repo = Repo()
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                         "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
@@ -35,8 +35,8 @@ class TIMQQRegister:
 
 
             try:
-                token = self.XunMa640.GetToken()
-                phoneNumber = self.XunMa640.GetPhoneNumber(token, '640')
+                token = self.XunMa.GetToken()
+                phoneNumber = self.XunMa.GetPhoneNumber(token, '640')
             except Exception, e:
                 print Exception, ":", e
                 continue
@@ -66,13 +66,13 @@ class TIMQQRegister:
 
             else:
 
-                data = self.XunMa640.UploadPhoneNumber(phoneNumber, token)
+                data = self.XunMa.UploadPhoneNumber(phoneNumber, token)
                 if data == 0:
                     print "************匹配号码失败**************"
                     continue
 
                 try:
-                    vertifyCode = self.XunMa640.GetCode(phoneNumber, token)  # 获取验证码
+                    vertifyCode = self.XunMa.GetTIMManyCode(phoneNumber, token)  # 获取验证码
                 except Exception, e:
                     print Exception, ":", e
                     continue
