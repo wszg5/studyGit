@@ -46,7 +46,7 @@ class dbapi:
             return steps
 
     def GetSlotInfo(self, serial, appType, slotNum):
-        id = '%s_%s_%s'%(serial,appType,slotNum)
+        id = '%s_%s_%s' % (serial, appType, slotNum)
         pool = RethinkPool(max_conns=120, initial_conns=10, host=const.SERVER_IP,
                            port=28015,
                            db=const.RETHINKDB_NAME)

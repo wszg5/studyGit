@@ -4,10 +4,7 @@ import util
 import multiprocessing
 import traceback
 import json
-
 from const import const
-
-
 try:
     rst = int(util.exccmd("awk -F. '{print $1}' /proc/uptime"))
     if rst < 500:
@@ -17,18 +14,13 @@ try:
 except:
     #noting to do
     ok = 'ok'
-
 from dbapi import dbapi
 import sys
-
-
 reload(sys)
 sys.setdefaultencoding('utf8')
-
 optpath = os.getcwd()  # 获取当前操作目录
 imgpath = os.path.join(optpath, 'img')  # 截图目录
 dbapi = dbapi()
-
 def cleanEnv():
     #os.system('adb kill-server')
     needClean = ['log.log', 'img', 'tmp']
@@ -43,7 +35,6 @@ def cleanEnv():
             os.system(cmd)
     if not os.path.isdir('tmp'):
         os.mkdir('tmp')
-
 def runwatch(d, data):
     times = 120
     while True:
@@ -56,7 +47,6 @@ def runwatch(d, data):
             break
         else:
             time.sleep(0.5)
-
 def finddevices():
     deviceIds = []
     adb_cmd = os.path.join(os.environ["ANDROID_HOME"], "platform-tools", 'adb devices')
@@ -72,7 +62,6 @@ def finddevices():
         logger.error('没有找到手机，请检查')
         return []
         # needcount:需要安装的apk数量，默认为0，既安所有
-
 def runStep(d, z, step):
     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"%s\""%step["name"])
     pluginName = step["mid"]
@@ -81,7 +70,6 @@ def runStep(d, z, step):
     o = clazz()
     if step.has_key("arg"):
         o.action(d, z, json.loads(step["arg"]))
-
 def deviceTask(deviceid, port, zport):
     taskid = dbapi.GetDeviceTask(deviceid)
     from uiautomator import Device
@@ -115,10 +103,7 @@ def deviceTask(deviceid, port, zport):
                         return
     else :
         time.sleep(5)
-
-
 def deviceThread(deviceid, port, zport):
-
     while True:
         try:
             deviceTask(deviceid, port, zport)
@@ -126,10 +111,6 @@ def deviceThread(deviceid, port, zport):
             logger.error(traceback.format_exc())
         time.sleep(5)
     print("%s thread finished"%deviceid)
-
-
-
-
 def StartProcess(deviceid):
     device_port = portDict[deviceid]
     port = device_port["port"]
@@ -138,13 +119,8 @@ def StartProcess(deviceid):
     processDict[deviceid].name = deviceid
     processDict[deviceid].daemon = True
     processDict[deviceid].start()
-
-
-
 processDict = {}
 portDict = {}
-
-
 if __name__ == "__main__":
     cleanEnv()
     logger = util.logger
@@ -155,7 +131,6 @@ if __name__ == "__main__":
             devicelist = finddevices()
             for device in devicelist:
                 deviceid = device
-
                 taskid = dbapi.GetDeviceTask(deviceid)
                 if taskid:
                     task = dbapi.GetTask(taskid)
@@ -172,9 +147,6 @@ if __name__ == "__main__":
                     else:
                         if (processDict.has_key(deviceid) and processDict.get(deviceid).is_alive()):
                             processDict[deviceid].terminate()
-
-
         except Exception:
             logger.error(traceback.format_exc())
-
         time.sleep(30)

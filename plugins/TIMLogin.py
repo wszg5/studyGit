@@ -22,13 +22,13 @@ class TIMLogin:
         time.sleep(8)
         d(text='新用户', resourceId='com.tencent.tim:id/btn_register').click()
         token = self.XunMa.GetToken()
-        phoneNumber = self.XunMa.GetPhoneNumber(token)
+        phoneNumber = self.XunMa.GetPhoneNumber(token, '144')
         print(phoneNumber)
         d(text='请输入你的手机号码', resourceId='com.tencent.tim:id/name').set_text(phoneNumber)
         d(text='下一步', resourceId='com.tencent.tim:id/name').click()
         time.sleep(4)
         try:
-            vertifyCode = self.XunMa.GetCode(phoneNumber, token)  # 获取验证码
+            vertifyCode = self.XunMa.GetTIMLittleCode(phoneNumber, token)  # 获取验证码
         except Exception:
             d(textContains='重新发送', resourceId='com.tencent.tim:id/name').click()
             vertifyCode = self.XunMa.GetCode(phoneNumber, token)  # 获取验证码

@@ -1,7 +1,7 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-from XunMa2356 import *
+from XunMa import *
 import os, time, datetime, random
 
 
@@ -11,7 +11,7 @@ class RegisterAccount:
     def __init__(self):
 
         self.repo = Repo()
-        self.XunMa2356 = XunMa2356()
+        self.XunMa = XunMa()
 
     def action(self, d, args):
         for i in range(0, 72, +1):
@@ -29,8 +29,8 @@ class RegisterAccount:
 
                     break
             time.sleep(2)
-            token = self.XunMa2356.GetToken()
-            phoneNumber = self.XunMa2356.GetPhoneNumber(token)
+            token = self.XunMa.GetToken()
+            phoneNumber = self.XunMa.GetPhoneNumber(token, '2356')
             print token
             print phoneNumber
             d(index=1, resourceId='com.tencent.mm:id/gl').set_text('magic')
@@ -40,7 +40,7 @@ class RegisterAccount:
             d(resourceId='com.tencent.mm:id/fe', index=0).child(index=3, resourceId='com.tencent.mm:id/c2d').child(index=1,resourceId='com.tencent.mm:id/gl').set_text('13141314abc')
             d(text='注册', className='android.widget.Button').click()
             d(text='确定', className='android.widget.Button').click()
-            vertifyCode = self.XunMa2356.GetCode(phoneNumber, token)
+            vertifyCode = self.XunMa.GetCode(phoneNumber, token)
             time.sleep(35-vertifyCode[1]*2)
             print vertifyCode
             d(text='请输入验证码', className='android.widget.EditText').set_text(vertifyCode[0])
