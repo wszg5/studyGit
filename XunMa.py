@@ -40,7 +40,9 @@ class XunMa:
         response = conn.getresponse()
         if response.status == 200:
             data = response.read()
+            print data
             data = re.findall("\d{11}", str(data))
+
             data = data[0]
             return data
         else:

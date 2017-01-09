@@ -53,7 +53,7 @@ class TIMQQRegister:
                 continue
 
 
-            print phoneNumber
+            # print phoneNumber
 
             try:
                 d(text='请输入你的手机号码', resourceId='com.tencent.tim:id/name').set_text(phoneNumber)
@@ -114,8 +114,8 @@ class TIMQQRegister:
                 d(text='注册', resourceId='com.tencent.tim:id/btn_register').click()
                 obj = d(index=1, className='android.widget.TextView', resourceId='com.tencent.tim:id/name').info
                 qqNumber = obj["text"]
-                d(text='登录', className='android.widget.Button').click()
-                time.sleep(8)
+                # d(text='登录', className='android.widget.Button').click()
+                # time.sleep(8)
 
                 print qqNumber
                 print i
