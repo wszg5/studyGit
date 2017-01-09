@@ -17,13 +17,24 @@ class TIMQQRegister:
         self.domain = "192.168.1.88"
         self.port = 8888
 
-    def action(self, d,z):
-
+    def action(self, d,z,args):
+        cateId = args['repo_cate_id']
         for i in range(1, 1000):
 
             d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate()  # 清除缓存
             d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-            # time.sleep(2)
+            # time.sleep(5)
+            # if d(resourceId='com.tencent.tim:id/title', index=1, text='熟悉的QQ习惯').exists:
+            #     str = d.info  # 获取屏幕大小等信息
+            #     height = str["displayHeight"]
+            #     width = str["displayWidth"]
+            #     for i in range(1, 3):
+            #         d.swipe(width * 0.75, height * 0.5, width * 0.05, height * 0.5)
+            #         time.sleep(1)
+            #     d(resourceId='com.tencent.tim:id/name', index=1, text='立即体验').click()
+
+
+            time.sleep(2)
             for k in range(1, 35):
                 time.sleep(1)
                 if d(resourceId='com.tencent.tim:id/btn_register',index=1,text='新用户').exists:
@@ -43,12 +54,9 @@ class TIMQQRegister:
 
 
             print phoneNumber
-            time.sleep(2)
-            if d(resourceId='com.tencent.tim:id/btn_register', index=1, text='新用户').exists:
-                d(resourceId='com.tencent.tim:id/btn_register', index=1, text='新用户').click()
 
             try:
-                d(text='请输入你的手机号码', resourceId='com.tencent.tim:id/name').set_text(str(phoneNumber))
+                d(text='请输入你的手机号码', resourceId='com.tencent.tim:id/name').set_text(phoneNumber)
                 d(text='下一步', resourceId='com.tencent.tim:id/name').click()
             except Exception, e:
                 continue
@@ -83,7 +91,7 @@ class TIMQQRegister:
                     continue
                 d(text='请输入短信验证码', resourceId='com.tencent.tim:id/name').set_text(vertifyCode)
 
-                nickNameList = self.GetMaterial(56, 0, 1)
+                nickNameList = self.GetMaterial(cateId, 0, 1)
                 if len(nickNameList)==0:
                     continue
                 nickName = nickNameList[0]["content"]
@@ -115,8 +123,10 @@ class TIMQQRegister:
 
             self.TIMUploadAccount(qqNumber, password, phoneNumber)
             z.set_mobile_data(False)
-            time.sleep(8)
+            time.sleep(6)
             z.set_mobile_data(True)
+            if (args["time_delay"]):
+                time.sleep(int(args["time_delay"]))
 
 
 
@@ -158,13 +168,14 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT536SK01667")
-    from zservice import ZDevice
     z = ZDevice("HT536SK01667")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").communicate()    #打开android设置页面
 
     # try:
-    o.action(d, z)
+    args = {"repo_cate_id": "56", "time_delay": "3", "time_limit": "120"};
+    o.action(d, z, args)
+
     # except Exception, e:
     #     print Exception, ":", e
     #     if d(className = 'android.widget.Button', text='确定').exists:

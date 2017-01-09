@@ -5,8 +5,15 @@
 "url": "http://www.bejson.com",
 "version": "1.0",
 "icon":"vcard-o",
-"remark":"TIM登录QQ",
+"remark":"TIM版本v1.0.2.95",
 "setting":[
+{
+"id": "repo_cate_id",
+"name":"QQ昵称",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
 {
 "id": "time_delay",
 "name":"延时",

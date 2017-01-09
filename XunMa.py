@@ -18,8 +18,11 @@ class XunMa:
         rk = dbapi.GetCodeSetting()
         xm_user = rk["xm_user"]
         xm_pwd = rk["xm_pwd"]
+        user =  xm_user.encode("utf-8")
+        pwd = xm_pwd.encode("utf-8")
 
-        path = "/Login?uName=%s&pWord=%s&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"%(xm_user, xm_pwd)
+        # path = "/Login?uName=powerman&pWord=13141314&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"
+        path = "/Login?uName="+user+"&pWord="+pwd+"&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         response = conn.getresponse()
@@ -174,7 +177,7 @@ class XunMa:
 
 if __name__ == '__main__':
     xunma = XunMa()
-    # a = xunma.GetToken()
+    a = xunma.GetToken()
     # b = xunma.GetPhoneNumber(a)
     # a = xunma.GetCode(b,a)
     # result = repo.GetAccount("6", 120, 1)
