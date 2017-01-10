@@ -16,11 +16,8 @@ class XunMa:
         from dbapi import dbapi
         dbapi = dbapi()
         if useCache :
-            tokenCache = dbapi.GetCache('XunMa')
+            tokenCache = dbapi.GetCache('XunMa', 300) #讯码token有效期５分钟
             if tokenCache:
-                updatedAt = tokenCache["UpdatedAt"]
-                #TODO如果小于一份种
-                print updatedAt
                 return tokenCache["value"]
         rk = dbapi.GetCodeSetting()
         xm_user = rk["xm_user"].encode("utf-8")

@@ -22,7 +22,8 @@ class slot:
 
         elif (self.type == "mobileqq"):
             self.package = "com.tencent.mobileqq"
-            self.paths = ['shared_prefs','txlib','files', 'ar', 'config','txPttlib']
+            #self.paths = ['shared_prefs','txlib','files', 'ar', 'config','txPttlib']
+            self.paths = ['files']
             self.maxSlot = const.MAX_SLOTS_MOBILEQQ
 
         elif (self.type == "qqlite"):
@@ -39,8 +40,8 @@ class slot:
             raise SyntaxError("目前还不支持%s卡槽"%self.type)
 
     def backup(self, d, name, info):
-        d.server.adb.cmd("shell", "su -c 'chmod -R 777 /data/data/%s/'"%self.package).wait()
-        d.server.adb.cmd("shell", "su -c 'mkdir /data/data/com.zy.bak/'").wait()
+        d.server.adb.cmd("shell", "su -c 'chmod -R 777 /data/data/%s/'"%self.package).communicate()
+        d.server.adb.cmd("shell", "su -c 'mkdir /data/data/com.zy.bak/'").communicate()
         d.server.adb.cmd("shell", "su -c 'chmod -R 777 /data/data/com.zy.bak/'").wait()
         d.server.adb.cmd("shell", "mkdir /data/data/com.zy.bak/%s"%self.type).wait()
         d.server.adb.cmd("shell", "rm -r -f /data/data/com.zy.bak/%s/%s/"%(self.type,name)).wait()

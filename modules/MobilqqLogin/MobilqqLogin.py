@@ -205,7 +205,9 @@ if __name__ == "__main__":
     # slot.restore(d, 9)
 
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"59","time_limit":"1","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    slot.restore(d, 3)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
+
+    args = {"repo_cate_id":"59","time_limit":"3","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)
