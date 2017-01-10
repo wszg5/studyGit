@@ -108,3 +108,24 @@ class dbapi:
             xm_pwd = r.table('setting').get('xm_password').run(res.conn)
 
             return {"rk_user":rk_user["value"], "rk_pwd":rk_pwd["value"],"xm_user":xm_user["value"], "xm_pwd":xm_pwd["value"]}
+
+
+    def GetCache(self, key):
+        pool = RethinkPool(max_conns=120, initial_conns=10, host=const.SERVER_IP,
+                           port=28015,
+                           db=const.RETHINKDB_NAME)
+        with pool.get_resource() as res:
+            res = r.table('setting').get(key).run(res.conn)
+            return res
+
+    def SetCache(self, key, value):
+        pool = RethinkPool(max_conns=120, initial_conns=10, host=const.SERVER_IP,
+                           port=28015,
+                           db=const.RETHINKDB_NAME)
+        with pool.get_resource() as res:
+            cache = {"key": key, "value": value, "UpdatedAt": r.now().run(res.conn, time_format="raw")}
+
+            stats = r.table("setting").get(key).update(cache).run(res.conn)
+            if stats["skipped"]:
+                r.table("setting").insert(cache).run(res.conn)
+

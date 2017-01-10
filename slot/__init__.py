@@ -27,7 +27,7 @@ class slot:
 
         elif (self.type == "qqlite"):
             self.package = "com.tencent.qqlite"
-            self.paths = ['shared_prefs','txlib','files']
+            self.paths = ['shared_prefs','txlib','files','config']
             self.maxSlot = const.MAX_SLOTS_QQLITE
 
         elif (self.type == "eim"):
@@ -50,21 +50,20 @@ class slot:
         for path in self.paths:
             d.server.adb.cmd("shell", "cp -r -f -p /data/data/%s/%s/  /data/data/com.zy.bak/%s/%s/" % (self.package, path, self.type, name)).wait()
 
-        d.server.adb.cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
+        #d.server.adb.cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
 
         self.dbapi.SaveSlotInfo(d.server.adb.device_serial(), self.type, name, "false", "true", info)
 
     def restore(self, d, name):
-        d.server.adb.cmd("shell", "am force-stop %s"%self.package).wait()
+        d.server.adb.cmd("shell", "pm clear %s"%self.package).wait()
         #d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()
-        d.server.adb.cmd("shell", "rm -r -f  /data/data/com.zy.bak/%s/zy_name_*"%type).wait()
+        #d.server.adb.cmd("shell", "rm -r -f  /data/data/com.zy.bak/%s/zy_name_*"%type).wait()
         for path in self.paths:
-            d.server.adb.cmd("shell", "rm -r -f /data/data/%s/%s" % (self.package, path)).communicate()
             d.server.adb.cmd("shell", "cp -r -f -p /data/data/com.zy.bak/%s/%s/%s/ /data/data/%s/"%(self.type, name, path, self.package)).communicate()
 
         #d.server.adb.cmd("shell", "cp -r -f -p /data/data/com.zy.bak/tim/%s/databases/ /data/data/com.tencent.tim/"%name).wait()
 
-        d.server.adb.cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
+        #d.server.adb.cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
 
         self.dbapi.PickSlot(d.server.adb.device_serial(), self.type, name)
 

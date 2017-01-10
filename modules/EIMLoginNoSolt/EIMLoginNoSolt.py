@@ -35,11 +35,11 @@ class EIMLogin:
         time.sleep(1)
         t = 1
         while t == 1:         #直到登陆成功为止
-            time_limit1 = args['time_limit1']
+            time_limit = args['time_limit']         #帐号提取时间间隔
             wait = 1
             while wait == 1:  # 判断仓库是否有东西　　　　　　　直到仓库有东西为止
                 cate_id = args["repo_cate_id"]
-                numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
+                numbers = self.repo.GetAccount(cate_id, time_limit, 1)
                 print(numbers)
                 try:
                     QQNumber = numbers[0]['number']  # 即将登陆的QQ号
@@ -57,7 +57,7 @@ class EIMLogin:
             d(resourceId='com.tencent.eim:id/password', description='请输入密码').set_text(QQPassword)  # Bn2kJq5l   QQPassword
             d(text='登 录', resourceId='com.tencent.eim:id/login').click()
             time.sleep(4)
-            if d(text='企业QQ').exists:
+            if d(text='企业QQ').exists:        #这些判断为直接登陆成功的情况
                 d(text='企业QQ').click()
                 if d(text='仅此一次').exists:
                     d(text='仅此一次').click()
@@ -65,7 +65,6 @@ class EIMLogin:
                 return  QQNumber   # 放到方法里改为return
 
             if d(text='帐号无法登录', resourceId='com.tencent.eim:id/dialogTitle').exists:  # 帐号被冻结
-                self.repo.BackupInfo(cate_id, 'frozen', QQNumber, '')
                 break
 
             co = RClient()
@@ -113,49 +112,11 @@ class EIMLogin:
                 if d(text='输入验证码').exists:           #验证码输入错误的情况
                     continue
                 else:
-                    self.repo.BackupInfo(cate_id, 'frozen', QQNumber, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, ''))  # 仓库号,使用中,QQ号,设备号_卡槽号
                     break
 
     def action(self, d,z, args):
-        time_limit = args['time_limit']
-        cate_id = args["repo_cate_id"]
-        name = self.slot.getEmpty(d)  # 取空卡槽
-        print(name)
-        if name == 0:
-            name = self.slot.getSlot(d, time_limit)  # 没有空卡槽，取time_limit小时没用过的卡槽
-            while name == 0:  # 2小时没有用过的卡槽也为空的情况
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"EIM卡槽全满，无间隔时间段未用\"").communicate()
-                time.sleep(30)
-                name = self.slot.getSlot(d, time_limit)
 
-            z.set_mobile_data(False)
-            time.sleep(3)
-            self.slot.restore(d, name)  # 有２小时没用过的卡槽情况，切换卡槽
-            print("切换为"+str(name))
-            z.set_mobile_data(True)
-            time.sleep(8)
-
-            d.server.adb.cmd("shell","am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-            time.sleep(5)
-            d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"卡槽成功切换为" + str(name) + "号\"").communicate()
-            time.sleep(5)
-            if d(text='搜索', resourceId='com.tencent.eim:id/name').exists:
-                obj = self.slot.getSlotInfo(d, name)  # 得到切换后的QQ号
-                info = obj['info']  # info为QQ号
-                self.repo.BackupInfo(cate_id, 'using', info,'%s_%s_%s' % (d.server.adb.device_serial(), self.type,name,))  # 仓库号，状态，QQ号，备注设备id_卡槽id
-            else:  # 切换不成功的情况
-                info = self.login(d, args)  # 帐号无法登陆则登陆,重新登陆
-                self.slot.backup(d, name, info)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
-                self.repo.BackupInfo(cate_id, 'using', info, '%s_%s_%s' % (d.server.adb.device_serial(),self.type, name))  # 将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
-
-        else:  # 有空卡槽的情况
-            z.set_mobile_data(False)
-            time.sleep(3)
-            z.set_mobile_data(True)
-            time.sleep(8)
-            info = self.login(d, args)
-            self.slot.backup(d, name, info)  # 设备信息，卡槽号，QQ号
-            self.repo.BackupInfo(cate_id, 'using', info,'%s_%s' % (d.server.adb.device_serial(), name))  # 仓库号,使用中,QQ号,设备号_卡槽号
+        info = self.login(d, args)
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -169,11 +130,8 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    # d.dump(compressed=False)
-    # slot = slot('eim')
-
-    # slot.restore(d, 2)  # 有２小时没用过的卡槽情况，切换卡槽
 
 
-    args = {"repo_cate_id":"55","time_limit":"10","time_limit1":"10","time_delay":"3"};    #cate_id是仓库号，length是数量
+
+    args = {"repo_cate_id":"55","time_limit":"0","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

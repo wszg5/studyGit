@@ -9,7 +9,7 @@ import string,random
 
 class TIMQQRegister:
     def __init__(self):
-        self.XunMa = XunMa()
+        self.xunma = XunMa()
         self.repo = Repo()
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                         "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
@@ -21,42 +21,30 @@ class TIMQQRegister:
 
         for i in range(1, 1000):
 
-            d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate()  # 清除缓存
-            d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-            # time.sleep(2)
-            for k in range(1, 35):
-                time.sleep(1)
-                if d(resourceId='com.tencent.tim:id/btn_register',index=1,text='新用户').exists:
-                    d(resourceId='com.tencent.tim:id/btn_register', index=1, text='新用户').click()
-                    break
+            d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
+            d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+            d(resourceId='com.tencent.mobileqq:id/btn_register', index=1, text='新用户').click()
+            newStart = 1
+            while newStart == 1:
+                token = self.xunma.GetToken()
+                try:
+                    phoneNumber = self.xunma.GetPhoneNumber(token, '640')
+                    newStart = 0
+                except Exception:
+                    time.sleep(2)
 
-            if k==35:
-                continue
-
-
-            try:
-                token = self.XunMa.GetToken()
-                phoneNumber = self.XunMa.GetPhoneNumber(token, '640')
-            except Exception:
-                print (Exception, ":",)
-                continue
+            d(text='请输入你的手机号码', resourceId='com.tencent.mobileqq:id/name').set_text(phoneNumber)
+            d(text='下一步', resourceId='com.tencent.mobileqq:id/name').click()
+            d(descriptionContains='马上去发短信',index=0).click()
+            d(text='添加文本',resourceId='com.htc.sense.mms:id/msg_text_editor').set_text('zc')
+            d(className='android.widget.ImageButton',index='1').click()
 
 
-            print (phoneNumber)
-            time.sleep(2)
-            if d(resourceId='com.tencent.tim:id/btn_register', index=1, text='新用户').exists:
-                d(resourceId='com.tencent.tim:id/btn_register', index=1, text='新用户').click()
-
-            try:
-                d(text='请输入你的手机号码', resourceId='com.tencent.tim:id/name').set_text(str(phoneNumber))
-                d(text='下一步', resourceId='com.tencent.tim:id/name').click()
-            except Exception:
-                continue
 
 
             for j in range(1, 35):
                 time.sleep(1)
-                if d(text='请输入短信验证码', resourceId='com.tencent.tim:id/name').exists:
+                if d(text='请输入短信验证码', resourceId='com.tencent.mobileqq:id/name').exists:
                     break
 
             time.sleep(1)
@@ -74,25 +62,25 @@ class TIMQQRegister:
                 try:
                     vertifyCode = self.XunMa.GetTIMManyCode(phoneNumber, token)  # 获取验证码
                 except Exception:
-                    print (Exception, ":", e)
+                    print (Exception, ":")
                     continue
 
 
                 if vertifyCode == "":
                     print ("************+++++++++验证码请求失败++++++**************")
                     continue
-                d(text='请输入短信验证码', resourceId='com.tencent.tim:id/name').set_text(vertifyCode)
+                d(text='请输入短信验证码', resourceId='com.tencent.mobileqq:id/name').set_text(vertifyCode)
 
                 nickNameList = self.GetMaterial(56, 0, 1)
                 if len(nickNameList)==0:
                     continue
                 nickName = nickNameList[0]["content"]
                 time.sleep(1)
-                d(text='下一步', resourceId='com.tencent.tim:id/name').click()
+                d(text='下一步', resourceId='com.tencent.mobileqq:id/name').click()
                 time.sleep(2)
 
                 try:
-                    d(resourceId='com.tencent.tim:id/action_sheet_button',textContains='维持绑定').click()  # ****有问题，会crash****
+                    d(resourceId='com.tencent.mobileqq:id/action_sheet_button',textContains='维持绑定').click()  # ****有问题，会crash****
                 except Exception:
                     print (Exception, ":")
                     continue
@@ -103,8 +91,8 @@ class TIMQQRegister:
 
                 password = self.GenPassword(6)
                 d(text='密码', className='android.widget.EditText').set_text(password)
-                d(text='注册', resourceId='com.tencent.tim:id/btn_register').click()
-                obj = d(index=1, className='android.widget.TextView', resourceId='com.tencent.tim:id/name').info
+                d(text='注册', resourceId='com.tencent.mobileqq:id/btn_register').click()
+                obj = d(index=1, className='android.widget.TextView', resourceId='com.tencent.mobileqq:id/name').info
                 qqNumber = obj["text"]
                 d(text='登录', className='android.widget.Button').click()
                 time.sleep(8)
@@ -157,9 +145,9 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT536SK01667")
+    d = Device("HT4A4SK00901")
     from zservice import ZDevice
-    z = ZDevice("HT536SK01667")
+    z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").communicate()    #打开android设置页面
 
