@@ -5,10 +5,9 @@ import os, time, datetime, random
 
 
 class ImpContact:
+
     def __init__(self):
         self.repo = Repo()
-
-
 
 
     def action(self, d, args):
@@ -17,9 +16,6 @@ class ImpContact:
         time.sleep(5)
     # RunApp "com.tencent.mm", ".plugin.sns.ui.SnsTimeLineUI" '朋友圈
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/.plugin.sns.ui.SnsTimeLineUI").wait()  # 将微信拉起来
-
-
-
 
         d(description='更多功能按钮',className='android.widget.RelativeLayout').click()
         time.sleep(1)

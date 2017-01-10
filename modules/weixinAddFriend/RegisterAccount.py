@@ -40,7 +40,7 @@ class RegisterAccount:
             d(resourceId='com.tencent.mm:id/fe', index=0).child(index=3, resourceId='com.tencent.mm:id/c2d').child(index=1,resourceId='com.tencent.mm:id/gl').set_text('13141314abc')
             d(text='注册', className='android.widget.Button').click()
             d(text='确定', className='android.widget.Button').click()
-            vertifyCode = self.XunMa.GetCode(phoneNumber, token)
+            vertifyCode = self.XunMa.GetTIMLittleCode(phoneNumber, token)
             time.sleep(35-vertifyCode[1]*2)
             print vertifyCode
             d(text='请输入验证码', className='android.widget.EditText').set_text(vertifyCode[0])
@@ -63,7 +63,7 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT49XSK01883")
+    d = Device("HT4BDSK00858")
     d.dump(compressed=False)
     args = {"repo_number_cate_id": "13", "repo_material_cate_id": "8", "gender": "女", "add_count": "9","time_delay": "3"}  # cate_id是仓库号，发中文问题
     o.action(d, args)
