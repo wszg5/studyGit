@@ -1,11 +1,11 @@
 {
 "id": "MobilqqLogin",
 "cate":"QQ模块",
-"name":"登录普通QQ",
+"name":"登录普通QQ(有卡槽)",
 "url": "http://www.bejson.com",
 "version": "1.0",
 "icon":"vcard-o",
-"remark":"登录普通QQ",
+"remark":"登录普通QQ(有卡槽)",
 "setting":[
 {
 "id": "repo_cate_id",

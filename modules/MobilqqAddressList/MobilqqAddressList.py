@@ -18,8 +18,9 @@ class TIMAddressList:
         while newStart == 1:
             token = self.xuma.GetToken()
             try:
-                GetBindNumber = self.xuma.GetBindNumber(token)
+                GetBindNumber = self.xuma.GetPhoneNumber(token,'153')
             except Exception:
+                time.sleep(2)
                 continue
 
             print(GetBindNumber)
@@ -63,7 +64,8 @@ class TIMAddressList:
                 Material = Material[0]['content']  # 从素材库取出的要发的材料
                 wait = 0
             except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到消息\"").communicate()
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                time.sleep(10)
 
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
@@ -72,93 +74,66 @@ class TIMAddressList:
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(4)
         if d(text='消息',resourceId='com.tencent.mobileqq:id/name').exists:                    #到了通讯录这步后看号有没有被冻结
-            print()
+            print
         else:
             return 2
         d(className='android.widget.TabWidget',resourceId='android:id/tabs').child(className='android.widget.FrameLayout').child(className='android.widget.RelativeLayout').click()     #点击到联系人
-        time.sleep(3)
+        time.sleep(2)
         if d(text='联系人',resourceId='com.tencent.mobileqq:id/ivTitleName').exists:       #如果已经到联系人界面
-
-            wait = 1
-            while wait == 1:
-                obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.CheckBox',      #刚进联系人界面看是否有展开的列表
-                        checked='true')  # 看是否有展开的
-                if obj.exists:
-                    obj.click()                     #将展开的全部收起来
-                    continue
-                d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
-                time.sleep(2)
-                wait = 0
-
-            time.sleep(1)
-            wait1 = 1
-            while wait1 == 1:
-                obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.CheckBox',
-                        checked='true')  # 防止有多列分组，滑动之后再看有没有展开的列表
-                time.sleep(2)
-                if obj.exists:
-                    obj.click()
-                    continue
-                wait1 = 0
-
-            for i in range(11, 1, -1):       #收起通讯录之后，再倒序确定通讯录的位置，点击展开并滑动，未绑定通讯录的,先绑定再发消息
-                if d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i).exists:
-                    d(resourceId='com.tencent.mobileqq:id/elv_buddies', className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()    #点击通讯录
-                    time.sleep(2)
-                    if d(resourceId='com.tencent.mobileqq:id/name',className='android.widget.EditText',index=2).exists:       #检查到尚未 启用通讯录
-                        if d(text=' +null',resourceId='com.tencent.mobileqq:id/name').exists:
-                            d(text=' +null', resourceId='com.tencent.mobileqq:id/name').click()
-                            d(text='中国',resourceId='com.tencent.mobileqq:id/name').click()
-                        text = self.Bind(d)                                 #未开启通讯录的，现绑定通讯录
-                        if text=='false':                          #操作过于频繁的情况
-                            return
-                        time.sleep(5)
-                        if d(resourceId='com.tencent.mobileqq:id/nickname',className='android.widget.TextView').exists:
-                            d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').click()
-
-                        time.sleep(5)
-                        d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
-                        time.sleep(1)
-                    d.swipe(width / 2, height * 5 / 6, width / 2, height / 3)
-                    time.sleep(2)
-                    break
-                else:
-                    continue           #直到找到通讯录为止
-
-
-        else:                                                                             #没有在联系人界面的话
+            print
+        else:
             d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(
                 className='android.widget.FrameLayout').child(className='android.widget.RelativeLayout').click()  # 点击到联系人
 
-            wait = 1
-            while wait == 1:
-                obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.CheckBox',
-                        checked='true')  # 看是否有展开的
-                if obj.exists:
-                    obj.click()
-                    continue
-                d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
-                wait=0
+        wait = 1
+        while wait == 1:
+            obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.CheckBox',      #刚进联系人界面看是否有展开的列表
+                    checked='true')  # 看是否有展开的
+            if obj.exists:
+                obj.click()                     #将展开的全部收起来
+                continue
+            d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
+            time.sleep(2)
+            wait = 0
 
+        time.sleep(1)
+        wait1 = 1
+        while wait1 == 1:
+            obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.CheckBox',
+                    checked='true')  # 防止有多列分组，滑动之后再看有没有展开的列表
+            time.sleep(2)
+            if obj.exists:
+                obj.click()
+                continue
+            wait1 = 0
 
-            wait1 = 1
-            while wait1 == 1:
-                obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.CheckBox',
-                        checked='true')  # 看是否有展开的
-                if obj.exists:
-                    obj.click()
-                    continue
-                wait1 = 0
+        for i in range(11, 1, -1):       #收起通讯录之后，再倒序确定通讯录的位置，点击展开并滑动，未绑定通讯录的,先绑定再发消息
+            if d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i).exists:
+                d(resourceId='com.tencent.mobileqq:id/elv_buddies', className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()    #点击通讯录
+                time.sleep(2)
+                if d(resourceId='com.tencent.mobileqq:id/name',className='android.widget.EditText',index=2).exists:       #检查到尚未 启用通讯录
+                    if d(text=' +null',resourceId='com.tencent.mobileqq:id/name').exists:
+                        d(text=' +null', resourceId='com.tencent.mobileqq:id/name').click()
+                        d(text='中国',resourceId='com.tencent.mobileqq:id/name').click()
+                    text = self.Bind(d)                                 #未开启通讯录的，现绑定通讯录
+                    if text=='false':                          #操作过于频繁的情况
+                        return
+                    time.sleep(5)
+                    if d(resourceId='com.tencent.mobileqq:id/nickname',className='android.widget.TextView').exists:      #通讯录展开后在另一个页面的情况
+                        d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').click()
+                    time.sleep(5)
+                    d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
 
-            for i in range(12, 1, -1):
-                if d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i).exists:
-                    d(resourceId='com.tencent.mobileqq:id/elv_buddies', className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
-                    d.swipe(width / 2, height * 5 / 6, width / 2, height / 3)
-                    break
-                else:
-                    continue
-
-
+                if d(text='匹配手机通讯录',resourceId='com.tencent.mobileqq:id/name').exists:
+                    d(text='匹配手机通讯录', resourceId='com.tencent.mobileqq:id/name').click()
+                    time.sleep(4)
+                    d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
+                time.sleep(1)
+                d.swipe(width / 2, height * 5 / 6, width / 2, height / 3)
+                time.sleep(2)
+                break
+            else:
+                continue           #直到找到通讯录为止
 
         i = 1
         t = 1
@@ -172,7 +147,7 @@ class TIMAddressList:
                     Material = Material[0]['content']  # 从素材库取出的要发的材料
                     wait = 0
                 except Exception:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到消息\"").communicate()
+                    d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
 
             time.sleep(2)
 
@@ -205,9 +180,6 @@ class TIMAddressList:
             i = i + 1
             t = t + 1
             d(resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft', description='返回消息界面').click()
-
-            # d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(
-            #     className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
 
             d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(
                 className='android.widget.FrameLayout').child(

@@ -44,6 +44,7 @@ class TIMQQRegister:
                 d(resourceId='com.tencent.tim:id/btn_register', index=1, text='新用户').click()
             time.sleep(2)
             try:
+
                 if registerQQ==1:
 
                     token = self.XunMa.GetToken()
@@ -56,8 +57,15 @@ class TIMQQRegister:
 
             except Exception, e:
 
+
                 print 'token炸了, token炸了, token炸了, token炸了, token炸了, token炸了, token炸了, token炸了, token炸了, '
                 continue
+
+
+            print (phoneNumber)
+            time.sleep(2)
+            if d(resourceId='com.tencent.tim:id/btn_register', index=1, text='新用户').exists:
+                d(resourceId='com.tencent.tim:id/btn_register', index=1, text='新用户').click()
 
 
             # print phoneNumber
@@ -65,7 +73,7 @@ class TIMQQRegister:
             try:
                 d(text='请输入你的手机号码', resourceId='com.tencent.tim:id/name').set_text(phoneNumber)
                 d(text='下一步', resourceId='com.tencent.tim:id/name').click()
-            except Exception, e:
+            except Exception:
                 continue
 
 
@@ -83,20 +91,22 @@ class TIMQQRegister:
 
             else:
 
+
                 # data = self.XunMa.UploadPhoneNumber(phoneNumber, token)
                 # if data == 0:
                 #     print "************匹配号码失败**************"
                 #     continue
 
+
                 try:
                     vertifyCode = self.XunMa.GetTIMManyCode(phoneNumber, token)  # 获取验证码
-                except Exception, e:
-                    print Exception, ":", e
+                except Exception:
+                    print (Exception, ":", e)
                     continue
 
 
                 if vertifyCode == "":
-                    print "************+++++++++验证码请求失败++++++**************"
+                    print ("************+++++++++验证码请求失败++++++**************")
                     continue
                 d(text='请输入短信验证码', resourceId='com.tencent.tim:id/name').set_text(vertifyCode)
 
@@ -119,11 +129,11 @@ class TIMQQRegister:
 
                 try:
                     d(resourceId='com.tencent.tim:id/action_sheet_button',textContains='维持绑定').click()  # ****有问题，会crash****
-                except Exception, e:
-                    print Exception, ":", e
+                except Exception:
+                    print (Exception, ":")
                     continue
 
-                print nickName
+                print (nickName)
                 d(text='昵称', className='android.widget.EditText').click()
                 z.input(nickName)
 
@@ -135,8 +145,8 @@ class TIMQQRegister:
                 # d(text='登录', className='android.widget.Button').click()
                 # time.sleep(8)
 
-                print qqNumber
-                print i
+                print (qqNumber)
+                print (i)
 
 
             self.TIMUploadAccount(qqNumber, password, phoneNumber)

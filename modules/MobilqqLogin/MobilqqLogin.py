@@ -33,7 +33,6 @@ class MobilqqLogin:
             os.mkdir(base_dir)
         sourcePng = os.path.join(base_dir, "%s_s.png" % (self.GetUnique()))
         codePng = os.path.join(base_dir, "%s_c.png" % (self.GetUnique()))
-
         cate_id = args["repo_cate_id"]
 
         while True:
@@ -45,7 +44,7 @@ class MobilqqLogin:
                     QQNumber = numbers[0]['number']  # 即将登陆的QQ号
                     wait = 0
                 except Exception:
-                    d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"").communicate()
+                    d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"QQ帐号库%s号仓库为空，等待中\""%cate_id).communicate()
                     time.sleep(30)
             QQPassword = numbers[0]['password']
             time.sleep(1)
@@ -72,7 +71,6 @@ class MobilqqLogin:
                         co.rk_report_error(im_id)
                     obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.ImageView')      #当弹出选择QQ框的时候，定位不到验证码图片
                     obj = obj.info
-                    print(obj)
                     obj = obj['bounds']  # 验证码处的信息
                     left = obj["left"]  # 验证码的位置信息
                     top = obj['top']
@@ -100,20 +98,11 @@ class MobilqqLogin:
                     d(resourceId='com.tencent.mobileqq:id/name', index='2',className="android.widget.EditText").set_text(code)
                     time.sleep(3)
                     d(text='完成', resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText').click()
-                    time.sleep(8)
+                    time.sleep(6)
+                    while d(className='android.widget.ProgressBar',index=0).exists:        #网速不给力时，点击完成后仍然在加载时的状态
+                        time.sleep(2)
                     if d(text='输入验证码',resourceId='com.tencent.mobileqq:id/ivTitleName').exists:
                         continue
-
-                    # if d(text='登 录').exists:  # 密码错误
-                    #     self.repo.BackupInfo(cate_id,'locked',QQNumber,'')                               # 仓库号,使用中,QQ号,设备号_卡槽号
-                    #     break
-                    #
-                    # if d(text='帐号无法登录', resourceId='com.tencent.mobileqq:id/dialogTitle').exists:  # 帐号被冻结
-                    #     self.repo.BackupInfo(cate_id, 'frozen', QQNumber, '')
-                    #     break
-                    # if d(text='身份过期', resourceId='com.tencent.mobileqq:id/dialogTitle').exists:
-                    #     self.repo.BackupInfo(cate_id, 'expired', QQNumber, '')
-                    #     break
                     else:
                         break
 
@@ -125,11 +114,15 @@ class MobilqqLogin:
 
             if d(text='搜索', resourceId='com.tencent.mobileqq:id/name').exists:  # 不需要验证码的情况
                 return QQNumber
+            time.sleep(1)
             if d(text='马上绑定').exists:
                 return QQNumber
+            time.sleep(1)
+            if d(text='通讯录').exists:              #登陆上后弹出t通讯录的情况
+                return QQNumber
             else:
-                self.repo.BackupInfo(cate_id, 'frozen', QQNumber, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, ''))  # 仓库号,使用中,QQ号,设备号_卡槽号
-                time.sleep(3)
+                self.repo.BackupInfo(cate_id, 'frozen', QQNumber, '')  # 仓库号,使用中,QQ号,设备号_卡槽号
+                time.sleep(1)
                 if d(text='帐号无法登录').exists:
                     d(text='取消').click()
                 continue
@@ -140,9 +133,8 @@ class MobilqqLogin:
         name = self.slot.getEmpty(d)  # 取空卡槽
         if name == 0:
             name = self.slot.getSlot(d, time_limit)  # 没有空卡槽，取２小时没用过的卡槽
-            print("切换为"+str(name))
             while name == 0:  # 2小时没有用过的卡槽也为空的情况
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无间隔时间段未用\"").communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"QQ卡槽全满，无间隔时间段未用\"").communicate()
                 time.sleep(30)
                 name = self.slot.getSlot(d, time_limit)
 
@@ -213,7 +205,9 @@ if __name__ == "__main__":
     # slot.restore(d, 9)
 
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"59","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    slot.restore(d, 3)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
+
+    args = {"repo_cate_id":"59","time_limit":"3","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)

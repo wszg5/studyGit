@@ -55,7 +55,7 @@ class EIMAddFriends:
 
 
             numbers = list[i]
-            d(resourceId='com.tencent.eim:id/name',className='android.widget.EditText').set_text(numbers)
+            d(resourceId='com.tencent.eim:id/name',className='android.widget.EditText').set_text(numbers)    #numbers
             d(text='查找',resourceId='com.tencent.eim:id/name',className='android.widget.Button').click()
             time.sleep(2)
 
@@ -83,7 +83,7 @@ class EIMAddFriends:
                     t = t + 1
                     continue
                 continue
-
+            time.sleep(2)
             if d(text='必填',resourceId='com.tencent.eim:id/name').exists:
                 d(text='返回',resourceId='com.tencent.eim:id/ivTitleBtnLeft').click()
                 d(text='返回',resourceId='com.tencent.eim:id/name').click()

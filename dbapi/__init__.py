@@ -64,7 +64,6 @@ class dbapi:
         with pool.get_resource() as res:
             stats = r.table("slots").get(id).update(slot).run(res.conn)
             if stats["skipped"]:
-                import time
                 slot["createdAt"] = r.now().run(res.conn, time_format="raw")
                 slot["last_pick"] = r.now().run(res.conn, time_format="raw")
                 r.table("slots").insert(slot).run(res.conn)
@@ -108,3 +107,28 @@ class dbapi:
             xm_pwd = r.table('setting').get('xm_password').run(res.conn)
 
             return {"rk_user":rk_user["value"], "rk_pwd":rk_pwd["value"],"xm_user":xm_user["value"], "xm_pwd":xm_pwd["value"]}
+
+
+    def GetCache(self, key, interval):
+        pool = RethinkPool(max_conns=120, initial_conns=10, host=const.SERVER_IP,
+                           port=28015,
+                           db=const.RETHINKDB_NAME)
+
+        with pool.get_resource() as res:
+            list = r.table("setting").get_all(key).filter(r.row["UpdatedAt"] + int(interval) < r.now()).order_by('name').run(res.conn)
+            if (len(list) > 0):
+                return list[0]
+
+        return None
+
+    def SetCache(self, key, value):
+        pool = RethinkPool(max_conns=120, initial_conns=10, host=const.SERVER_IP,
+                           port=28015,
+                           db=const.RETHINKDB_NAME)
+        with pool.get_resource() as res:
+            cache = {"key": key, "value": value, "UpdatedAt": r.now().run(res.conn, time_format="raw")}
+
+            stats = r.table("setting").get(key).update(cache).run(res.conn)
+            if stats["skipped"]:
+                r.table("setting").insert(cache).run(res.conn)
+

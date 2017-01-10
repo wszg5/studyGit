@@ -37,6 +37,7 @@ class Repo:
         if response.status == 200:
             data = response.read()
             numbers = json.loads(data)
+
             return  numbers
         else:
             return "Error Getting material, Please check your repo"
@@ -62,6 +63,9 @@ class Repo:
         path = "/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&cardslot=%s" % (cateId,status,Number,remark)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET",path)
+
+
+
 
 
 

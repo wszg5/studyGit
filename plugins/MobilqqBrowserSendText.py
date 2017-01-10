@@ -100,7 +100,7 @@ class TIMBrowserSendText:
 
                 numbers = list[i]
                 time.sleep(1)
-                d(description='清空号码', className='android.widget.Button').click()
+                d(description='清空号码', className='android.widget.Butto　n').click()
                 time.sleep(1)
                 d(className='android.widget.EditText', index=1, clickable='false').click()  # 点击输入框
                 time.sleep(1)
@@ -135,8 +135,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4AZSK00872")
-    z = ZDevice("HT4AZSK00872")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
 
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
