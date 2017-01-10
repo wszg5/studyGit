@@ -30,7 +30,7 @@ class XunMa:
             data = response.read()
             return  data
         else:
-                return "Error Getting Account, Please check your repo"
+            return "Error Getting Account, Please check your repo"
 
 
     def GetPhoneNumber(self, token, ip):
@@ -41,6 +41,8 @@ class XunMa:
         if response.status == 200:
             data = response.read()
             print data
+            if data.startswith('False'):
+                return 'False'
             data = re.findall("\d{11}", str(data))
 
             data = data[0]
@@ -57,7 +59,7 @@ class XunMa:
             response = conn.getresponse()
             if response.status == 200:
                 data = response.read()
-                print data
+                print data.decode('GBK')
                 if data.startswith('MSG'):
                     break
             else:

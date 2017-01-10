@@ -5,7 +5,7 @@
 "url": "http://www.bejson.com",
 "version": "1.0",
 "icon":"vcard-o",
-"remark":"TIM版本v1.0.2.96",
+"remark":"TIM版本v1.0.2.94",
 "setting":[
 {
 "id": "repo_cate_id",
@@ -18,7 +18,7 @@
 "id": "time_delay",
 "name":"延时",
 "type":"textbox",
-"defaultValue":"3",
+"defaultValue":"1",
 "remark":"单位：秒"
 }
 ]
