@@ -138,7 +138,12 @@ class EIMLogin:
             d.server.adb.cmd("shell","am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             time.sleep(5)
             d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"卡槽成功切换为" + str(name) + "号\"").communicate()
-            time.sleep(5)
+            time.sleep(6)
+            if d(textContains='开启精彩').exists:
+                d(textContains='开启精彩').click()
+            if d(descriptionContains='开启精彩').exists:
+                d(descriptionContains='开启精彩').click()
+
             if d(text='搜索', resourceId='com.tencent.eim:id/name').exists:
                 obj = self.slot.getSlotInfo(d, name)  # 得到切换后的QQ号
                 info = obj['info']  # info为QQ号

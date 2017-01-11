@@ -20,12 +20,7 @@ class XunMa:
             if tokenCache:
                 return tokenCache["value"]
         rk = dbapi.GetCodeSetting()
-<<<<<<< HEAD
-        xm_user = rk["xm_user"].encode("utf-8")
-        xm_pwd = rk["xm_pwd"].encode("utf-8")
 
-        path = "/Login?uName="+xm_user+"&pWord="+xm_pwd+"&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"
-=======
         xm_user = rk["xm_user"]
         xm_pwd = rk["xm_pwd"]
         user =  xm_user.encode("utf-8")
@@ -33,7 +28,6 @@ class XunMa:
 
         # path = "/Login?uName=powerman&pWord=13141314&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"
         path = "/Login?uName="+user+"&pWord="+pwd+"&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"
->>>>>>> f331acbb8e33a156627927a851f32c47c5068d08
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         time.sleep(1)

@@ -120,6 +120,10 @@ class MobilqqLogin:
             time.sleep(1)
             if d(text='通讯录').exists:              #登陆上后弹出t通讯录的情况
                 return QQNumber
+            if d(textContains='更换主题').exists:
+                return QQNumber
+            if d(descriptionContains='更换主题').exists:
+                return QQNumber
             else:
                 self.repo.BackupInfo(cate_id, 'frozen', QQNumber, '')  # 仓库号,使用中,QQ号,设备号_卡槽号
                 time.sleep(1)
@@ -146,7 +150,7 @@ class MobilqqLogin:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽成功切换为"+str(name)+"号\"").communicate()
             time.sleep(1)
             d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-            time.sleep(5)
+            time.sleep(8)
             if d(text='搜索',resourceId='com.tencent.mobileqq:id/name').exists:
                 obj = self.slot.getSlotInfo(d, name)  # 得到切换后的QQ号
                 info = obj['info']  # info为QQ号

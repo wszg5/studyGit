@@ -10,7 +10,7 @@ import time, datetime, random
 from zservice import ZDevice
 from slot import slot
 
-class EIMLogin:
+class EIMLoginNoSlot:
     def __init__(self):
         self.type = 'eim'
         self.repo = Repo()
@@ -121,7 +121,7 @@ class EIMLogin:
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 def getPluginClass():
-    return EIMLogin
+    return EIMLoginNoSlot
 
 if __name__ == "__main__":
     clazz = getPluginClass()

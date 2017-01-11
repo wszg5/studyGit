@@ -153,7 +153,7 @@ def runwatch(d, data):                                  #watcher除了点击还�
             time.sleep(0.5)
 
 def getPluginClass():
-    return MobilqqLogin
+    return MobilqqLoginSolt
 
 if __name__ == "__main__":
     clazz = getPluginClass()
