@@ -120,6 +120,10 @@ class MobilqqLogin:
             time.sleep(1)
             if d(text='通讯录').exists:              #登陆上后弹出t通讯录的情况
                 return QQNumber
+            if d(textContains='更换主题').exists:
+                return QQNumber
+            if d(descriptionContains='更换主题').exists:
+                return QQNumber
             else:
                 self.repo.BackupInfo(cate_id, 'frozen', QQNumber, '')  # 仓库号,使用中,QQ号,设备号_卡槽号
                 time.sleep(1)
@@ -146,7 +150,7 @@ class MobilqqLogin:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽成功切换为"+str(name)+"号\"").communicate()
             time.sleep(1)
             d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-            time.sleep(5)
+            time.sleep(8)
             if d(text='搜索',resourceId='com.tencent.mobileqq:id/name').exists:
                 obj = self.slot.getSlotInfo(d, name)  # 得到切换后的QQ号
                 info = obj['info']  # info为QQ号
@@ -205,9 +209,7 @@ if __name__ == "__main__":
     # slot.restore(d, 9)
 
     # d.dump(compressed=False)
-    slot.restore(d, 3)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-
-    args = {"repo_cate_id":"59","time_limit":"3","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"59","time_limit":"1","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)
