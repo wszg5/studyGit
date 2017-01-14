@@ -438,9 +438,8 @@ class ZRemoteDevice(object):
         '''click at arbitrary coordinates.'''
         return self.server.jsonrpc.Input(text)
 
-    def long_click(self, x, y):
-        '''long click at arbitrary coordinates.'''
-        return self.swipe(x, y, x + 1, y + 1)
+    def openQQChat(self, number):
+        return self.server.jsonrpc.openQQChat(number)
 
     def swipe(self, sx, sy, ex, ey, steps=100):
         return self.server.jsonrpc.swipe(sx, sy, ex, ey, steps)
