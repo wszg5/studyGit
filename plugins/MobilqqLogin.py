@@ -150,7 +150,7 @@ class MobilqqLogin:
             time.sleep(5)
             self.slot.restore(d, name)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
             z.set_mobile_data(True)
-            time.sleep(8)
+            time.sleep(6)
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽成功切换为"+str(name)+"号\"").communicate()
             time.sleep(1)
             d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来

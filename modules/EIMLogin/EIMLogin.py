@@ -146,6 +146,9 @@ class EIMLogin:
                 d(textContains='开启精彩').click()
             if d(descriptionContains='开启精彩').exists:
                 d(descriptionContains='开启精彩').click()
+            if d(resourceId='com.tencent.eim:id/name',className='android.widget.Button').exists:
+                d(resourceId='com.tencent.eim:id/name', className='android.widget.Button').click()
+                time.sleep(6)
 
             if d(text='搜索', resourceId='com.tencent.eim:id/name').exists:
                 obj = self.slot.getSlotInfo(d, name)  # 得到切换后的QQ号
@@ -163,7 +166,7 @@ class EIMLogin:
             time.sleep(8)
             info = self.login(d, args)
             self.slot.backup(d, name, info)  # 设备信息，卡槽号，QQ号
-            self.repo.BackupInfo(cate_id, 'using', info,'%s_%s' % (d.server.adb.device_serial(), name))  # 仓库号,使用中,QQ号,设备号_卡槽号
+            self.repo.BackupInfo(cate_id, 'using', info,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, name))  # 仓库号,使用中,QQ号,设备号_卡槽号
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -174,8 +177,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT55TSK00815")
+    z = ZDevice("HT55TSK00815")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.dump(compressed=False)
     # slot = slot('eim')

@@ -5,7 +5,7 @@ import os, time, datetime, random
 from zservice import ZDevice
 
 
-class TIMBrowserSendText:
+class QQTemporarySession:
     def __init__(self):
         self.repo = Repo()
 
@@ -34,22 +34,6 @@ class TIMBrowserSendText:
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
 
-        # d.server.adb.cmd("shell", "am force-stop com.android.chrome").wait()  # 强制停止
-        # d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
-        # time.sleep(3)
-        # if d(description='清空号码', className='android.widget.Button').exists:
-        #     print()
-        # else:
-        #     time.sleep(2)
-        #     d.server.adb.cmd("shell",
-        #                      "am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").communicate()  # 不在聊了页面时输入聊天页面地址
-        #     if d(description='清空号码', className='android.widget.Button').exists:
-        #         print()
-        #     else:
-        #         d(resourceId='com.android.chrome:id/url_bar', className='android.widget.EditText').set_text(
-        #             'http://www.jianli58.com/qq.html')
-        #         time.sleep(1)
-        #         d.press.enter()
 
         for i in range (0,totalNumber,+1):
             cate_id = args["repo_material_cate_id"]
@@ -65,34 +49,19 @@ class TIMBrowserSendText:
 
             numbers = list[i]
             time.sleep(1)
-            # d.server.adb.cmd("shell","am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").communicate()  # 拉起来
-            # time.sleep(1)
-            # d(description='清空号码', className='android.widget.Button').click()
-            # time.sleep(1)
-            # d(className='android.widget.EditText',index=1,clickable='false').click()                     #点击输入框
-            # time.sleep(1)
-            # if d(className='android.widget.EditText',index=1,clickable='false').exists:              #看会不会弹出键盘
-            #     d(className='android.widget.EditText',index=1,clickable='false').set_text(numbers)
-            # else:
-            #     d.press.back()
-            #     d(className='android.widget.EditText',index=1,clickable='false').set_text(numbers)
-            # d(className='android.widget.Button',index=3,description='开始聊天').click()
-            # time.sleep(2)
-
 
             z.openQQChat(numbers)
+            time.sleep(1)
 
             if d(text='QQ',resourceId='android:id/text1').exists:
                 d(text='QQ', resourceId='android:id/text1').click()
                 if d(text='仅此一次',resourceId='android:id/button_once').exists:
                     d(text='仅此一次',resourceId='android:id/button_once').click()
-            if d(className='android.widget.Button',index=3,description='开始聊天').exists:           #不存在该联系人的情况
-                continue
+
             d(resourceId='com.tencent.mobileqq:id/input',className='android.widget.EditText').click()
             z.input(material)
 
             d(text='发送',resourceId='com.tencent.mobileqq:id/fun_btn').click()
-            d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
 
 
 
@@ -101,7 +70,7 @@ class TIMBrowserSendText:
 
 
 def getPluginClass():
-    return TIMBrowserSendText
+    return QQTemporarySession
 
 if __name__ == "__main__":
     clazz = getPluginClass()
@@ -112,6 +81,7 @@ if __name__ == "__main__":
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     args = {"repo_number_cate_id":"37","repo_material_cate_id":"34","totalNumber":"4","time_delay":"3"};    #cate_id是仓库号，length是数量
+    # z.openQQChat(154343346)   QQTemporarySession
 
     o.action(d, z,args)
 
