@@ -12,7 +12,7 @@ class XunMa:
         self.domain = "api.xunma.net"
         self.port = 8080
 
-    def GetToken(self, useCache = True):
+    def GetToken(self, useCache):
         from dbapi import dbapi
         dbapi = dbapi()
         if useCache :
@@ -20,7 +20,6 @@ class XunMa:
             if tokenCache:
                 return tokenCache["value"]
         rk = dbapi.GetCodeSetting()
-<<<<<<< HEAD
 
         xm_user = rk["xm_user"]
         xm_pwd = rk["xm_pwd"]
@@ -29,14 +28,7 @@ class XunMa:
 
         # path = "/Login?uName=powerman&pWord=13141314&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"
         path = "/Login?uName="+user+"&pWord="+pwd+"&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"
-=======
 
-        xm_user = rk["xm_user"].encode("utf-8")
-        xm_pwd = rk["xm_pwd"].encode("utf-8")
-
-        path = "/Login?uName="+xm_user+"&pWord="+xm_pwd+"&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"
-
->>>>>>> 2cd4600c0674622a4497af0b1f83750eab6f7d83
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         time.sleep(1)
@@ -56,7 +48,6 @@ class XunMa:
         response = conn.getresponse()
         if response.status == 200:
             data = response.read()
-            print data
             if data.startswith('False'):
                 return 'False'
             data = re.findall("\d{11}", str(data))
@@ -65,6 +56,18 @@ class XunMa:
             return data
         else:
             return "Error Getting Account, Please check your repo"
+
+    def ReleaseToken(self, phoneNumber, token):
+        path = "/releasePhone?token=%s&phoneList=%s-144" % (token, phoneNumber)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
+        response = conn.getresponse()
+        if response.status == 200:
+            data = response.read()
+            print (data)
+        else:
+            print '释放失败'
+
 
     def GetCode(self,number,token):
         for i in range(0,32,+1):
@@ -98,6 +101,7 @@ class XunMa:
             if response.status == 200:
                 data = response.read()
                 print (data)
+                time.sleep(2)
                 if data.startswith('MSG'):
                     break
             else:
@@ -105,10 +109,8 @@ class XunMa:
         if data is None:
             return 0;
         data = data.decode('GBK')
-        res = re.findall(r"MSG&2356&" + number + "&(.+?)\[End]", data)
+        res = re.findall(r"MSG&144&" + number + "&(.+?)\[End]", data)
         res = re.findall("\d{6}", res[0])
-        res.append(i)
-        print  (i)
         return res
 
 

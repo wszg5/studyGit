@@ -126,8 +126,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT58DSK00066")
-    z = ZDevice("HT58DSK00066")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_cate_id":"49","repo_material_cate_id":"33","totalNumber":"4","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d, z,args)
