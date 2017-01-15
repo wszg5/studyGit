@@ -3,6 +3,9 @@ import httplib, json
 import time
 import re
 
+from zcache import cache
+
+
 class XunMa:
 
     def __init__(self):
@@ -12,13 +15,14 @@ class XunMa:
         self.domain = "api.xunma.net"
         self.port = 8080
 
-    def GetToken(self, useCache):
+
+    def GetToken(self, useCache=True):
         from dbapi import dbapi
         dbapi = dbapi()
         if useCache :
-            tokenCache = dbapi.GetCache('XunMa', 300) #讯码token有效期５分钟
+            tokenCache = cache.get('XunMa') #讯码token有效期５分钟
             if tokenCache:
-                return tokenCache["value"]
+                return tokenCache
         rk = dbapi.GetCodeSetting()
 
         xm_user = rk["xm_user"]
@@ -35,29 +39,75 @@ class XunMa:
         response = conn.getresponse()
         if response.status == 200:
             data = response.read()
-            dbapi.SetCache('XunMa', data)
+            cache.set('XunMa', data)
             return  data
         else:
             return "Error Getting Account, Please check your repo"
 
+    def ReleaseAllPhone(self):
+        token=self.GetToken()
+        try:
+            path = "/pubApi/ReleaseAllPhone?token=%s"%token
+            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+            conn.request("GET", path)
+        except Exception:
+            ok = 'ok'
 
-    def GetPhoneNumber(self, token, ip):
-        path = "/getPhone?ItemId=%s&token=%s&Count=1"%(ip, token)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET", path)
-        response = conn.getresponse()
-        if response.status == 200:
-            data = response.read()
-            if data.startswith('False'):
-                return 'False'
-            data = re.findall("\d{11}", str(data))
+    def GetPhoneNumber(self, itemId):
+        token = self.GetToken()
+        key = 'phone_%s'%itemId
+        phone = cache.popSet(key)
+        if phone:
+            print '库里手机号%s'%phone
+            return phone
+        lockKey = 'lock_get_phone_%s'%itemId
 
-            data = data[0]
-            return data
+        if cache.get(lockKey):
+            time.sleep(5)
+
+            return self.GetPhoneNumber(itemId)
         else:
-            return "Error Getting Account, Please check your repo"
+            cache.set(lockKey,True,30)
 
-    def ReleaseToken(self, phoneNumber, token):
+        try:
+
+            path = "/getPhone?ItemId=%s&token=%s&Count=10" % (itemId, token)
+            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+            conn.request("GET", path)
+            response = conn.getresponse()
+        except Exception:
+            ok = 'ok'
+
+
+        if response.status == 200:
+            data = response.read().decode('GBK')
+
+            import string
+            if string.find(data,'单个用户获取数量不足')!=-1 :
+                self.ReleaseAllPhone()
+
+            if string.find(data,'Session 过期')!=-1 :
+                self.GetToken(False)
+
+            if data.startswith('False'):
+                print '迅码获取号码出错了; %s'%data
+                time.sleep(3)
+
+            numbers = data.split(";");
+
+            for number in numbers:
+                number = re.findall("\d{11}", str(number))
+                if number:
+                    cache.addSet(key, number)
+
+            cache.set(lockKey,False)
+            return self.GetPhoneNumber(itemId)
+        else:
+            cache.set(lockKey,False)
+            return self.GetPhoneNumber(itemId)
+
+    def ReleasePhone(self, phoneNumber):
+        token = self.GetToken()
         path = "/releasePhone?token=%s&phoneList=%s-144" % (token, phoneNumber)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
@@ -69,114 +119,55 @@ class XunMa:
             print '释放失败'
 
 
-    def GetCode(self,number,token):
-        for i in range(0,32,+1):
-            time.sleep(2)
-            path = "/getQueue?token=%s"%token
-            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-            conn.request("GET", path)
-            response = conn.getresponse()
-            if response.status == 200:
-                data = response.read()
-
-                print (data)
-
-                if data.startswith('MSG'):
-                    break
-            else:
-                return "Error Getting Account, Please check your repo"
-        data = data.decode('GBK')
-        res = re.findall(r"MSG&144&"+number+"&(.+?)\[End]", data)
-        res = re.findall("\d{6}",res[0])
-        return res[0]
-
-    def GetTIMLittleCode(self, number, token):
-        print (token)
-        for i in range(0, 55, +1):
-            time.sleep(2)
-            path = "/getQueue?token=" + token + ""
-            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-            conn.request("GET", path)
-            response = conn.getresponse()
-            if response.status == 200:
-                data = response.read()
-                print (data)
-                time.sleep(2)
-                if data.startswith('MSG'):
-                    break
-            else:
-                return "Error Getting Account, Please check your repo"
-        if data is None:
-            return 0;
-        data = data.decode('GBK')
-        res = re.findall(r"MSG&144&" + number + "&(.+?)\[End]", data)
-        res = re.findall("\d{6}", res[0])
-        return res
 
 
-    def GetTIMManyCode(self, number, token):
 
+
+    def GetVertifyCode(self, number):
+        key = 'verify_code_%s'%number
         for i in range(1, 60):
             time.sleep(1)
-            path = "/getQueue?token=" + token + ""
-            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-            conn.request("GET", path)
-            response = conn.getresponse()
+            code = cache.get(key)
+            if code:
+                print '居然取到了%s'%code
+                return code
+
+            token = self.GetToken()
+            try:
+                path = "/getQueue?token=" + token + ""
+                conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+                conn.request("GET", path)
+                response = conn.getresponse()
+            except Exception:
+                continue
+
             if response.status == 200:
-                data = response.read()
-                print (data)
+                data = response.read().decode('GBK')
+
                 if data.startswith('MSG'):
-                    break
-            else:
-                return "Error Getting Account, Please check your repo"
-        if data.startswith('MSG'):
-
-            data = data.decode('GBK')
-            res = re.findall(r"MSG&144&" + number + "&(.+?)\[End]", data)
-            res = re.findall("\d{6}", res[0])
-            return res[0]
-        else:
-            return ""
-
-
-    def GetBindNumber(self, res):
-        path = "/getPhone?ItemId=153&token=" + res + "&Count=1"
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET", path)
-        response = conn.getresponse()
-        if response.status == 200:
-            data = response.read()
-            data = re.findall("\d{11}", str(data))
-            time.sleep(1)
-            data = data[0]
-            return data
-        else:
-            return "Error Getting Account, Please check your repo"
+                    targetNumber = re.findall(r'1\d{10}',data)
+                    targetNumber = targetNumber[0]
+                    print data
+                    '''
+                    if targetNumber == number:
+                        res = re.findall(r"MSG&144&" + number + "&(.+?)\[End]", data)
+                        res = re.findall("\d{6}", res[0])
+                        code = res[0]
+                        return code
+                    else:
+                    '''
+                    res = re.findall(r"MSG&144&" + targetNumber + "&(.+?)\[End]", data)
+                    res = re.findall("\d{6}", res[0])
+                    code = res[0]
+                    sms_number_key = 'verify_code_%s'%targetNumber
+                    cache.set(sms_number_key, code)
 
 
-
-    def GetBindCode(self,number,res):
-        for i in range(0,32,+1):
-            time.sleep(2)
-            path = "/getQueue?token="+res+""
-            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-            conn.request("GET", path)
-            response = conn.getresponse()
-            if response.status == 200:
-                data = response.read()
-                if data.startswith('MSG'):
-                    break
-            else:
-                return "Error Getting Account, Please check your repo"
-        data = data.decode('GBK')
-        print(data)
-        res = re.findall(r"MSG&153&"+number+"&(.+?)\[End]", data)
-        res = re.findall("\d{4}",res[0])
-        print(res[0])
-        return res[0]
+        return ""
 
 
-    def UploadPhoneNumber(self, number, token):
+    def UploadPhoneNumber(self, number):
+        token = self.GetToken()
         path = "/getPhone?ItemId=144&token=" + token + "&Phone="+number+""
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)

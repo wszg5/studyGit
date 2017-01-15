@@ -54,26 +54,6 @@ class Repo:
             return "Error Getting Number, Please check your repo"
 
 
-    def GetToken(self):
-        path = "/repo_api/number/pick?status=normal&cate_id=%s&interval=%s&limit=%s"
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-
-        conn.request("GET", path)
-        response = conn.getresponse()
-        if response.status == 200:
-            data = response.read()
-            numbers = json.loads(data)
-            return  numbers
-        else:
-            return "Error Getting Number, Please check your repo"
-
-
-    def SetToken(self,token):      #取token
-        path = "/repo_api/material/tokenInfo?token=%s"%(token)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET",path)
-
-
     def SetAccount(self,cateId,status,QQNumber):      #登陆时的异常状态
         path = "/repo_api/account/questionInfo?cate_id=%s&status=%s&QQNumber=%s" % (cateId,status,QQNumber)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
