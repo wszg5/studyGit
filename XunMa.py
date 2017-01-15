@@ -3,6 +3,8 @@ import httplib, json
 import time
 import re
 
+from dbapi import dbapi
+
 class XunMa:
 
     def __init__(self):
@@ -11,15 +13,14 @@ class XunMa:
 
         self.domain = "api.xunma.net"
         self.port = 8080
+        self.dbapi = dbapi()
 
-    def GetToken(self, useCache = True):
-        from dbapi import dbapi
-        dbapi = dbapi()
+    def GetToken(self, useCache):
         if useCache :
-            tokenCache = dbapi.GetCache('XunMa', 300) #讯码token有效期５分钟
+            tokenCache = self.dbapi.GetCache('XunMa', 300) #讯码token有效期５分钟
             if tokenCache:
                 return tokenCache["value"]
-        rk = dbapi.GetCodeSetting()
+        rk = self.dbapi.GetCodeSetting()
 
         xm_user = rk["xm_user"].encode("utf-8")
         xm_pwd = rk["xm_pwd"].encode("utf-8")
@@ -32,7 +33,7 @@ class XunMa:
         response = conn.getresponse()
         if response.status == 200:
             data = response.read()
-            dbapi.SetCache('XunMa', data)
+            self.dbapi.SetCache('XunMa', data)
             return  data
         else:
             return "Error Getting Account, Please check your repo"
@@ -45,7 +46,7 @@ class XunMa:
         response = conn.getresponse()
         if response.status == 200:
             data = response.read()
-            print data
+
             if data.startswith('False'):
                 return 'False'
             data = re.findall("\d{11}", str(data))
@@ -65,7 +66,7 @@ class XunMa:
             if response.status == 200:
                 data = response.read()
 
-                print (data)
+                print data
 
                 if data.startswith('MSG'):
                     break
@@ -75,6 +76,19 @@ class XunMa:
         res = re.findall(r"MSG&144&"+number+"&(.+?)\[End]", data)
         res = re.findall("\d{6}",res[0])
         return res[0]
+
+    def ReleaseToken(self, phoneNumber, token):
+        path = "/releasePhone?token=%s&phoneList=%s-144"%(token, phoneNumber)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
+        response = conn.getresponse()
+        if response.status == 200:
+            data = response.read()
+
+        else:
+            print '释放失败'
+
+
 
     def GetTIMLittleCode(self, number, token):
         print (token)
@@ -111,7 +125,7 @@ class XunMa:
             response = conn.getresponse()
             if response.status == 200:
                 data = response.read()
-                print (data)
+                print data
                 if data.startswith('MSG'):
                     break
             else:
@@ -119,12 +133,56 @@ class XunMa:
         if data.startswith('MSG'):
 
             data = data.decode('GBK')
+            print data
+            print 'MSG%s'%number
             res = re.findall(r"MSG&144&" + number + "&(.+?)\[End]", data)
+            print res
             res = re.findall("\d{6}", res[0])
             return res[0]
         else:
             return ""
 
+    def GetVertifyCode(self, number,token):
+        for i in range(1, 60):
+            time.sleep(1)
+            code = self.dbapi.GetCache(number, 300)
+            if not code==None:
+                self.dbapi.DelCache(number)
+                print '居然取到了'
+                return code["value"]
+
+            # token = self.GetToken(True)
+            path = "/getQueue?token=" + token + ""
+            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+            conn.request("GET", path)
+            response = conn.getresponse()
+            if response.status == 200:
+                data = response.read()
+                print data
+                if data.startswith('MSG'):
+                    data = data.decode('GBK')
+                    targetNumber = re.findall(r'1\d{10}',data)
+                    targetNumber = targetNumber[0]
+                    print data
+                    print 'MSG%s' % number
+                    if targetNumber == number:
+                        res = re.findall(r"MSG&144&" + number + "&(.+?)\[End]", data)
+                        res = re.findall("\d{6}", res[0])
+                        code = res[0]
+                        return code
+                        self.dbapi.SetCache(self, number, code)
+                        self.dbapi.DelCache(number)
+
+
+                    else:
+                        res = re.findall(r"MSG&144&" + targetNumber + "&(.+?)\[End]", data)
+                        res = re.findall("\d{6}", res[0])
+                        code = res[0]
+
+                        self.dbapi.SetCache(self, number, code)
+
+
+        return ""
 
     def GetBindNumber(self, res):
         path = "/getPhone?ItemId=153&token=" + res + "&Count=1"

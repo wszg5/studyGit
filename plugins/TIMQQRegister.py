@@ -45,18 +45,15 @@ class TIMQQRegister:
             if d(resourceId='com.tencent.tim:id/btn_register',index=1,text='新用户').exists:
                 d(resourceId='com.tencent.tim:id/btn_register', index=1, text='新用户').click()
             time.sleep(2)
-            try:
 
-                token = self.XunMa.GetToken(True)
+
+            token = self.XunMa.GetToken(True)
+            phoneNumber = self.XunMa.GetPhoneNumber(token, '144')
+            print phoneNumber
+            if phoneNumber=='False':
+                token = self.XunMa.GetToken(False)
                 phoneNumber = self.XunMa.GetPhoneNumber(token, '144')
                 print phoneNumber
-                if phoneNumber=='False':
-                    token = self.XunMa.GetToken(False)
-                    phoneNumber = self.XunMa.GetPhoneNumber(token, '144')
-
-            except Exception, e:
-
-                continue
 
             time.sleep(2)
             try:
@@ -92,13 +89,10 @@ class TIMQQRegister:
                 #     continue
 
 
-                try:
-                    vertifyCode = self.XunMa.GetVertifyCode(phoneNumber)  # 获取验证码
 
-                except Exception:
+                vertifyCode = self.XunMa.GetVertifyCode(phoneNumber,token)  # 获取验证码
 
-                    self.XunMa.ReleaseToken(phoneNumber, token)
-                    continue
+
 
 
                 if vertifyCode == "":
@@ -106,13 +100,14 @@ class TIMQQRegister:
                         d(text='重新发送', resourceId='com.tencent.tim:id/name').click()
                         time.sleep(2)
                         print '重新发送'
-                        vertifyCode = self.XunMa.GetVertifyCode(phoneNumber)
+                        vertifyCode = self.XunMa.GetVertifyCode(phoneNumber,token)
                         self.XunMa.ReleaseToken(phoneNumber, token)
                         if vertifyCode=='':
                             continue
                 else:
                     self.XunMa.ReleaseToken(phoneNumber, token)
 
+                print vertifyCode
                 d(text='请输入短信验证码', resourceId='com.tencent.tim:id/name').set_text(vertifyCode)
 
                 time.sleep(1)
@@ -146,10 +141,11 @@ class TIMQQRegister:
                 # while nickName=='':
                 #     nickName = full_name(last_names, first_names)
                 #     continue
-                time.sleep(1)
-                if d(text='昵称', className='android.widget.EditText').exists:
-                    d(text='昵称', className='android.widget.EditText').click()
-                    z.input(nickName)
+
+
+                d(text='昵称', className='android.widget.EditText').click()
+                z.input('王老吉')
+                print nickName
 
                 password = self.GenPassword()
                 d(text='密码', className='android.widget.EditText').set_text(password)
@@ -209,32 +205,6 @@ class TIMQQRegister:
         slcChar = slcLetter + slcNum
         genPwd = ''.join([i for i in slcChar])
         return genPwd
-
-def random_name(size=1, chars=string.ascii_letters + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
-
-
-def first_name(size=2, ln=None, fn=None):
-    _lst = []
-    for i in range(size):
-        _item = random_name(1, fn)
-        if ln:
-            while _item in ln:
-                _item = random_name(1, fn)
-            _lst.append(_item)
-        else:
-            _lst.append(_item)
-    return "".join(_lst)
-
-
-def last_name(size=1, names=None):
-    return random_name(size, names)
-
-
-def full_name(lns, fns):
-    _last = last_name(1, lns)
-    return "{}{}".format(_last, first_name(random.randint(1, 2), _last, fns))
-
 
 
 
