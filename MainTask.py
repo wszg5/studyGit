@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # coding:utf-8
 import os, sys, time, re, csv
 import util
@@ -5,6 +6,7 @@ import multiprocessing
 import traceback
 import json
 from const import const
+from zcache import cache
 try:
     rst = int(util.exccmd("awk -F. '{print $1}' /proc/uptime"))
     if rst < 500:
@@ -21,6 +23,7 @@ sys.setdefaultencoding('utf8')
 optpath = os.getcwd()  # 获取当前操作目录
 imgpath = os.path.join(optpath, 'img')  # 截图目录
 dbapi = dbapi()
+
 def cleanEnv():
     #os.system('adb kill-server')
     needClean = ['log.log', 'img', 'tmp']
@@ -35,6 +38,8 @@ def cleanEnv():
             os.system(cmd)
     if not os.path.isdir('tmp'):
         os.mkdir('tmp')
+
+
 def runwatch(d, data):
     times = 120
     while True:
