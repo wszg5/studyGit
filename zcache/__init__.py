@@ -36,8 +36,4 @@ class _cache:
 cache = _cache()
 
 
-cache.addSet('aaaaa', 'a')
-cache.addSet('aaaaa', 'b')
-cache.addSet('aaaaa', 'c')
-cache.set('abc', 'c')
-print cache.popSet('aaaaa')
+
