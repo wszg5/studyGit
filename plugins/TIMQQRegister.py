@@ -103,6 +103,7 @@ class TIMQQRegister:
                         vertifyCode = self.XunMa.GetVertifyCode(phoneNumber,token)
                         self.XunMa.ReleaseToken(phoneNumber, token)
                         if vertifyCode=='':
+                            print '验证码获取失败'
                             continue
                 else:
                     self.XunMa.ReleaseToken(phoneNumber, token)
@@ -117,7 +118,7 @@ class TIMQQRegister:
                 try:
                     d(resourceId='com.tencent.tim:id/action_sheet_button',textContains='维持绑定').click()  # ****有问题，会crash****
                 except Exception:
-                    print (Exception, ":")
+                    print ('维持绑定失败')
                     continue
 
                 wait = 1
@@ -144,7 +145,7 @@ class TIMQQRegister:
 
 
                 d(text='昵称', className='android.widget.EditText').click()
-                z.input('王老吉')
+                z.input(nickName)
                 print nickName
 
                 password = self.GenPassword()

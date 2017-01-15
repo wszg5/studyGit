@@ -9,9 +9,10 @@ from slot import slot
 class TIMLogin:
 
     def __init__(self):
+        self.type = 'tim'
         self.repo = Repo()
         self.XunMa = XunMa()
-        self.slot = slot('tim')
+        self.slot = slot(self.type)
 
     def login(self,d,z,args):
         cateId = args['repo_cate_id']
@@ -19,19 +20,32 @@ class TIMLogin:
         name = name[0]['content']
         d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate()  # 清除缓存
         d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        time.sleep(8)
+        time.sleep(3)
+        while d(textContains='正在更新数据').exists:
+            time.sleep(2)
+        time.sleep(4)
         d(text='新用户', resourceId='com.tencent.tim:id/btn_register').click()
-        token = self.XunMa.GetToken()
+        token = self.XunMa.GetToken(True)
         phoneNumber = self.XunMa.GetPhoneNumber(token, '144')
+        if 'False' == phoneNumber:
+            token = self.XunMa.GetToken(False)
+            phoneNumber = self.XunMa.GetPhoneNumber(token, '144')
+
+        if 'false'==phoneNumber:
+            print()
+
         print(phoneNumber)
         d(text='请输入你的手机号码', resourceId='com.tencent.tim:id/name').set_text(phoneNumber)
         d(text='下一步', resourceId='com.tencent.tim:id/name').click()
         time.sleep(4)
         try:
-            vertifyCode = self.XunMa.GetTIMLittleCode(phoneNumber, token)  # 获取验证码
+            vertifyCode = self.XunMa.GetCode(phoneNumber, token)  # 获取验证码
+            self.XunMa.ReleaseToken(phoneNumber, token)
         except Exception:
             d(textContains='重新发送', resourceId='com.tencent.tim:id/name').click()
             vertifyCode = self.XunMa.GetCode(phoneNumber, token)  # 获取验证码
+            self.XunMa.ReleaseToken(phoneNumber, token)
+
         d(text='请输入短信验证码', resourceId='com.tencent.tim:id/name').set_text(vertifyCode)
         d(textContains='重新发送', resourceId='com.tencent.tim:id/name').click()
         d(text='下一步', resourceId='com.tencent.tim:id/name').click()
@@ -55,9 +69,10 @@ class TIMLogin:
         cate_id = args["repo_cate_id"]
 
         name = self.slot.getEmpty(d)                    #取空卡槽
+        print(name)
         if name ==0:
             name = self.slot.getSlot(d,time_limit)              #没有空卡槽，取２小时没用过的卡槽
-            print '切换为'+str(name)
+            print ('切换为'+str(name))
             while name == 0:                               #2小时没有用过的卡槽也为空的情况
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无2小时未用\"").communicate()
                 time.sleep(30)
@@ -104,13 +119,17 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4BDSK00858")
-    z = ZDevice("HT4BDSK00858")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
+    type = 'tim'
+    slot = slot(type)
+    slot.restore(d, 2)  # 有２小时没用过的卡槽情况，切换卡槽
+
     # print(d.dump(compressed=False))
     # print(d.info)
     d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()  # 清除缓存
-    args = {"repo_cate_id":"56","time_delay":"3","time_limit":"120"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"56","time_delay":"3","time_limit":"3"};    #cate_id是仓库号，length是数量
 
     # args = {"step_id":"17010410261870600","repo_cate_id":"33","time_limit":"3","time_delay":"3"}
     # o.slot.restore(d,1)

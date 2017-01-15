@@ -16,37 +16,36 @@ class TIMAddressList:
 
         newStart = 1
         while newStart == 1:
-            token = self.xuma.GetToken()
-            try:
-                GetBindNumber = self.xuma.GetPhoneNumber(token,'153')
-            except Exception:
-                time.sleep(2)
-                continue
+
+            token = self.xuma.GetToken(True)
+            GetBindNumber = self.xuma.GetPhoneNumber(token,'153')
+            if 'False' == GetBindNumber:
+                token = self.xuma.GetToken(False)
+                GetBindNumber = self.xuma.GetPhoneNumber(token, '153')
 
             print(GetBindNumber)
             time.sleep(2)
-            d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(GetBindNumber)
+            d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(GetBindNumber)  #GetBindNumber
 
             time.sleep(1)
             d(text='下一步').click()
-            time.sleep(2)
+            time.sleep(3)
             if d(text='下一步',resourceId='com.tencent.mobileqq:id/name',index=2).exists:       #操作过于频繁的情况
                 return 'false'
 
-            if d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').exists:     #提示该号码已经与另一个ｑｑ绑定，是否改绑
+            if d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').exists:     #提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
                 d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').click()
 
+            try:
+                code = self.xuma.GetBindCode(GetBindNumber, token)
+                self.xuma.ReleaseToken(GetBindNumber, token)
+            except Exception:
+                code = self.xuma.GetBindCode(GetBindNumber, token)
+                self.xuma.ReleaseToken(GetBindNumber, token)
 
-            code = self.xuma.GetBindCode(GetBindNumber, token)
             newStart = 0
 
-            # except Exception:
-            #     print(traceback.format_exc())
-            #     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"没有取到验证码，重新获取\"").communicate()
-            #     time.sleep(2)
-            #     d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft',className='android.widget.TextView').click()
-            #     d(className='android.view.View',descriptionContains='删除').click()
-            #     continue
+
 
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
             d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
@@ -57,7 +56,7 @@ class TIMAddressList:
 
     def action(self, d,z, args):
         cate_id = args["repo_material_id"]
-        Material = self.repo.GetMaterial(cate_id, 0, 1)
+        Material = self.repo.GetMaterial(cate_id,0,1 )
         wait = 1
         while wait == 1:
             try:
@@ -72,13 +71,28 @@ class TIMAddressList:
         width = str["displayWidth"]
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        time.sleep(4)
+        time.sleep(6)
         if d(text='消息',resourceId='com.tencent.mobileqq:id/name').exists:                    #到了通讯录这步后看号有没有被冻结
             print
         else:
             return 2
+        if d(text='绑定手机号码').exists:
+            d(text='关闭').click()
+            d(text='关闭').click()
+            time.sleep(1)
+
         d(className='android.widget.TabWidget',resourceId='android:id/tabs').child(className='android.widget.FrameLayout').child(className='android.widget.RelativeLayout').click()     #点击到联系人
-        time.sleep(2)
+        time.sleep(4)
+
+        if d(text='主题装扮').exists:
+            d(text='关闭').click()
+        if d(text='马上绑定').exists:
+            d(text='关闭').click()
+        if d(text='通讯录').exists:
+            d(text='关闭').click()
+
+
+
         if d(text='联系人',resourceId='com.tencent.mobileqq:id/ivTitleName').exists:       #如果已经到联系人界面
             print
         else:
@@ -195,8 +209,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT49PSK04868")
+    z = ZDevice("HT49PSK04868")
     # print(d.dump(compressed=False))
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()

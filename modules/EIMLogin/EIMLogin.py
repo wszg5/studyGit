@@ -113,7 +113,7 @@ class EIMLogin:
                 if d(text='输入验证码').exists:           #验证码输入错误的情况
                     continue
                 else:
-                    self.repo.BackupInfo(cate_id, 'frozen', QQNumber, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, ''))  # 仓库号,使用中,QQ号,设备号_卡槽号
+                    self.repo.BackupInfo(cate_id, 'frozen', QQNumber,'')  # 仓库号,使用中,QQ号,设备号_卡槽号
                     break
 
     def action(self, d,z, args):
@@ -128,6 +128,7 @@ class EIMLogin:
                 time.sleep(30)
                 name = self.slot.getSlot(d, time_limit)
 
+            d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
             z.set_mobile_data(False)
             time.sleep(3)
             self.slot.restore(d, name)  # 有２小时没用过的卡槽情况，切换卡槽
@@ -136,9 +137,19 @@ class EIMLogin:
             time.sleep(8)
 
             d.server.adb.cmd("shell","am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-            time.sleep(5)
+            while d(textContains='正在更新数据').exists:
+                time.sleep(2)
+            time.sleep(4)
             d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"卡槽成功切换为" + str(name) + "号\"").communicate()
-            time.sleep(5)
+            time.sleep(6)
+            if d(textContains='开启精彩').exists:
+                d(textContains='开启精彩').click()
+            if d(descriptionContains='开启精彩').exists:
+                d(descriptionContains='开启精彩').click()
+            if d(resourceId='com.tencent.eim:id/name',className='android.widget.Button').exists:
+                d(resourceId='com.tencent.eim:id/name', className='android.widget.Button').click()
+                time.sleep(6)
+
             if d(text='搜索', resourceId='com.tencent.eim:id/name').exists:
                 obj = self.slot.getSlotInfo(d, name)  # 得到切换后的QQ号
                 info = obj['info']  # info为QQ号
@@ -155,7 +166,7 @@ class EIMLogin:
             time.sleep(8)
             info = self.login(d, args)
             self.slot.backup(d, name, info)  # 设备信息，卡槽号，QQ号
-            self.repo.BackupInfo(cate_id, 'using', info,'%s_%s' % (d.server.adb.device_serial(), name))  # 仓库号,使用中,QQ号,设备号_卡槽号
+            self.repo.BackupInfo(cate_id, 'using', info,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, name))  # 仓库号,使用中,QQ号,设备号_卡槽号
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -166,8 +177,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT55TSK00815")
+    z = ZDevice("HT55TSK00815")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.dump(compressed=False)
     # slot = slot('eim')
@@ -175,5 +186,5 @@ if __name__ == "__main__":
     # slot.restore(d, 2)  # 有２小时没用过的卡槽情况，切换卡槽
 
 
-    args = {"repo_cate_id":"55","time_limit":"10","time_limit1":"10","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"55","time_limit":"3","time_limit1":"10","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

@@ -25,17 +25,17 @@ class ImpContact:
             os.mkdir(base_dir)
         filename = os.path.join(base_dir, "%s.txt"%(self.GetUnique()) )
 
-
+        number_count = args['number_count']
         cate_id = args["repo_cate_id"]
         print(cate_id)
-        numbers = self.repo.GetNumber(cate_id, 0, 50)
+        numbers = self.repo.GetNumber(cate_id, 0, number_count)
         wait = 1  # 判断素材仓库里是否由素材
         while wait == 1:
             try:
                 t = numbers[0]  # 取出验证消息的内容
                 wait = 0
             except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，等待中\"").communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"电话号码%s号仓库为空，等待中\""%cate_id).communicate()
 
                 time.sleep(30)
 
@@ -59,12 +59,14 @@ def getPluginClass():
     return ImpContact
 
 if __name__ == "__main__":
+
     # global args
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4AVSK01106")
+    d = Device("HT49XSK01858")
+    z = ZDevice("HT49XSK01858")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"36","length":"30","time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"36","length":"30",'number_count':'30',"time_delay":"3"}    #cate_id是仓库号，length是数量
+
     o.action(d,z, args)

@@ -435,14 +435,13 @@ class ZRemoteDevice(object):
         return self.server.jsonrpc.setMobileData(status)
 
     def input(self, text):
-        self.server.adb.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \"%s\"" % text)
+        self.server.adb.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \"%s\"" % text).communicate()
         '''click at arbitrary coordinates.'''
         #return self.server.jsonrpc.Input(text)
         return True
 
-    def long_click(self, x, y):
-        '''long click at arbitrary coordinates.'''
-        return self.swipe(x, y, x + 1, y + 1)
+    def openQQChat(self, number):
+        return self.server.jsonrpc.openQQChat(number)
 
     def swipe(self, sx, sy, ex, ey, steps=100):
         return self.server.jsonrpc.swipe(sx, sy, ex, ey, steps)

@@ -10,7 +10,7 @@ import time, datetime, random
 from zservice import ZDevice
 from slot import slot
 
-class EIMLogin:
+class EIMLoginNoSlot:
     def __init__(self):
         self.type = 'eim'
         self.repo = Repo()
@@ -115,20 +115,23 @@ class EIMLogin:
                     break
 
     def action(self, d,z, args):
-
+        z.set_mobile_data(False)
+        time.sleep(5)
+        z.set_mobile_data(True)
+        time.sleep(8)
         info = self.login(d, args)
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 def getPluginClass():
-    return EIMLogin
+    return EIMLoginNoSlot
 
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT49XSK01858")
+    z = ZDevice("HT49XSK01858")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
 
