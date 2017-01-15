@@ -14,7 +14,6 @@
 "source":"material",
 "top_cate_id":"12"
 },
-
 {
 "id": "time_limit",
 "name":"卡槽切换间隔（单位分钟）",

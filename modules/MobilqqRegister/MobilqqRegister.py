@@ -54,7 +54,7 @@ class TIMQQRegister:
 
             else:
 
-                data = self.XunMa.UploadPhoneNumber(phoneNumber, token)
+                data = self.XunMa.UploadPhoneNumber(phoneNumber)
                 if data == 0:
                     print ("************匹配号码失败**************")
                     continue
