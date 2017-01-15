@@ -174,7 +174,7 @@ class XunMa:
         for i in range(1, 60):
             time.sleep(1)
             code = self.GetCode(number,itemId,length)
-            if code:
+            if not code==None:
                 return code
 
         return ""
