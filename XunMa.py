@@ -139,7 +139,6 @@ class XunMa:
                 response = conn.getresponse()
                 if response.status == 200:
                     data = response.read().decode('GBK')
-                    print data
             except Exception:
                 return None
 
