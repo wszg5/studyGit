@@ -21,7 +21,6 @@
 	"defaultValue":"20",
 	"remark":""
 	},
-
 	{
 	"id": "time_delay",
 	"name":"延时",

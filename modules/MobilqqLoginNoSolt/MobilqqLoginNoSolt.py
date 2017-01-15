@@ -9,7 +9,6 @@ from Repo import *
 from RClient import *
 import time, datetime, random
 from zservice import ZDevice
-from slot import slot
 
 class MobilqqLoginSolt:
     def __init__(self):
@@ -126,7 +125,10 @@ class MobilqqLoginSolt:
                 continue
 
     def action(self, d,z, args):
-
+        z.set_mobile_data(False)
+        time.sleep(5)
+        z.set_mobile_data(True)
+        time.sleep(8)
         self.login(d,args)
 
         if (args["time_delay"]):
@@ -159,8 +161,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT49XSK01858")
+    z = ZDevice("HT49XSK01858")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     # d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存

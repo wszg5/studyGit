@@ -26,7 +26,6 @@ class TIMAddFriends:
 
     def action(self, d,z, args):
         str = d.info  # 获取屏幕大小等信息
-        print(str)
         height = str["displayHeight"]
         width = str["displayWidth"]
 
@@ -38,24 +37,31 @@ class TIMAddFriends:
 
 
 
-        repo_material_cate_id = args["repo_material_cate_id"]
-        Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
+        cate_id = args["repo_material_cate_id"]
+        Material = self.repo.GetMaterial(cate_id, 0, 1)
         wait = 1  # 判断素材仓库里是否由素材
         while wait == 1:
             try:
                 material = Material[0]['content']  # 取出验证消息的内容
                 wait = 0
             except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"")
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
+                time.sleep(20)
 
         add_count = int(args['add_count'])  # 要添加多少人
 
-        repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
+        cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
         wait = 1
         while wait == 1:
-            numbers = self.repo.GetNumber(repo_number_cate_id, 120, add_count)  # 取出add_count条两小时内没有用过的号码
+            numbers = self.repo.GetNumber(cate_id, 120, add_count)  # 取出add_count条两小时内没有用过的号码
+            lenth = len(numbers)
             if "Error" in numbers:  #
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
+                time.sleep(20)
+                continue
+            if lenth==0:
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
+                time.sleep(20)
                 continue
             wait = 0
 
@@ -67,15 +73,15 @@ class TIMAddFriends:
         time.sleep(1)
         d(resourceId='com.tencent.mobileqq:id/name',description='快捷入口').click()
         time.sleep(1)
-        if d(text='加好友',resourceId='com.tencent.mobileqq:id/name').exists:
-            d(text='加好友',resourceId='com.tencent.mobileqq:id/name').click()
+        if d(textContains='加好友').exists:
+            d(textContains='加好友').click()
         else:
             d(resourceId='com.tencent.mobileqq:id/name', description='快捷入口').click()
-            d(text='加好友',resourceId='com.tencent.mobileqq:id/name').click()
+            d(textContains='加好友').click()
         time.sleep(3)
-        d(text='QQ号/手机号/群/公众号', resourceId='com.tencent.mobileqq:id/name').click()
-        d(text='QQ号/手机号/群/公众号', resourceId='com.tencent.mobileqq:id/et_search_keyword').click()
-        d(text='QQ号/手机号/群/公众号', resourceId='com.tencent.mobileqq:id/et_search_keyword').set_text(list[0])  # 第一次添加的帐号 list[0]
+        d(resourceId='com.tencent.mobileqq:id/name',className='android.widget.EditText').click()           #刚进来时点击 QQ号/手机号/群/公众号
+        d(resourceId='com.tencent.mobileqq:id/et_search_keyword',className='android.widget.EditText').click()   #QQ号/手机号/群/公众号
+        d(resourceId='com.tencent.mobileqq:id/et_search_keyword', className='android.widget.EditText').set_text(list[0])  # 第一次添加的帐号 list[0]
 
         d(text='找人:', resourceId='com.tencent.mobileqq:id/name').click()
         time.sleep(2)
@@ -87,7 +93,7 @@ class TIMAddFriends:
             time.sleep(1)
             if d(text='没有找到相关结果',className='android.widget.TextView').exists:                            #没有这个人的情况
                 d(resourceId='com.tencent.mobileqq:id/ib_clear_text',description='清空').click()
-                obj = d(text='QQ号/手机号/群/公众号', resourceId='com.tencent.mobileqq:id/et_search_keyword')
+                obj = d(text='QQ号/手机号/群/公众号', resourceId='com.tencent.mobileqq:id/et_search_keyword')   #QQ号/手机号/群/公众号
                 if obj.exists:
                     obj.set_text(numbers)  # 下次要添加的号码
                 obj = d(text='网络查找人', resourceId='com.tencent.mobileqq:id/et_search_keyword')
@@ -97,7 +103,7 @@ class TIMAddFriends:
                 while d(text='正在搜索…',index=1).exists:                  #网速不行的情况，让它不停等待
                     time.sleep(1)
                 continue
-            time.sleep(2)
+            time.sleep(1)
 
             if d(resourceId='com.tencent.mobileqq:id/title',text='人').exists:
                 d(className='android.widget.AbsListView').child(index=1,resourceId='com.tencent.mobileqq:id/name').click()
@@ -217,10 +223,10 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A3SK00853")
-    z = ZDevice("HT4AVSK01106")
+    d = Device("HT55TSK00815")
+    z = ZDevice("HT55TSK00815")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     # print(d.dump(compressed=False))
-    args = {"repo_number_cate_id":"13","repo_material_cate_id":"8","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"37","repo_material_cate_id":"33","add_count":"3","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
     o.action(d,z, args)

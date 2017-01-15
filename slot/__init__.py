@@ -37,7 +37,7 @@ class slot:
         elif (self.type == "eim"):
             self.package = "com.tencent.eim"
             self.files = ['files/ConfigStore2.dat']
-            self.folders = ['files/user']
+            self.folders = ['files/user','databases']
             self.maxSlot = const.MAX_SLOTS_EIM
 
         else:
