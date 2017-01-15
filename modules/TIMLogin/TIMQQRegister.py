@@ -42,9 +42,7 @@ class TIMQQRegister:
                 d(resourceId='com.tencent.tim:id/btn_register', index=1, text='新用户').click()
             time.sleep(2)
 
-
             phoneNumber = self.XunMa.GetPhoneNumber( '144')
-
 
             time.sleep(2)
             try:
@@ -148,13 +146,12 @@ class TIMQQRegister:
 
 
 
-            self.TIMUploadAccount(qqNumber, password, phoneNumber, numberCateId)
+            self.repo.RegisterAccount(qqNumber, password, phoneNumber, numberCateId)
             # z.set_mobile_data(False)
             # time.sleep(6)
             # z.set_mobile_data(True)
             if (args["time_delay"]):
                 time.sleep(int(args["time_delay"]))
-
 
 
     def makePassword(self,minlength=5,maxlength=25):
