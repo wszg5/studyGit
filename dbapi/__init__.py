@@ -132,3 +132,10 @@ class dbapi:
             if stats["skipped"]:
                 r.table("setting").insert(cache).run(res.conn)
 
+    def DelCache(self,key):
+        pool = RethinkPool(max_conns=120, initial_conns=10, host=const.SERVER_IP,
+                           port=28015,
+                           db=const.RETHINKDB_NAME)
+        with pool.get_resource() as res:
+            r.table("setting").get(key).delete().run(res.conn)
+

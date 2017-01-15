@@ -1,11 +1,11 @@
 {
 "id": "TIMQQRegister",
-"cate":"TIM模块",
+"cate":"其他模块",
 "name":"TIM批量注册QQ",
 "url": "http://www.bejson.com",
 "version": "1.0",
 "icon":"vcard-o",
-"remark":"TIM版本v1.0.2.94",
+"remark":"TIM版本v1.0.2.98",
 "setting":[
 {
 "id": "repo_cate_id",
@@ -13,6 +13,13 @@
 "type":"repo",
 "source":"material",
 "top_cate_id":"12"
+},
+{
+"id": "muchNumber_cate_id",
+"name":"批量QQ号码库",
+"type":"repo",
+"source":"account",
+"top_cate_id":"1"
 },
 {
 "id": "time_delay",

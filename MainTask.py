@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # coding:utf-8
 import os, sys, time, re, csv
 import util
@@ -37,7 +38,6 @@ def cleanEnv():
             os.system(cmd)
     if not os.path.isdir('tmp'):
         os.mkdir('tmp')
-    cache.clear()
 
 
 def runwatch(d, data):
