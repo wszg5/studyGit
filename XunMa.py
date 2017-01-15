@@ -58,7 +58,6 @@ class XunMa:
         key = 'phone_%s'%itemId
         phone = cache.popSet(key)
         if phone:
-            print '库里手机号%s'%phone
             return phone
         lockKey = 'lock_get_phone_%s'%itemId
 
@@ -89,7 +88,6 @@ class XunMa:
                 self.GetToken(False)
 
             if data.startswith('False'):
-                print '迅码获取号码出错了; %s'%data
                 time.sleep(3)
 
             numbers = data.split(";");
@@ -112,9 +110,8 @@ class XunMa:
         response = conn.getresponse()
         if response.status == 200:
             data = response.read()
-            print (data)
         else:
-            print '释放失败'
+            ok='ok'
 
 
 
@@ -127,7 +124,6 @@ class XunMa:
             time.sleep(1)
             code = cache.get(key)
             if code:
-                print '居然取到了%s'%code
                 return code
 
             token = self.GetToken()
@@ -145,7 +141,6 @@ class XunMa:
                 if data.startswith('MSG'):
                     targetNumber = re.findall(r'1\d{10}',data)
                     targetNumber = targetNumber[0]
-                    print data
                     '''
                     if targetNumber == number:
                         res = re.findall(r"MSG&144&" + number + "&(.+?)\[End]", data)
