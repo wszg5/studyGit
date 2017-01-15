@@ -6,7 +6,7 @@ import multiprocessing
 import traceback
 import json
 from const import const
-# from zcache import cache
+from zcache import cache
 try:
     rst = int(util.exccmd("awk -F. '{print $1}' /proc/uptime"))
     if rst < 500:

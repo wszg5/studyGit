@@ -5,7 +5,9 @@ import os, time, datetime, random
 from zservice import ZDevice
 from XunMa import *
 import traceback
-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 class TIMAddressList:
     def __init__(self):
@@ -17,11 +19,7 @@ class TIMAddressList:
         newStart = 1
         while newStart == 1:
 
-            token = self.xuma.GetToken(True)
-            GetBindNumber = self.xuma.GetPhoneNumber(token,'153')
-            if 'False' == GetBindNumber:
-                token = self.xuma.GetToken(False)
-                GetBindNumber = self.xuma.GetPhoneNumber(token, '153')
+            GetBindNumber = self.xuma.GetPhoneNumber('153')
 
             print(GetBindNumber)
             time.sleep(2)
@@ -36,16 +34,8 @@ class TIMAddressList:
             if d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').exists:     #提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
                 d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').click()
 
-            try:
-                code = self.xuma.GetBindCode(GetBindNumber, token)
-                self.xuma.ReleaseToken(GetBindNumber, token)
-            except Exception:
-                code = self.xuma.GetBindCode(GetBindNumber, token)
-                self.xuma.ReleaseToken(GetBindNumber, token)
-
+            code = self.xuma.GetVertifyCode(GetBindNumber)
             newStart = 0
-
-
 
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
             d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
@@ -209,10 +199,10 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT49PSK04868")
-    z = ZDevice("HT49PSK04868")
+    d = Device("HT536SK01667")
+    z = ZDevice("HT536SK01667")
     # print(d.dump(compressed=False))
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_material_id":"33",'EndIndex':'5',"time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_material_id":"39",'EndIndex':'5',"time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

@@ -23,14 +23,8 @@ class RegisterAccount:
             if d(text='注册', className='android.widget.Button').exists:
                 d(text='注册', className='android.widget.Button').click()
 
+                phoneNumber = self.XunMa.GetPhoneNumber('2356')
 
-            time.sleep(2)
-            token = self.XunMa.GetToken(True)
-            phoneNumber = self.XunMa.GetPhoneNumber(token, '2356')
-            if 'False' == phoneNumber:
-                token = self.XunMa.GetToken(False)
-                phoneNumber = self.XunMa.GetPhoneNumber(token, '2356')
-            print token
             print phoneNumber
             d(index=1, resourceId='com.tencent.mm:id/gl').set_text('magic')
             d(index=0, resourceId='com.tencent.mm:id/ou').set_text('86')
@@ -39,9 +33,9 @@ class RegisterAccount:
             d(resourceId='com.tencent.mm:id/fe', index=0).child(index=3, resourceId='com.tencent.mm:id/c2d').child(index=1,resourceId='com.tencent.mm:id/gl').set_text('13141314abc')
             d(text='注册', className='android.widget.Button').click()
             d(text='确定', className='android.widget.Button').click()
-            vertifyCode = self.XunMa.GetTIMLittleCode(phoneNumber, token)
-            time.sleep(35-vertifyCode[1]*2)
-            print vertifyCode
+            code = self.XunMa.GetVertifyCode(phoneNumber)
+
+
             d(text='请输入验证码', className='android.widget.EditText').set_text(vertifyCode[0])
             d(text='下一步', className='android.widget.Button').click()
 

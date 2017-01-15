@@ -2,20 +2,13 @@
 import httplib, json
 import time
 import re
-
 from zcache import cache
-
-
 class XunMa:
-
     def __init__(self):
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                    "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
-
         self.domain = "api.xunma.net"
         self.port = 8080
-
-
     def GetToken(self, useCache=True):
         from dbapi import dbapi
         dbapi = dbapi()
@@ -24,15 +17,12 @@ class XunMa:
             if tokenCache:
                 return tokenCache
         rk = dbapi.GetCodeSetting()
-
         xm_user = rk["xm_user"]
         xm_pwd = rk["xm_pwd"]
         user =  xm_user.encode("utf-8")
         pwd = xm_pwd.encode("utf-8")
-
         # path = "/Login?uName=powerman&pWord=13141314&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"
         path = "/Login?uName="+user+"&pWord="+pwd+"&Developer=apFsnhXLxQG5W0AWiDhr%2fg%3d%3d"
-
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         time.sleep(1)
@@ -43,7 +33,6 @@ class XunMa:
             return  data
         else:
             return "Error Getting Account, Please check your repo"
-
     def ReleaseAllPhone(self):
         token=self.GetToken()
         try:
@@ -52,7 +41,6 @@ class XunMa:
             conn.request("GET", path)
         except Exception:
             ok = 'ok'
-
     def GetPhoneNumber(self, itemId):
         token = self.GetToken()
         key = 'phone_%s'%itemId
@@ -61,51 +49,38 @@ class XunMa:
             print '库里手机号%s'%phone
             return phone
         lockKey = 'lock_get_phone_%s'%itemId
-
         if cache.get(lockKey):
             time.sleep(5)
-
             return self.GetPhoneNumber(itemId)
         else:
             cache.set(lockKey,True,30)
-
         try:
-
             path = "/getPhone?ItemId=%s&token=%s&Count=10" % (itemId, token)
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
             response = conn.getresponse()
         except Exception:
             ok = 'ok'
-
-
         if response.status == 200:
             data = response.read().decode('GBK')
-
             import string
             if string.find(data,'单个用户获取数量不足')!=-1 :
                 self.ReleaseAllPhone()
-
             if string.find(data,'Session 过期')!=-1 :
                 self.GetToken(False)
-
             if data.startswith('False'):
                 print '迅码获取号码出错了; %s'%data
                 time.sleep(3)
-
             numbers = data.split(";");
-
             for number in numbers:
                 number = re.findall("\d{11}", str(number))
                 if number:
                     cache.addSet(key, number)
-
             cache.set(lockKey,False)
             return self.GetPhoneNumber(itemId)
         else:
             cache.set(lockKey,False)
             return self.GetPhoneNumber(itemId)
-
     def ReleasePhone(self, phoneNumber):
         token = self.GetToken()
         path = "/releasePhone?token=%s&phoneList=%s-144" % (token, phoneNumber)
@@ -117,12 +92,6 @@ class XunMa:
             print (data)
         else:
             print '释放失败'
-
-
-
-
-
-
     def GetVertifyCode(self, number):
         key = 'verify_code_%s'%number
         for i in range(1, 60):
@@ -131,7 +100,6 @@ class XunMa:
             if code:
                 print '居然取到了%s'%code
                 return code
-
             token = self.GetToken()
             try:
                 path = "/getQueue?token=" + token + ""
@@ -140,10 +108,8 @@ class XunMa:
                 response = conn.getresponse()
             except Exception:
                 continue
-
             if response.status == 200:
                 data = response.read().decode('GBK')
-
                 if data.startswith('MSG'):
                     targetNumber = re.findall(r'1\d{10}',data)
                     targetNumber = targetNumber[0]
@@ -161,11 +127,7 @@ class XunMa:
                     code = res[0]
                     sms_number_key = 'verify_code_%s'%targetNumber
                     cache.set(sms_number_key, code)
-
-
         return ""
-
-
     def UploadPhoneNumber(self, number):
         token = self.GetToken()
         path = "/getPhone?ItemId=144&token=" + token + "&Phone="+number+""
@@ -175,7 +137,6 @@ class XunMa:
             response = conn.getresponse()
         except Exception:
             return 0
-
         if response.status == 200:
             data = response.read()
             data = data.decode('GBK')
@@ -185,10 +146,6 @@ class XunMa:
                 return 0
         else:
             return "Error Getting Account, Please check your repo"
-
-
-
-
 if __name__ == '__main__':
     xunma = XunMa()
     a = xunma.GetToken()
@@ -196,6 +153,5 @@ if __name__ == '__main__':
     # a = xunma.GetCode(b,a)
     # result = repo.GetAccount("6", 120, 1)
     # result = repo.SetAccount("6", "ddkf", "1918697054")
-
     # result = repo.GetMaterial("8",120,1)
     # result = repo.GetNumber("13",0,1)              #意思是取13号仓库2小时内没有用过的号码，一次取16个
