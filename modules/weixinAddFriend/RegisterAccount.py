@@ -15,22 +15,21 @@ class RegisterAccount:
 
     def action(self, d, args):
         for i in range(0, 72, +1):
-            d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()
+            # d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()
             d.server.adb.cmd("shell", "pm clear com.tencent.mm").wait()  # 清除缓存
             # 将微信拉起来
             d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()
-            for i in range(50, 110):
-                time.sleep(1)
-                print 'out'
-                if d(text='注册', className='android.widget.Button').exists:
-                    print 'in'
-                    time.sleep(3)
-                    d(text='注册', className='android.widget.Button').click()
+            time.sleep(6)
+            if d(text='注册', className='android.widget.Button').exists:
+                d(text='注册', className='android.widget.Button').click()
 
-                    break
+
             time.sleep(2)
-            token = self.XunMa.GetToken()
+            token = self.XunMa.GetToken(True)
             phoneNumber = self.XunMa.GetPhoneNumber(token, '2356')
+            if 'False' == phoneNumber:
+                token = self.XunMa.GetToken(False)
+                phoneNumber = self.XunMa.GetPhoneNumber(token, '2356')
             print token
             print phoneNumber
             d(index=1, resourceId='com.tencent.mm:id/gl').set_text('magic')
@@ -63,7 +62,7 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4BDSK00858")
+    d = Device("HT536SK01667")
     d.dump(compressed=False)
     args = {"repo_number_cate_id": "13", "repo_material_cate_id": "8", "gender": "女", "add_count": "9","time_delay": "3"}  # cate_id是仓库号，发中文问题
     o.action(d, args)

@@ -33,7 +33,9 @@ class EIMTemporarySession:
 
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
-
+        d.server.adb.cmd("shell", "am force-stop com.tencent.eim").communicate()  # 强制停止   3001369923  Bn2kJq5l
+        d.server.adb.cmd("shell","am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+        time.sleep(6)
 
         for i in range (0,totalNumber,+1):
             cate_id = args["repo_material_cate_id"]
@@ -57,6 +59,14 @@ class EIMTemporarySession:
                 d(text='企业QQ', resourceId='android:id/text1').click()
                 if d(text='仅此一次',resourceId='android:id/button_once').exists:
                     d(text='仅此一次',resourceId='android:id/button_once').click()
+
+            if d(textContains='沟通的权限').exists:
+                z.openQQChat(numbers)  # 唤起浏览器临时会话
+                time.sleep(1)
+                if d(text='企业QQ', resourceId='android:id/text1').exists:
+                    d(text='企业QQ', resourceId='android:id/text1').click()
+                    if d(text='仅此一次', resourceId='android:id/button_once').exists:
+                        d(text='仅此一次', resourceId='android:id/button_once').click()
 
             if d(resourceId='com.tencent.eim:id/input', className='android.widget.EditText').exists:
                 d(resourceId='com.tencent.eim:id/input', className='android.widget.EditText').click()

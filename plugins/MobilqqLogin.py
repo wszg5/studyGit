@@ -104,6 +104,7 @@ class MobilqqLogin:
                     time.sleep(6)
                     while d(className='android.widget.ProgressBar',index=0).exists:        #网速不给力时，点击完成后仍然在加载时的状态
                         time.sleep(2)
+                    time.sleep(3)
                     if d(text='输入验证码',resourceId='com.tencent.mobileqq:id/ivTitleName').exists:
                         continue
                     else:
