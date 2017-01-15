@@ -47,12 +47,10 @@ class TIMQQRegister:
             time.sleep(2)
             try:
 
-                token = self.XunMa.GetToken(True)
-                phoneNumber = self.XunMa.GetPhoneNumber(token, '144')
+                phoneNumber = self.XunMa.GetPhoneNumber( '144')
                 print phoneNumber
                 if phoneNumber=='False':
-                    token = self.XunMa.GetToken(False)
-                    phoneNumber = self.XunMa.GetPhoneNumber(token, '144')
+                    phoneNumber = self.XunMa.GetPhoneNumber('144')
 
             except Exception, e:
 
@@ -65,7 +63,7 @@ class TIMQQRegister:
                 d(text='下一步', resourceId='com.tencent.tim:id/name').click()
 
             except Exception:
-                self.XunMa.ReleaseToken(phoneNumber, token)
+                self.XunMa.ReleaseToken(phoneNumber)
                 print '%s失败'%phoneNumber
                 continue
 

@@ -47,13 +47,8 @@ class TIMQQRegister:
             time.sleep(2)
 
 
-            token = self.XunMa.GetToken(True)
-            phoneNumber = self.XunMa.GetPhoneNumber(token, '144')
-            print phoneNumber
-            if phoneNumber=='False':
-                token = self.XunMa.GetToken(False)
-                phoneNumber = self.XunMa.GetPhoneNumber(token, '144')
-                print phoneNumber
+            phoneNumber = self.XunMa.GetPhoneNumber( '144')
+
 
             time.sleep(2)
             try:
@@ -62,7 +57,7 @@ class TIMQQRegister:
                 d(text='下一步', resourceId='com.tencent.tim:id/name').click()
 
             except Exception:
-                self.XunMa.ReleaseToken(phoneNumber, token)
+                self.XunMa.ReleasePhone(phoneNumber)
                 print '%s失败'%phoneNumber
                 continue
 
@@ -77,7 +72,7 @@ class TIMQQRegister:
             time.sleep(3)
             # 关闭设备锁
             if d(description='开启设备锁，保障QQ帐号安全。', className='android.widget.CheckBox').exists:
-                self.XunMa.ReleaseToken(phoneNumber, token)
+                self.XunMa.ReleasePhone(phoneNumber)
                 continue
 
             else:
@@ -90,7 +85,7 @@ class TIMQQRegister:
 
 
 
-                vertifyCode = self.XunMa.GetVertifyCode(phoneNumber,token)  # 获取验证码
+                vertifyCode = self.XunMa.GetVertifyCode(phoneNumber)  # 获取验证码
 
 
 
@@ -100,13 +95,12 @@ class TIMQQRegister:
                         d(text='重新发送', resourceId='com.tencent.tim:id/name').click()
                         time.sleep(2)
                         print '重新发送'
-                        vertifyCode = self.XunMa.GetVertifyCode(phoneNumber,token)
-                        self.XunMa.ReleaseToken(phoneNumber, token)
+                        vertifyCode = self.XunMa.GetVertifyCode(phoneNumber)
+
                         if vertifyCode=='':
+                            self.XunMa.ReleaseToken(phoneNumber)
                             print '验证码获取失败'
                             continue
-                else:
-                    self.XunMa.ReleaseToken(phoneNumber, token)
 
                 print vertifyCode
                 d(text='请输入短信验证码', resourceId='com.tencent.tim:id/name').set_text(vertifyCode)
