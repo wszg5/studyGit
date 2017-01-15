@@ -11,11 +11,7 @@ class TIMQQRegister:
     def __init__(self):
         self.XunMa = XunMa()
         self.repo = Repo()
-        self.headers = {"Content-type": "application/x-www-form-urlencoded",
-                        "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
 
-        self.domain = "192.168.1.88"
-        self.port = 8888
 
     def action(self, d,z,args):
         cateId = args['repo_cate_id']
@@ -117,7 +113,7 @@ class TIMQQRegister:
 
                 wait = 1
                 while wait == 1:
-                    nickNameList = self.GetMaterial(cateId, 0, 1)
+                    nickNameList = self.repo.GetMaterial(cateId, 0, 1)
                     if "Error" in nickNameList:  # 没有取到号码的时候
                         d.server.adb.cmd("shell",
                                          "am broadcast -a com.zunyun.qk.toast --es msg \"QQ号码%s号仓库为空，等待中\"" % cateId).communicate()
@@ -158,28 +154,6 @@ class TIMQQRegister:
             # z.set_mobile_data(True)
             if (args["time_delay"]):
                 time.sleep(int(args["time_delay"]))
-
-
-
-
-    def GetMaterial(self, cateId, interval, limit):
-        path = "/repo_api/material/pick?status=normal&cate_id=%s&interval=%s&limit=%s" % (cateId,interval,limit)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-
-        conn.request("GET", path)
-        response = conn.getresponse()
-        if response.status == 200:
-            data = response.read()
-            numbers = json.loads(data)
-            return  numbers
-        else:
-            return "Error Getting material, Please check your repo"
-
-
-    def TIMUploadAccount(self,qqNumber,password,phomeNumber, numberCateId):
-        path = "/repo_api/register/numberInfo?QQNumber=%s&QQPassword=%s&PhoneNumber=%s&cate_id=%s" % (qqNumber,password,phomeNumber,numberCateId)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET",path)
 
 
 
