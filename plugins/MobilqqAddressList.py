@@ -209,8 +209,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT49PSK04868")
-    z = ZDevice("HT49PSK04868")
+    d = Device("HT536SK01667")
+    z = ZDevice("HT536SK01667")
     # print(d.dump(compressed=False))
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
