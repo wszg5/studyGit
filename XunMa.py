@@ -63,10 +63,9 @@ class XunMa:
 
         if cache.get(lockKey):
             time.sleep(5)
-
             return self.GetPhoneNumber(itemId)
         else:
-            cache.set(lockKey,True,30)
+            cache.set(lockKey,True,10)
 
         try:
 
@@ -75,7 +74,8 @@ class XunMa:
             conn.request("GET", path)
             response = conn.getresponse()
         except Exception:
-            ok = 'ok'
+            cache.set(lockKey, False)
+            return self.GetPhoneNumber(itemId)
 
         if response.status == 200:
             data = response.read().decode('GBK')
@@ -115,51 +115,68 @@ class XunMa:
 
 
 
-
-
-
-    def GetVertifyCode(self, number, itemId, length=6):
+    def GetCode(self,number, itemId, length=6):
         key = 'verify_code_%s_%s'%(itemId,number)
-        for i in range(1, 60):
-            time.sleep(1)
-            code = cache.get(key)
-            if code:
-                return code
+        code = cache.get(key)
+        if code:
+            return code
 
+        lockKey = 'lock_get_code_%s' % itemId
+
+        if cache.get(lockKey):
+            return None
+        else:
+            cache.set(lockKey, True, 1)
+
+
+
+            data = ""
             token = self.GetToken()
             try:
                 path = "/getQueue?token=" + token + ""
                 conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
                 conn.request("GET", path)
                 response = conn.getresponse()
+                if response.status == 200:
+                    data = response.read().decode('GBK')
+                    print data
             except Exception:
-                continue
-
-            if response.status == 200:
-                data = response.read().decode('GBK')
-
-                if data.startswith('MSG'):
-                    targetNumber = re.findall(r'1\d{10}',data)
-                    targetNumber = targetNumber[0]
-                    '''
-                    if targetNumber == number:
-                        res = re.findall(r"MSG&144&" + number + "&(.+?)\[End]", data)
-                        res = re.findall("\d{6}", res[0])
-                        code = res[0]
-                        return code
-                    else:
-                    '''
-
-                    par = r"MSG&%s&%s&(.+?)\[End]"%(itemId, targetNumber)
+                return None
 
 
-                    #res = re.findall(r"MSG&144&" + targetNumber + "&(.+?)\[End]", data)
-                    res = re.findall(par, data)
-                    res = re.findall("\d{%s}"%length, res[0])
+
+            if data.startswith('MSG'):
+                targetNumber = re.findall(r'1\d{10}',data)
+                targetNumber = targetNumber[0]
+                '''
+                if targetNumber == number:
+                    res = re.findall(r"MSG&144&" + number + "&(.+?)\[End]", data)
+                    res = re.findall("\d{6}", res[0])
                     code = res[0]
-                    sms_number_key = 'verify_code_%s_%s'%(itemId,targetNumber)
+                    return code
+                else:
+                '''
+
+                par = r"MSG&(\d+)&%s&(.+?)\[End]" %targetNumber
+
+                # res = re.findall(r"MSG&(\d+?)&" + targetNumber + "&(.+?)\[End]", data)
+                res = re.findall(par, data)
+                print res[1].decode('GBK')
+                if len(res) == 2:
+                    targetItemId = res[0]
+                    res = re.findall("\d{%s}"%length, res[1])
+                    code = res[0]
+                    sms_number_key = 'verify_code_%s_%s'%(targetItemId,targetNumber)
                     cache.set(sms_number_key, code)
 
+
+
+    def GetVertifyCode(self, number, itemId, length=6):
+        for i in range(1, 60):
+            time.sleep(1)
+            code = self.GetCode(number,itemId,length)
+            if code:
+                return code
 
         return ""
 
@@ -188,8 +205,12 @@ class XunMa:
 
 
 if __name__ == '__main__':
+    # data = u'MSG&2356&13064513632&【腾讯科技】你正在注册微信帐号，验证码166261。请勿转发。[End]RES&2356&13064513632[End]'
+    # par = r"MSG&(\d+)&%s&(.+?)\[End]" % '13064513632'
+
+
     xunma = XunMa()
-    a = xunma.GetToken()
+    # a = xunma.GetToken()
     # b = xunma.GetPhoneNumber(a)
     # a = xunma.GetCode(b,a)
     # result = repo.GetAccount("6", 120, 1)

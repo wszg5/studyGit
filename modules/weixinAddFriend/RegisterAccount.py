@@ -57,6 +57,7 @@ class RegisterAccount:
                 break
 
 
+
 def getPluginClass():
     return RegisterAccount
 

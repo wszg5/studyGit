@@ -92,7 +92,7 @@ class TIMQQRegister:
                         vertifyCode = self.XunMa.GetVertifyCode(phoneNumber, '144')
 
                         if vertifyCode=='':
-                            self.XunMa.ReleaseToken(phoneNumber)
+                            self.XunMa.ReleasePhone(phoneNumber)
                             print '验证码获取失败'
                             continue
 
@@ -190,7 +190,7 @@ if __name__ == "__main__":
     # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").communicate()    #打开android设置页面
 
     # try:
-    args = {"repo_cate_id": "33","muchNumber_cate_id":"32", "time_delay": "3"};
+    args = {"repo_cate_id": "33","muchNumber_cate_id":"32", "time_delay": "1"};
     o.action(d, z, args)
 
 
