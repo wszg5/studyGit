@@ -78,7 +78,6 @@ class XunMa:
         except Exception:
             ok = 'ok'
 
-
         if response.status == 200:
             data = response.read().decode('GBK')
 
@@ -96,8 +95,7 @@ class XunMa:
             numbers = data.split(";");
 
             for number in numbers:
-                number = re.findall("\d{11}", str(number))
-                if number:
+                if re.search("\d{11}", str(number)):
                     cache.addSet(key, number)
 
             cache.set(lockKey,False)
@@ -123,8 +121,8 @@ class XunMa:
 
 
 
-    def GetVertifyCode(self, number):
-        key = 'verify_code_%s'%number
+    def GetVertifyCode(self, number, itemId, length=6):
+        key = 'verify_code_%s_%s'%(itemId,number)
         for i in range(1, 60):
             time.sleep(1)
             code = cache.get(key)
@@ -156,10 +154,15 @@ class XunMa:
                         return code
                     else:
                     '''
-                    res = re.findall(r"MSG&144&" + targetNumber + "&(.+?)\[End]", data)
-                    res = re.findall("\d{6}", res[0])
+
+                    par = r"MSG&%s&%s&(.+?)\[End]"%(itemId, targetNumber)
+
+
+                    #res = re.findall(r"MSG&144&" + targetNumber + "&(.+?)\[End]", data)
+                    res = re.findall(par, data)
+                    res = re.findall("\d{%s}"%length, res[0])
                     code = res[0]
-                    sms_number_key = 'verify_code_%s'%targetNumber
+                    sms_number_key = 'verify_code_%s_%s'%(itemId,targetNumber)
                     cache.set(sms_number_key, code)
 
 
