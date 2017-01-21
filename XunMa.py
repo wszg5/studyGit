@@ -53,7 +53,10 @@ class XunMa:
         except Exception:
             ok = 'ok'
 
-    def GetPhoneNumber(self, itemId):
+    def GetPhoneNumber(self, itemId, times=0):
+        round = times + 1
+        if  round > 30:
+            raise 'XunMa tried 3 minutes'
         token = self.GetToken()
         key = 'phone_%s'%itemId
         phone = cache.popSet(key)
@@ -63,7 +66,7 @@ class XunMa:
 
         if cache.get(lockKey):
             time.sleep(5)
-            return self.GetPhoneNumber(itemId)
+            return self.GetPhoneNumber(itemId,round)
         else:
             cache.set(lockKey,True,10)
 
@@ -75,7 +78,7 @@ class XunMa:
             response = conn.getresponse()
         except Exception:
             cache.set(lockKey, False)
-            return self.GetPhoneNumber(itemId)
+            return self.GetPhoneNumber(itemId,round)
 
         if response.status == 200:
             data = response.read().decode('GBK')
@@ -97,10 +100,10 @@ class XunMa:
                     cache.addSet(key, number)
 
             cache.set(lockKey,False)
-            return self.GetPhoneNumber(itemId)
+            return self.GetPhoneNumber(itemId,round)
         else:
             cache.set(lockKey,False)
-            return self.GetPhoneNumber(itemId)
+            return self.GetPhoneNumber(itemId,round)
 
     def ReleasePhone(self, phoneNumber):
         token = self.GetToken()
