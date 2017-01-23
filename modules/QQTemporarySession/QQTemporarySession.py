@@ -33,8 +33,9 @@ class QQTemporarySession:
 
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
-
-
+        # d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
+        # d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+        time.sleep(15)
         for i in range (0,totalNumber,+1):
             cate_id = args["repo_material_cate_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
@@ -55,6 +56,7 @@ class QQTemporarySession:
 
             if d(text='QQ',resourceId='android:id/text1').exists:
                 d(text='QQ', resourceId='android:id/text1').click()
+                time.sleep(0.5)
                 if d(text='仅此一次',resourceId='android:id/button_once').exists:
                     d(text='仅此一次',resourceId='android:id/button_once').click()
 
@@ -75,12 +77,12 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT55TSK00815")
-    z = ZDevice("HT55TSK00815")
+    d = Device("HT57FSK00089")
+    z = ZDevice("HT57FSK00089")
 
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    args = {"repo_number_cate_id":"37","repo_material_cate_id":"34","totalNumber":"4","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"43","repo_material_cate_id":"36","totalNumber":"4","time_delay":"3"};    #cate_id是仓库号，length是数量
     # z.openQQChat(154343346)   QQTemporarySession
 
     o.action(d, z,args)

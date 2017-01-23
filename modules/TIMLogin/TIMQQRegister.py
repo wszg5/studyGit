@@ -71,17 +71,12 @@ class TIMQQRegister:
 
             else:
 
-
                 # data = self.XunMa.UploadPhoneNumber(phoneNumber, token)
                 # if data == 0:
                 #     print "************匹配号码失败**************"
                 #     continue
 
-
-
                 vertifyCode = self.XunMa.GetVertifyCode(phoneNumber,'144')  # 获取验证码
-
-
 
 
                 if vertifyCode == "":
@@ -184,13 +179,13 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK01653")
-    z = ZDevice("HT4A4SK01653")
+    d = Device("HT57FSK00089")
+    z = ZDevice("HT57FSK00089")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").communicate()    #打开android设置页面
 
     # try:
-    args = {"repo_cate_id": "33","muchNumber_cate_id":"32", "time_delay": "1"};
+    args = {"repo_cate_id": "38","muchNumber_cate_id":"32", "time_delay": "1"};
     o.action(d, z, args)
 
 

@@ -1,0 +1,42 @@
+{
+"id": "WeiXinNearByNotify",
+"name":"微信附近的人打招呼",
+"cate":"微信模块",
+"font": "WinXin",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"icon":"vcard-o",
+"remark":"微信附近的人打招呼，6.5.3版",
+"setting":[
+	{
+	"id": "repo_material_id",
+	"name":"发送消息内容仓库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "gender",
+	"name":"性别",
+	"type":"select",
+	"list":{"男":"男","女":"女","不限":"不限"},
+	"defaultValue":"女",
+	"remark":"性别要求"
+	},
+	{
+	"id": "EndIndex",
+	"name":"打招呼的总人数",
+	"type":"textbox",
+	"defaultValue":"4",
+	"remark":"单位：个"
+	},
+
+   {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

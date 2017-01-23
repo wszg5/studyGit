@@ -98,8 +98,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT55TSK00815")
-    z = ZDevice("HT55TSK00815")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
     # slot = slot('mobileqq')
     # slot.restore(d, 5)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
 
