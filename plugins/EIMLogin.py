@@ -178,13 +178,8 @@ if __name__ == "__main__":
     o = clazz()
 
     d = Device("HT55TSK00815")
-    z = ZDevice("HT55TSK00815")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    # d.dump(compressed=False)
-    # slot = slot('eim')
-
-    # slot.restore(d, 2)  # 有２小时没用过的卡槽情况，切换卡槽
+    z = ZDevice("FA48VSR03651")
 
 
-    args = {"repo_cate_id":"55","time_limit":"3","time_limit1":"10","time_delay":"3"};    #cate_id是仓库号，length是数量
-    o.action(d,z, args)
+    z.wx_action("opensnsui")
+

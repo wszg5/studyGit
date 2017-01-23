@@ -13,7 +13,7 @@ class XunMa:
                    "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
 
         self.domain = "api.xunma.net"
-        self.port = 8080
+        self.port = 8888
 
 
     def GetToken(self, useCache=True):
@@ -56,7 +56,7 @@ class XunMa:
     def GetPhoneNumber(self, itemId, times=0):
         round = times + 1
         if  round > 30:
-            raise 'XunMa tried 3 minutes'
+            raise 'XunMa has tried 3 minutes'
         token = self.GetToken()
         key = 'phone_%s'%itemId
         phone = cache.popSet(key)

@@ -443,76 +443,59 @@ class ZRemoteDevice(object):
     def openQQChat(self, number):
         return self.server.jsonrpc.openQQChat(number)
 
-    def swipe(self, sx, sy, ex, ey, steps=100):
-        return self.server.jsonrpc.swipe(sx, sy, ex, ey, steps)
+    '''
+    openyaoyiyao   打开摇一摇界面
+    openyaoyiyaosayhi 打开摇一摇打招呼的人
+    searchui 打开搜索页面
+    opennearsayhi 打开附近打招呼的人界面
+    opensnsui 朋友圈界面
+    正在好友群发界面 打开好友群发界面
+    openinfoui     打开我的个人信息页面
+    '''
+    def wx_action(self, action):
+        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"%s\""%action).communicate()
+        return True
 
-    def swipePoints(self, points, steps=100):
+    '''
+    sendlinksns 发送朋友圈链接信息
+    '''
+    def wx_sendlinksns(self, points, steps=100):
         ppoints = []
         for p in points:
             ppoints.append(p[0])
             ppoints.append(p[1])
         return self.server.jsonrpc.swipePoints(ppoints, steps)
 
-    def drag(self, sx, sy, ex, ey, steps=100):
-        '''Swipe from one point to another point.'''
-        return self.server.jsonrpc.drag(sx, sy, ex, ey, steps)
+    '''
+    sendlinksns 发送图文朋友圈
+    images以,分隔
+    '''
+    def wx_sendsnsline(self, description, images):
+        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openurl\" --es description \"%s\" --es images \"%s\""%(description,images)).communicate()
+        return True
 
-    def dump(self, filename=None, compressed=True, pretty=True):
-        '''dump device window and pull to local file.'''
-        content = self.server.jsonrpc.dumpWindowHierarchy(compressed, None)
-        if filename:
-            with open(filename, "wb") as f:
-                f.write(content.encode("utf-8"))
-        if pretty and "\n " not in content:
-            xml_text = xml.dom.minidom.parseString(content.encode("utf-8"))
-            content = U(xml_text.toprettyxml(indent='  '))
-        return content
+    def wx_openurl(self, url):
+        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openurl\" --es url \"%s\""%url).communicate()
+        return True
 
-    def screenshot(self, filename, scale=1.0, quality=100):
-        '''take screenshot.'''
-        result = self.server.screenshot(filename, scale, quality)
-        if result:
-            return result
+    def wx_openuser(self, userid):
+        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openuser\" --es userid \"%s\""%userid).communicate()
 
-        device_file = self.server.jsonrpc.takeScreenshot("screenshot.png",
-                                                         scale, quality)
-        if not device_file:
-            return None
-        p = self.server.adb.cmd("pull", device_file, filename)
-        p.wait()
-        self.server.adb.cmd("shell", "rm", device_file).wait()
-        return filename if p.returncode is 0 else None
+        return True
+
+    def wx_openuser(self, userid):
+        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openchatui\" --es userid \"%s\""%userid).communicate()
+
+        return True
+
+    def wx_sendtextsns(self, text):
+        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"sendtextsns\" --es text \"%s\""%text).communicate()
+
+        return True
 
     def freeze_rotation(self, freeze=True):
         '''freeze or unfreeze the device rotation in current status.'''
         self.server.jsonrpc.freezeRotation(freeze)
-
-    @property
-    def orientation(self):
-        '''
-        orienting the devie to left/right or natural.
-        left/l:       rotation=90 , displayRotation=1
-        right/r:      rotation=270, displayRotation=3
-        natural/n:    rotation=0  , displayRotation=0
-        upsidedown/u: rotation=180, displayRotation=2
-        '''
-        return self.__orientation[self.info["displayRotation"]][1]
-
-    @orientation.setter
-    def orientation(self, value):
-        '''setter of orientation property.'''
-        for values in self.__orientation:
-            if value in values:
-                # can not set upside-down until api level 18.
-                self.server.jsonrpc.setOrientation(values[1])
-                break
-        else:
-            raise ValueError("Invalid orientation.")
-
-    @property
-    def last_traversed_text(self):
-        '''get last traversed text. used in webview for highlighted text.'''
-        return self.server.jsonrpc.getLastTraversedText()
 
     def clear_traversed_text(self):
         '''clear the last traversed text.'''
