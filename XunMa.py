@@ -53,7 +53,6 @@ class XunMa:
         round = times + 1
         if  round > 30:
             raise 'XunMa has tried 3 minutes'
-        token = self.GetToken()
         key = 'phone_%s'%itemId
         phone = cache.popSet(key)
         if phone:
@@ -66,6 +65,8 @@ class XunMa:
         else:
             cache.set(lockKey,True,10)
 
+        token = self.GetToken()
+
         try:
             path = "/getPhone?ItemId=%s&token=%s&Count=10" % (itemId, token)
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
@@ -76,10 +77,11 @@ class XunMa:
             cache.set(lockKey, False)
             return self.GetPhoneNumber(itemId,round)
 
-        self.logger.info("===XUNMA RESTURN:%s"%response)
         if response.status == 200:
 
             data = response.read().decode('GBK')
+            self.logger.info("===XUNMA RESTURN:%s" % data)
+
             import string
             if string.find(data,'单个用户获取数量不足')!=-1 :
                 self.ReleaseAllPhone()
