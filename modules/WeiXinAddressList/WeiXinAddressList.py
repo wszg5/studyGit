@@ -24,6 +24,10 @@ class WeiXinAddFriendByAddressList:
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
         time.sleep(7)
         d(text='通讯录').click()
+        if d(text='新的朋友').exists:
+            print()
+        else:
+            d(text='通讯录').click()
 
         set1 = set()
         change = 0
@@ -102,10 +106,12 @@ class WeiXinAddFriendByAddressList:
                 else:
                     d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
                     time.sleep(2)
-                    obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i-1).child(className='android.widget.LinearLayout').child(className='android.view.View')  # 得到微信名
-                    obj = obj.info
-                    name1 = obj['text']      #判断是否已经到底
-                    if name1 in set1:
+                    # obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i-1).child(className='android.widget.LinearLayout').child(className='android.view.View')  # 得到微信名
+                    # obj = obj.info
+                    # name1 = obj['text']      #判断是否已经到底
+                    # if name1 in set1:
+                    #     return
+                    if d(textContains='位联系人').exists:
                         return
                     for g in range(0,12,+1):
                         time.sleep(0.5)
