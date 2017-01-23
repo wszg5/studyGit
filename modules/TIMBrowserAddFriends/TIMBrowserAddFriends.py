@@ -72,7 +72,6 @@ class TIMBrowserAddFriends:
             time.sleep(1)
             if d(resourceId='com.tencent.tim:id/name', text='添加失败，请勿频繁操作').exists:  # 操作过于频繁的情况
                 return
-            d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
 
 
             if (args["time_delay"]):

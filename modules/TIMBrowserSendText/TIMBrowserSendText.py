@@ -42,37 +42,15 @@ class TIMBrowserAddFriends:
             time.sleep(1)
             while d(text='TIM', resourceId='android:id/text1').exists:
                 d(text='TIM', resourceId='android:id/text1').click()
+                time.sleep(1)
                 if d(text='仅此一次', resourceId='android:id/button_once').exists:
                     d(text='仅此一次', resourceId='android:id/button_once').click()
 
-            d(text='加为好友', className='android.widget.TextView', index=2).click()
-            time.sleep(2)
-            if d(text='加为好友', className='android.widget.TextView', index=2).exists:  # 拒绝被添加好友的情况
-                continue
-            if d(text='发送', resourceId='com.tencent.tim:id/ivTitleBtnRightText').exists:  # 可直接添加为好友的情况
-                d(text='发送', resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
-                if d(resourceId='com.tencent.tim:id/name', text='添加失败，请勿频繁操作').exists:  # 操作过于频繁的情况
-                    return
-                continue
-            if d(text='必填', resourceId='com.tencent.tim:id/name').exists:  # 需要验证时
-                continue
-            obj = d(resourceId='com.tencent.tim:id/name', index='3').info
-            print(obj)
-            obj = obj['text']
-            length = len(obj)
-            k = 0
-            while k < length:
-                length = length - 1
-                d.press.delete()
-            time.sleep(2)
-            d(resourceId='com.tencent.tim:id/name', className='android.widget.EditText').click()  # 要发的消息
+            d(className='android.widget.EditText', index=0).click()
             z.input(material)
-            d(text='下一步', resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
-            d(text='发送', resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
             time.sleep(1)
-            if d(resourceId='com.tencent.tim:id/name', text='添加失败，请勿频繁操作').exists:  # 操作过于频繁的情况
-                return
-            d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
+            d(text= '发送',className='android.widget.Button', index=1).click()
+
 
 
             if (args["time_delay"]):

@@ -179,8 +179,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4AFSK00625")
-    z = ZDevice("HT4AFSK00625")
+    d = Device("HT57FSK00089")
+    z = ZDevice("HT57FSK00089")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").communicate()    #打开android设置页面
 

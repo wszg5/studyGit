@@ -71,6 +71,7 @@ class TIMLogin:
         cate_id = args["repo_cate_id"]
 
         name = self.slot.getEmpty(d)                    #取空卡槽
+        print name
         if name ==0:
             name = self.slot.getSlot(d,time_limit)              #没有空卡槽，取２小时没用过的卡槽
             print '切换为'+str(name)
