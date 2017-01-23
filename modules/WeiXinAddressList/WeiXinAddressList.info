@@ -1,12 +1,12 @@
 {
 "id": "WeiXinAddressList",
-"name":"微信通讯录添加好友",
+"name":"微信通讯录发消息",
 "cate":"微信模块",
 "font": "WeiXin",
 "url": "http://www.bejson.com",
 "version": "1.0",
 "icon":"vcard-o",
-"remark":"微信通讯录添加好友，6.5.3版",
+"remark":"微信通讯录发消息，6.5.3版",
 "setting":[
 	{
 	"id": "repo_material_id",

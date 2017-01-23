@@ -8,7 +8,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 
-class WeiXinAddressList:
+class WeiXinSetLabel:
 
     def __init__(self):
         self.repo = Repo()
@@ -36,15 +36,6 @@ class WeiXinAddressList:
         ending = 0     #用来判断是否到底
         EndIndex = int(args['EndIndex'])         #------------------
         while t < EndIndex + 1:
-            cate_id = args["repo_material_id"]   #------------------
-            Material = self.repo.GetMaterial(cate_id, 0, 1)
-            wait = 1
-            while wait == 1:
-                try:
-                    Material = Material[0]['content']  # 从素材库取出的要发的材料
-                    wait = 0
-                except Exception:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
 
             time.sleep(1)
             obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i).child(className='android.widget.LinearLayout').child(className='android.view.View')     #得到微信名
@@ -62,40 +53,32 @@ class WeiXinAddressList:
                     set1.add(name)
                     print(name)
                 obj.click()
-                GenderFrom = args['gender']     #-------------------------------
-                if GenderFrom !='不限':
-                    obj = d(className='android.widget.ImageView',index=1,resourceId='com.tencent.mm:id/abr')      #看性别是否有显示
-                    if obj.exists:
-                        Gender = obj.info
-                        Gender = Gender['contentDescription']
-                        if Gender ==GenderFrom:
-                            print()
-                        else:            #如果性别不符号的情况
-                            d(description='返回').click()
-                            i = i+1
-                            continue
-                    else:                 #信息里没有显示出性别的话
-                        d(description='返回').click()
-                        i = i + 1
-                        continue
+                if d(text='标签').exists:
+                    d(description='返回').click()
+                    i = i + 1
+                    t = t + 1
+                    continue
+                obj = d(className='android.widget.ImageView',index=1,resourceId='com.tencent.mm:id/abr')      #看性别是否有显示
+                if obj.exists:
+                    Gender = obj.info
+                    Gender = Gender['contentDescription']
+                    print(Gender)
+                else:
+                    Gender = '妖'
+                if  d(textContains='备注和标签').exists:
+                    d(textContains='备注和标签').click()
+                else:
+                    d(description='返回').click()    #点进去是自己的情况
+                    i = i + 1
+                    t = t + 1
+                    continue
+                d(textContains='添加标签').click()
+                z.input(Gender)
+                d(text='保存').click()
+                d(text='完成').click()
 
-                d(text='发消息').click()
-
-
-                time.sleep(1)
-                obj = d(className='android.widget.EditText').info  # 将之前消息框的内容删除
-                obj = obj['text']
-                lenth = len(obj)
-                m = 0
-                while m < lenth:
-                    d.press.delete()
-                    m = m + 1
-                d(className='android.widget.EditText').click()
-                z.input(Material)       #----------------------------------------
-                d(text = '发送').click()
                 time.sleep(1)
                 d(description='返回').click()
-                d(text='通讯录').click()
                 i = i+1
                 t = t+1
                 continue
@@ -106,17 +89,17 @@ class WeiXinAddressList:
                     continue
                 else:
                     d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
-                    time.sleep(2)
+                    time.sleep(3)
 
                     if ending == 1:     #结束条件
                         return
                     if d(textContains='位联系人').exists:
                         ending = 1
 
-                        # return
                     for g in range(0,12,+1):
                         time.sleep(0.5)
                         obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=g).child(className='android.widget.LinearLayout').child(className='android.view.View')  # 得到微信名
+                        time.sleep(0.5)
                         obj = obj.info
                         Tname = obj['text']
                         if Tname==name:
@@ -127,7 +110,7 @@ class WeiXinAddressList:
 
 
 def getPluginClass():
-    return WeiXinAddressList
+    return WeiXinSetLabel
 
 if __name__ == "__main__":
     clazz = getPluginClass()
@@ -137,5 +120,5 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
 
-    args = {"repo_material_id": "36",'EndIndex':'100','gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {'EndIndex':'100',"time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
