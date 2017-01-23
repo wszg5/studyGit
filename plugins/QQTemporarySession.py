@@ -34,7 +34,9 @@ class QQTemporarySession:
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
 
-
+        # d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
+        # d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+        time.sleep(15)
         for i in range (0,totalNumber,+1):
             cate_id = args["repo_material_cate_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
@@ -55,6 +57,7 @@ class QQTemporarySession:
 
             if d(text='QQ',resourceId='android:id/text1').exists:
                 d(text='QQ', resourceId='android:id/text1').click()
+                time.sleep(1)
                 if d(text='仅此一次',resourceId='android:id/button_once').exists:
                     d(text='仅此一次',resourceId='android:id/button_once').click()
 
@@ -75,8 +78,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT55TSK00815")
-    z = ZDevice("HT55TSK00815")
+    d = Device("HT536SK01667")
+    z = ZDevice("HT536SK01667")
 
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()

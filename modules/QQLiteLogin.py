@@ -23,7 +23,7 @@ class QQLiteLogin:
         return uniqueNum
 
 
-    def action(self, d, args):
+    def action(self, d,z, args):
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -110,11 +110,11 @@ class QQLiteLogin:
                 d(text='完成',resourceId='com.tencent.qqlite:id/ivTitleBtnRightText').click()
                 time.sleep(2)
                 if d(text='登 录').exists:    #密码错误
-                    self.repo.SetAccount(cate_id,'locked',QQNumber)
+                    # self.repo.SetAccount(cate_id,'locked',QQNumber)
                     break
 
                 if d(text='帐号无法登录',resourceId='com.tencent.qqlite:id/dialogTitle').exists:         #帐号被冻结
-                    self.repo.SetAccount(cate_id,'frozen',QQNumber)
+                    # self.repo.SetAccount(cate_id,'frozen',QQNumber)
                     break
 
                 if d(text='QQ轻聊版').exists:
@@ -132,16 +132,14 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4AVSK01106")
+    d = Device("HT4A4SK00901")
     import base64
-    s=u'在吗？朋友.。。交流空间来看'
+    # s=u'在吗？朋友.。。交流空间来看'
     d.server.adb.cmd("shell",
                      "ime set com.zunyun.qk/.ZImeService").wait()
     from zservice import ZDevice
-    z = ZDevice("HT4AVSK01106")
-    z.input(s)
-
-
-    d.dump(compressed=False)
-    args = {"repo_cate_id":"6","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    z = ZDevice("HT4A4SK00901")
+    # z.input(s)
+    # d.dump(compressed=False)
+    args = {"repo_cate_id":"32","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

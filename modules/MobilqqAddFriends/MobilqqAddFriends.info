@@ -1,7 +1,7 @@
 {
-"id": "QQLiteAddFriends",
-"cate":"基础模块",
-"name":"QQ轻聊版添加好友",
+"id": "MobilqqAddFriends",
+"cate":"QQ模块",
+"name":"普通QQ添加好友",
 "url": "http://www.bejson.com",
 "version": "1.0",
 "icon": "vcard-o",
@@ -12,23 +12,16 @@
 	"name":"号码库分类",
 	"type":"repo",
 	"source":"number",
-	"top_cate_id":"36"
+	"top_cate_id":"22"
 	},
 	{
     "id": "repo_material_cate_id",
     "name":"验证信息素材库",
     "type":"repo",
     "source":"material",
-    "top_cate_id":"5"
+    "top_cate_id":"12"
     },
-	{
-	"id": "gender",
-	"name":"性别",
-	"type":"select",
-	"list":{"男":"男","女":"女","不限":"不限"},
-	"defaultValue":"B",
-	"remark":"性别要求"
-	},
+
     {
 	"id": "add_count",
 	"name":"添加好友个数",

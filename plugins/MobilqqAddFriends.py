@@ -11,7 +11,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-class MobilqqAddFriends:
+class TIMAddFriends:
     def __init__(self):
         self.repo = Repo()
 
@@ -231,7 +231,7 @@ def runwatch(d, data):
             time.sleep(0.5)
 
 def getPluginClass():
-    return MobilqqAddFriends
+    return TIMAddFriends
 
 if __name__ == "__main__":
 
