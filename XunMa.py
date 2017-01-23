@@ -69,7 +69,8 @@ class XunMa:
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
             response = conn.getresponse()
-        except Exception:
+        except Exception, e:
+            print(e.message)
             cache.set(lockKey, False)
             return self.GetPhoneNumber(itemId,round)
 
@@ -132,8 +133,9 @@ class XunMa:
                 if response.status == 200:
                     data = response.read().decode('GBK')
                     print data
-            except Exception:
+            except Exception, e:
 
+                print(e.message)
                 return None
 
 
