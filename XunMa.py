@@ -3,12 +3,16 @@ import httplib, json
 import time
 import re
 from zcache import cache
+
 class XunMa:
+
     def __init__(self):
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                    "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
         self.domain = "api.xunma.net"
         self.port = 8080
+
+
     def GetToken(self, useCache=True):
         from dbapi import dbapi
         dbapi = dbapi()
@@ -33,6 +37,7 @@ class XunMa:
             return  data
         else:
             return "Error Getting Account, Please check your repo"
+
     def ReleaseAllPhone(self):
         token=self.GetToken()
         try:
@@ -41,15 +46,12 @@ class XunMa:
             conn.request("GET", path)
         except Exception:
             ok = 'ok'
-<<<<<<< HEAD
-    def GetPhoneNumber(self, itemId):
-=======
 
     def GetPhoneNumber(self, itemId, times=0):
         round = times + 1
         if  round > 30:
             raise 'XunMa tried 3 minutes'
->>>>>>> 90bb76c59eebebcee0efb41749fa672c32aff9fe
+
         token = self.GetToken()
         key = 'phone_%s'%itemId
         phone = cache.popSet(key)
@@ -58,16 +60,11 @@ class XunMa:
         lockKey = 'lock_get_phone_%s'%itemId
         if cache.get(lockKey):
             time.sleep(5)
-<<<<<<< HEAD
-            return self.GetPhoneNumber(itemId)
-        else:
-            cache.set(lockKey,True,30)
-=======
+
             return self.GetPhoneNumber(itemId,round)
         else:
             cache.set(lockKey,True,10)
 
->>>>>>> 90bb76c59eebebcee0efb41749fa672c32aff9fe
         try:
             path = "/getPhone?ItemId=%s&token=%s&Count=10" % (itemId, token)
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
@@ -76,7 +73,6 @@ class XunMa:
         except Exception:
             cache.set(lockKey, False)
             return self.GetPhoneNumber(itemId,round)
-
 
         if response.status == 200:
             data = response.read().decode('GBK')
@@ -95,14 +91,11 @@ class XunMa:
             return self.GetPhoneNumber(itemId,round)
         else:
             cache.set(lockKey,False)
-<<<<<<< HEAD
-            return self.GetPhoneNumber(itemId)
-    def ReleasePhone(self, phoneNumber):         #释放手机好
-=======
             return self.GetPhoneNumber(itemId,round)
 
+
     def ReleasePhone(self, phoneNumber):
->>>>>>> 90bb76c59eebebcee0efb41749fa672c32aff9fe
+
         token = self.GetToken()
         path = "/releasePhone?token=%s&phoneList=%s-144" % (token, phoneNumber)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
@@ -111,12 +104,8 @@ class XunMa:
         if response.status == 200:
             data = response.read()
         else:
-<<<<<<< HEAD
-            ok = 'ok'
-
-=======
             ok='ok'
->>>>>>> 90bb76c59eebebcee0efb41749fa672c32aff9fe
+
 
 
 
@@ -133,19 +122,8 @@ class XunMa:
         else:
             cache.set(lockKey, True, 1)
 
-
-<<<<<<< HEAD
-    def GetVertifyCode(self, number, itemId, length=6):
-        key = 'verify_code_%s_%s'%(itemId,number)
-        for i in range(1, 60):
-            time.sleep(1)
-            code = cache.get(key)
-            if code:
-                return code
-=======
-
             data = ""
->>>>>>> 90bb76c59eebebcee0efb41749fa672c32aff9fe
+
             token = self.GetToken()
             try:
                 path = "/getQueue?token=" + token + ""
@@ -156,33 +134,8 @@ class XunMa:
                     data = response.read().decode('GBK')
                     print data
             except Exception:
-<<<<<<< HEAD
-                continue
-            if response.status == 200:
-                data = response.read().decode('GBK')
-                print(data)
-                if 'MSG' in data:
-                # if data.startswith('MSG'):
-                    targetNumber = re.findall(r'1\d{10}',data)
-                    targetNumber = targetNumber[0]
-                    '''
-                    if targetNumber == number:
-                        res = re.findall(r"MSG&144&" + number + "&(.+?)\[End]", data)
-                        res = re.findall("\d{6}", res[0])
-                        code = res[0]
-                        return code
-                    else:
-                    '''
 
-                    par = r"MSG&%s&%s&(.+?)\[End]"%(itemId, targetNumber)
-
-
-                    #res = re.findall(r"MSG&144&" + targetNumber + "&(.+?)\[End]", data)
-                    res = re.findall(par, data)
-                    res = re.findall("\d{%s}"%length, res[0])
-=======
                 return None
-
 
 
             if 'MSG' in data:
@@ -196,7 +149,6 @@ class XunMa:
                     return code
                 else:
                 '''
-
                 par = r"MSG&(\d+)&%s&(.+?)\[End]" %targetNumber
 
                 # res = re.findall(r"MSG&(\d+?)&" + targetNumber + "&(.+?)\[End]", data)
@@ -205,14 +157,11 @@ class XunMa:
                 if len(res) == 2:
                     targetItemId = res[0]
                     res = re.findall("\d{%s}"%length, res[1])
->>>>>>> 90bb76c59eebebcee0efb41749fa672c32aff9fe
+
                     code = res[0]
                     sms_number_key = 'verify_code_%s_%s'%(targetItemId,targetNumber)
                     cache.set(sms_number_key, code)
-<<<<<<< HEAD
-                else:
-                    return '失败'
-=======
+
 
 
 
@@ -222,9 +171,8 @@ class XunMa:
             code = self.GetCode(number,itemId,length)
             if not code==None:
                 return code
-
->>>>>>> 90bb76c59eebebcee0efb41749fa672c32aff9fe
         return ""
+
     def UploadPhoneNumber(self, number):
         token = self.GetToken()
         path = "/getPhone?ItemId=144&token=" + token + "&Phone="+number+""
@@ -243,6 +191,8 @@ class XunMa:
                 return 0
         else:
             return "Error Getting Account, Please check your repo"
+
+
 if __name__ == '__main__':
     # data = u'MSG&2356&13064513632&【腾讯科技】你正在注册微信帐号，验证码166261。请勿转发。[End]RES&2356&13064513632[End]'
     # par = r"MSG&(\d+)&%s&(.+?)\[End]" % '13064513632'

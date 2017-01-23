@@ -5,7 +5,7 @@ import os, time, datetime, random
 from zservice import ZDevice
 
 
-class TIMBrowserAddFriends:
+class TIMTemporarySessionAddFriends:
     def __init__(self):
 
         self.repo = Repo()
@@ -79,7 +79,7 @@ class TIMBrowserAddFriends:
 
 
 def getPluginClass():
-    return TIMBrowserAddFriends
+    return TIMTemporarySessionAddFriends
 
 if __name__ == "__main__":
     clazz = getPluginClass()
