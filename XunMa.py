@@ -3,6 +3,7 @@ import httplib, json
 import time
 import re
 from zcache import cache
+import util
 
 class XunMa:
 
@@ -12,6 +13,7 @@ class XunMa:
         self.domain = "api.xunma.net"
         self.port = 8888
 
+        self.logger = util.logger
 
     def GetToken(self, useCache=True):
         from dbapi import dbapi
@@ -70,10 +72,11 @@ class XunMa:
             conn.request("GET", path)
             response = conn.getresponse()
         except Exception, e:
-            print(e.message)
+            self.logger.info(e.message)
             cache.set(lockKey, False)
             return self.GetPhoneNumber(itemId,round)
-        print("===XUNMA RESTURN:%s"%response)
+
+        self.logger.info("===XUNMA RESTURN:%s"%response)
         if response.status == 200:
 
             data = response.read().decode('GBK')
