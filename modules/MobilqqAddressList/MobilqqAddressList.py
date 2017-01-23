@@ -93,7 +93,7 @@ class TIMAddressList:
     def Bind(self,d):
         newStart = 1
         while newStart == 1:
-            GetBindNumber = self.xuma.GetPhoneNumber('153')
+            GetBindNumber = self.xuma.GetPhoneNumber('2113')
             print(GetBindNumber)
             time.sleep(2)
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(GetBindNumber)  #GetBindNumber
@@ -107,7 +107,7 @@ class TIMAddressList:
             if d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').exists:     #提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
                 d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').click()
 
-            code = self.xuma.GetVertifyCode(GetBindNumber, '153','4')
+            code = self.xuma.GetVertifyCode(GetBindNumber, '2113','4')
 
             newStart = 0
 
@@ -248,13 +248,15 @@ class TIMAddressList:
                     continue
                 else:
                     set1.add(phone)
-                gender2 = self.Gender(d)
-                if gender1==gender2:        #gender1是外界设定的，gender2是读取到的
-                    time.sleep(1)
-                else:
-                    d(textContains='返回').click()
-                    i = i+1
-                    continue
+
+                if gender1 != '不限':
+                    gender2 = self.Gender(d)
+                    if gender1==gender2:        #gender1是外界设定的，gender2是读取到的
+                        time.sleep(1)
+                    else:
+                        d(textContains='返回').click()
+                        i = i+1
+                        continue
             else:
                 if change ==0:        #第一次滑动，开始ｉｎｄｅｘ不是通讯录里的人的时候，当点击开始发消息时将该值变为１
                     i = i + 1
