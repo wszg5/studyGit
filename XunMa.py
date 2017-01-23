@@ -73,8 +73,9 @@ class XunMa:
             print(e.message)
             cache.set(lockKey, False)
             return self.GetPhoneNumber(itemId,round)
-
+        print("===XUNMA RESTURN:%s"%response)
         if response.status == 200:
+
             data = response.read().decode('GBK')
             import string
             if string.find(data,'单个用户获取数量不足')!=-1 :
