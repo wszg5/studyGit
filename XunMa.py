@@ -139,12 +139,13 @@ class XunMa:
                 response = conn.getresponse()
                 if response.status == 200:
                     data = response.read().decode('GBK')
+                    print data
             except Exception:
                 return None
 
 
 
-            if data.startswith('MSG'):
+            if 'MSG' in data:
                 targetNumber = re.findall(r'1\d{10}',data)
                 targetNumber = targetNumber[0]
                 '''
@@ -160,7 +161,7 @@ class XunMa:
 
                 # res = re.findall(r"MSG&(\d+?)&" + targetNumber + "&(.+?)\[End]", data)
                 res = re.findall(par, data)
-                print res[1].decode('GBK')
+                res = res[0]
                 if len(res) == 2:
                     targetItemId = res[0]
                     res = re.findall("\d{%s}"%length, res[1])
@@ -171,8 +172,8 @@ class XunMa:
 
 
     def GetVertifyCode(self, number, itemId, length=6):
-        for i in range(1, 60):
-            time.sleep(1)
+        for i in range(1, 22):
+            time.sleep(3)
             code = self.GetCode(number,itemId,length)
             if not code==None:
                 return code
