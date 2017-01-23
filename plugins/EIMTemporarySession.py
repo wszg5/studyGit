@@ -33,9 +33,9 @@ class EIMTemporarySession:
 
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
-        d.server.adb.cmd("shell", "am force-stop com.tencent.eim").communicate()  # 强制停止   3001369923  Bn2kJq5l
-        d.server.adb.cmd("shell","am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        time.sleep(6)
+        # d.server.adb.cmd("shell", "am force-stop com.tencent.eim").communicate()  # 强制停止   3001369923  Bn2kJq5l
+        # d.server.adb.cmd("shell","am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+        time.sleep(15)
 
         for i in range (0,totalNumber,+1):
             cate_id = args["repo_material_cate_id"]
@@ -57,6 +57,7 @@ class EIMTemporarySession:
 
             if d(text='企业QQ', resourceId='android:id/text1').exists:
                 d(text='企业QQ', resourceId='android:id/text1').click()
+                time.sleep(0.5)
                 if d(text='仅此一次',resourceId='android:id/button_once').exists:
                     d(text='仅此一次',resourceId='android:id/button_once').click()
 

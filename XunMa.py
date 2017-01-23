@@ -46,7 +46,6 @@ class XunMa:
         key = 'phone_%s'%itemId
         phone = cache.popSet(key)
         if phone:
-            print '库里手机号%s'%phone
             return phone
         lockKey = 'lock_get_phone_%s'%itemId
         if cache.get(lockKey):
@@ -61,6 +60,8 @@ class XunMa:
             response = conn.getresponse()
         except Exception:
             ok = 'ok'
+
+
         if response.status == 200:
             data = response.read().decode('GBK')
             import string
@@ -69,19 +70,17 @@ class XunMa:
             if string.find(data,'Session 过期')!=-1 :
                 self.GetToken(False)
             if data.startswith('False'):
-                print '迅码获取号码出错了; %s'%data
                 time.sleep(3)
             numbers = data.split(";");
             for number in numbers:
-                number = re.findall("\d{11}", str(number))
-                if number:
+                if re.search("\d{11}", str(number)):
                     cache.addSet(key, number)
             cache.set(lockKey,False)
             return self.GetPhoneNumber(itemId)
         else:
             cache.set(lockKey,False)
             return self.GetPhoneNumber(itemId)
-    def ReleasePhone(self, phoneNumber):
+    def ReleasePhone(self, phoneNumber):         #释放手机好
         token = self.GetToken()
         path = "/releasePhone?token=%s&phoneList=%s-144" % (token, phoneNumber)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
@@ -89,16 +88,21 @@ class XunMa:
         response = conn.getresponse()
         if response.status == 200:
             data = response.read()
-            print (data)
         else:
-            print '释放失败'
-    def GetVertifyCode(self, number):
-        key = 'verify_code_%s'%number
+            ok = 'ok'
+
+
+
+
+
+
+
+    def GetVertifyCode(self, number, itemId, length=6):
+        key = 'verify_code_%s_%s'%(itemId,number)
         for i in range(1, 60):
             time.sleep(1)
             code = cache.get(key)
             if code:
-                print '居然取到了%s'%code
                 return code
             token = self.GetToken()
             try:
@@ -110,10 +114,11 @@ class XunMa:
                 continue
             if response.status == 200:
                 data = response.read().decode('GBK')
-                if data.startswith('MSG'):
+                print(data)
+                if 'MSG' in data:
+                # if data.startswith('MSG'):
                     targetNumber = re.findall(r'1\d{10}',data)
                     targetNumber = targetNumber[0]
-                    print data
                     '''
                     if targetNumber == number:
                         res = re.findall(r"MSG&144&" + number + "&(.+?)\[End]", data)
@@ -122,11 +127,18 @@ class XunMa:
                         return code
                     else:
                     '''
-                    res = re.findall(r"MSG&144&" + targetNumber + "&(.+?)\[End]", data)
-                    res = re.findall("\d{6}", res[0])
+
+                    par = r"MSG&%s&%s&(.+?)\[End]"%(itemId, targetNumber)
+
+
+                    #res = re.findall(r"MSG&144&" + targetNumber + "&(.+?)\[End]", data)
+                    res = re.findall(par, data)
+                    res = re.findall("\d{%s}"%length, res[0])
                     code = res[0]
-                    sms_number_key = 'verify_code_%s'%targetNumber
+                    sms_number_key = 'verify_code_%s_%s'%(itemId,targetNumber)
                     cache.set(sms_number_key, code)
+                else:
+                    return '失败'
         return ""
     def UploadPhoneNumber(self, number):
         token = self.GetToken()

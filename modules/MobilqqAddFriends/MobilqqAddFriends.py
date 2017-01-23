@@ -7,35 +7,18 @@ import os, time, datetime, random
 import util
 from PIL import Image
 from zservice import ZDevice
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
-
-class TIMAddFriends:
+class MobilqqAddFriends:
     def __init__(self):
         self.repo = Repo()
-
-    def GetUnique(self):
-        nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
-        randomNum = random.randint(0, 1000);  # 生成的随机整数n，其中0<=n<=100
-        if randomNum <= 10:
-            randomNum = str(00) + str(randomNum);
-        uniqueNum = str(nowTime) + str(randomNum);
-        return uniqueNum
-
-
-
 
     def action(self, d,z, args):
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
-
-        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
-        if not os.path.isdir(base_dir):
-            os.mkdir(base_dir)
-        sourcePng = os.path.join(base_dir, "%s_s.png" % (self.GetUnique()))
-        genderPng = os.path.join(base_dir, "%s_c.png" % (self.GetUnique()))
-
-
 
         cate_id = args["repo_material_cate_id"]
         Material = self.repo.GetMaterial(cate_id, 0, 1)
@@ -79,12 +62,13 @@ class TIMAddFriends:
             d(resourceId='com.tencent.mobileqq:id/name', description='快捷入口').click()
             d(textContains='加好友').click()
         time.sleep(3)
-        d(resourceId='com.tencent.mobileqq:id/name',className='android.widget.EditText').click()           #刚进来时点击 QQ号/手机号/群/公众号
-        d(resourceId='com.tencent.mobileqq:id/et_search_keyword',className='android.widget.EditText').click()   #QQ号/手机号/群/公众号
-        d(resourceId='com.tencent.mobileqq:id/et_search_keyword', className='android.widget.EditText').set_text(list[0])  # 第一次添加的帐号 list[0]
-
+        d(className='android.widget.EditText',index=0).click()           #刚进来时点击 QQ号/手机号/群/公众号
+        time.sleep(1)
+        # d(className='android.widget.EditText',index=0).click()   #QQ号/手机号/群/公众号
+        d(className='android.widget.EditText').set_text(list[0])  # 第一次添加的帐号 list[0]
+        time.sleep(0.5)
         d(text='找人:', resourceId='com.tencent.mobileqq:id/name').click()
-        time.sleep(2)
+        time.sleep(4)
 
 
         for i in range(1,add_count,+1):                   #给多少人发消息
@@ -92,44 +76,45 @@ class TIMAddFriends:
             print(numbers)
             time.sleep(1)
             if d(text='没有找到相关结果',className='android.widget.TextView').exists:                            #没有这个人的情况
+                time.sleep(0.5)
                 d(resourceId='com.tencent.mobileqq:id/ib_clear_text',description='清空').click()
-                obj = d(text='QQ号/手机号/群/公众号', resourceId='com.tencent.mobileqq:id/et_search_keyword')   #QQ号/手机号/群/公众号
+                obj = d(className='android.widget.EditText',index=0)   #QQ号/手机号/群/公众号
                 if obj.exists:
                     obj.set_text(numbers)  # 下次要添加的号码
                 obj = d(text='网络查找人', resourceId='com.tencent.mobileqq:id/et_search_keyword')
                 if obj.exists:
                     obj.set_text(numbers)  # 下次要添加的号码
-                d.press.enter()
+                d(textContains='找人').click()
                 while d(text='正在搜索…',index=1).exists:                  #网速不行的情况，让它不停等待
                     time.sleep(1)
                 continue
             time.sleep(1)
 
-            if d(resourceId='com.tencent.mobileqq:id/title',text='人').exists:
-                d(className='android.widget.AbsListView').child(index=1,resourceId='com.tencent.mobileqq:id/name').click()
+            # if d(resourceId='com.tencent.mobileqq:id/title',text='人').exists:
+            #     d(className='android.widget.AbsListView').child(index=1,resourceId='com.tencent.mobileqq:id/name').click()
 
 
 
-            d.swipe(width / 2, height * 3 / 6, width / 2, height / 6);
+            d.swipe(width / 2, height * 4 / 6, width / 2, height / 6);
             d(text='加好友',resourceId='com.tencent.mobileqq:id/txt').click()
-            time.sleep(1)
+            time.sleep(3)
 
             if d(text='加好友',resourceId='com.tencent.mobileqq:id/txt').exists:                        #拒绝被添加为好友的情况
                 time.sleep(1)
                 d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').click()
                 d(resourceId='com.tencent.mobileqq:id/ib_clear_text', description='清空').click()
-                obj = d(text='QQ号/手机号/群/公众号', resourceId='com.tencent.mobileqq:id/et_search_keyword')
+                obj = d(className='android.widget.EditText',index=0)
                 if obj.exists:
                     obj.set_text(numbers)  # 要改为从库里取------------------------------
                 obj = d(text='网络查找人', resourceId='com.tencent.mobileqq:id/et_search_keyword')
                 if obj.exists:
                     obj.set_text(numbers)
                 time.sleep(1)
-                d.press.enter()
+                d(textContains='找人').click()
                 while d(text='正在搜索…', index=1).exists:
                     time.sleep(1)
                 continue
-            time.sleep(1)
+            time.sleep(0.5)
 
 
             if d(text='必填',resourceId='com.tencent.mobileqq:id/name').exists:                     #要回答问题的情况
@@ -137,19 +122,48 @@ class TIMAddFriends:
                 time.sleep(1)
                 d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').click()
                 d(resourceId='com.tencent.mobileqq:id/ib_clear_text', description='清空').click()
-                obj = d(text='QQ号/手机号/群/公众号', resourceId='com.tencent.mobileqq:id/et_search_keyword')
+                obj = d(className='android.widget.EditText',index=0)
                 if obj.exists:
                     obj.set_text(numbers)  # 下次要添加的号码-
                 obj = d(text='网络查找人',resourceId='com.tencent.mobileqq:id/et_search_keyword')
                 if obj.exists:
                     obj.set_text(numbers)
                 time.sleep(1)
-                d.press.enter()
+                d(textContains='找人').click()
                 while d(text='正在搜索…', index=1).exists:
                     time.sleep(1)
                 continue
 
-            time.sleep(1)
+
+            if d(textContains='问题').exists:            #要回答问题的情况
+                d(text='取消').click()
+                time.sleep(0.5)
+                d(text='返回').click()
+                d(resourceId='com.tencent.mobileqq:id/ib_clear_text', description='清空').click()
+                obj = d(className='android.widget.EditText', index=0)
+                if obj.exists:
+                    obj.set_text(numbers)  # 下次要添加的号码-
+                obj = d(text='网络查找人', resourceId='com.tencent.mobileqq:id/et_search_keyword')
+                if obj.exists:
+                    obj.set_text(numbers)
+                time.sleep(1)
+                d(textContains='找人').click()
+                while d(text='正在搜索…', index=1).exists:
+                    time.sleep(1)
+                continue
+
+
+            time.sleep(0.5)
+            obj = d(className='android.widget.EditText', resourceId='com.tencent.mobileqq:id/name').info  # 将之前消息框的内容删除
+            obj = obj['text']
+            lenth = len(obj)
+            t = 0
+            while t < lenth:
+                d.press.delete()
+                t = t + 1
+            d(className='android.widget.EditText',index=4).click()  # 发送验证消息  material
+            z.input(material)
+            print(material)
             obj = d(text='发送',resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText')            #不需要验证可直接添加为好友的情况
             if obj.exists:
                 obj.click()
@@ -157,43 +171,43 @@ class TIMAddFriends:
                     return
                 d(text='返回', resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').click()
                 d(resourceId='com.tencent.mobileqq:id/ib_clear_text', description='清空').click()
-                obj = d(text='QQ号/手机号/群/公众号', resourceId='com.tencent.mobileqq:id/et_search_keyword')
+                obj = d(className='android.widget.EditText',index=0)
                 if obj.exists:
                     obj.set_text(numbers)  # 要改为从库里取-------------------------------
                 obj = d(text='网络查找人', resourceId='com.tencent.mobileqq:id/et_search_keyword')
                 if obj.exists:
                     obj.set_text(numbers)
-                d.press.enter()
+                d(textContains='找人').click()
                 while d(text='正在搜索…', index=1).exists:
                     time.sleep(1)
                 continue
 
-            time.sleep(2)
-            obj = d(className='android.widget.EditText', resourceId='com.tencent.mobileqq:id/name').info           #将之前消息框的内容删除
-            obj = obj['text']
-            lenth = len(obj)
-            t = 0
-            while t < lenth:
-                d.press.delete()
-                t = t + 1
-
-            d(className='android.widget.EditText',resourceId='com.tencent.mobileqq:id/name').click()   #发送验证消息  material
-            z.input(material)
-            d(text='下一步',resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText').click()
-            d(text='发送',resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText').click()
-            if d(text='添加失败，请勿频繁操作', resourceId='com.tencent.mobileqq:id/name').exists:
-                return
-            d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').click()
-            d(resourceId='com.tencent.mobileqq:id/ib_clear_text',description='清空').click()
-            obj = d(text='QQ号/手机号/群/公众号', resourceId='com.tencent.mobileqq:id/et_search_keyword')
-            if obj.exists:
-                obj.set_text(numbers)
-            obj = d(text='网络查找人', resourceId='com.tencent.mobileqq:id/et_search_keyword')
-            if obj.exists:
-                obj.set_text(numbers)
-            d.press.enter()
-            while d(text='正在搜索…', index=1).exists:
-                time.sleep(1)
+            # time.sleep(2)
+            # obj = d(className='android.widget.EditText', resourceId='com.tencent.mobileqq:id/name').info           #将之前消息框的内容删除
+            # obj = obj['text']
+            # lenth = len(obj)
+            # t = 0
+            # while t < lenth:
+            #     d.press.delete()
+            #     t = t + 1
+            #
+            # d(className='android.widget.EditText',resourceId='com.tencent.mobileqq:id/name').click()   #发送验证消息  material
+            # z.input(material)
+            # d(text='下一步',resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText').click()
+            # d(text='发送',resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText').click()
+            # if d(text='添加失败，请勿频繁操作', resourceId='com.tencent.mobileqq:id/name').exists:
+            #     return
+            # d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').click()
+            # d(resourceId='com.tencent.mobileqq:id/ib_clear_text',description='清空').click()
+            # obj = d(className='android.widget.EditText',index=0)
+            # if obj.exists:
+            #     obj.set_text(numbers)
+            # obj = d(text='网络查找人', resourceId='com.tencent.mobileqq:id/et_search_keyword')
+            # if obj.exists:
+            #     obj.set_text(numbers)
+            # d(textContains='找人').click()
+            # while d(text='正在搜索…', index=1).exists:
+            #     time.sleep(1)
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -217,16 +231,17 @@ def runwatch(d, data):
             time.sleep(0.5)
 
 def getPluginClass():
-    return TIMAddFriends
+    return MobilqqAddFriends
 
 if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT55TSK00815")
-    z = ZDevice("HT55TSK00815")
+    d = Device("HT536SK01667")
+    z = ZDevice("HT536SK01667")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+
     # print(d.dump(compressed=False))
-    args = {"repo_number_cate_id":"37","repo_material_cate_id":"33","add_count":"3","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"45","repo_material_cate_id":"36","add_count":"10","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
     o.action(d,z, args)

@@ -10,7 +10,9 @@ from RClient import *
 import time, datetime, random
 from zservice import ZDevice
 from slot import slot
-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 class MobilqqLogin:
     def __init__(self):
         self.type = 'mobileqq'
@@ -57,9 +59,9 @@ class MobilqqLogin:
             time.sleep(4)
             d(text='登 录', resourceId='com.tencent.mobileqq:id/btn_login').click()
             time.sleep(1)
-            d(className='android.widget.EditText', text='QQ号/手机号/邮箱').set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
+            d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
             time.sleep(1)
-            d(resourceId='com.tencent.mobileqq:id/password', description='密码 安全').set_text(QQPassword)  # Bn2kJq5l     QQPassword
+            d(resourceId='com.tencent.mobileqq:id/password', index=2).set_text(QQPassword)  # Bn2kJq5l     QQPassword
             d(text='登 录', resourceId='com.tencent.mobileqq:id/login').click()
             time.sleep(1)
             while d(text='登录中').exists:
@@ -159,7 +161,7 @@ class MobilqqLogin:
             time.sleep(2)
             while d(textContains='正在更新数据').exists:
                 time.sleep(2)
-            time.sleep(6)
+            time.sleep(10)
 
             if d(resourceId='com.tencent.mobileqq:id/name', index=1).child(className='android.widget.ImageView',index=0).exists:  # 不停的加载的情况
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"该帐号失效，将重新登录\"").communicate()
@@ -242,7 +244,7 @@ if __name__ == "__main__":
     # slot.restore(d, 9)
 
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"59","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"32","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)
