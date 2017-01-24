@@ -429,13 +429,22 @@ class ZRemoteDevice(object):
         else:
             raise AttributeError("%s attribute not found!" % attr)
 
+    def mb_substr(self, s, start, length=None, encoding="UTF-8"):
+        u_s = s.decode(encoding)
+        return (u_s[start:(start + length)] if length else u_s[start:]).encode(encoding)
 
     def set_mobile_data(self,status):
         '''Get the device info.'''
         return self.server.jsonrpc.setMobileData(status)
 
     def input(self, text):
-        self.server.adb.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \"%s\"" % text).communicate()
+        startPos = 0
+        length = 20
+        while len(text) > startPos :
+            t = self.mb_substr(text, startPos, length)
+            t = t.replace('"', ' ')
+            self.server.adb.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \"%s\"" % t).communicate()
+            startPos = startPos + length
         '''click at arbitrary coordinates.'''
         #return self.server.jsonrpc.Input(text)
         return True

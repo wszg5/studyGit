@@ -177,13 +177,14 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("FA48VSR03651")
+    z = ZDevice("FA48VSR03651")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.dump(compressed=False)
     # slot = slot('eim')
+    z.input("沙发斯\"")
+    #z.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
-
-    z.wx_action("opensnsui")
+    #z.wx_action("opensnsui")
 
 
