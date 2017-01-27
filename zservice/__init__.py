@@ -238,6 +238,35 @@ class Adb(object):
         match = re.search(r"(\d+)\.(\d+)\.(\d+)", self.raw_cmd("version").communicate()[0].decode("utf-8"))
         return [match.group(i) for i in range(4)]
 
+    def shell(self, *args):
+        '''adb command, return adb shell <args> output.'''
+        args = ['shell'] + list(args)
+        return self.cmd(*args).communicate()[0].decode('utf-8')
+
+    def package_info(self, package_name):
+        '''
+        Return dict if package found else None, Return example
+        {
+            "version_code": 27,
+            "version_name": "1.2.1",
+        }
+        '''
+        out = self.shell('dumpsys', 'package', package_name)
+        result = {}
+        m = re.search(r'codePath=([^\s]+)', out)
+        if m:
+            result['code_path'] = m.group(1)
+        else:
+            return None
+
+        # other attrs
+        m = re.search(r'versionCode=(\d+)', out)
+        if m:
+            result['version_code'] = int(m.group(1))
+        m = re.search(r'versionName=([^\s]+)', out)
+        if m:
+            result['version_name'] = m.group(1)
+        return result
 
 _init_local_port = LOCAL_PORT - 1
 
@@ -274,7 +303,14 @@ class AutomatorServer(object):
     """start and quit rpc server on device.
     """
 
+    __sh_files = {
+        "install.sh": "libs/install.sh"
+    }
 
+    __apk_files = ["libs/zime.apk"]
+    # Used for check if installed
+    __apk_vercode = '1.6.1'
+    __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
 
@@ -296,6 +332,33 @@ class AutomatorServer(object):
                     self.local_port = next_local_port(adb_server_host)
             except:
                 self.local_port = next_local_port(adb_server_host)
+
+
+    def need_install(self):
+        pkginfo = self.adb.package_info(self.__apk_pkgname)
+        if pkginfo is None:
+            return True
+        if pkginfo['version_name'] != self.__apk_vercode:
+            return True
+        return False
+
+    def install(self):
+        base_dir = os.path.dirname(__file__)
+        if self.need_install():
+            self.adb.cmd("shell", "su -c 'rm /data/local/tmp/install.sh'").communicate()
+            self.adb.cmd("shell", "su -c 'chmod - R 777 /data/data/de.robv.android.xposed.installer/'").communicate()
+            self.adb.cmd("shell", "su -c 'rm /data/local/tmp/zime.apk'").communicate()
+            self.adb.cmd("shell", "pm uninstall com.zunyun.xime").communicate()
+            filename = os.path.join(base_dir, 'libs/install.sh')
+            self.adb.cmd("push", filename, "/data/local/tmp/").wait()
+            filename = os.path.join(base_dir, 'libs/zime.apk')
+            self.adb.cmd("push", filename, "/data/local/tmp/").wait()
+
+            self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
+            self.adb.cmd("shell", "su -c 'sh /data/local/tmp/install.sh'").communicate()
+            self.adb.cmd("shell", "reboot").communicate()
+
+
 
 
     @property
@@ -344,10 +407,10 @@ class AutomatorServer(object):
         return JsonRPCClient(self.rpc_uri, timeout=int(os.environ.get("JSONRPC_TIMEOUT", 90)))
 
     def start(self, timeout=5):
-
+        self.install()
         cmd = list(itertools.chain(
             ["shell", "am", "startservice"],
-            ["-a", "com.zunyun.qk.ACTION_START"]
+            ["-a", "com.zunyun.zime.ACTION_START"]
         ))
 
         self.zservice_process = self.adb.cmd(*cmd)
@@ -480,7 +543,13 @@ class ZRemoteDevice(object):
     images以,分隔
     '''
     def wx_sendsnsline(self, description, images):
-        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openurl\" --es description \"%s\" --es images \"%s\""%(description,images)).communicate()
+        imgs = ""
+        for k, v in enumerate(images):
+            #print '%s -- %s' %(k,v)
+            imgTarget = "/data/local/tmp/%s"%k
+            self.server.adb.cmd("push", v,  imgTarget).wait()
+            imgs = "%s,%s"%(imgs,imgTarget)
+        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"sendsnsline\" --es description \"%s\" --es images \"%s\""%(description,imgs)).communicate()
         return True
 
     def wx_openurl(self, url):
@@ -492,9 +561,16 @@ class ZRemoteDevice(object):
 
         return True
 
-    def wx_openuser(self, userid):
-        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openchatui\" --es userid \"%s\""%userid).communicate()
+    def wx_yaoyiyao(self):
+        base_dir = os.path.dirname(__file__)
+        filename = os.path.join(base_dir, 'libs/isyaoyiyao')
+        self.server.adb.cmd("push", filename, "/sdcard/").wait()
+        return True
 
+    def wx_scanqr(self):
+        base_dir = os.path.dirname(__file__)
+        filename = os.path.join(base_dir, 'libs/qr.png')
+        self.server.adb.cmd("push", filename, "/sdcard/qr.jpg").wait()
         return True
 
     def wx_sendtextsns(self, text):

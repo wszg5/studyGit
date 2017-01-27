@@ -179,12 +179,13 @@ if __name__ == "__main__":
 
     d = Device("FA48VSR03651")
     z = ZDevice("FA48VSR03651")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    # d.dump(compressed=False)
-    # slot = slot('eim')
-    z.input("沙发斯\"")
+    z.server.install()
     #z.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
     #z.wx_action("opensnsui")
-
+    imgs = []
+    imgs.append( "/opt/local/var/macports/sources/rsync.macports.org/release/tarballs/ports/games/xmoto/files/xmoto.png")
+    imgs.append( "/Users/liujieyang/PhpstormProjects/zyChat/Public/image/home/img/1012.png")
+    #z.wx_sendsnsline("afiee", imgs)
+    z.wx_scanqr()
 

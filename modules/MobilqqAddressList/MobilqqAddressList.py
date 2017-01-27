@@ -207,7 +207,7 @@ class TIMAddressList:
 
                 if d(text='匹配手机通讯录',resourceId='com.tencent.mobileqq:id/name').exists:
                     d(text='匹配手机通讯录', resourceId='com.tencent.mobileqq:id/name').click()
-                    time.sleep(4)
+                    time.sleep(10)
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
                 time.sleep(1)
                 d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
