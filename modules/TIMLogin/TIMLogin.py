@@ -123,8 +123,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4AFSK00625")
-    z = ZDevice("HT4AFSK00625")
+    d = Device("HT57FSK00089")
+    z = ZDevice("HT57FSK00089")
     slot = slot('tim')
 
     # print(d.dump(compressed=False))

@@ -10,7 +10,7 @@ class XunMa:
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                    "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
         self.domain = "api.xunma.net"
-        self.port = 8080
+        self.port = 8888
 
 
     def GetToken(self, useCache=True):
@@ -60,7 +60,7 @@ class XunMa:
         lockKey = 'lock_get_phone_%s'%itemId
         if cache.get(lockKey):
             time.sleep(5)
-
+            print round
             return self.GetPhoneNumber(itemId,round)
         else:
             cache.set(lockKey,True,10)
@@ -86,6 +86,7 @@ class XunMa:
             numbers = data.split(";");
             for number in numbers:
                 if re.search("\d{11}", str(number)):
+                    print number
                     cache.addSet(key, number)
             cache.set(lockKey,False)
             return self.GetPhoneNumber(itemId,round)
