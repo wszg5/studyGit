@@ -3,6 +3,7 @@ import httplib, json
 import time
 import re
 from zcache import cache
+import util
 
 class XunMa:
 
@@ -12,6 +13,7 @@ class XunMa:
         self.domain = "api.xunma.net"
         self.port = 8888
 
+        self.logger = util.logger
 
     def GetToken(self, useCache=True):
         from dbapi import dbapi
@@ -50,9 +52,7 @@ class XunMa:
     def GetPhoneNumber(self, itemId, times=0):
         round = times + 1
         if  round > 30:
-            raise 'XunMa tried 3 minutes'
-
-        token = self.GetToken()
+            raise 'XunMa has tried 3 minutes'
         key = 'phone_%s'%itemId
         phone = cache.popSet(key)
         if phone:
@@ -65,17 +65,23 @@ class XunMa:
         else:
             cache.set(lockKey,True,10)
 
+        token = self.GetToken()
+
         try:
             path = "/getPhone?ItemId=%s&token=%s&Count=10" % (itemId, token)
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
             response = conn.getresponse()
-        except Exception:
+        except Exception, e:
+            self.logger.info(e.message)
             cache.set(lockKey, False)
             return self.GetPhoneNumber(itemId,round)
 
         if response.status == 200:
+
             data = response.read().decode('GBK')
+            self.logger.info("===XUNMA RESTURN:%s" % data)
+
             import string
             if string.find(data,'单个用户获取数量不足')!=-1 :
                 self.ReleaseAllPhone()
@@ -134,8 +140,9 @@ class XunMa:
                 if response.status == 200:
                     data = response.read().decode('GBK')
                     print data
-            except Exception:
+            except Exception, e:
 
+                print(e.message)
                 return None
 
 

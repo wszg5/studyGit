@@ -6,7 +6,6 @@ import multiprocessing
 import traceback
 import json
 from const import const
-from zcache import cache
 try:
     rst = int(util.exccmd("awk -F. '{print $1}' /proc/uptime"))
     if rst < 500:
@@ -16,6 +15,8 @@ try:
 except:
     #noting to do
     ok = 'ok'
+
+
 from dbapi import dbapi
 import sys
 reload(sys)
@@ -88,8 +89,8 @@ def deviceTask(deviceid, port, zport):
             while True:
                 steps = dbapi.GetTaskSteps(taskid)
                 #设置zime输入法
-                d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").wait()
-                d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.unlock").wait()
+                d.server.adb.cmd("shell","ime set com.zunyun.zime/.ZImeService").wait()
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.unlock").wait()
                 for step in steps:
                     try:
                         runStep(d, z, step)
@@ -116,16 +117,28 @@ def deviceThread(deviceid, port, zport):
             logger.error(traceback.format_exc())
         time.sleep(5)
     print("%s thread finished"%deviceid)
+
+
+
 def StartProcess(deviceid):
     device_port = portDict[deviceid]
     port = device_port["port"]
     zport = device_port["zport"]
+
+    from zservice import ZDevice
+    z = ZDevice(deviceid, zport)
+    z.install()
+
     processDict[deviceid] = multiprocessing.Process(target=deviceThread, args=(deviceid, port, zport))
     processDict[deviceid].name = deviceid
     processDict[deviceid].daemon = True
     processDict[deviceid].start()
 processDict = {}
 portDict = {}
+
+
+
+
 if __name__ == "__main__":
     cleanEnv()
     logger = util.logger

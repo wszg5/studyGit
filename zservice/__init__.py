@@ -238,6 +238,35 @@ class Adb(object):
         match = re.search(r"(\d+)\.(\d+)\.(\d+)", self.raw_cmd("version").communicate()[0].decode("utf-8"))
         return [match.group(i) for i in range(4)]
 
+    def shell(self, *args):
+        '''adb command, return adb shell <args> output.'''
+        args = ['shell'] + list(args)
+        return self.cmd(*args).communicate()[0].decode('utf-8')
+
+    def package_info(self, package_name):
+        '''
+        Return dict if package found else None, Return example
+        {
+            "version_code": 27,
+            "version_name": "1.2.1",
+        }
+        '''
+        out = self.shell('dumpsys', 'package', package_name)
+        result = {}
+        m = re.search(r'codePath=([^\s]+)', out)
+        if m:
+            result['code_path'] = m.group(1)
+        else:
+            return None
+
+        # other attrs
+        m = re.search(r'versionCode=(\d+)', out)
+        if m:
+            result['version_code'] = int(m.group(1))
+        m = re.search(r'versionName=([^\s]+)', out)
+        if m:
+            result['version_name'] = m.group(1)
+        return result
 
 _init_local_port = LOCAL_PORT - 1
 
@@ -274,7 +303,14 @@ class AutomatorServer(object):
     """start and quit rpc server on device.
     """
 
+    __sh_files = {
+        "install.sh": "libs/install.sh"
+    }
 
+    __apk_files = ["libs/zime.apk"]
+    # Used for check if installed
+    __apk_vercode = '1.6.1'
+    __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
 
@@ -296,6 +332,33 @@ class AutomatorServer(object):
                     self.local_port = next_local_port(adb_server_host)
             except:
                 self.local_port = next_local_port(adb_server_host)
+
+
+    def need_install(self):
+        pkginfo = self.adb.package_info(self.__apk_pkgname)
+        if pkginfo is None:
+            return True
+        if pkginfo['version_name'] != self.__apk_vercode:
+            return True
+        return False
+
+    def install(self):
+        base_dir = os.path.dirname(__file__)
+        if self.need_install():
+            self.adb.cmd("shell", "su -c 'rm /data/local/tmp/install.sh'").communicate()
+            self.adb.cmd("shell", "su -c 'chmod - R 777 /data/data/de.robv.android.xposed.installer/'").communicate()
+            self.adb.cmd("shell", "su -c 'rm /data/local/tmp/zime.apk'").communicate()
+            self.adb.cmd("shell", "pm uninstall com.zunyun.xime").communicate()
+            filename = os.path.join(base_dir, 'libs/install.sh')
+            self.adb.cmd("push", filename, "/data/local/tmp/").wait()
+            filename = os.path.join(base_dir, 'libs/zime.apk')
+            self.adb.cmd("push", filename, "/data/local/tmp/").wait()
+
+            self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
+            self.adb.cmd("shell", "su -c 'sh /data/local/tmp/install.sh'").communicate()
+            self.adb.cmd("shell", "reboot").communicate()
+
+
 
 
     @property
@@ -344,10 +407,10 @@ class AutomatorServer(object):
         return JsonRPCClient(self.rpc_uri, timeout=int(os.environ.get("JSONRPC_TIMEOUT", 90)))
 
     def start(self, timeout=5):
-
+        self.install()
         cmd = list(itertools.chain(
             ["shell", "am", "startservice"],
-            ["-a", "com.zunyun.qk.ACTION_START"]
+            ["-a", "com.zunyun.zime.ACTION_START"]
         ))
 
         self.zservice_process = self.adb.cmd(*cmd)
@@ -429,13 +492,22 @@ class ZRemoteDevice(object):
         else:
             raise AttributeError("%s attribute not found!" % attr)
 
+    def mb_substr(self, s, start, length=None, encoding="UTF-8"):
+        u_s = s.decode(encoding)
+        return (u_s[start:(start + length)] if length else u_s[start:]).encode(encoding)
 
     def set_mobile_data(self,status):
         '''Get the device info.'''
         return self.server.jsonrpc.setMobileData(status)
 
     def input(self, text):
-        self.server.adb.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \"%s\"" % text).communicate()
+        startPos = 0
+        length = 20
+        while len(text) > startPos :
+            t = self.mb_substr(text, startPos, length)
+            t = t.replace('"', ' ')
+            self.server.adb.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \"%s\"" % t).communicate()
+            startPos = startPos + length
         '''click at arbitrary coordinates.'''
         #return self.server.jsonrpc.Input(text)
         return True
@@ -443,76 +515,72 @@ class ZRemoteDevice(object):
     def openQQChat(self, number):
         return self.server.jsonrpc.openQQChat(number)
 
-    def swipe(self, sx, sy, ex, ey, steps=100):
-        return self.server.jsonrpc.swipe(sx, sy, ex, ey, steps)
+    '''
+    openyaoyiyao   打开摇一摇界面
+    openyaoyiyaosayhi 打开摇一摇打招呼的人
+    searchui 打开搜索页面
+    opennearsayhi 打开附近打招呼的人界面
+    opensnsui 朋友圈界面
+    正在好友群发界面 打开好友群发界面
+    openinfoui     打开我的个人信息页面
+    '''
+    def wx_action(self, action):
+        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"%s\""%action).communicate()
+        return True
 
-    def swipePoints(self, points, steps=100):
+    '''
+    sendlinksns 发送朋友圈链接信息
+    '''
+    def wx_sendlinksns(self, points, steps=100):
         ppoints = []
         for p in points:
             ppoints.append(p[0])
             ppoints.append(p[1])
         return self.server.jsonrpc.swipePoints(ppoints, steps)
 
-    def drag(self, sx, sy, ex, ey, steps=100):
-        '''Swipe from one point to another point.'''
-        return self.server.jsonrpc.drag(sx, sy, ex, ey, steps)
+    '''
+    sendlinksns 发送图文朋友圈
+    images以,分隔
+    '''
+    def wx_sendsnsline(self, description, images):
+        imgs = ""
+        for k, v in enumerate(images):
+            #print '%s -- %s' %(k,v)
+            imgTarget = "/data/local/tmp/%s"%k
+            self.server.adb.cmd("push", v,  imgTarget).wait()
+            imgs = "%s,%s"%(imgs,imgTarget)
+        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"sendsnsline\" --es description \"%s\" --es images \"%s\""%(description,imgs)).communicate()
+        return True
 
-    def dump(self, filename=None, compressed=True, pretty=True):
-        '''dump device window and pull to local file.'''
-        content = self.server.jsonrpc.dumpWindowHierarchy(compressed, None)
-        if filename:
-            with open(filename, "wb") as f:
-                f.write(content.encode("utf-8"))
-        if pretty and "\n " not in content:
-            xml_text = xml.dom.minidom.parseString(content.encode("utf-8"))
-            content = U(xml_text.toprettyxml(indent='  '))
-        return content
+    def wx_openurl(self, url):
+        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openurl\" --es url \"%s\""%url).communicate()
+        return True
 
-    def screenshot(self, filename, scale=1.0, quality=100):
-        '''take screenshot.'''
-        result = self.server.screenshot(filename, scale, quality)
-        if result:
-            return result
+    def wx_openuser(self, userid):
+        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openuser\" --es userid \"%s\""%userid).communicate()
 
-        device_file = self.server.jsonrpc.takeScreenshot("screenshot.png",
-                                                         scale, quality)
-        if not device_file:
-            return None
-        p = self.server.adb.cmd("pull", device_file, filename)
-        p.wait()
-        self.server.adb.cmd("shell", "rm", device_file).wait()
-        return filename if p.returncode is 0 else None
+        return True
+
+    def wx_yaoyiyao(self):
+        base_dir = os.path.dirname(__file__)
+        filename = os.path.join(base_dir, 'libs/isyaoyiyao')
+        self.server.adb.cmd("push", filename, "/sdcard/").wait()
+        return True
+
+    def wx_scanqr(self):
+        base_dir = os.path.dirname(__file__)
+        filename = os.path.join(base_dir, 'libs/qr.png')
+        self.server.adb.cmd("push", filename, "/sdcard/qr.jpg").wait()
+        return True
+
+    def wx_sendtextsns(self, text):
+        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"sendtextsns\" --es text \"%s\""%text).communicate()
+
+        return True
 
     def freeze_rotation(self, freeze=True):
         '''freeze or unfreeze the device rotation in current status.'''
         self.server.jsonrpc.freezeRotation(freeze)
-
-    @property
-    def orientation(self):
-        '''
-        orienting the devie to left/right or natural.
-        left/l:       rotation=90 , displayRotation=1
-        right/r:      rotation=270, displayRotation=3
-        natural/n:    rotation=0  , displayRotation=0
-        upsidedown/u: rotation=180, displayRotation=2
-        '''
-        return self.__orientation[self.info["displayRotation"]][1]
-
-    @orientation.setter
-    def orientation(self, value):
-        '''setter of orientation property.'''
-        for values in self.__orientation:
-            if value in values:
-                # can not set upside-down until api level 18.
-                self.server.jsonrpc.setOrientation(values[1])
-                break
-        else:
-            raise ValueError("Invalid orientation.")
-
-    @property
-    def last_traversed_text(self):
-        '''get last traversed text. used in webview for highlighted text.'''
-        return self.server.jsonrpc.getLastTraversedText()
 
     def clear_traversed_text(self):
         '''clear the last traversed text.'''
