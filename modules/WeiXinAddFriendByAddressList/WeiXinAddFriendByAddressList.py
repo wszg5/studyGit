@@ -23,21 +23,27 @@ class WeiXinAddFriendByAddressList:
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
         time.sleep(7)
-        if  d(text='通讯录',index=0).exists:
-            d(text='通讯录',index=0).click()
-        else:
-            time.sleep(1)
-            d(text='通讯录',index=1).click()
-        if d(text='新的朋友').exists:
-            d(text='新的朋友').click()
-            time.sleep(1)
-        else:
-            d(text='群聊').up(className='android.widget.LinearLayout',index=0).click()     #效率较低，看是否有提升空间
-            time.sleep(2)
+        d(description='更多功能按钮').click()
+        d(textContains='添加朋友').click()
+        d(text='手机联系人').click()
+        d(text='添加手机联系人').click()
+        while d(textContains='正在获取').exists:
+            time.sleep(3)
+        # if  d(text='通讯录',index=0).exists:
+        #     d(text='通讯录',index=0).click()
+        # else:
+        #     time.sleep(1)
+        #     d(text='通讯录',index=1).click()
+        # if d(text='新的朋友').exists:
+        #     d(text='新的朋友').click()
+        #     time.sleep(1)
+        # else:
+        #     d(text='群聊').up(className='android.widget.LinearLayout',index=0).click()     #效率较低，看是否有提升空间
+        #     time.sleep(2)
 
         set1 = set()
         change = 0
-        i = 6
+        i = 1
         t = 1
         EndIndex = int(args['EndIndex'])         #------------------
         while t < EndIndex + 1:

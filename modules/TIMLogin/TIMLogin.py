@@ -106,8 +106,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4AFSK00625")
-    z = ZDevice("HT4AFSK00625")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
     slot = slot('tim')
 
     # print(d.dump(compressed=False))
@@ -116,7 +116,7 @@ if __name__ == "__main__":
 
     d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()  # 清除缓存
-    args = {"repo_cate_id":"56","time_delay":"3","time_limit":"120"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"32","time_delay":"3","time_limit":"120"};    #cate_id是仓库号，length是数量
 
     # args = {"step_id":"17010410261870600","repo_cate_id":"33","time_limit":"3","time_delay":"3"}
     # o.slot.restore(d,1)
