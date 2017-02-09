@@ -180,12 +180,16 @@ if __name__ == "__main__":
     d = Device("FA48VSR03651")
     z = ZDevice("FA48VSR03651")
     z.server.install()
-    #z.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    z.wx_action("openaddui")
 
+    #z.openQQChat("23423422")
+    z.wx_sendtextsns("iiiiiii")
+    print z.wx_execute_sql("select chatroomname as namekey , displayname as name, memberlist as memberlist from chatroom")
+    #z.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     #z.wx_action("opensnsui")
     imgs = []
     imgs.append( "/opt/local/var/macports/sources/rsync.macports.org/release/tarballs/ports/games/xmoto/files/xmoto.png")
     imgs.append( "/Users/liujieyang/PhpstormProjects/zyChat/Public/image/home/img/1012.png")
     #z.wx_sendsnsline("afiee", imgs)
-    z.wx_scanqr()
+    #z.wx_scanqr()
 

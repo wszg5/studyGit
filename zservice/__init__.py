@@ -309,7 +309,7 @@ class AutomatorServer(object):
 
     __apk_files = ["libs/zime.apk"]
     # Used for check if installed
-    __apk_vercode = '1.6.1'
+    __apk_vercode = '1.6.4'
     __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
@@ -520,12 +520,26 @@ class ZRemoteDevice(object):
     openyaoyiyaosayhi 打开摇一摇打招呼的人
     searchui 打开搜索页面
     opennearsayhi 打开附近打招呼的人界面
+    opennearui 打开附近的人界面
     opensnsui 朋友圈界面
-    正在好友群发界面 打开好友群发界面
     openinfoui     打开我的个人信息页面
+    openaddui    打开添加界面
+    openscanui    打开二维码扫描界面
+
+    ###任意界面打开方式：
+    adb shell dumpsys activity top
+    如：com.tencent.mm/.plugin.scanner.ui.BaseScanUI   name1:scanner  name2:.ui.BaseScanUI
+    如：com.tencent.mm/.plugin.subapp.ui.pluginapp.AddMoreFriendsUI   name1:subapp  name2:.ui.pluginapp.AddMoreFriendsUI
     '''
     def wx_action(self, action):
-        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"%s\""%action).communicate()
+        if action == "openaddui":
+            self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openwx\" --es name1 \"subapp\" --es name2 \".ui.pluginapp.AddMoreFriendsUI\"").communicate()
+
+        if action == "openscanui":
+            self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openwx\" --es name1 \"scanner\" --es name2 \".ui.BaseScanUI\"").communicate()
+
+        else:
+            self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"%s\""%action).communicate()
         return True
 
     '''
@@ -537,6 +551,15 @@ class ZRemoteDevice(object):
             ppoints.append(p[0])
             ppoints.append(p[1])
         return self.server.jsonrpc.swipePoints(ppoints, steps)
+
+
+    '''
+    执行微信SQL
+    '''
+    def wx_execute_sql(self, sql):
+        self.server.adb.cmd("shell",
+                            "am broadcast -a MyAction --es act \"sqlhelper\" --es sql \"%s\"" % sql).communicate()
+        return self.server.jsonrpc.wx_sql(sql)
 
     '''
     sendlinksns 发送图文朋友圈
