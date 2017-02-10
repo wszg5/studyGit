@@ -7,7 +7,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-class EIMTemporarySession:
+class EIMTemporarySessionII:
     def __init__(self):
         self.repo = Repo()
 
@@ -49,8 +49,9 @@ class EIMTemporarySession:
             numbers = list[i]
             time.sleep(1)
 
+
             d.server.adb.cmd("shell",
-                             'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=crm\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % numbers)  # 临时会话
+                             'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % numbers)  # 临时会话发企业QQ）
             time.sleep(2)
 
             if d(text='企业QQ').exists:
@@ -61,7 +62,7 @@ class EIMTemporarySession:
 
             if d(textContains='沟通的权限').exists:
                 d.server.adb.cmd("shell",
-                                 'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=crm\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % numbers)  # 临时会话
+                                 'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % numbers)  # 临时会话发企业QQ）
                 time.sleep(1)
                 if d(text='企业QQ', resourceId='android:id/text1').exists:
                     d(text='企业QQ', resourceId='android:id/text1').click()
@@ -80,7 +81,7 @@ class EIMTemporarySession:
 
 
 def getPluginClass():
-    return EIMTemporarySession
+    return EIMTemporarySessionII
 
 if __name__ == "__main__":
     clazz = getPluginClass()

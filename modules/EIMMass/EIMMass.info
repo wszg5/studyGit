@@ -1,0 +1,25 @@
+{
+"id": "EIMMass",
+"cate":"EIM模块",
+"name":"EIM版QQ群发消息",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"icon": "vcard-o",
+"remark":"EIM版QQ群发消息",
+"setting":[
+	{
+    "id": "repo_material_id",
+    "name":"群发消息",
+    "type":"repo",
+    "source":"material",
+    "top_cate_id":"12"
+    },
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}
