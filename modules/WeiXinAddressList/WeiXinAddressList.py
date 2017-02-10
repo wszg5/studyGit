@@ -20,7 +20,7 @@ class WeiXinAddressList:
         height = str["displayHeight"]
         width = str["displayWidth"]
 
-        d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
+        # d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
         time.sleep(7)
         d(text='通讯录').click()
@@ -64,7 +64,8 @@ class WeiXinAddressList:
                 obj.click()
                 GenderFrom = args['gender']     #-------------------------------
                 if GenderFrom !='不限':
-                    obj = d(className='android.widget.ImageView',index=1,resourceId='com.tencent.mm:id/abr')      #看性别是否有显示
+                    obj = d(className='android.widget.LinearLayout', index=1).child(
+                        className='android.widget.LinearLayout').child(className='android.widget.ImageView',index=1)  # 看性别是否有显示
                     if obj.exists:
                         Gender = obj.info
                         Gender = Gender['contentDescription']
@@ -124,7 +125,8 @@ class WeiXinAddressList:
                     i = g+1
                     continue
 
-
+        if (args["time_delay"]):
+            time.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WeiXinAddressList

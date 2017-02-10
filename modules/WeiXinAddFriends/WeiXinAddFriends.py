@@ -46,7 +46,7 @@ class WeiXinAddFriends:
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
 
-        d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
+        # d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
         time.sleep(5)
 
@@ -104,7 +104,8 @@ class WeiXinAddFriends:
                 d(descriptionContains='清除', index=2).click()
                 time.sleep(1)
                 continue
-
+        if (args["time_delay"]):
+            time.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WeiXinAddFriends
@@ -116,5 +117,6 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
-    args = {"repo_number_cate_id": "40", "repo_material_cate_id": "36", "add_count": "20", 'gender':"男","time_delay": "3"}    #cate_id是仓库号，length是数量
+
+    args = {"repo_number_cate_id": "40", "repo_material_cate_id": "36", "add_count": "20", 'gender':"不限","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

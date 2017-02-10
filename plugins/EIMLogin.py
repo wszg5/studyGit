@@ -177,14 +177,15 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    # d.dump(compressed=False)
-    # slot = slot('eim')
+    d = Device("FA48VSR03651")
+    z = ZDevice("FA48VSR03651")
+    z.server.install()
+    #z.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
-    # slot.restore(d, 2)  # 有２小时没用过的卡槽情况，切换卡槽
+    #z.wx_action("opensnsui")
+    imgs = []
+    imgs.append( "/opt/local/var/macports/sources/rsync.macports.org/release/tarballs/ports/games/xmoto/files/xmoto.png")
+    imgs.append( "/Users/liujieyang/PhpstormProjects/zyChat/Public/image/home/img/1012.png")
+    #z.wx_sendsnsline("afiee", imgs)
+    z.wx_scanqr()
 
-
-    args = {"repo_cate_id":"33","time_limit":"3","time_limit1":"10","time_delay":"3"};    #cate_id是仓库号，length是数量
-    o.action(d,z, args)

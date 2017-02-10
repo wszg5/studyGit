@@ -5,13 +5,13 @@ import os, time, datetime, random
 from zservice import ZDevice
 
 
-class TIMBrowserAddFriends:
-
+class TIMTemporarySessionAddFriends:
     def __init__(self):
+
         self.repo = Repo()
 
 
-    def SendText(self,d,z,args):
+    def action(self, d, z, args):
         add_count = int(args['add_count'])  # 要添加多少人
         repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
         wait = 1
@@ -38,15 +38,9 @@ class TIMBrowserAddFriends:
             numbers = list[i]
             print(numbers)
             time.sleep(1)
-            time.sleep(3)
-            d(className='android.widget.Button', index=2, description='清空号码').click()
-            d(className='android.widget.EditText', index=1, clickable='false').click()
-            if d(className='android.widget.EditText', index=1, clickable='false').exists:
-                d.press.back()
-            d(className='android.widget.EditText', index=1, clickable='false').set_text(numbers)  # 要添加的好友
-            d(className='android.widget.Button', index=3, description='开始聊天').click()
+            z.openQQChat(numbers)  # 唤起浏览器临时会话
             time.sleep(1)
-            if d(text='TIM', resourceId='android:id/text1').exists:
+            while d(text='TIM', resourceId='android:id/text1').exists:
                 d(text='TIM', resourceId='android:id/text1').click()
                 if d(text='仅此一次', resourceId='android:id/button_once').exists:
                     d(text='仅此一次', resourceId='android:id/button_once').click()
@@ -78,40 +72,22 @@ class TIMBrowserAddFriends:
             time.sleep(1)
             if d(resourceId='com.tencent.tim:id/name', text='添加失败，请勿频繁操作').exists:  # 操作过于频繁的情况
                 return
-            d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
-
-    def action(self, d, z, args):
-        d.server.adb.cmd("shell", "am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
-        time.sleep(4)
-        # d.server.adb.cmd("shell", "am force-stop com.android.chrome").wait()  # 强制停止
-        if d(description='清空号码', className='android.widget.Button').exists:
-            self.SendText(d,z,args)
-
-        else:
-            d.server.adb.cmd("shell","am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").wait()  # 拉起来
-            if d(description='清空号码', className='android.widget.Button').exists:
-                self.SendText(d,z, args)
-            else:
-                d(resourceId='com.android.chrome:id/url_bar', className='android.widget.EditText').set_text('http://www.jianli58.com/qq.html')
-                time.sleep(1)
-                d.press.enter()
-                self.SendText(d,z, args)
 
 
-        if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            if (args["time_delay"]):
+                time.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():
-    return TIMBrowserAddFriends
-
+    return TIMTemporarySessionAddFriends
 
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4BDSK00858")
+    d = Device("HT57FSK00089")
     # material=u'有空聊聊吗'
-    z = ZDevice("HT4BDSK00858")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    args = {"repo_number_cate_id":"37","repo_material_cate_id":"33","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
-    o.action(d,z, args)
+    z = ZDevice("HT57FSK00089")
+    # d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    args = {"repo_number_cate_id": "43", "repo_material_cate_id": "36", "add_count": "9",
+            "time_delay": "3"};  # cate_id是仓库号，length是数量
+    o.action(d, z, args)

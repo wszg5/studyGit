@@ -5,7 +5,7 @@
 "url": "http://www.bejson.com",
 "version": "1.0",
 "icon": "vcard-o",
-"remark":"微信版本，6.5.3",
+"remark":"微信版本，6.5.4",
 "setting":[
 	{
 	"id": "repo_number_cate_id",

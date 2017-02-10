@@ -16,7 +16,6 @@ class Repo:
     def GetAccount(self, cateId, interval, limit):
         path = "/repo_api/account/pick?status=normal&cate_id=%s&interval=%s&limit=%s" % (cateId,interval,limit)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-
         conn.request("GET", path)
         response = conn.getresponse()
         if response.status == 200:
@@ -31,7 +30,6 @@ class Repo:
     def GetMaterial(self, cateId, interval, limit):
         path = "/repo_api/material/pick?status=normal&cate_id=%s&interval=%s&limit=%s" % (cateId,interval,limit)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-
         conn.request("GET", path)
         response = conn.getresponse()
         if response.status == 200:
@@ -47,7 +45,6 @@ class Repo:
     def GetNumber(self, cateId, interval, limit):
         path = "/repo_api/number/pick?status=normal&cate_id=%s&interval=%s&limit=%s" % (cateId,interval,limit)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-
         conn.request("GET", path)
         response = conn.getresponse()
         if response.status == 200:
@@ -55,7 +52,7 @@ class Repo:
             numbers = json.loads(data)
             return  numbers
         else:
-            return []
+            return "Error Getting material, Please check your repo"
 
 
 

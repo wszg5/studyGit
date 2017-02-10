@@ -20,18 +20,34 @@ class TIMLogin:
         d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate()  # 清除缓存
         d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(8)
+
+        for k in range(1, 35):
+            time.sleep(1)
+            if d(resourceId='com.tencent.tim:id/title', index=1, text='熟悉的QQ习惯').exists:
+                str = d.info  # 获取屏幕大小等信息
+                height = str["displayHeight"]
+                width = str["displayWidth"]
+                for i in range(0, 2):
+                    d.swipe(width * 0.75, height * 0.5, width * 0.05, height * 0.5, 10)
+                    time.sleep(1)
+                d(resourceId='com.tencent.tim:id/name', index=1, text='立即体验').click()
+                break
+
+        if k == 35:
+            return ''
+        time.sleep(2)
         d(text='新用户', resourceId='com.tencent.tim:id/btn_register').click()
-        token = self.XunMa.GetToken()
-        phoneNumber = self.XunMa.GetPhoneNumber(token, '144')
+
+        phoneNumber = self.XunMa.GetPhoneNumber('144')
         print(phoneNumber)
         d(text='请输入你的手机号码', resourceId='com.tencent.tim:id/name').set_text(phoneNumber)
         d(text='下一步', resourceId='com.tencent.tim:id/name').click()
         time.sleep(4)
         try:
-            vertifyCode = self.XunMa.GetCode(phoneNumber, token)  # 获取验证码
+            vertifyCode = self.XunMa.GetVertifyCode(phoneNumber)  # 获取验证码
         except Exception:
             d(textContains='重新发送', resourceId='com.tencent.tim:id/name').click()
-            vertifyCode = self.XunMa.GetCode(phoneNumber, token)  # 获取验证码
+            vertifyCode = self.XunMa.GetVertifyCode(phoneNumber)  # 获取验证码
         d(text='请输入短信验证码', resourceId='com.tencent.tim:id/name').set_text(vertifyCode)
         d(textContains='重新发送', resourceId='com.tencent.tim:id/name').click()
         d(text='下一步', resourceId='com.tencent.tim:id/name').click()
@@ -55,6 +71,7 @@ class TIMLogin:
         cate_id = args["repo_cate_id"]
 
         name = self.slot.getEmpty(d)                    #取空卡槽
+        print name
         if name ==0:
             name = self.slot.getSlot(d,time_limit)              #没有空卡槽，取２小时没用过的卡槽
             print '切换为'+str(name)
@@ -116,7 +133,11 @@ if __name__ == "__main__":
 
     d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()  # 清除缓存
+<<<<<<< HEAD
     args = {"repo_cate_id":"32","time_delay":"3","time_limit":"120"};    #cate_id是仓库号，length是数量
+=======
+    args = {"repo_cate_id":"38","time_delay":"3","time_limit":"120"};    #cate_id是仓库号，length是数量
+>>>>>>> 4003a7f50b21dedbb64be087e0e8c06186f2a15d
 
     # args = {"step_id":"17010410261870600","repo_cate_id":"33","time_limit":"3","time_delay":"3"}
     # o.slot.restore(d,1)

@@ -6,7 +6,7 @@
 "url": "http://www.bejson.com",
 "version": "1.0",
 "icon":"vcard-o",
-"remark":"微信通讯录发消息，6.5.3版",
+"remark":"微信通讯录发消息，6.5.4版",
 "setting":[
 	{
 	"id": "repo_material_id",

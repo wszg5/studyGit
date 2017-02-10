@@ -1,7 +1,7 @@
 {
-"id": "TIMBrowserSendText",
+"id": "TIMTemporarySession",
 "cate":"其他模块",
-"name":"TIM版浏览器发消息",
+"name":"TIM版临时会话发消息",
 "url": "http://www.bejson.com",
 "version": "1.0",
 "icon": "vcard-o",

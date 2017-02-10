@@ -6,7 +6,7 @@
 "url": "http://www.bejson.com",
 "version": "1.0",
 "icon":"vcard-o",
-"remark":"微信群发(文字)，6.5.3版",
+"remark":"微信群发(文字)，6.5.4版",
 "setting":[
 	{
 	"id": "repo_material_id",
@@ -14,6 +14,14 @@
 	"type":"repo",
 	"source":"material",
 	"top_cate_id":"12"
+	},
+	{
+	"id": "gender",
+	"name":"性别",
+	"type":"select",
+	"list":{"男":"男","女":"女","不限":"不限"},
+	"defaultValue":"女",
+	"remark":"性别要求"
 	},
     {
     "id": "time_delay",
