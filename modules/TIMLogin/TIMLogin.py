@@ -76,7 +76,7 @@ class TIMLogin:
             name = self.slot.getSlot(d,time_limit)              #没有空卡槽，取２小时没用过的卡槽
             print '切换为'+str(name)
             while name == 0:                               #2小时没有用过的卡槽也为空的情况
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无2小时未用\"").communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽全满，无2小时未用\"").communicate()
                 time.sleep(30)
                 name = self.slot.getSlot(d,time_limit)
 
@@ -86,7 +86,7 @@ class TIMLogin:
             z.set_mobile_data(True)
             time.sleep(8)
 
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"TIM卡槽成功切换成"+str(name)+"\"").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"TIM卡槽成功切换成"+str(name)+"\"").communicate()
             time.sleep(1)
 
             d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
@@ -123,8 +123,10 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
+
     d = Device("HT537SK01189")
     z = ZDevice("HT537SK01189")
+
     slot = slot('tim')
 
     # print(d.dump(compressed=False))
@@ -133,7 +135,9 @@ if __name__ == "__main__":
 
     d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()  # 清除缓存
-    args = {"repo_cate_id":"38","time_delay":"3","time_limit":"120"};    #cate_id是仓库号，length是数量
+
+    args = {"repo_cate_id":"32","time_delay":"3","time_limit":"120"};    #cate_id是仓库号，length是数量
+
 
     # args = {"step_id":"17010410261870600","repo_cate_id":"33","time_limit":"3","time_delay":"3"}
     # o.slot.restore(d,1)

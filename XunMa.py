@@ -54,6 +54,7 @@ class XunMa:
     def GetPhoneNumber(self, itemId, times=0):
         round = times + 1
         if  round > 30:
+
             raise 'XunMa has tried 3 minutes'
         key = 'phone_%s'%itemId
         phone = cache.popSet(key)
@@ -67,6 +68,7 @@ class XunMa:
         else:
             cache.set(lockKey,True,10)
 
+
         token = self.GetToken()
 
         try:
@@ -74,7 +76,7 @@ class XunMa:
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
             response = conn.getresponse()
-        except Exception, e:
+        except Exception as e:
             self.logger.info(e.message)
             cache.set(lockKey, False)
             return self.GetPhoneNumber(itemId,round)
@@ -99,10 +101,12 @@ class XunMa:
             return self.GetPhoneNumber(itemId,round)
         else:
             cache.set(lockKey,False)
+
             return self.GetPhoneNumber(itemId,round)
 
 
     def ReleasePhone(self, phoneNumber, itemId):
+
 
         token = self.GetToken()
         path = "/releasePhone?token=%s&phoneList=%s-%s" % (token, phoneNumber, itemId)
@@ -130,6 +134,7 @@ class XunMa:
         else:
             cache.set(lockKey, True, 1)
 
+
             data = ""
 
             token = self.GetToken()
@@ -141,9 +146,7 @@ class XunMa:
                 if response.status == 200:
                     data = response.read().decode('GBK')
 
-            except Exception, e:
-
-                print(e.message)
+            except Exception:
                 return None
 
 
@@ -167,6 +170,7 @@ class XunMa:
                     targetItemId = res[0]
                     res = re.findall("\d{%s}"%length, res[1])
 
+
                     code = res[0]
                     sms_number_key = 'verify_code_%s_%s'%(targetItemId,targetNumber)
                     cache.set(sms_number_key, code)
@@ -180,6 +184,7 @@ class XunMa:
             code = self.GetCode(number,itemId,length)
             if not code==None:
                 return code
+
         return ""
 
     def UploadPhoneNumber(self, number):

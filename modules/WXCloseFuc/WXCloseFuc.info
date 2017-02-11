@@ -1,0 +1,19 @@
+{
+"id": "WXCloseFuc",
+"name":"微信关闭功能",
+"cate":"微信模块",
+"font": "WinXin",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"icon":"vcard-o",
+"remark":"微信关闭功能，6.5.4版",
+"setting":[
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

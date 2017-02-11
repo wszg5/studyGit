@@ -21,7 +21,7 @@ class QQLiteBrowserSendText:
                 material = Material[0]['content']  # 取出验证消息的内容
                 wait = 0
             except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"")
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到验证消息\"")
 
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
 
@@ -31,7 +31,7 @@ class QQLiteBrowserSendText:
             numbers = self.repo.GetNumber(repo_number_cate_id, 120, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
             lenth = len(numbers)
             if "Error" in numbers:  # 如果没有拿到号码的情况
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到号码\"")
                 continue
             elif lenth==0:
                 continue

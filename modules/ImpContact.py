@@ -35,7 +35,7 @@ class ImpContact:
                 t = numbers[0]  # 取出验证消息的内容
                 wait = 0
             except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"电话号码%s号仓库为空，等待中\""%cate_id).communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"电话号码%s号仓库为空，等待中\""%cate_id).communicate()
 
                 time.sleep(30)
 
@@ -67,6 +67,6 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"40","length":"30",'number_count':'200',"time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"40","length":"30",'number_count':'80',"time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

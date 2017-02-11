@@ -49,7 +49,7 @@ class QQLiteLogin:
                     QQNumber = numbers[0]['number']  # 即将登陆的QQ号
                     wait = 0
                 except Exception:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到号码\"")
                     time.sleep(20)
             QQPassword = numbers[0]['password']
             time.sleep(1)
@@ -68,7 +68,7 @@ class QQLiteLogin:
                 return  # 放到方法里改为return
             if d(text='帐号无法登录', resourceId='com.tencent.qqlite:id/dialogTitle').exists:  # 帐号被冻结
                 d.press.home()
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"上一轮没有登陆成功，再次登陆QQ\"")
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"上一轮没有登陆成功，再次登陆QQ\"")
                 continue
 
             co = RClient()
@@ -106,13 +106,13 @@ class QQLiteLogin:
                 d(text='完成', resourceId='com.tencent.qqlite:id/ivTitleBtnRightText').click()
                 time.sleep(2)
                 if d(text='登 录').exists:  # 密码错误
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"上一轮没有登陆成功，再次登陆QQ\"")
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"上一轮没有登陆成功，再次登陆QQ\"")
                     self.repo.SetAccount(cate_id, 'passwordEror', QQNumber)
                     break
 
                 if d(text='帐号无法登录', resourceId='com.tencent.qqlite:id/dialogTitle').exists:  # 帐号被冻结
                     d.press.home()
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"上一轮没有登陆成功，再次登陆QQ\"")
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"上一轮没有登陆成功，再次登陆QQ\"")
                     self.repo.SetAccount(cate_id, 'frozen', QQNumber)
                     break
 
@@ -134,7 +134,7 @@ class QQLiteLogin:
             name = self.slot.getSlot(d, time_limit)  # 没有空卡槽，取time_limit小时没用过的卡槽
             while name == 0:  # 2小时没有用过的卡槽也为空的情况
                 d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.qk.toast --es msg \"EIM卡槽全满，无间隔时间段未用\"").communicate()
+                                 "am broadcast -a com.zunyun.zime.toast --es msg \"EIM卡槽全满，无间隔时间段未用\"").communicate()
                 time.sleep(30)
                 name = self.slot.getSlot(d, time_limit)
 
@@ -151,7 +151,7 @@ class QQLiteLogin:
                 time.sleep(2)
             time.sleep(4)
             d.server.adb.cmd("shell",
-                             "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽成功切换为" + str(name) + "号\"").communicate()
+                             "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + str(name) + "号\"").communicate()
             time.sleep(6)
             if d(textContains='开启精彩').exists:
                 d(textContains='开启精彩').click()

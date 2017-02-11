@@ -43,7 +43,7 @@ class EIMLogin:
                 QQNumber = numbers[0]['number']  # 即将登陆的QQ号
                 wait = 0
             except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到号码\"")
                 time.sleep(20)
         QQPassword = numbers[0]['password']
         time.sleep(1)
