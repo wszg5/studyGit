@@ -124,17 +124,24 @@ def StartProcess(deviceid):
     device_port = portDict[deviceid]
     port = device_port["port"]
     zport = device_port["zport"]
-
-    from zservice import ZDevice
-    z = ZDevice(deviceid, zport)
-    z.install()
-
     processDict[deviceid] = multiprocessing.Process(target=deviceThread, args=(deviceid, port, zport))
     processDict[deviceid].name = deviceid
     processDict[deviceid].daemon = True
     processDict[deviceid].start()
+
+
+
+def installApk(deviceid):
+    device_port = portDict[deviceid]
+    zport = device_port["zport"]
+    from zservice import ZDevice
+    z = ZDevice(deviceid, zport)
+    z.server.install()
+
+
 processDict = {}
 portDict = {}
+installDict = {}
 
 
 
@@ -149,14 +156,21 @@ if __name__ == "__main__":
             devicelist = finddevices()
             for device in devicelist:
                 deviceid = device
+
+                if (not portDict.has_key(deviceid)):
+                    port = port + 1
+                    zport = zport + 1
+                    portDict[deviceid] = {"port": port, "zport": zport}
+
+                if (not installDict.has_key(deviceid)):
+                    installApk(deviceid)
+                    installDict[deviceid] = True
+
                 taskid = dbapi.GetDeviceTask(deviceid)
                 if taskid:
                     task = dbapi.GetTask(taskid)
                     if (task and task.get("status") and task["status"] == "running"):
                         if (not processDict.has_key(deviceid)):
-                            port = port + 1
-                            zport = zport + 1
-                            portDict[deviceid] = {"port": port, "zport": zport}
                             StartProcess(deviceid)
                         else:
                             p = processDict[deviceid]
