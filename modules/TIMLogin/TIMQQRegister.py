@@ -109,12 +109,12 @@ class TIMQQRegister:
                     nickNameList = self.repo.GetMaterial(cateId, 0, 1)
                     if "Error" in nickNameList:  # 没有取到号码的时候
                         d.server.adb.cmd("shell",
-                                         "am broadcast -a com.zunyun.qk.toast --es msg \"QQ号码%s号仓库为空，等待中\"" % cateId).communicate()
+                                         "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码%s号仓库为空，等待中\"" % cateId).communicate()
                         time.sleep(3)
                         continue
                     elif len(nickNameList) == 0:
                         d.server.adb.cmd("shell",
-                                         "am broadcast -a com.zunyun.qk.toast --es msg \"QQ号码%s号仓库为空，等待中\"" % cateId).communicate()
+                                         "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码%s号仓库为空，等待中\"" % cateId).communicate()
                         time.sleep(1)
                         continue
                     wait = 0

@@ -31,14 +31,14 @@ class TIMAddFriends:
                 material = Material[0]['content']  # 取出验证消息的内容
                 wait = 0
             except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"")
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到验证消息\"")
         add_count = int(args['add_count'])  # 要添加多少人
         repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
         wait = 1
         while wait == 1:
             numbers = self.repo.GetNumber(repo_number_cate_id, 120, add_count)  # 取出add_count条两小时内没有用过的号码
             if "Error" in numbers:  #
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到号码\"")
                 continue
             wait = 0
         list = numbers  # 将取出的号码保存到一个新的集合

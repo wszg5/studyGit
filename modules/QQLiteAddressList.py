@@ -24,7 +24,7 @@ class QQLiteAddressList:
                 Material = Material[0]['content']        #从素材库取出的要发的材料
                 wait = 0
             except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到号码\"")
         str = d.info  # 获取屏幕大小等信息
         print (str)
         # info= json.loads(str)

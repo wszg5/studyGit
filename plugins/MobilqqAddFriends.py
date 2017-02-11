@@ -28,7 +28,7 @@ class TIMAddFriends:
                 material = Material[0]['content']  # 取出验证消息的内容
                 wait = 0
             except Exception:
-                d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
                 time.sleep(20)
 
         add_count = int(args['add_count'])  # 要添加多少人
@@ -39,11 +39,11 @@ class TIMAddFriends:
             numbers = self.repo.GetNumber(cate_id, 120, add_count)  # 取出add_count条两小时内没有用过的号码
             lenth = len(numbers)
             if "Error" in numbers:  #
-                d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
                 time.sleep(20)
                 continue
             if lenth==0:
-                d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
                 time.sleep(20)
                 continue
             wait = 0

@@ -28,7 +28,7 @@ class WeiXinMass:
                 wait = 0
             except Exception:
                 d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.qk.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
+                                 "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
                 time.sleep(20)
         time.sleep(2)
         d(text='我').click()

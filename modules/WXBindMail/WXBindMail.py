@@ -24,7 +24,7 @@ class WXBindMail:
         while wait == 1:
             Mail = self.repo.GetNumber(cate_id, 120, 1)  # 取出add_count条两小时内没有用过的号码
             if "Error" in Mail:  #
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
                 time.sleep(20)
                 continue
             wait = 0

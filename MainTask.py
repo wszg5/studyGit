@@ -69,7 +69,7 @@ def finddevices():
         return []
         # needcount:需要安装的apk数量，默认为0，既安所有
 def runStep(d, z, step):
-    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"%s\""%step["name"])
+    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"%s\""%step["name"])
     pluginName = step["mid"]
     plugin = __import__("plugins." + pluginName, fromlist=[pluginName])
     clazz = plugin.getPluginClass()

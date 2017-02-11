@@ -44,7 +44,7 @@ class TIMAddressList:
                     Material = Material[0]['content']  # 从素材库取出的要发的材料
                     wait = 0
                 except Exception:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到消息\"").communicate()
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到消息\"").communicate()
             time.sleep(2)
             obj = d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(resourceId='com.tencent.tim:id/group_item_layout',index=10)
             if obj.exists and i ==10:      #通讯录好友已经到底的情况

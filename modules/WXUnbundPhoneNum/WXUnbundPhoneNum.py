@@ -23,7 +23,7 @@ class WXUnbundPhoneNum:
         d(text='解绑手机号').click()
         d(text='解绑').click()
         if d(text='提示').exists:
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"这是唯一绑定，无法解绑\"" ).communicate()
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"这是唯一绑定，无法解绑\"" ).communicate()
             d(text='确定').click()
 
 

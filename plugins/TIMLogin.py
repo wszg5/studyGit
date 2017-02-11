@@ -59,7 +59,7 @@ class TIMLogin:
             name = self.slot.getSlot(d,time_limit)              #没有空卡槽，取２小时没用过的卡槽
             print '切换为'+str(name)
             while name == 0:                               #2小时没有用过的卡槽也为空的情况
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无2小时未用\"").communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽全满，无2小时未用\"").communicate()
                 time.sleep(30)
                 name = self.slot.getSlot(d,time_limit)
 
@@ -69,7 +69,7 @@ class TIMLogin:
             z.set_mobile_data(True)
             time.sleep(8)
 
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"TIM卡槽成功切换成"+str(name)+"\"").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"TIM卡槽成功切换成"+str(name)+"\"").communicate()
             time.sleep(1)
 
             d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来

@@ -22,11 +22,11 @@ class TIMBrowserSendText:
             numbers = self.repo.GetNumber(cate_id, 0, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
             lenth = len(numbers)
             if "Error" in numbers:  # 没有取到号码的时候
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"QQ号码%s号仓库为空，等待中\""%cate_id).communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码%s号仓库为空，等待中\""%cate_id).communicate()
                 time.sleep(20)
                 continue
             elif lenth == 0:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"QQ号码%s号仓库为空，等待中\""%cate_id).communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码%s号仓库为空，等待中\""%cate_id).communicate()
                 time.sleep(20)
                 continue
             wait = 0
@@ -60,7 +60,7 @@ class TIMBrowserSendText:
                     material = Material[0]['content']  # 取出验证消息的内容
                     wait = 0
                 except Exception:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"消息素材%s号仓库为空，没有取到消息\""%cate_id).communicate()
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\""%cate_id).communicate()
                     time.sleep(20)
 
             numbers = list[i]

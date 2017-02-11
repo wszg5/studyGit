@@ -24,7 +24,7 @@ class QQLiteAddressList:
                 repo_material_id = numbers[0]['content']        #从素材库取出的要发的材料
                 wait = 0
             except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到号码\"")
         str = d.info  # 获取屏幕大小等信息
         # info= json.loads(str)
         height = str["displayHeight"]
@@ -38,7 +38,7 @@ class QQLiteAddressList:
         d(text='通讯录').click()
         if d(text="启用").exists:
             time.sleep(2)
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"通讯录没有启用\"")
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"通讯录没有启用\"")
             return
         time.sleep(1)
         if d(text="匹配通讯录").exists:

@@ -22,7 +22,7 @@ class QQLiteNearBy:
                 repo_material_content = numbers[0]['content']
                 wait=0
             except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到号码\"")
         import time
         str = d.info  # 获取屏幕大小等信息
         print (str)

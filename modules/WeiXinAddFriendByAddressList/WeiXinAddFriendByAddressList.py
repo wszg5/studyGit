@@ -45,7 +45,7 @@ class WeiXinAddFriendByAddressList:
                     Material = Material[0]['content']  # 从素材库取出的要发的材料
                     wait = 0
                 except Exception:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
 
             time.sleep(1)
             obj = d(className='android.widget.LinearLayout', index=i).child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).child(textContains='微信:')     #得到微信名
