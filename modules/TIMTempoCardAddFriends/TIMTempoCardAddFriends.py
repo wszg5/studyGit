@@ -5,11 +5,10 @@ import os, time, datetime, random
 from zservice import ZDevice
 
 
-class TIMTemporarySessionAddFriends:
+class TIMTempoCardAddFriends:
     def __init__(self):
 
         self.repo = Repo()
-
 
     def action(self, d, z, args):
         add_count = int(args['add_count'])  # 要添加多少人
@@ -31,21 +30,24 @@ class TIMTemporarySessionAddFriends:
             while wait == 1:
                 try:
                     material = Material[0]['content']  # 取出验证消息的内容
+                    material = material.encode("utf-8")
                     wait = 0
                 except Exception:
                     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到验证消息\"")
 
-            numbers = list[i]
-            print(numbers)
+            qq = list[i]
+            d.server.adb.cmd("shell",'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"' % qq)  # 名片会话
             time.sleep(1)
-            z.openQQChat(numbers)  # 唤起浏览器临时会话
-            time.sleep(1)
-            while d(text='TIM', resourceId='android:id/text1').exists:
-                d(text='TIM', resourceId='android:id/text1').click()
-                if d(text='仅此一次', resourceId='android:id/button_once').exists:
-                    d(text='仅此一次', resourceId='android:id/button_once').click()
+            while d(text='TIM', className='android.widget.TextView').exists:
+                d(text='TIM', className='android.widget.TextView').click()
+                time.sleep(1)
+                if d(text='仅此一次', className='android.widget.Button').exists:
+                    d(text='仅此一次', className='android.widget.Button').click()
 
-            d(text='加为好友', className='android.widget.TextView', index=2).click()
+            time.sleep(1)
+            d(text='加好友', className='android.widget.Button').click()
+            time.sleep(2)
+            d(text='加为好友', className='android.widget.Button').click()
             time.sleep(2)
             if d(text='加为好友', className='android.widget.TextView', index=2).exists:  # 拒绝被添加好友的情况
                 continue
@@ -73,21 +75,19 @@ class TIMTemporarySessionAddFriends:
             if d(resourceId='com.tencent.tim:id/name', text='添加失败，请勿频繁操作').exists:  # 操作过于频繁的情况
                 return
 
-
-            if (args["time_delay"]):
-                time.sleep(int(args["time_delay"]))
-
+        if (args["time_delay"]):
+            time.sleep(int(args["time_delay"]))
 
 def getPluginClass():
-    return TIMTemporarySessionAddFriends
+    return TIMTempoCardAddFriends
 
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT57FSK00089")
+    d = Device("HT529SK00384")
     # material=u'有空聊聊吗'
-    z = ZDevice("HT57FSK00089")
-    # d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    z = ZDevice("HT529SK00384")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     args = {"repo_number_cate_id": "43", "repo_material_cate_id": "36", "add_count": "9",
             "time_delay": "3"};  # cate_id是仓库号，length是数量
     o.action(d, z, args)

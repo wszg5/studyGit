@@ -127,7 +127,7 @@ def StartProcess(deviceid):
 
     from zservice import ZDevice
     z = ZDevice(deviceid, zport)
-    z.install()
+    z.server.install()
 
     processDict[deviceid] = multiprocessing.Process(target=deviceThread, args=(deviceid, port, zport))
     processDict[deviceid].name = deviceid

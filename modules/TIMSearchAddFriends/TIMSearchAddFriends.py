@@ -7,7 +7,7 @@ import os, time, datetime, random
 import util
 from PIL import Image
 from zservice import ZDevice
-class TIMAddFriends:
+class TIMSearchAddFriends:
     def __init__(self):
         self.repo = Repo()
     def GetUnique(self):
@@ -164,7 +164,7 @@ def runwatch(d, data):
         else:
             time.sleep(0.5)
 def getPluginClass():
-    return TIMAddFriends
+    return TIMSearchAddFriends
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()

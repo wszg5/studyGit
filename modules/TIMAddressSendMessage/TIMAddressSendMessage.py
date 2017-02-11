@@ -3,9 +3,13 @@ from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
 from zservice import ZDevice
-class TIMAddressList:
+
+
+class TIMAddressSendMessage:
+
     def __init__(self):
         self.repo = Repo()
+
     def action(self, d, z,args):
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
@@ -71,13 +75,16 @@ class TIMAddressList:
             continue
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
+
+
 def getPluginClass():
-    return TIMAddressList
+    return TIMAddressSendMessage
+
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4BDSK00858")
-    z = ZDevice("HT4BDSK00858")
+    d = Device("HT57FSK00089")
+    z = ZDevice("HT57FSK00089")
     # print(d.dump(compressed=False))
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_material_id":"33","time_delay":"3","EndIndex":"8"};    #cate_id是仓库号，length是数量

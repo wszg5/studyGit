@@ -19,6 +19,7 @@ class XunMa:
         from dbapi import dbapi
         dbapi = dbapi()
         if useCache :
+
             tokenCache = cache.get('XunMa') #讯码token有效期５分钟
             if tokenCache:
                 return tokenCache
@@ -35,7 +36,8 @@ class XunMa:
         response = conn.getresponse()
         if response.status == 200:
             data = response.read()
-            cache.set('XunMa', data)
+            token=data.split('&')[0];
+            cache.set('XunMa', token, None)
             return  data
         else:
             return "Error Getting Account, Please check your repo"
@@ -58,9 +60,9 @@ class XunMa:
         if phone:
             return phone
         lockKey = 'lock_get_phone_%s'%itemId
-        if cache.get(lockKey):
+        if cache.get(lockKey) == 'True':
             time.sleep(5)
-            print round
+
             return self.GetPhoneNumber(itemId,round)
         else:
             cache.set(lockKey,True,10)
@@ -92,7 +94,6 @@ class XunMa:
             numbers = data.split(";");
             for number in numbers:
                 if re.search("\d{11}", str(number)):
-                    print number
                     cache.addSet(key, number)
             cache.set(lockKey,False)
             return self.GetPhoneNumber(itemId,round)
@@ -101,10 +102,10 @@ class XunMa:
             return self.GetPhoneNumber(itemId,round)
 
 
-    def ReleasePhone(self, phoneNumber):
+    def ReleasePhone(self, phoneNumber, itemId):
 
         token = self.GetToken()
-        path = "/releasePhone?token=%s&phoneList=%s-144" % (token, phoneNumber)
+        path = "/releasePhone?token=%s&phoneList=%s-%s" % (token, phoneNumber, itemId)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         response = conn.getresponse()
@@ -139,7 +140,7 @@ class XunMa:
                 response = conn.getresponse()
                 if response.status == 200:
                     data = response.read().decode('GBK')
-                    print data
+
             except Exception, e:
 
                 print(e.message)

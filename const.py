@@ -10,11 +10,11 @@ class _const:
       self.__dict__[name] = value
 const = _const()
 
-const.WAIT_START_TIME=200
-const.SERVER_IP = '127.0.0.1'
+const.WAIT_START_TIME=2
+const.SERVER_IP = '192.168.1.19'
 const.RETHINKDB_NAME = 'stf'
-const.REPO_API_IP = '127.0.0.1'
-const.REDIS_SERVER = '127.0.0.1'
+const.REPO_API_IP = '192.168.1.19'
+const.REDIS_SERVER = '192.168.1.19'
 const.MAX_SLOTS_TIM=50
 const.MAX_SLOTS_WECHAT=20
 const.MAX_SLOTS_MOBILEQQ=50
