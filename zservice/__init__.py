@@ -615,7 +615,8 @@ class ZRemoteDevice(object):
         fp = open(string, 'wb')
         fp.write(pic.content)
         fp.close()
-        self.server.adb.cmd("push", string, "/sdcard/qr.jpg").wait()
+        self.server.adb.cmd("push", string, "/sdcard/qr.jpg").communicate()
+        self.wx_action("openscanui")
         return True
 
     def wx_sendtextsns(self, text):
