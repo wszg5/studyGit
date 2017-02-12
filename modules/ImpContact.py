@@ -65,7 +65,11 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
+    d.server.adb.cmd("shell",
+                     "am broadcast -a com.zunyun.zime.toast --es msg \"电话号码%s号仓库为空，等待中\"" % 55).communicate()
+
+
     # d.dump(compressed=False)
     args = {"repo_cate_id":"40","length":"30",'number_count':'80',"time_delay":"3"}    #cate_id是仓库号，length是数量
 

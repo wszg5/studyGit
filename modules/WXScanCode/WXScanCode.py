@@ -28,15 +28,10 @@ class WXPictureMoment:
         except Exception:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"朋友圈素材%s号仓库为空，等待中\"" % cate_id).communicate()
             time.sleep(30)
-        imgs = []
 
-        for i in range(1,10,+1):
+        z.wx_action('openscanui')
 
-            if t['ext%s'%i] is not None:
-                imgs.append(t['ext%s'%i])
 
-        z.wx_sendsnsline(t["content"], imgs)
-        d(text='发送').click()
 
     if (args["time_delay"]):
         time.sleep(int(args["time_delay"]))
@@ -53,7 +48,7 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
 
-    args = {"repo_material_id": "36","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "41","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
 
