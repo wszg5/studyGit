@@ -14,6 +14,7 @@ import socket
 import re
 import collections
 import xml.dom.minidom
+import requests
 
 DEVICE_PORT = int(os.environ.get('ZSERVICE_DEVICE_PORT', '19008'))
 LOCAL_PORT = int(os.environ.get('ZSERVICE_LOCAL_PORT', '19008'))
@@ -342,7 +343,7 @@ class AutomatorServer(object):
             return True
 
         out = self.adb.cmd("shell","su -c 'cat /data/data/de.robv.android.xposed.installer/shared_prefs/enabled_modules.xml'").communicate()[0].decode('utf-8')
-        if out is not None and out.find("<int name=\"com.zunyun.zime\" value=\"1\" />") == -1:
+        if not out.find("No such file or directory") and out.find("<int name=\"com.zunyun.zime\" value=\"1\" />") == -1:
             return True
         return False
 
@@ -361,6 +362,7 @@ class AutomatorServer(object):
             self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'sh /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "reboot").communicate()
+
 
 
 
@@ -572,7 +574,17 @@ class ZRemoteDevice(object):
     def wx_sendsnsline(self, description, images):    #微信发图片
         imgs = ""
         for k, v in enumerate(images):
-            #if ( v )
+            '''
+                try:
+                    pic = requests.get(each, timeout=10)
+                except requests.exceptions.ConnectionError:
+                    print '【错误】当前图片无法下载'
+                    continue
+                string = 'pictures\\' + str(i) + '.jpg'
+                fp = open(string, 'wb')
+                fp.write(pic.content)
+                fp.close()
+            '''
             #print '%s -- %s' %(k,v)
             imgTarget = "/data/local/tmp/%s"%k
             self.server.adb.cmd("push", v,  imgTarget).wait()
