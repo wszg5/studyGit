@@ -152,6 +152,7 @@ def installApk(deviceid):
     from zservice import ZDevice
     z = ZDevice(deviceid, zport)
     z.server.install()
+    z.server.start()
 
 
 processDict = {}

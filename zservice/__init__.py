@@ -574,20 +574,18 @@ class ZRemoteDevice(object):
     def wx_sendsnsline(self, description, images):    #微信发图片
         imgs = ""
         for k, v in enumerate(images):
-            '''
-                try:
-                    pic = requests.get(each, timeout=10)
-                except requests.exceptions.ConnectionError:
-                    print '【错误】当前图片无法下载'
-                    continue
-                string = 'pictures\\' + str(i) + '.jpg'
-                fp = open(string, 'wb')
-                fp.write(pic.content)
-                fp.close()
-            '''
+            try:
+                pic = requests.get(v, timeout=10)
+            except requests.exceptions.ConnectionError:
+                print '【错误】当前图片无法下载'
+                continue
+            string = '/tmp/' + str(k) + '.jpg'
+            fp = open(string, 'wb')
+            fp.write(pic.content)
+            fp.close()
             #print '%s -- %s' %(k,v)
             imgTarget = "/data/local/tmp/%s"%k
-            self.server.adb.cmd("push", v,  imgTarget).wait()
+            self.server.adb.cmd("push", string,  imgTarget).wait()
             imgs = "%s,%s"%(imgs,imgTarget)
         self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"sendsnsline\" --es description \"%s\" --es images \"%s\""%(description,imgs)).communicate()
         return True
