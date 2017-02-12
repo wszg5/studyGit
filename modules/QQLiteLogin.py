@@ -35,7 +35,7 @@ class QQLiteLogin:
         d.server.adb.cmd("shell", "pm clear com.tencent.qqlite").wait()  # 清除缓存
         while True:
             d.server.adb.cmd("shell", "am force-stop com.tencent.qqlite").wait()  # 将qq强制停止
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"上一轮没有登陆成功，再次登陆QQ\"")
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"上一轮没有登陆成功，再次登陆QQ\"")
 
             d.server.adb.cmd("shell",
                              "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").wait()  # 将qq拉起来
@@ -50,7 +50,7 @@ class QQLiteLogin:
                     QQNumber = numbers[0]['number']       #即将登陆的QQ号
                     wait=0
                 except Exception :
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"仓库为空，没有取到号码\"")
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到号码\"")
                     time.sleep(20)
             QQPassword = numbers[0]['password']
             time.sleep(1)

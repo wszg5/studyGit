@@ -1,7 +1,7 @@
 {
-"id": "TIMTemporarySessionAddFriends",
+"id": "TIMSearchAddFriends",
 "cate":"其他模块",
-"name":"TIM浏览器添加好友",
+"name":"TIM版QQ添加好友",
 "url": "http://www.bejson.com",
 "version": "1.0",
 "icon": "vcard-o",

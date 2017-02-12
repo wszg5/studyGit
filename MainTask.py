@@ -6,6 +6,21 @@ import multiprocessing
 import traceback
 import json
 from const import const
+import sys, getopt
+
+#s:server_ip
+#r:repo_ip
+#c:redis_cache_ip
+opts, args = getopt.getopt(sys.argv[1:], "s:r:c:", ["server_ip=", "repo_ip=", "redis_ip="])
+for op, value in opts:
+    if op == "-s" or  op == "--server_ip" :
+        const.SERVER_IP = value
+    elif op == "-r" or  op == "--repo_ip" :
+        const.REPO_API_IP = value
+    elif op == "-c" or  op == "--redis_ip" :
+        const.REDIS_SERVER = value
+
+
 try:
     rst = int(util.exccmd("awk -F. '{print $1}' /proc/uptime"))
     if rst < 500:
@@ -69,7 +84,7 @@ def finddevices():
         return []
         # needcount:需要安装的apk数量，默认为0，既安所有
 def runStep(d, z, step):
-    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"%s\""%step["name"])
+    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"%s\""%step["name"])
     pluginName = step["mid"]
     plugin = __import__("plugins." + pluginName, fromlist=[pluginName])
     clazz = plugin.getPluginClass()
@@ -124,17 +139,24 @@ def StartProcess(deviceid):
     device_port = portDict[deviceid]
     port = device_port["port"]
     zport = device_port["zport"]
-
-    from zservice import ZDevice
-    z = ZDevice(deviceid, zport)
-    z.install()
-
     processDict[deviceid] = multiprocessing.Process(target=deviceThread, args=(deviceid, port, zport))
     processDict[deviceid].name = deviceid
     processDict[deviceid].daemon = True
     processDict[deviceid].start()
+
+
+
+def installApk(deviceid):
+    device_port = portDict[deviceid]
+    zport = device_port["zport"]
+    from zservice import ZDevice
+    z = ZDevice(deviceid, zport)
+    z.server.install()
+
+
 processDict = {}
 portDict = {}
+installDict = {}
 
 
 
@@ -149,14 +171,24 @@ if __name__ == "__main__":
             devicelist = finddevices()
             for device in devicelist:
                 deviceid = device
+
+                if (not portDict.has_key(deviceid)):
+                    port = port + 1
+                    zport = zport + 1
+                    portDict[deviceid] = {"port": port, "zport": zport}
+
+                if (not installDict.has_key(deviceid)):
+                    installDict[deviceid] = True
+                    import threading
+                    t = threading.Thread(target=installApk, args=(deviceid,))
+                    t.setDaemon(True)
+                    t.start()
+
                 taskid = dbapi.GetDeviceTask(deviceid)
                 if taskid:
                     task = dbapi.GetTask(taskid)
                     if (task and task.get("status") and task["status"] == "running"):
                         if (not processDict.has_key(deviceid)):
-                            port = port + 1
-                            zport = zport + 1
-                            portDict[deviceid] = {"port": port, "zport": zport}
                             StartProcess(deviceid)
                         else:
                             p = processDict[deviceid]

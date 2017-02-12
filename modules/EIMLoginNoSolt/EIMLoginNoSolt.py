@@ -45,7 +45,7 @@ class EIMLoginNoSlot:
                     QQNumber = numbers[0]['number']  # 即将登陆的QQ号
                     wait = 0
                 except Exception:
-                    d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"EIM%s号帐号库为空，等待中\""%cate_id).communicate()
+                    d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"EIM%s号帐号库为空，等待中\""%cate_id).communicate()
                     time.sleep(20)
             QQPassword = numbers[0]['password']
             d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存

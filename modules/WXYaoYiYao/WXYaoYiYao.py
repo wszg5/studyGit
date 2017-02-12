@@ -30,7 +30,7 @@ class WXYaoYiYao:
                     Material = Material[0]['content']  # 从素材库取出的要发的材料
                     wait = 0
                 except Exception:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
 
             z.wx_yaoyiyao()
             time.sleep(5)

@@ -130,7 +130,7 @@ class TIMAddressList:
                 Material = Material[0]['content']  # 从素材库取出的要发的材料
                 wait = 0
             except Exception:
-                d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                 time.sleep(10)
 
         str = d.info  # 获取屏幕大小等信息
@@ -230,7 +230,7 @@ class TIMAddressList:
                     Material = Material[0]['content']  # 从素材库取出的要发的材料
                     wait = 0
                 except Exception:
-                    d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                    d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
 
             time.sleep(1)
 

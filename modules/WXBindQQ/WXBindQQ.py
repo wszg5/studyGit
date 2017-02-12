@@ -21,7 +21,7 @@ class WXBindQQ:
         d(textContains='帐号与安全').click()
         d(text='QQ号').click()
         if d(text='QQ号').exists:
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"该微信已绑定QQ号\"" ).communicate()
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"该微信已绑定QQ号\"" ).communicate()
             return
         cate_id = args["repo_cate_id"]
         time_limit = args['time_limit']
@@ -33,7 +33,7 @@ class WXBindQQ:
                 wait = 0
             except Exception:
                 d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.qk.toast --es msg \"QQ帐号库%s号仓库为空，等待中\"" % cate_id).communicate()
+                                 "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库为空，等待中\"" % cate_id).communicate()
                 time.sleep(30)
         QQPassword = numbers[0]['password']
         time.sleep(1)

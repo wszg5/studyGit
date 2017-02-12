@@ -335,10 +335,17 @@ class AutomatorServer(object):
 
 
     def need_install(self):
+        pkginfo = self.adb.package_info('de.robv.android.xposed.installer')
+        if pkginfo is None: #没有安装XP框架，不安装当前zime
+            return False
         pkginfo = self.adb.package_info(self.__apk_pkgname)
         if pkginfo is None:
             return True
         if pkginfo['version_name'] != self.__apk_vercode:
+            return True
+
+        out = self.adb.cmd("shell","su -c 'cat /data/data/de.robv.android.xposed.installer/shared_prefs/enabled_modules.xml'").communicate()[0].decode('utf-8')
+        if out.find("<int name=\"com.zunyun.zime\" value=\"1\" />") == -1:
             return True
         return False
 
