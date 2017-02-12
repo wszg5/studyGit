@@ -5,9 +5,9 @@ import os, time, datetime, random
 from zservice import ZDevice
 
 
-class TIMTemporarySession:
-
+class TIMTempoAddFriends:
     def __init__(self):
+
         self.repo = Repo()
 
 
@@ -42,15 +42,36 @@ class TIMTemporarySession:
             time.sleep(1)
             while d(text='TIM', resourceId='android:id/text1').exists:
                 d(text='TIM', resourceId='android:id/text1').click()
-                time.sleep(1)
                 if d(text='仅此一次', resourceId='android:id/button_once').exists:
                     d(text='仅此一次', resourceId='android:id/button_once').click()
 
-            d(className='android.widget.EditText', index=0).click()
+            d(text='加为好友', className='android.widget.TextView', index=2).click()
+            time.sleep(2)
+            if d(text='加为好友', className='android.widget.TextView', index=2).exists:  # 拒绝被添加好友的情况
+                continue
+            if d(text='发送', resourceId='com.tencent.tim:id/ivTitleBtnRightText').exists:  # 可直接添加为好友的情况
+                d(text='发送', resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
+                if d(resourceId='com.tencent.tim:id/name', text='添加失败，请勿频繁操作').exists:  # 操作过于频繁的情况
+                    return
+                continue
+            if d(text='必填', resourceId='com.tencent.tim:id/name').exists:  # 需要验证时
+                continue
+            obj = d(resourceId='com.tencent.tim:id/name', index='3').info
+            print(obj)
+            obj = obj['text']
+            length = len(obj)
+            k = 0
+            while k < length:
+                length = length - 1
+                d.press.delete()
+            time.sleep(2)
+            d(resourceId='com.tencent.tim:id/name', className='android.widget.EditText').click()  # 要发的消息
             z.input(material)
+            d(text='下一步', resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
+            d(text='发送', resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
             time.sleep(1)
-            d(text= '发送',className='android.widget.Button', index=1).click()
-
+            if d(resourceId='com.tencent.tim:id/name', text='添加失败，请勿频繁操作').exists:  # 操作过于频繁的情况
+                return
 
 
             if (args["time_delay"]):
@@ -58,8 +79,7 @@ class TIMTemporarySession:
 
 
 def getPluginClass():
-    return TIMTemporarySession
-
+    return TIMTempoAddFriends
 
 if __name__ == "__main__":
     clazz = getPluginClass()
@@ -68,10 +88,6 @@ if __name__ == "__main__":
     # material=u'有空聊聊吗'
     z = ZDevice("HT57FSK00089")
     # d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    args = {"repo_number_cate_id":"43","repo_material_cate_id":"36","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
-    o.action(d,z, args)
-
-
-
-
-
+    args = {"repo_number_cate_id": "43", "repo_material_cate_id": "36", "add_count": "9",
+            "time_delay": "3"};  # cate_id是仓库号，length是数量
+    o.action(d, z, args)

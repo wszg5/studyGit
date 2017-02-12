@@ -8,11 +8,14 @@ import util
 from Repo import *
 from RClient import *
 import time, datetime, random
+from slot import slot
 from zservice import ZDevice
 
 class EIMLogin:
+
     def __init__(self):
         self.repo = Repo()
+        self.slot = slot('tim')
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
@@ -23,7 +26,7 @@ class EIMLogin:
         return uniqueNum
 
 
-    def action(self, d,z, args):
+    def login(self,d,z,args):
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -48,7 +51,22 @@ class EIMLogin:
         while t ==1:
             d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()  # 清除缓存
             d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
-            time.sleep(5)
+            time.sleep(3)
+            for k in range(1, 35):
+                time.sleep(1)
+                if d(resourceId='com.tencent.tim:id/title', index=1, text='熟悉的QQ习惯').exists:
+                    str = d.info  # 获取屏幕大小等信息
+                    height = str["displayHeight"]
+                    width = str["displayWidth"]
+                    for i in range(0, 2):
+                        d.swipe(width * 0.75, height * 0.5, width * 0.05, height * 0.5, 10)
+                        time.sleep(1)
+                    d(resourceId='com.tencent.tim:id/name', index=1, text='立即体验').click()
+                    break
+
+            if k == 35:
+                continue
+            time.sleep(2)
             d(text='QQ号登录',resourceId='com.tencent.tim:id/btn_login').click()
 
             d(className='android.widget.EditText',text='QQ号/手机号/邮箱').set_text(QQNumber)    #3001313499    3030327691   QQNumber
@@ -125,10 +143,73 @@ class EIMLogin:
 
             if d(text='搜索', resourceId='com.tencent.tim:id/name').exists:       #不需要验证码的情况
                 # t=2
-                return  # 放到方法里改为return
+                return QQNumber # 放到方法里改为return
             if d(text='马上绑定').exists:
                 # t=2
-                return
+                return QQNumber
+
+
+        if (args["time_delay"]):
+            time.sleep(int(args["time_delay"]))
+
+    def action(self, d, z,args):
+        time_limit = args['time_limit']
+        cate_id = args["repo_cate_id"]
+
+        name = self.slot.getEmpty(d)                    #取空卡槽
+        print name
+        while name ==0:
+            name = self.slot.getSlot(d,time_limit)              #没有空卡槽，取２小时没用过的卡槽
+            print '切换为'+str(name)
+            while name == 0:                               #2小时没有用过的卡槽也为空的情况
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无2小时未用\"").communicate()
+                time.sleep(30)
+                name = self.slot.getSlot(d,time_limit)
+
+            z.set_mobile_data(False)
+            time.sleep(3)
+            self.slot.restore(d,name)                      #有２小时没用过的卡槽情况，切换卡槽
+            z.set_mobile_data(True)
+            time.sleep(8)
+
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"TIM卡槽成功切换成"+str(name)+"\"").communicate()
+            time.sleep(1)
+
+            d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+            for k in range(1, 35):
+                time.sleep(1)
+                if d(resourceId='com.tencent.tim:id/title', index=1, text='熟悉的QQ习惯').exists:
+                    str = d.info  # 获取屏幕大小等信息
+                    height = str["displayHeight"]
+                    width = str["displayWidth"]
+                    for i in range(0, 2):
+                        d.swipe(width * 0.75, height * 0.5, width * 0.05, height * 0.5, 10)
+                        time.sleep(1)
+                    d(resourceId='com.tencent.tim:id/name', index=1, text='立即体验').click()
+                    break
+
+            if k == 35:
+                continue
+            time.sleep(2)
+
+            if d(text='消息',resourceId='com.tencent.tim:id/ivTitleName').exists:
+                obj = self.slot.getSlotInfo(d,name)  #得到切换后的QQ号
+                info = obj['info']  #info为QQ号
+                self.repo.BackupInfo(cate_id,'using',info,'%s_%s'%(d.server.adb.device_serial(),name))  # 将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
+            else:
+                info = self.login(d,z,args)                                             #帐号无法登陆则登陆,重新注册登陆
+                self.slot.backup(d, name, info)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
+                self.repo.BackupInfo(cate_id, 'using', info, '%s_%s'%(d.server.adb.device_serial(),name))  # 将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
+
+
+        else:                           #有空卡槽的情况
+            # z.set_mobile_data(False)
+            # time.sleep(3)
+            # z.set_mobile_data(True)
+            # time.sleep(8)
+            info = self.login(d,z,args)
+            self.slot.backup(d,name,info)          #设备信息，卡槽号，QQ号
+            self.repo.BackupInfo(cate_id, 'using', info,'%s_%s'%(d.server.adb.device_serial(),name))     #仓库号,使用中,QQ号,设备号_卡槽号
 
 
         if (args["time_delay"]):
@@ -154,11 +235,17 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4A3SK00853")
-    # d.dump(compressed=False)
-    z = ZDevice("HT4A3SK00853")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    args = {"repo_cate_id":"32","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
-    util.doInThread(runwatch, d, 0, t_setDaemon=True)
+    d = Device("HT57FSK00089")
+    z = ZDevice("HT57FSK00089")
+
+    slot = slot('tim')
+
+    # print(d.dump(compressed=False))
+    # print(d.info)
+    slot.restore(d, 1)  # 有２小时没用过的卡槽情况，切换卡槽
+
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+    args = {"repo_cate_id":"64","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    # util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)

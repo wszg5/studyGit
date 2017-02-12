@@ -1,32 +1,24 @@
 {
-"id": "TIMTemporarySession",
+"id": "TIMCardHolderCollectData",
 "cate":"其他模块",
-"name":"TIM版临时会话发消息",
+"name":"TIM名片扫数据",
 "url": "http://www.bejson.com",
 "version": "1.0",
 "icon": "vcard-o",
-"remark":"TIM版浏览器发消息",
+"remark":"扫数据",
 "setting":[
 	{
 	"id": "repo_number_cate_id",
 	"name":"号码库分类",
 	"type":"repo",
 	"source":"number",
-	"top_cate_id":"22"
+	"top_cate_id":"12"
 	},
-	{
-    "id": "repo_material_cate_id",
-    "name":"验证信息素材库",
-    "type":"repo",
-    "source":"material",
-    "top_cate_id":"12"
-    },
-
     {
-	"id": "totalNumber",
-	"name":"发消息总数",
+	"id": "collect_count",
+	"name":"扫数据的个数",
 	"type":"textbox",
-	"defaultValue":"5",
+	"defaultValue":"9",
 	"remark":"单位：个"
 	},
     {
