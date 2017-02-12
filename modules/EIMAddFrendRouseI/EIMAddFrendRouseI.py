@@ -69,19 +69,10 @@ class EIMAddFrendRouseI:
             obj = d(className='android.widget.EditText').info  # 删除之前文本框的验证消息
             obj = obj['text']
             lenth = len(obj)
-            while lenth>0:
-                d(className='android.widget.EditText').clear_text()
-                obj = d(className='android.widget.EditText').info  # 删除之前文本框的验证消息
-                obj = obj['text']
-                if obj =='请输入验证信息':
-                    break
-                else:
-                    lenth = len(obj)
-
-            # t = 0
-            # while t < lenth:
-            #     d.press.delete()
-            #     t = t + 1
+            t = 0
+            while t < lenth:
+                d.press.delete()
+                t = t + 1
             time.sleep(1)
             z.input(material)
             d(text='下一步', resourceId='com.tencent.eim:id/ivTitleBtnRightText').click()
@@ -99,12 +90,11 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4BDSK01775")
-    z = ZDevice("HT4BDSK01775")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").wait()
     z.server.install()
     z.server.start()
-    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码号仓库为空，等待中\"" ).communicate()
 
     args = {"repo_number_id":"38","repo_material_cate_id":"39","totalNumber":"5","time_delay":"3"};    #cate_id是仓库号，length是数量
 

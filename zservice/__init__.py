@@ -14,6 +14,7 @@ import socket
 import re
 import collections
 import xml.dom.minidom
+import requests
 
 DEVICE_PORT = int(os.environ.get('ZSERVICE_DEVICE_PORT', '19008'))
 LOCAL_PORT = int(os.environ.get('ZSERVICE_LOCAL_PORT', '19008'))
@@ -365,6 +366,7 @@ class AutomatorServer(object):
 
 
 
+
     @property
     def jsonrpc(self):
         return self.jsonrpc_wrap(timeout=int(os.environ.get("jsonrpc_timeout", 90)))
@@ -572,7 +574,18 @@ class ZRemoteDevice(object):
     def wx_sendsnsline(self, description, images):    #微信发图片
         imgs = ""
         for k, v in enumerate(images):
-            #if ( v )
+
+            '''
+                try:
+                    pic = requests.get(each, timeout=10)
+                except requests.exceptions.ConnectionError:
+                    print '【错误】当前图片无法下载'
+                    continue
+                string = 'pictures\\' + str(i) + '.jpg'
+                fp = open(string, 'wb')
+                fp.write(pic.content)
+                fp.close()
+            '''
             #print '%s -- %s' %(k,v)
             imgTarget = "/data/local/tmp/%s"%k
             self.server.adb.cmd("push", v,  imgTarget).wait()

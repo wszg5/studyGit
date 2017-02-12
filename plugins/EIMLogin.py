@@ -177,9 +177,12 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("FA48VSR03651")
-    z = ZDevice("FA48VSR03651")
+    d = Device("FA49TSR02728")
+    z = ZDevice("FA49TSR02728")
     z.server.install()
+    z.server.start()
+    d.server.adb.cmd("shell",
+                     "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为号\"").communicate()
     z.wx_action("openaddui")
 
     #z.openQQChat("23423422")
