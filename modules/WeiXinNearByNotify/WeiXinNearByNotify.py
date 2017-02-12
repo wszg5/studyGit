@@ -138,6 +138,7 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
+    z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
     args = {"repo_material_id": "36",'EndIndex':'10','gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量

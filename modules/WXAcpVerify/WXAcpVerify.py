@@ -13,7 +13,7 @@ class WXAcpVerify:
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
-        # d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
+        d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
         time.sleep(7)
         d(text='通讯录').click()
@@ -94,7 +94,7 @@ class WXAcpVerify:
                     continue
 
         if (args["time_delay"]):
-          time.sleep(int(args["time_delay"]))
+                time.sleep(int(args["time_delay"]))
 def getPluginClass():
     return WXAcpVerify
 if __name__ == "__main__":
@@ -102,6 +102,7 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
+    z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     args = {'gender':"男","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

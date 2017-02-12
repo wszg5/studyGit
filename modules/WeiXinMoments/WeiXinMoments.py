@@ -58,9 +58,7 @@ class WeiXinMoments:
                         if myname in getName:
                             i = i + 1
                             continue
-                    else:
-                        i = i+1
-                        continue
+
                 obj2 = d(className='android.widget.FrameLayout', index=i).child(className='android.widget.LinearLayout',index=3)    #判断该好友是否有点赞评论,没有图片index会少一个
                 if obj2.exists:  #给该好友评论的情况
                     getName1 = d(className='android.widget.FrameLayout', index=i).child(className='android.widget.LinearLayout',index=3).child(index=0,className='android.widget.TextView')
@@ -95,10 +93,6 @@ class WeiXinMoments:
             else:
                 d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
                 time.sleep(2)
-                # if d(className='android.widget.FrameLayout',index=0).child(className='android.widget.FrameLayout',index='3').child(description='评论').exists:
-                #     i = 0
-                # else:
-                #     i = 0
                 i = 0
                 continue
 

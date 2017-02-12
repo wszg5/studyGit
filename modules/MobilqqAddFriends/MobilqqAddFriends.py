@@ -28,7 +28,7 @@ class MobilqqAddFriends:
                 material = Material[0]['content']  # 取出验证消息的内容
                 wait = 0
             except Exception:
-                d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
                 time.sleep(20)
 
         add_count = int(args['add_count'])  # 要添加多少人
@@ -37,12 +37,7 @@ class MobilqqAddFriends:
         wait = 1
         while wait == 1:
             numbers = self.repo.GetNumber(cate_id, 120, add_count)  # 取出add_count条两小时内没有用过的号码
-            lenth = len(numbers)
             if "Error" in numbers:  #
-                d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
-                time.sleep(20)
-                continue
-            if lenth==0:
                 d.server.adb.cmd("shell","am broadcast -a com.zunyun.qk.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
                 time.sleep(20)
                 continue
@@ -89,11 +84,6 @@ class MobilqqAddFriends:
                     time.sleep(1)
                 continue
             time.sleep(1)
-
-            # if d(resourceId='com.tencent.mobileqq:id/title',text='人').exists:
-            #     d(className='android.widget.AbsListView').child(index=1,resourceId='com.tencent.mobileqq:id/name').click()
-
-
 
             d.swipe(width / 2, height * 4 / 6, width / 2, height / 6);
             d(text='加好友',resourceId='com.tencent.mobileqq:id/txt').click()
@@ -161,10 +151,10 @@ class MobilqqAddFriends:
             while t < lenth:
                 d.press.delete()
                 t = t + 1
-            d(className='android.widget.EditText',index=4).click()  # 发送验证消息  material
-            z.input(material)
-            print(material)
-            obj = d(text='发送',resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText')            #不需要验证可直接添加为好友的情况
+            if d(className='android.widget.EditText',index=4).exists:
+                d(className='android.widget.EditText',index=4).click()  # 发送验证消息  material
+                z.input(material)
+            obj = d(text='发送')            #不需要验证可直接添加为好友的情况
             if obj.exists:
                 obj.click()
                 if d(text='添加失败，请勿频繁操作',resourceId='com.tencent.mobileqq:id/name').exists:
@@ -181,33 +171,6 @@ class MobilqqAddFriends:
                 while d(text='正在搜索…', index=1).exists:
                     time.sleep(1)
                 continue
-
-            # time.sleep(2)
-            # obj = d(className='android.widget.EditText', resourceId='com.tencent.mobileqq:id/name').info           #将之前消息框的内容删除
-            # obj = obj['text']
-            # lenth = len(obj)
-            # t = 0
-            # while t < lenth:
-            #     d.press.delete()
-            #     t = t + 1
-            #
-            # d(className='android.widget.EditText',resourceId='com.tencent.mobileqq:id/name').click()   #发送验证消息  material
-            # z.input(material)
-            # d(text='下一步',resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText').click()
-            # d(text='发送',resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText').click()
-            # if d(text='添加失败，请勿频繁操作', resourceId='com.tencent.mobileqq:id/name').exists:
-            #     return
-            # d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').click()
-            # d(resourceId='com.tencent.mobileqq:id/ib_clear_text',description='清空').click()
-            # obj = d(className='android.widget.EditText',index=0)
-            # if obj.exists:
-            #     obj.set_text(numbers)
-            # obj = d(text='网络查找人', resourceId='com.tencent.mobileqq:id/et_search_keyword')
-            # if obj.exists:
-            #     obj.set_text(numbers)
-            # d(textContains='找人').click()
-            # while d(text='正在搜索…', index=1).exists:
-            #     time.sleep(1)
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -237,11 +200,12 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT536SK01667")
-    z = ZDevice("HT536SK01667")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    z.wx_sendsnsline()
 
     # print(d.dump(compressed=False))
-    args = {"repo_number_cate_id":"45","repo_material_cate_id":"36","add_count":"10","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"45","repo_material_cate_id":"36","add_count":"5","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
     o.action(d,z, args)

@@ -155,8 +155,9 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     z.server.install()
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+
     # z.wx_action("openaddui")
     # z.wx_sendtextsns('大开发来解决')
     # z.wx_yaoyiyao()
