@@ -178,11 +178,11 @@ if __name__ == "__main__":
                     portDict[deviceid] = {"port": port, "zport": zport}
 
                 if (not installDict.has_key(deviceid)):
+                    installDict[deviceid] = True
                     import threading
                     t = threading.Thread(target=installApk, args=(deviceid,))
                     t.setDaemon(True)
                     t.start()
-                    installDict[deviceid] = True
 
                 taskid = dbapi.GetDeviceTask(deviceid)
                 if taskid:
