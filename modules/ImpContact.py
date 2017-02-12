@@ -65,7 +65,25 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
+    d.server.adb.cmd("shell",
+                     "am broadcast -a com.zunyun.zime.toast --es msg \"电话号码%s号仓库为空，等待中\"" % 55).communicate()
+    cate_id = 36
+    repo = Repo()
+    materials = repo.GetMaterial(cate_id, 0, 1)
+    try:
+        t = materials[0]  # 取出验证消息的内容
+    except Exception:
+        d.server.adb.cmd("shell",
+                         "am broadcast -a com.zunyun.zime.toast --es msg \"朋友圈素材%s号仓库为空，等待中\"" % cate_id).communicate()
+        time.sleep(30)
+    imgs = []
+    if t["ext1"] is not None:
+        imgs.append(t["ext1"])
+    if t["ext2"] is not None:
+        imgs.append(t["ext2"])
+    z.wx_sendsnsline(t["content"],imgs)
+
     # d.dump(compressed=False)
     args = {"repo_cate_id":"40","length":"30",'number_count':'80',"time_delay":"3"}    #cate_id是仓库号，length是数量
 
