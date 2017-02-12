@@ -309,7 +309,7 @@ class AutomatorServer(object):
 
     __apk_files = ["libs/zime.apk"]
     # Used for check if installed
-    __apk_vercode = '1.6.4'
+    __apk_vercode = '1.6.5'
     __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
@@ -355,7 +355,7 @@ class AutomatorServer(object):
             self.adb.cmd("shell", "su -c 'rm /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'chmod - R 777 /data/data/de.robv.android.xposed.installer/'").communicate()
             self.adb.cmd("shell", "su -c 'rm /data/local/tmp/zime.apk'").communicate()
-            self.adb.cmd("shell", "pm uninstall com.zunyun.xime").communicate()
+            self.adb.cmd("shell", "pm uninstall com.zunyun.zime").communicate()
             filename = os.path.join(base_dir, 'libs/install.sh')
             self.adb.cmd("push", filename, "/data/local/tmp/").wait()
             filename = os.path.join(base_dir, 'libs/zime.apk')

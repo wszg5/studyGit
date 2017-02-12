@@ -99,9 +99,11 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    d = Device("HT4BDSK01775")
+    z = ZDevice("HT4BDSK01775")
+    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").wait()
+    z.server.install()
+    z.server.start()
     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码号仓库为空，等待中\"" ).communicate()
 
     args = {"repo_number_id":"38","repo_material_cate_id":"39","totalNumber":"5","time_delay":"3"};    #cate_id是仓库号，length是数量
