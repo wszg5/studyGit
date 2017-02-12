@@ -13,7 +13,7 @@ import hashlib
 import socket
 import re
 import collections
-import xml.dom.minidom
+import uuid
 import requests
 
 DEVICE_PORT = int(os.environ.get('ZSERVICE_DEVICE_PORT', '19008'))
@@ -579,7 +579,7 @@ class ZRemoteDevice(object):
             except requests.exceptions.ConnectionError:
                 print '【错误】当前图片无法下载'
                 continue
-            string = '/tmp/' + str(k) + '.jpg'
+            string = '/tmp/%s.jpg' %  uuid.uuid1()
             fp = open(string, 'wb')
             fp.write(pic.content)
             fp.close()
