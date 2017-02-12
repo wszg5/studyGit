@@ -605,10 +605,17 @@ class ZRemoteDevice(object):
         self.server.adb.cmd("push", filename, "/sdcard/").wait()
         return True
 
-    def wx_scanqr(self):     #没看到效果
-        base_dir = os.path.dirname(__file__)
-        filename = os.path.join(base_dir, 'libs/qr.png')
-        self.server.adb.cmd("push", filename, "/sdcard/qr.jpg").wait()
+    def wx_scanqr(self, img):
+        try:
+            pic = requests.get(img, timeout=10)
+        except requests.exceptions.ConnectionError:
+            print '【错误】当前图片无法下载'
+            return None
+        string = '/tmp/%s.jpg' % uuid.uuid1()
+        fp = open(string, 'wb')
+        fp.write(pic.content)
+        fp.close()
+        self.server.adb.cmd("push", string, "/sdcard/qr.jpg").wait()
         return True
 
     def wx_sendtextsns(self, text):
