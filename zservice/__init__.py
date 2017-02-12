@@ -335,9 +335,6 @@ class AutomatorServer(object):
 
 
     def need_install(self):
-        pkginfo = self.adb.package_info('de.robv.android.xposed.installer')
-        if pkginfo is None: #没有安装XP框架，不安装当前zime
-            return False
         pkginfo = self.adb.package_info(self.__apk_pkgname)
         if pkginfo is None:
             return True
@@ -345,7 +342,7 @@ class AutomatorServer(object):
             return True
 
         out = self.adb.cmd("shell","su -c 'cat /data/data/de.robv.android.xposed.installer/shared_prefs/enabled_modules.xml'").communicate()[0].decode('utf-8')
-        if out.find("<int name=\"com.zunyun.zime\" value=\"1\" />") == -1:
+        if out is not None and out.find("<int name=\"com.zunyun.zime\" value=\"1\" />") == -1:
             return True
         return False
 
@@ -575,6 +572,7 @@ class ZRemoteDevice(object):
     def wx_sendsnsline(self, description, images):    #微信发图片
         imgs = ""
         for k, v in enumerate(images):
+            #if ( v )
             #print '%s -- %s' %(k,v)
             imgTarget = "/data/local/tmp/%s"%k
             self.server.adb.cmd("push", v,  imgTarget).wait()
