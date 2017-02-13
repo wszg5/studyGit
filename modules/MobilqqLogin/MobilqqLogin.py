@@ -59,9 +59,9 @@ class MobilqqLogin:
             time.sleep(4)
             d(text='登 录', resourceId='com.tencent.mobileqq:id/btn_login').click()
             time.sleep(1)
-            d(className='android.widget.EditText', index=0).set_text(1228660837)  # ﻿1918697054----xiake1234.  QQNumber
+            d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
             time.sleep(1)
-            d(resourceId='com.tencent.mobileqq:id/password', index=2).set_text('xiake1314.')  # Bn2kJq5l     QQPassword
+            d(resourceId='com.tencent.mobileqq:id/password', index=2).set_text('QQPassword')  # Bn2kJq5l     QQPassword
             d(text='登 录', resourceId='com.tencent.mobileqq:id/login').click()
             time.sleep(1)
             while d(text='登录中').exists:
@@ -112,7 +112,7 @@ class MobilqqLogin:
                         break
 
             else:
-                d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
+                d.server.adb.cmd("shell", "am force-stop com.tencent1314.mobileqq").wait()  # 强制停止
                 time.sleep(1)
                 d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
                 time.sleep(4)

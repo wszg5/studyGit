@@ -206,7 +206,6 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    z.wx_sendsnsline()
 
     # print(d.dump(compressed=False))
     args = {"repo_number_cate_id":"45","repo_material_cate_id":"36","add_count":"5","time_delay":"3"};    #cate_id是仓库号，length是数量
