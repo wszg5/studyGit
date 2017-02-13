@@ -210,6 +210,16 @@ class TIMAddressList:
                     time.sleep(10)
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
                 time.sleep(1)
+                if d(text='启用').exists:
+                    d(text='启用').click()
+                    time.sleep(6)
+                    d(text='返回').click()
+                    obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.CheckBox',
+                            # 刚进联系人界面看是否有展开的列表
+                            checked='true')  # 看是否有展开的
+                    if obj.exists:
+                        obj.click()
+                    d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
                 d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
                 time.sleep(2)
                 break
