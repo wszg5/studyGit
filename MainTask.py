@@ -152,9 +152,9 @@ def installApk(deviceid):
     from zservice import ZDevice
     z = ZDevice(deviceid, zport)
     #规避解决微信卡死问题
-    z.server.adb.cmd("shell", "su -c 'rm -rf /data/app/com.tencent.mm/tinker/*'").communicate()
-    z.server.adb.cmd("shell", "su -c 'mkdir -p /data/app/com.tencent.mm/tinker/'").communicate()
-    z.server.adb.cmd("shell", "su -c 'chmod 000 /data/app/com.tencent.mm/tinker/'").communicate()
+    z.server.adb.cmd("shell", "su -c 'rm -rf /data/data/com.tencent.mm/tinker/*'").communicate()
+    z.server.adb.cmd("shell", "su -c 'mkdir -p /data/data/com.tencent.mm/tinker/'").communicate()
+    z.server.adb.cmd("shell", "su -c 'chmod 000 /data/data/com.tencent.mm/tinker/'").communicate()
     z.server.install()
 
 
