@@ -20,11 +20,16 @@ class WXUnBundQQ:
         d(text='设置').click()
         d(textContains='帐号与安全').click()
         d(text='QQ号').click()
-        d(description='更多').click()
-        d(text='解除绑定').click()
-        d(text='开始解绑QQ').click()
-        d(text='确定').click()
+        if d(text='开始绑定').exists:
+            if (args["time_delay"]):
+                time.sleep(int(args["time_delay"]))
+            return
+        else:
 
+            d(description='更多').click()
+            d(text='解除绑定').click()
+            d(text='开始解绑QQ').click()
+            d(text='确定').click()
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 

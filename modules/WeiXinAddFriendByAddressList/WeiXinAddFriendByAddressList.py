@@ -39,13 +39,12 @@ class WeiXinAddFriendByAddressList:
         while t < EndIndex :
             cate_id = args["repo_material_id"]   #------------------
             Material = self.repo.GetMaterial(cate_id, 0, 1)
-            wait = 1
-            while wait == 1:
-                try:
-                    Material = Material[0]['content']  # 从素材库取出的要发的材料
-                    wait = 0
-                except Exception:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+
+            try:
+                Material = Material[0]['content']  # 从素材库取出的要发的材料
+                wait = 0
+            except Exception:
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
 
             time.sleep(1)
             obj = d(className='android.widget.LinearLayout', index=i).child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).child(textContains='微信:')     #得到微信名
@@ -164,8 +163,11 @@ if __name__ == "__main__":
     # z.wx
     # d(text='你的手机号码').set_text(17601543818)
     # d(resourceId='com.tencent.mm:id/gr').set_text('13141314abc')
+    # d(className='android.widget.EditText').set_text('13141314abc')
     # d(text='登录').click()
-
+    # repo = Repo()
+    # Material = repo.GetMaterial(36, 0, 1,'sdlfk')
+    # print(Material)
 
 
 

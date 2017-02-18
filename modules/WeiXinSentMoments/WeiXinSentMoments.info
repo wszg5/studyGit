@@ -13,7 +13,7 @@
 	"name":"发送消息内容仓库",
 	"type":"repo",
 	"source":"material",
-	"top_cate_id":"12"
+	"top_cate_id":"14"
 	},
     {
     "id": "time_delay",

@@ -13,10 +13,10 @@ class WXReviseInfo:
     def __init__(self):
         self.repo = Repo()
 
-
     def action(self, d,z, args):
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
+        time.sleep(7)
         z.wx_action('openinfoui')
         d(text='昵称').click()
         obj = d(className='android.widget.EditText').info  # 将之前消息框的内容删除
@@ -28,13 +28,10 @@ class WXReviseInfo:
             m = m + 1
         cate_id = args['repo_name_id']     #得到昵称库的id
         Material = self.repo.GetMaterial(cate_id, 0, 1)     #修改昵称
-        wait = 1
-        while wait == 1:
-            try:
-                name = Material[0]['content']  # 从素材库取出的要发的材料
-                wait = 0
-            except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+        try:
+            name = Material[0]['content']  # 从素材库取出的要发的材料
+        except Exception:
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
         z.input(name)
         d(text='保存').click()
 
@@ -56,13 +53,11 @@ class WXReviseInfo:
             m = m + 1
         cate_id = args['repo_persigned_id']
         Material = self.repo.GetMaterial(cate_id, 0, 1)  # 修改个性签名
-        wait = 1
-        while wait == 1:
-            try:
-                persigned = Material[0]['content']  # 从素材库取出的要发的材料
-                wait = 0
-            except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+        try:
+            persigned = Material[0]['content']  # 从素材库取出的要发的材料
+            wait = 0
+        except Exception:
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
         z.input(persigned)
         d(text='保存').click()
 
@@ -82,5 +77,5 @@ if __name__ == "__main__":
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # z.wx_action('searchui')
-    args = {"repo_name_id": "38",'repo_persigned_id':'57','gender':"男","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_name_id": "47",'repo_persigned_id':'48','gender':"男","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

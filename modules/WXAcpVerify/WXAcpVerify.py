@@ -17,18 +17,12 @@ class WXAcpVerify:
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
         time.sleep(7)
         d(text='通讯录').click()
-
-        if d(text='新的朋友').exists:
-            d(text='新的朋友').click()
-            time.sleep(1)
-        else:
-            d(text='群聊').up(className='android.widget.LinearLayout',index=0).click()     #效率较低，看是否有提升空间
-            time.sleep(2)
+        d(className='android.widget.ListView').child(className='android.widget.RelativeLayout',index=1).click()
+        time.sleep(1)
         set1 = set()
         change = 0
         i = 1
         while True:
-
             obj = d(className='android.widget.RelativeLayout', index=i).child(index=1).child(className='android.widget.TextView', index=0)  # 得到微信名
             if obj.exists:
                 obj = obj.info

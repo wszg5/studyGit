@@ -22,15 +22,14 @@ class MobilqqAddFriends:
 
         cate_id = args["repo_material_cate_id"]
         Material = self.repo.GetMaterial(cate_id, 0, 1)
-        wait = 1  # 判断素材仓库里是否由素材
-        while wait == 1:
-            try:
-                material = Material[0]['content']  # 取出验证消息的内容
-                wait = 0
-            except Exception:
+        try:
+            material = Material[0]['content']  # 取出验证消息的内容
+            # wait = 0
+        except Exception:
 
-                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
-                time.sleep(20)
+            d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
+            material = ''
+            # time.sleep(20)
 
         add_count = int(args['add_count'])  # 要添加多少人
 
@@ -208,6 +207,6 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
     # print(d.dump(compressed=False))
-    args = {"repo_number_cate_id":"45","repo_material_cate_id":"36","add_count":"5","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"38","repo_material_cate_id":"39","add_count":"5","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
     o.action(d,z, args)

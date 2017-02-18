@@ -89,15 +89,28 @@ class MobilqqSendText:
 
             obj = d(resourceId='com.tencent.mobileqq:id/elv_buddies', className='android.widget.AbsListView').child(className='android.widget.LinearLayout', index=i).child(
                 resourceId='com.tencent.mobileqq:id/name',index=0)  # 点击第ｉ个人
-            time.sleep(0.5)
+            time.sleep(1)
             if obj.exists:
                 change = 1
                 obj.click()
+                if obj.exists:
+                    obj.click()
+                time.sleep(2)
                 d.swipe(width / 2, height * 4 / 5, width / 2, height / 3)     #滑动是为了将QQ号显示出来
-                time.sleep(1)
-                QQNumber = d(resourceId='com.tencent.mobileqq:id/info',className='android.widget.TextView',index=0).info
+                QQNumber = d(resourceId='com.tencent.mobileqq:id/info',className='android.widget.TextView',index=0)
+                if QQNumber.exists:
+                    QQNumber = QQNumber.info
+                else:
+                    time.sleep(2)
+                    d.swipe(width / 2, height * 4 / 5, width / 2, height / 3)  # 滑动是为了将QQ号显示出来
+                    QQNumber = d(resourceId='com.tencent.mobileqq:id/info', className='android.widget.TextView',index=0)
+                    if QQNumber.exists:
+                        QQNumber = QQNumber.info
+                    elif d(text='帐号').exists:
+                        QQNumber = d(text='帐号').right(className='android.widget.TextView').info
+                    print('走里面了')
                 QQNumber = QQNumber['text']  # 得到电话号码，并保存到set集合中成为唯一标识
-                time.sleep(1)
+                time.sleep(0.5)
                 if QQNumber in set1:
                     d(textContains='返回').click()
                     i = i + 1
@@ -119,17 +132,22 @@ class MobilqqSendText:
                     time.sleep(5)
                     i = 2
                     continue
-
-            d(resourceId='com.tencent.mobileqq:id/txt', text='发消息').click()
+            time.sleep(0.5)
+            d(text='发消息').click()
             time.sleep(1)
 
-            d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()  # Material
+            d(className='android.widget.EditText').click()  # Material
             z.input(Material)
             time.sleep(1)
             d(resourceId='com.tencent.mobileqq:id/fun_btn', text='发送').click()
             i = i + 1
             t = t + 1
-            d(resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft', textContains='消息').click()
+            if d(text='返回').exists:
+                d(text='返回').click()
+                d(text='返回').click()
+                continue
+            else:
+                d(textContains='消息').click()
 
             d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(
                 className='android.widget.FrameLayout').child(
@@ -147,9 +165,9 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_material_id":"37",'EndIndex':'30',"time_delay":"3"};    #cate_id是仓库号，length是数量
+
+    args = {"repo_material_id":"40",'EndIndex':'30',"time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
 
