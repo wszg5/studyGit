@@ -310,7 +310,7 @@ class AutomatorServer(object):
 
     __apk_files = ["libs/zime.apk"]
     # Used for check if installed
-    __apk_vercode = '1.6.5'
+    __apk_vercode = '1.6.8'
     __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
@@ -342,8 +342,9 @@ class AutomatorServer(object):
         if pkginfo['version_name'] != self.__apk_vercode:
             return True
 
+        pkginfo = self.adb.package_info('de.robv.android.xposed.installer')
         out = self.adb.cmd("shell","su -c 'cat /data/data/de.robv.android.xposed.installer/shared_prefs/enabled_modules.xml'").communicate()[0].decode('utf-8')
-        if not out.find("No such file or directory") and out.find("<int name=\"com.zunyun.zime\" value=\"1\" />") == -1:
+        if pkginfo is not None and out.find("<int name=\"com.zunyun.zime\" value=\"1\" />") == -1:
             return True
         return False
 
