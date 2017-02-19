@@ -97,7 +97,6 @@ class WXYaoYiYao:
             d(text='我知道了').click()
             time.sleep(2)
         EndIndex = int(args['EndIndex'])         #------------------
-        z.server.install()
         z.wx_action("openyaoyiyao")
         t = 0
         while True:
@@ -122,7 +121,7 @@ class WXYaoYiYao:
                 d(textContains='相距').click()
                 d(text='打招呼').click()
                 d(className='android.widget.EditText').click()
-                z.input(Material)
+                z.input('你好啊')     #Material
                 d(text='发送').click()
                 t = t+1
                 d(description='返回').click()
@@ -140,8 +139,8 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-    z.server.install()
+    # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_material_id": "52",'EndIndex':'6','gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "52",'EndIndex':'1000','gender':"不限","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
