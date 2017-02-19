@@ -7,20 +7,20 @@ import util
 
 class XunMa:
 
-    def __init__(self):
+    def __init__(self, serial):
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                    "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
         self.domain = "api.xunma.net"
         self.port = 8888
-
+        self.serial = serial
         self.logger = util.logger
 
-    def GetToken(self, useCache=True):
+    def GetToken(self, useCache =True):
         from dbapi import dbapi
         dbapi = dbapi()
         if useCache :
 
-            tokenCache = cache.get('XunMa') #讯码token有效期５分钟
+            tokenCache = cache.get('%s_XunMa_Token' % self.serial) #讯码token有效期５分钟
             if tokenCache:
                 return tokenCache
         rk = dbapi.GetCodeSetting()

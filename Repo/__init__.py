@@ -53,7 +53,7 @@ class Repo:
             numbers = json.loads(data)
             return  numbers
         else:
-            return "Error Getting material, Please check your repo"
+            return None
 
 
 
