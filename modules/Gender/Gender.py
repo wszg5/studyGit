@@ -38,7 +38,8 @@ class MobilqqLogin:
             os.mkdir(base_dir)
         sourcePng = os.path.join(base_dir, "%s_s.png" % (self.GetUnique()))
 
-        obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.TextView',descriptionContains='基本信息')  # 当弹出选择QQ框的时候，定位不到验证码图片
+        obj = d(className='android.widget.ListView').child(className='android.widget.RelativeLayout', index=1).child(className='android.widget.RelativeLayout', index=1).\
+            child(resourceId='com.tencent.mobileqq:id/lastMsgTime')  # 得到QQ号
         if obj.exists:
             obj = obj.info
             obj = obj['bounds']  # 验证码处的信息
@@ -52,7 +53,7 @@ class MobilqqLogin:
             img = Image.open(sourcePng)
             box = (left, top, right, bottom)  # left top right bottom
             region = img.crop(box)  # 截取验证码的图片
-            # show(region)　　　　　　　#展示资料卡上的信息
+            # show(region)       #展示资料卡上的信息
             image = region.convert('RGBA')
             # 生成缩略图，减少计算量，减小cpu压力
             image.thumbnail((200, 200))

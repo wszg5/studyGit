@@ -27,18 +27,19 @@ class Repo:
 
 
 
-    def GetMaterial(self, cateId, interval, limit):
-        path = "/repo_api/material/pick?status=normal&cate_id=%s&interval=%s&limit=%s" % (cateId,interval,limit)
+    def GetMaterial(self, cateId, interval,limit,wid=''):
+        path = "/repo_api/material/pick?status=normal&cate_id=%s&interval=%s&limit=%s&wid=%s" % (cateId,interval,limit,wid)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         response = conn.getresponse()
         if response.status == 200:
             data = response.read()
             numbers = json.loads(data)
-
             return  numbers
         else:
             return "Error Getting material, Please check your repo"
+
+
 
 
 
@@ -52,7 +53,7 @@ class Repo:
             numbers = json.loads(data)
             return  numbers
         else:
-            return "Error Getting material, Please check your repo"
+            return None
 
 
 

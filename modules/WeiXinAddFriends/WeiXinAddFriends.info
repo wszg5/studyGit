@@ -12,7 +12,7 @@
 	"name":"号码库分类",
 	"type":"repo",
 	"source":"number",
-	"top_cate_id":"21"
+	"top_cate_id":"23"
 	},
 	{
     "id": "repo_material_cate_id",

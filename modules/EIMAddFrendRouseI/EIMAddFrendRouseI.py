@@ -92,8 +92,11 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    args = {"repo_number_id":"43","repo_material_cate_id":"37","totalNumber":"20","time_delay":"3"};    #cate_id是仓库号，length是数量
+    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").wait()
+    z.server.install()
+    z.server.start()
+
+    args = {"repo_number_id":"38","repo_material_cate_id":"39","totalNumber":"5","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d, z,args)
 

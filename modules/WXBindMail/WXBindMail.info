@@ -12,7 +12,7 @@
 	"name":"号码库分类",
 	"type":"repo",
 	"source":"number",
-	"top_cate_id":"22"
+	"top_cate_id":"25"
 	},
     {
     "id": "time_delay",

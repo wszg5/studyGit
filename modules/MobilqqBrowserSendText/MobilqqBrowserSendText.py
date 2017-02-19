@@ -34,22 +34,7 @@ class TIMBrowserSendText:
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
 
-        # d.server.adb.cmd("shell", "am force-stop com.android.chrome").wait()  # 强制停止
-        # d.server.adb.cmd("shell","am start -n com.android.chrome/com.google.android.apps.chrome.Main").communicate()  # 拉起来
-        # time.sleep(3)
-        # if d(description='清空号码', className='android.widget.Button').exists:
-        #     print()
-        # else:
-        #     time.sleep(2)
-        #     d.server.adb.cmd("shell",
-        #                      "am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").communicate()  # 不在聊了页面时输入聊天页面地址
-        #     if d(description='清空号码', className='android.widget.Button').exists:
-        #         print()
-        #     else:
-        #         d(resourceId='com.android.chrome:id/url_bar', className='android.widget.EditText').set_text(
-        #             'http://www.jianli58.com/qq.html')
-        #         time.sleep(1)
-        #         d.press.enter()
+
 
         for i in range (0,totalNumber,+1):
             cate_id = args["repo_material_cate_id"]

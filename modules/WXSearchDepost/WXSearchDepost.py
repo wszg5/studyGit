@@ -30,7 +30,7 @@ class WXSearchDepost:
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
 
-        # d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
+        d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
         time.sleep(3)
 
@@ -66,6 +66,7 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
+    z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     # d(text='搜索').set_text('18297775923')
     args = {"repo_number_id": "40", "add_count": "5","time_delay": "3"}    #cate_id是仓库号，length是数量

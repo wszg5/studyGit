@@ -59,9 +59,9 @@ class MobilqqLogin:
             time.sleep(4)
             d(text='登 录', resourceId='com.tencent.mobileqq:id/btn_login').click()
             time.sleep(1)
-            d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
+            d(className='android.widget.EditText', index=0).set_text(3004001751)  # ﻿1918697054----xiake1234.  QQNumber
             time.sleep(1)
-            d(resourceId='com.tencent.mobileqq:id/password', index=2).set_text(QQPassword)  # Bn2kJq5l     QQPassword
+            d(resourceId='com.tencent.mobileqq:id/password', index=2).set_text('Bn2kJq5l')  # Bn2kJq5l     QQPassword
             d(text='登 录', resourceId='com.tencent.mobileqq:id/login').click()
             time.sleep(1)
             while d(text='登录中').exists:
@@ -112,7 +112,7 @@ class MobilqqLogin:
                         break
 
             else:
-                d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
+                d.server.adb.cmd("shell", "am force-stop com.tencent1314.mobileqq").wait()  # 强制停止
                 time.sleep(1)
                 d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
                 time.sleep(4)
@@ -233,17 +233,15 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT55TSK00815")
-    z = ZDevice("HT55TSK00815")
-    # slot = slot('mobileqq')
-    # slot.restore(d, 5)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
+
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    # d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
-    # slot.restore(d, 9)
+
 
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"32","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"37","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)

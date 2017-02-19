@@ -19,7 +19,7 @@ class RegisterAccount:
 
     def action(self, d,z, args):
         while True:
-            # d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()
+            d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()
             d.server.adb.cmd("shell", "pm clear com.tencent.mm").wait()  # 清除缓存
             # 将微信拉起来
             d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()
@@ -82,6 +82,7 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
+    z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     # d(calssName='android.widget.EditText').click()
     # z.input('652466')

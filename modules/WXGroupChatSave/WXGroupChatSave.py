@@ -8,7 +8,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 
-class WeiXinAddFriendByAddressList:
+class WXGroupChatSave:
 
     def __init__(self):
         self.repo = Repo()
@@ -20,7 +20,7 @@ class WeiXinAddFriendByAddressList:
         height = str["displayHeight"]
         width = str["displayWidth"]
 
-        # d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
+        d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(7)
         d(text='通讯录').click()
@@ -36,13 +36,12 @@ class WeiXinAddFriendByAddressList:
         while t < EndIndex :
             cate_id = args["repo_material_id"]   #------------------
             Material = self.repo.GetMaterial(cate_id, 0, 1)
-            wait = 1
-            while wait == 1:
-                try:
-                    Material = Material[0]['content']  # 从素材库取出的要发的材料
-                    wait = 0
-                except Exception:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+
+            try:
+                Material = Material[0]['content']  # 从素材库取出的要发的材料
+                wait = 0
+            except Exception:
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
 
             time.sleep(1)
             obj = d(className='android.widget.LinearLayout', index=i).child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).child(textContains='微信:')     #得到微信名
@@ -145,13 +144,14 @@ class WeiXinAddFriendByAddressList:
             time.sleep(int(args["time_delay"]))
 
 def getPluginClass():
-    return WeiXinAddFriendByAddressList
+    return WXGroupChatSave
 
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
+    z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     # z.input('1')

@@ -22,6 +22,7 @@ class XunMa:
         dbapi = dbapi()
         key = 'XunMa_Token_%s' % self.serial
         if useCache :
+
             tokenCache = cache.get(key) #讯码token有效期５分钟
             if tokenCache:
                 return tokenCache
@@ -63,6 +64,7 @@ class XunMa:
         phone = cache.popSet(key)
         if phone:
             return phone
+
         token = self.GetToken()
         try:
             path = "/getPhone?ItemId=%s&token=%s&Count=3" % (itemId, token)
@@ -116,14 +118,15 @@ class XunMa:
             response = conn.getresponse()
             if response.status == 200:
                 data = response.read().decode('GBK')
-
         except Exception:
             return None
+
+
         if 'MSG' in data:
             targetNumber = re.findall(r'1\d{10}',data)
             targetNumber = targetNumber[0]
+
             par = r"MSG&(\d+)&%s&(.+?)\[End]" %targetNumber
-            # res = re.findall(r"MSG&(\d+?)&" + targetNumber + "&(.+?)\[End]", data)
             res = re.findall(par, data)
             res = res[0]
             if len(res) == 2:

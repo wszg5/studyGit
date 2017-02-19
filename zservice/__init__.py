@@ -13,7 +13,8 @@ import hashlib
 import socket
 import re
 import collections
-import xml.dom.minidom
+import uuid
+import requests
 
 DEVICE_PORT = int(os.environ.get('ZSERVICE_DEVICE_PORT', '19008'))
 LOCAL_PORT = int(os.environ.get('ZSERVICE_LOCAL_PORT', '19008'))
@@ -309,7 +310,7 @@ class AutomatorServer(object):
 
     __apk_files = ["libs/zime.apk"]
     # Used for check if installed
-    __apk_vercode = '1.6.4'
+    __apk_vercode = '1.6.9'
     __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
@@ -340,6 +341,11 @@ class AutomatorServer(object):
             return True
         if pkginfo['version_name'] != self.__apk_vercode:
             return True
+
+        pkginfo = self.adb.package_info('de.robv.android.xposed.installer')
+        out = self.adb.cmd("shell","su -c 'cat /data/data/de.robv.android.xposed.installer/shared_prefs/enabled_modules.xml'").communicate()[0].decode('utf-8')
+        if pkginfo is not None and out.find("<int name=\"com.zunyun.zime\" value=\"1\" />") == -1:
+            return True
         return False
 
     def install(self):
@@ -348,7 +354,7 @@ class AutomatorServer(object):
             self.adb.cmd("shell", "su -c 'rm /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'chmod - R 777 /data/data/de.robv.android.xposed.installer/'").communicate()
             self.adb.cmd("shell", "su -c 'rm /data/local/tmp/zime.apk'").communicate()
-            self.adb.cmd("shell", "pm uninstall com.zunyun.xime").communicate()
+            #self.adb.cmd("shell", "pm uninstall com.zunyun.zime").communicate()
             filename = os.path.join(base_dir, 'libs/install.sh')
             self.adb.cmd("push", filename, "/data/local/tmp/").wait()
             filename = os.path.join(base_dir, 'libs/zime.apk')
@@ -357,6 +363,7 @@ class AutomatorServer(object):
             self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'sh /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "reboot").communicate()
+
 
 
 
@@ -568,9 +575,30 @@ class ZRemoteDevice(object):
     def wx_sendsnsline(self, description, images):    #微信发图片
         imgs = ""
         for k, v in enumerate(images):
+
+            '''
+                try:
+                    pic = requests.get(each, timeout=10)
+                except requests.exceptions.ConnectionError:
+                    print '【错误】当前图片无法下载'
+                    continue
+                string = 'pictures\\' + str(i) + '.jpg'
+                fp = open(string, 'wb')
+                fp.write(pic.content)
+                fp.close()
+            '''
+            try:
+                pic = requests.get(v, timeout=10)
+            except requests.exceptions.ConnectionError:
+                print '【错误】当前图片无法下载'
+                continue
+            string = '/tmp/%s.jpg' %  uuid.uuid1()
+            fp = open(string, 'wb')
+            fp.write(pic.content)
+            fp.close()
             #print '%s -- %s' %(k,v)
             imgTarget = "/data/local/tmp/%s"%k
-            self.server.adb.cmd("push", v,  imgTarget).wait()
+            self.server.adb.cmd("push", string,  imgTarget).wait()
             imgs = "%s,%s"%(imgs,imgTarget)
         self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"sendsnsline\" --es description \"%s\" --es images \"%s\""%(description,imgs)).communicate()
         return True
@@ -590,10 +618,18 @@ class ZRemoteDevice(object):
         self.server.adb.cmd("push", filename, "/sdcard/").wait()
         return True
 
-    def wx_scanqr(self):     #没看到效果
-        base_dir = os.path.dirname(__file__)
-        filename = os.path.join(base_dir, 'libs/qr.png')
-        self.server.adb.cmd("push", filename, "/sdcard/qr.jpg").wait()
+    def wx_scanqr(self, img):
+        try:
+            pic = requests.get(img, timeout=10)
+        except requests.exceptions.ConnectionError:
+            print '【错误】当前图片无法下载'
+            return None
+        string = '/tmp/%s.jpg' % uuid.uuid1()
+        fp = open(string, 'wb')
+        fp.write(pic.content)
+        fp.close()
+        self.server.adb.cmd("push", string, "/sdcard/qr.jpg").communicate()
+        self.wx_action("openscanui")
         return True
 
     def wx_sendtextsns(self, text):
