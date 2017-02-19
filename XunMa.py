@@ -18,9 +18,10 @@ class XunMa:
     def GetToken(self, useCache =True):
         from dbapi import dbapi
         dbapi = dbapi()
+        key = 'XunMa_Token_%s' % self.serial
         if useCache :
 
-            tokenCache = cache.get('%s_XunMa_Token' % self.serial) #讯码token有效期５分钟
+            tokenCache = cache.get(key) #讯码token有效期５分钟
             if tokenCache:
                 return tokenCache
         rk = dbapi.GetCodeSetting()
@@ -37,10 +38,10 @@ class XunMa:
         if response.status == 200:
             data = response.read()
             token=data.split('&')[0];
-            cache.set('XunMa', token, None)
-            return  data
+            cache.set(key, token, None)
+            return  token
         else:
-            return "Error Getting Account, Please check your repo"
+            return self.GetToken()
 
     def ReleaseAllPhone(self):
         token=self.GetToken()
@@ -126,7 +127,7 @@ class XunMa:
             response = conn.getresponse()
             if response.status == 200:
                 data = response.read().decode('GBK')
-
+                print(data)
         except Exception:
             return None
 
