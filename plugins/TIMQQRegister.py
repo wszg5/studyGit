@@ -31,15 +31,15 @@ class TIMQQRegister:
                     for i in range(0, 2):
                         d.swipe(width * 0.75, height * 0.5, width * 0.05, height * 0.5, 10)
                         time.sleep(1)
-                    d(resourceId='com.tencent.tim:id/name', index=1, text='立即体验').click()
+                    d(className='android.widget.Button', text='立即体验').click()
                     break
 
             if k==35:
                 continue
             time.sleep(2)
 
-            if d(resourceId='com.tencent.tim:id/btn_register',index=1,text='新用户').exists:
-                d(resourceId='com.tencent.tim:id/btn_register', index=1, text='新用户').click()
+            if d(className='android.widget.Button', text='新用户').exists:
+                d(className='android.widget.Button', text='新用户').click()
             time.sleep(2)
 
             phoneNumber = self.XunMa.GetPhoneNumber( '2111')
@@ -49,24 +49,19 @@ class TIMQQRegister:
             time.sleep(2)
 
 
-            d(text='请输入你的手机号码', resourceId='com.tencent.tim:id/name').set_text(phoneNumber)
+            d(text='请输入你的手机号码', className='android.widget.EditText').set_text(phoneNumber)
 
             time.sleep(1)
-            d(text='下一步', resourceId='com.tencent.tim:id/name').click()
+            d(text='下一步', className='android.widget.Button').click()
             time.sleep(2)
 
 
-
-            tip = 'True'
-            for j in range(1, 35):
+            for j in range(1, 15):
                 time.sleep(1)
                 if d(text='请输入短信验证码', className='android.widget.EditText').exists:
                     break
                 if d(text='分享', className='android.widget.TextView').exists:
-                    tip = 'False'
-                    break
-            if tip=='False':
-                continue
+                    continue
 
             time.sleep(3)
             # 关闭设备锁
@@ -85,8 +80,8 @@ class TIMQQRegister:
 
 
                 if vertifyCode == "":
-                    if d(text='重新发送', resourceId='com.tencent.tim:id/name').exists:
-                        d(text='重新发送', resourceId='com.tencent.tim:id/name').click()
+                    if d(text='重新发送', className='android.widget.TextView').exists:
+                        d(text='重新发送', className='android.widget.TextView').click()
                         time.sleep(2)
                         print '重新发送'
                         vertifyCode = self.XunMa.GetVertifyCode(phoneNumber, '2111')
@@ -97,14 +92,14 @@ class TIMQQRegister:
                             continue
 
                 print vertifyCode
-                d(text='请输入短信验证码', resourceId='com.tencent.tim:id/name').set_text(vertifyCode)
+                d(text='请输入短信验证码', className='android.widget.EditText').set_text(vertifyCode)
 
                 time.sleep(1)
-                d(text='下一步', resourceId='com.tencent.tim:id/name').click()
+                d(text='下一步', className='android.widget.Button').click()
                 time.sleep(2)
 
                 try:
-                    d(resourceId='com.tencent.tim:id/action_sheet_button',textContains='维持绑定').click()  # ****有问题，会crash****
+                    d(className='android.widget.TextView',textContains='维持绑定').click()  # ****有问题，会crash****
                 except Exception:
                     print ('维持绑定失败')
                     continue
@@ -127,20 +122,15 @@ class TIMQQRegister:
                 nickName = nickNameList[0]["content"]
                 nickName = nickName.encode("utf-8")
 
-                # nickName = ''
-                # while nickName=='':
-                #     nickName = full_name(last_names, first_names)
-                #     continue
-
 
                 d(text='昵称', className='android.widget.EditText').click()
                 z.input(nickName)
                 print '昵称'
                 print nickName
 
-                password = self.GenPassword()
+                password = self.GenPassword(4,4)
                 d(text='密码', className='android.widget.EditText').set_text(password)
-                d(text='注册', resourceId='com.tencent.tim:id/btn_register').click()
+                d(text='注册', className='android.widget.Button').click()
                 obj = d(index=1, className='android.widget.TextView', resourceId='com.tencent.tim:id/name').info
                 qqNumber = obj["text"]
                 time.sleep(3)
@@ -164,10 +154,10 @@ class TIMQQRegister:
         # alphanumeric, upper and lowercase
         return ''.join([random.choice(letters) for _ in range(length)])
 
-    def GenPassword(self):
+    def GenPassword(self,numOfNum,numOfLetter):
         # 随机出数字的个数
-        numOfNum = 4
-        numOfLetter = 4
+        # numOfNum = 4
+        # numOfLetter = 4
         # 选中numOfNum个数字
         slcNum = [random.choice(string.digits) for i in range(numOfNum)]
         # 选中numOfLetter个字母
@@ -188,13 +178,13 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT57FSK00089")
-    z = ZDevice("HT57FSK00089")
+    d = Device("HT524SK02829")
+    z = ZDevice("HT524SK02829")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").communicate()    #打开android设置页面
 
     # try:
-    args = {"repo_cate_id": "38","muchNumber_cate_id":"32", "time_delay": "1"};
+    args = {"repo_cate_id": "47","muchNumber_cate_id":"35", "time_delay": "1"};
     o.action(d, z, args)
 
     # except Exception, e:

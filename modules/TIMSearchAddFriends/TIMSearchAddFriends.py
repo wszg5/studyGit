@@ -8,8 +8,10 @@ import util
 from PIL import Image
 from zservice import ZDevice
 class TIMSearchAddFriends:
+
     def __init__(self):
         self.repo = Repo()
+
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
         randomNum = random.randint(0, 1000);  # 生成的随机整数n，其中0<=n<=100
@@ -17,6 +19,7 @@ class TIMSearchAddFriends:
             randomNum = str(00) + str(randomNum);
         uniqueNum = str(nowTime) + str(randomNum);
         return uniqueNum
+
     def action(self, d, z,args):
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
@@ -151,6 +154,7 @@ class TIMSearchAddFriends:
             d(text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search').click()
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
+
 def runwatch(d, data):
     times = 120
     while True:
@@ -163,8 +167,10 @@ def runwatch(d, data):
             break
         else:
             time.sleep(0.5)
+
 def getPluginClass():
     return TIMSearchAddFriends
+
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
