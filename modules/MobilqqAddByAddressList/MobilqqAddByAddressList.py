@@ -15,7 +15,7 @@ sys.setdefaultencoding('utf8')
 class MobilqqAddByAddressList:
     def __init__(self):
         self.repo = Repo()
-        self.xuma = XunMa()
+        self.xuma = None
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
@@ -91,13 +91,13 @@ class MobilqqAddByAddressList:
 
 
     def Bind(self,d):
+        self.xuma = XunMa(d.server.adb.device_serial())
         newStart = 1
         while newStart == 1:
             GetBindNumber = self.xuma.GetPhoneNumber('2113')
             print(GetBindNumber)
             time.sleep(2)
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(GetBindNumber)  #GetBindNumber
-
             time.sleep(1)
             d(text='下一步').click()
             time.sleep(3)
@@ -317,5 +317,6 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+    z.input('17082475195')
     args = {"repo_material_id":"100",'gender':"不限",'EndIndex':'50',"time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)
