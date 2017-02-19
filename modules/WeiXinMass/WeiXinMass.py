@@ -20,14 +20,13 @@ class WeiXinMass:
         time.sleep(4)
         cate_id = args["repo_material_id"]
         Material = self.repo.GetMaterial(cate_id, 0, 1)
-        wait = 1  # 判断素材仓库里是否由素材
-        while wait == 1:
-            try:
-                material = Material[0]['content']  # 取出验证消息的内容
-                wait = 0
-            except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
-                time.sleep(20)
+
+        try:
+            material = Material[0]['content']  # 取出验证消息的内容
+            wait = 0
+        except Exception:
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
+            time.sleep(20)
         time.sleep(2)
         d(text='我').click()
         d(text='设置').click()

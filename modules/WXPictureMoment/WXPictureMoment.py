@@ -19,10 +19,19 @@ class WXPictureMoment:
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
-        time.sleep(5)
+        time.sleep(8)
+        d(className='android.widget.RelativeLayout', index=3).child(text='我').click()
+        if d(textContains='微信号：').exists:
+            obj = d(textContains='微信号：').info
+            obj = obj['text']
+
+        else:
+            obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=1)\
+                .child(className='android.widget.LinearLayout',index=1).child(className='android.view.View').info
+            obj = obj['text']
         cate_id = args['repo_material_id']
         repo = Repo()
-        materials = repo.GetMaterial(cate_id, 0, 1)
+        materials = repo.GetMaterial(cate_id, 0, 1,obj)
         try:
             t = materials[0]  # 取出验证消息的内容
         except Exception:
@@ -38,8 +47,8 @@ class WXPictureMoment:
         z.wx_sendsnsline(t["content"], imgs)
         d(text='发送').click()
 
-    if (args["time_delay"]):
-        time.sleep(int(args["time_delay"]))
+        if (args["time_delay"]):
+            time.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WXPictureMoment
@@ -51,8 +60,6 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-
-
     args = {"repo_material_id": "36","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 

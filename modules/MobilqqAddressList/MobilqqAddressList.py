@@ -12,7 +12,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-class TIMAddressList:
+class MobilqqAddressList:
     def __init__(self):
         self.repo = Repo()
         self.xuma = XunMa()
@@ -122,17 +122,6 @@ class TIMAddressList:
 
     def action(self, d,z, args):
         gender1 = args['gender']
-        cate_id = args["repo_material_id"]
-        Material = self.repo.GetMaterial(cate_id,0,1 )
-        wait = 1
-        while wait == 1:
-            try:
-                Material = Material[0]['content']  # 从素材库取出的要发的材料
-                wait = 0
-            except Exception:
-                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
-
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -234,13 +223,13 @@ class TIMAddressList:
         while t < EndIndex+1:
             cate_id = args["repo_material_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
-            wait = 1
-            while wait == 1:
-                try:
-                    Material = Material[0]['content']  # 从素材库取出的要发的材料
-                    wait = 0
-                except Exception:
-                    d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+
+            try:
+                Material = Material[0]['content']  # 从素材库取出的要发的材料
+
+                wait = 0
+            except Exception:
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
 
             time.sleep(1)
 
@@ -250,6 +239,11 @@ class TIMAddressList:
             if obj.exists:
                 change = 1
                 obj.click()
+                if d(descriptionContains='昵称:').exists:
+                    print
+                else:
+                    i = 3
+                    continue
                 phone = d(descriptionContains='昵称:').info
                 phone = phone['text']      #得到电话号码，并保存到set集合中成为唯一标识
                 if phone in set1:
@@ -258,7 +252,7 @@ class TIMAddressList:
                     continue
                 else:
                     set1.add(phone)
-
+                    print(phone)
                 if gender1 != '不限':
                     gender2 = self.Gender(d)
                     if gender1==gender2:        #gender1是外界设定的，gender2是读取到的
@@ -281,13 +275,16 @@ class TIMAddressList:
                     i = 2
                     continue
 
+            if '[姓名]' in Material:
+                obj1 = d(descriptionContains='QQ 昵称').child(className='android.widget.TextView', index=1).info
+                obj1 = obj1['text']
+                Material = Material.replace('[姓名]',obj1)  # -----------------------------------
             d(resourceId='com.tencent.mobileqq:id/txt', text='发消息').click()
             time.sleep(1)
-
             d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()  # Material
             z.input(Material)
             time.sleep(1)
-            d(resourceId='com.tencent.mobileqq:id/fun_btn', text='发送').click()
+            # d(resourceId='com.tencent.mobileqq:id/fun_btn', text='发送').click()
             i = i + 1
             t = t + 1
             d(resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft', description='返回消息界面').click()
@@ -301,31 +298,14 @@ class TIMAddressList:
 
 
 def getPluginClass():
-    return TIMAddressList
+    return MobilqqAddressList
 
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-    # print(d.dump(compressed=False))
-    # str = d.info  # 获取屏幕大小等信息
-    # height = str["displayHeight"]
-    # width = str["displayWidth"]
-    # d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
-    # phone = d(descriptionContains='昵称:').info
-    # phone = phone['text']
-    # s = set()
-    # s.add(1)
-    # s.add(2)
-    # if 1 in s:
-    #     print("在的")
-    # i = 0
-    # for i in s:
-    #     print(i)
-
-
-
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_material_id":"40",'gender':"女",'EndIndex':'10',"time_delay":"3"};    #cate_id是仓库号，length是数量
+
+    args = {"repo_material_id":"100",'gender':"不限",'EndIndex':'20',"time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

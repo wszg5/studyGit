@@ -26,15 +26,14 @@ class WXBindQQ:
         cate_id = args["repo_cate_id"]
         time_limit = args['time_limit']
         numbers = self.repo.GetAccount(cate_id, time_limit, 1)
-        wait = 1
-        while wait == 1:  # 判断仓库是否有东西
-            try:
-                QQNumber = numbers[0]['number']  # 即将登陆的QQ号
-                wait = 0
-            except Exception:
-                d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库为空，等待中\"" % cate_id).communicate()
-                time.sleep(30)
+
+        try:
+            QQNumber = numbers[0]['number']  # 即将登陆的QQ号
+            wait = 0
+        except Exception:
+            d.server.adb.cmd("shell",
+                             "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库为空，等待中\"" % cate_id).communicate()
+            time.sleep(30)
         QQPassword = numbers[0]['password']
         time.sleep(1)
         d(text='开始绑定').click()

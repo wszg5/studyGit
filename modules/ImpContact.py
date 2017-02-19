@@ -71,6 +71,6 @@ if __name__ == "__main__":
 
 
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"40","length":"30",'number_count':'80',"time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"44","length":"30",'number_count':'80',"time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
