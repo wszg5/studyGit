@@ -151,12 +151,14 @@ def installApk(deviceid):
     zport = device_port["zport"]
     from zservice import ZDevice
     z = ZDevice(deviceid, zport)
-    #规避解决微信卡死问题
     z.server.adb.cmd("shell", "su -c 'rm -f /sdcard/NanoHTTPD-*'").communicate()
     z.server.adb.cmd("shell", "su -c 'rm -f /sdcard/share_*'").communicate()
-    z.server.adb.cmd("shell", "su -c 'rm -rf /data/data/com.tencent.mm/tinker/*'").communicate()
-    z.server.adb.cmd("shell", "su -c 'mkdir -p /data/data/com.tencent.mm/tinker/'").communicate()
-    z.server.adb.cmd("shell", "su -c 'chmod 000 /data/data/com.tencent.mm/tinker/'").communicate()
+    #规避解决微信卡死问题
+    pkginfo = z.server.adb.package_info("com.tencent.mm")
+    if pkginfo is not None:
+        z.server.adb.cmd("shell", "su -c 'rm -rf /data/data/com.tencent.mm/tinker/*'").communicate()
+        z.server.adb.cmd("shell", "su -c 'mkdir -p /data/data/com.tencent.mm/tinker/'").communicate()
+        z.server.adb.cmd("shell", "su -c 'chmod 000 /data/data/com.tencent.mm/tinker/'").communicate()
     z.server.install()
 
 
