@@ -51,34 +51,28 @@ class XunMa:
         except Exception:
             ok = 'ok'
 
+
+
+
     def GetPhoneNumber(self, itemId, times=0):
         round = times + 1
         if  round > 30:
 
             raise 'XunMa has tried 3 minutes'
-        key = 'phone_%s'%itemId
+        key = 'phone_%s_%s'%(self.serial, itemId)
         phone = cache.popSet(key)
         if phone:
             return phone
-        lockKey = 'lock_get_phone_%s'%itemId
-        if cache.get(lockKey) == 'True':
-            time.sleep(5)
-
-            return self.GetPhoneNumber(itemId,round)
-        else:
-            cache.set(lockKey,True,10)
 
 
         token = self.GetToken()
-
         try:
-            path = "/getPhone?ItemId=%s&token=%s&Count=10" % (itemId, token)
+            path = "/getPhone?ItemId=%s&token=%s&Count=3" % (itemId, token)
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
             response = conn.getresponse()
         except Exception as e:
             self.logger.info(e.message)
-            cache.set(lockKey, False)
             return self.GetPhoneNumber(itemId,round)
 
         if response.status == 200:
@@ -97,11 +91,8 @@ class XunMa:
             for number in numbers:
                 if re.search("\d{11}", str(number)):
                     cache.addSet(key, number)
-            cache.set(lockKey,False)
             return self.GetPhoneNumber(itemId,round)
         else:
-            cache.set(lockKey,False)
-
             return self.GetPhoneNumber(itemId,round)
 
 
@@ -121,59 +112,40 @@ class XunMa:
 
 
 
-    def GetCode(self,number, itemId, length=6):
+    def GetCode(self, number, itemId, length=6):
         key = 'verify_code_%s_%s'%(itemId,number)
         code = cache.get(key)
         if code:
             return code
 
-        lockKey = 'lock_get_code_%s' % itemId
+        token = self.GetToken()
+        try:
+            path = "/getQueue?token=" + token + ""
+            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+            conn.request("GET", path)
+            response = conn.getresponse()
+            if response.status == 200:
+                data = response.read().decode('GBK')
 
-        if cache.get(lockKey):
+        except Exception:
             return None
-        else:
-            cache.set(lockKey, True, 1)
 
 
-            data = ""
+        if 'MSG' in data:
+            targetNumber = re.findall(r'1\d{10}',data)
+            targetNumber = targetNumber[0]
 
-            token = self.GetToken()
-            try:
-                path = "/getQueue?token=" + token + ""
-                conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-                conn.request("GET", path)
-                response = conn.getresponse()
-                if response.status == 200:
-                    data = response.read().decode('GBK')
+            par = r"MSG&(\d+)&%s&(.+?)\[End]" %targetNumber
 
-            except Exception:
-                return None
-
-
-            if 'MSG' in data:
-                targetNumber = re.findall(r'1\d{10}',data)
-                targetNumber = targetNumber[0]
-                '''
-                if targetNumber == number:
-                    res = re.findall(r"MSG&144&" + number + "&(.+?)\[End]", data)
-                    res = re.findall("\d{6}", res[0])
-                    code = res[0]
-                    return code
-                else:
-                '''
-                par = r"MSG&(\d+)&%s&(.+?)\[End]" %targetNumber
-
-                # res = re.findall(r"MSG&(\d+?)&" + targetNumber + "&(.+?)\[End]", data)
-                res = re.findall(par, data)
-                res = res[0]
-                if len(res) == 2:
-                    targetItemId = res[0]
-                    res = re.findall("\d{%s}"%length, res[1])
-
-
-                    code = res[0]
-                    sms_number_key = 'verify_code_%s_%s'%(targetItemId,targetNumber)
-                    cache.set(sms_number_key, code)
+            # res = re.findall(r"MSG&(\d+?)&" + targetNumber + "&(.+?)\[End]", data)
+            res = re.findall(par, data)
+            res = res[0]
+            if len(res) == 2:
+                targetItemId = res[0]
+                res = re.findall("\d{%s}"%length, res[1])
+                code = res[0]
+                sms_number_key = 'verify_code_%s_%s'%(targetItemId,targetNumber)
+                cache.set(sms_number_key, code)
 
 
 
@@ -182,7 +154,7 @@ class XunMa:
         for i in range(1, 22):
             time.sleep(3)
             code = self.GetCode(number,itemId,length)
-            if not code==None:
+            if code is not None:
                 return code
 
         return ""

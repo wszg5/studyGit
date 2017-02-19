@@ -55,7 +55,6 @@ def getPluginClass():
     return ImpContact
 
 if __name__ == "__main__":
-
     # global args
     clazz = getPluginClass()
     o = clazz()
