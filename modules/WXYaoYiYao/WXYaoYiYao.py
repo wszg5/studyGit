@@ -122,7 +122,7 @@ class WXYaoYiYao:
                 d(textContains='相距').click()
                 d(text='打招呼').click()
                 d(className='android.widget.EditText').click()
-                z.input(Material)
+                z.input('好想给你发红包')     #Material
                 d(text='发送').click()
                 t = t+1
                 d(description='返回').click()
