@@ -46,8 +46,18 @@ class ImpContact:
             file_object.close()
             d.server.adb.cmd("shell", "am", "start", "-a", "zime.clear.contacts").communicate()
             d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").communicate()
-            d.server.adb.cmd("shell", "am", "start", "-n", "com.zunyun.zime/.ImportActivity", "-t", "text/plain",  "-d", "file:///data/local/tmp/contacts.txt").communicate()
+            d.server.adb.cmd("shell", "am", "start", "-n", "com.zunyun.zime/.ImportActivity").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.import.contact --es file \"file:///data/local/tmp/contacts.txt\"").communicate()
             os.remove(filename)
+
+            out = d.server.adb.cmd("shell",
+                               "dumpsys activity top  | grep ACTIVITY").communicate()[0].decode('utf-8')
+            while out.find("com.zunyun.zime/.ImportActivity") > -1:
+                out = d.server.adb.cmd("shell",
+                                   "dumpsys activity top  | grep ACTIVITY").communicate()[0].decode('utf-8')
+                time.sleep(5)
+
+
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
@@ -58,13 +68,15 @@ if __name__ == "__main__":
     # global args
     clazz = getPluginClass()
     o = clazz()
-    d = Device("FA48VSR03651")
-    z = ZDevice("FA48VSR03651")
+    #d = Device("FA48VSR03651")
+    #z = ZDevice("FA48VSR03651")
+    d = Device("HT4AVSK01106")
+    z = ZDevice("HT4AVSK01106")
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
 
 
 
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"46",'number_count':'50',"time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"46",'number_count':'1005',"time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
