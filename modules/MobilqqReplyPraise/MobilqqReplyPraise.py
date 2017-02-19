@@ -98,10 +98,11 @@ class MobilqqReplyPraise:
         d(descriptionContains='帐户及设置').click()
         d(descriptionContains='等级').click()
         d(descriptionContains='赞').click()
+        time.sleep(3)
         set1 = set()
         i = 1
         t = 1
-        add_count = int(args['add_count'])  # 要添加多少人
+        add_count = int(args['EndIndex'])  # 要给多少人发
         while t < add_count + 1:
             obj = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=i) \
                 .child(className='android.widget.RelativeLayout', index=1).child(
@@ -115,6 +116,7 @@ class MobilqqReplyPraise:
             else:       #给赞我的人发消息，看性别是否有消息
                 if obj3.exists:    #对性别有要求的情况，看性别是否有显示
                     genderfrom = self.Gender(d,i)    #得到第ｉ个人的真实性别
+                    print(genderfrom)
                     if genderfrom == gender:
                         print
                     else:
@@ -150,19 +152,19 @@ class MobilqqReplyPraise:
                 obj.click()
                 while d(textContains='正在加载').exists:
                     time.sleep(2)
-                if d(text='关注').exists:
-                    d(text='关注').click()
-                    time.sleep(1)
-                    if d(text='关注').exists:
-                        return
+                d(text='发消息').click()
+                d(className='android.widget.EditText').click()
+                # cate_id = args["repo_material_id"]
+                # Material = self.repo.GetMaterial(cate_id, 0, 1)
+                # try:
+                #     Material = Material[0]['content']  # 从素材库取出的要发的材料
+                # except Exception:
+                #     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                # z.input(Material)
+                d(text='返回').click()
+                i = i+1
+                t = t+1
 
-                    d(text='返回').click()
-                    i = i + 1
-                    t = t + 1
-                else:
-                    d(text='返回').click()  # 该好友已被关注的情况
-                    i = i + 1
-                    continue
             else:
                 if d(textContains='暂无更多').exists:
                     break
@@ -181,9 +183,6 @@ class MobilqqReplyPraise:
                 i = g + 1
                 continue
 
-
-
-
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
@@ -197,13 +196,15 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    # str = d.info  # 获取屏幕大小等信息
-    # height = str["displayHeight"]
-    # width = str["displayWidth"]
-    # while True:
-    #     d.swipe(width / 2, height * 4 / 5, width / 2, height / 4)
-
-    args = {"repo_number_cate_id":"38",'gender':"男","add_count":"3","time_delay":"3"}    #cate_id是仓库号，length是数量
+    # repo = Repo()
+    # Material = repo.GetMaterial(40, 0, 1)
+    # try:
+    #     Material = Material[0]['content']  # 从素材库取出的要发的材料
+    # except Exception:
+    #     d.server.adb.cmd("shell",
+    #                      "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+    # z.input(Material)
+    args = {"repo_material_id":"40",'gender':"不限",'EndIndex':'40',"time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
 

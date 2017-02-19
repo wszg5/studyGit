@@ -41,8 +41,6 @@ class Repo:
 
 
 
-
-
     def GetNumber(self, cateId, interval, limit):
         path = "/repo_api/number/pick?status=normal&cate_id=%s&interval=%s&limit=%s" % (cateId,interval,limit)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
@@ -70,7 +68,7 @@ class Repo:
 
 
 
-
+#http://localhost:8888/repo_api/screen/numberInfo?PhoneNumber=&cate_id=
 
 
 if __name__ == '__main__':
