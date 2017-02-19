@@ -109,3 +109,4 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_collectData_id":"33","time_delay":"3","EndIndex":"8"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)
+

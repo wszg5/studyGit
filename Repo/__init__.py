@@ -69,6 +69,10 @@ class Repo:
         conn.request("GET",path)
 
 
+    def uploadPhoneNumber(self, phomeNumber, numberCateId):
+        path = "/repo_api/screen/numberInfo?PhoneNumber=%s&cate_id=%s" % (phomeNumber, numberCateId)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
 
 
 
