@@ -298,7 +298,7 @@ class MobilqqAddByAddressList:
                 delet = delet + 1
             z.input(Material)
             time.sleep(1)
-            # d(text='发送').click()
+            d(text='发送').click()
             d(text='取消').click()
             i = i + 1
             t = t + 1

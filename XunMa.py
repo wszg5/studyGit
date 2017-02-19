@@ -21,7 +21,7 @@ class XunMa:
         key = 'XunMa_Token_%s' % self.serial
         if useCache :
 
-            tokenCache = cache.get(key) #讯码token有效期５分钟
+            tokenCache = cache.get(key)
             if tokenCache:
                 return tokenCache
         rk = dbapi.GetCodeSetting()
@@ -64,7 +64,6 @@ class XunMa:
         phone = cache.popSet(key)
         if phone:
             return phone
-
 
         token = self.GetToken()
         try:

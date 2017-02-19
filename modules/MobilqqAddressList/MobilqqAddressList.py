@@ -15,7 +15,7 @@ sys.setdefaultencoding('utf8')
 class MobilqqAddressList:
     def __init__(self):
         self.repo = Repo()
-        self.xuma = XunMa()
+        self.xuma = None
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
@@ -91,6 +91,7 @@ class MobilqqAddressList:
 
 
     def Bind(self,d):
+        self.xuma = XunMa(d.server.adb.device_serial())
         newStart = 1
         while newStart == 1:
             GetBindNumber = self.xuma.GetPhoneNumber('2113')
@@ -284,7 +285,7 @@ class MobilqqAddressList:
             d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()  # Material
             z.input(Material)
             time.sleep(1)
-            # d(resourceId='com.tencent.mobileqq:id/fun_btn', text='发送').click()
+            d(resourceId='com.tencent.mobileqq:id/fun_btn', text='发送').click()
             i = i + 1
             t = t + 1
             d(resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft', description='返回消息界面').click()

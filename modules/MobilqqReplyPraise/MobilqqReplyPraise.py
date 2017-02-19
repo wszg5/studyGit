@@ -24,7 +24,7 @@ class MobilqqReplyPraise:
         uniqueNum = str(nowTime) + str(randomNum);
         return uniqueNum
 
-    def Gender(self, d):
+    def Gender(self, d,i):
         co = RClient()
         im_id = ""
         co.rk_report_error(im_id)
@@ -32,8 +32,9 @@ class MobilqqReplyPraise:
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
         sourcePng = os.path.join(base_dir, "%s_s.png" % (self.GetUnique()))
-        obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.TextView',
-                descriptionContains='基本信息')  # 当弹出选择QQ框的时候，定位不到验证码图片
+        obj = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=i) \
+            .child(className='android.widget.RelativeLayout', index=1).child(
+            resourceId='com.tencent.mobileqq:id/lastMsgTime')  # 得到QQ号
         if obj.exists:
             obj = obj.info
             obj = obj['bounds']  # 验证码处的信息
@@ -86,113 +87,102 @@ class MobilqqReplyPraise:
             return '不限'
 
     def action(self, d,z,args):
+        gender = args['gender']
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
-
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
-        d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+        d.server.adb.cmd("shell",
+                         "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(8)
         d(descriptionContains='帐户及设置').click()
         d(descriptionContains='等级').click()
         d(descriptionContains='赞').click()
-        d(className='android.widget.AbsListView').child()
-
         set1 = set()
-        change = 0
         i = 1
         t = 1
-        ending = 0  # 用来判断是否到底
-        EndIndex = int(args['EndIndex'])  # ------------------
-        while t < EndIndex + 1:
-            cate_id = args["repo_material_id"]  # ------------------
-            Material = self.repo.GetMaterial(cate_id, 0, 1)
-
-            try:
-                Material = Material[0]['content']  # 从素材库取出的要发的材料
-                wait = 0
-            except Exception:
-                d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-
-            time.sleep(1)
-            obj = d(className='android.widget.ListView').child(className='android.widget.RelativeLayout', index=i).child(
-                className='android.widget.LinearLayout').child(className='android.widget.TextView')  # 得到QQ号
-            if obj.exists:
-                change = 1  # 好友存在且未被添加的情况出现，change值改变
-                obj1 = obj.info
+        add_count = int(args['add_count'])  # 要添加多少人
+        while t < add_count + 1:
+            obj = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=i) \
+                .child(className='android.widget.RelativeLayout', index=1).child(
+                className='android.widget.LinearLayout')  # 用来点击的
+            obj1 = obj.child(className='android.widget.TextView')
+            obj3 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=i) \
+            .child(className='android.widget.RelativeLayout', index=1).child(
+            resourceId='com.tencent.mobileqq:id/lastMsgTime')  # 看性别是否存在
+            if gender=='不限':
+                print
+            else:       #给赞我的人发消息，看性别是否有消息
+                if obj3.exists:    #对性别有要求的情况，看性别是否有显示
+                    genderfrom = self.Gender(d,i)    #得到第ｉ个人的真实性别
+                    if genderfrom == gender:
+                        print
+                    else:
+                        i = i+1
+                        continue
+                else:
+                    if d(textContains='暂无更多').exists:
+                        break
+                    if d(textContains='显示更多').exists:
+                        d(textContains='显示更多').click()
+                    d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
+                    for g in range(0, 12, +1):
+                        obj2 = d(className='android.widget.AbsListView').child(
+                            className='android.widget.RelativeLayout', index=g) \
+                            .child(className='android.widget.RelativeLayout', index=1).child(
+                            className='android.widget.LinearLayout').child(className='android.widget.TextView')  # 用来点击的
+                        if obj2.exists:
+                            obj2 = obj2.info
+                            Tname = obj2['text']
+                            if Tname == name:
+                                break
+                    i = g + 1
+                    continue
+            if obj1.exists:    #当对性别没要求时，就判断昵称是否存在
+                obj1 = obj1.info
                 name = obj1['text']
-                if name in set1:  # 判断是否已经给该人发过消息
+                if name in set1:  # 判断是否已经关注过该联系人
                     i = i + 1
                     continue
                 else:
                     set1.add(name)
                     print(name)
                 obj.click()
-                GenderFrom = args['gender']  # -------------------------------
-                if GenderFrom != '不限':
-                    obj = d(className='android.widget.LinearLayout', index=1).child(
-                        className='android.widget.LinearLayout').child(className='android.widget.ImageView',
-                                                                       index=1)  # 看性别是否有显示
-                    if obj.exists:
-                        Gender = obj.info
-                        Gender = Gender['contentDescription']
-                        if Gender == GenderFrom:
-                            print()
-                        else:  # 如果性别不符号的情况
-                            d(description='返回').click()
-                            i = i + 1
-                            continue
-                    else:  # 信息里没有显示出性别的话
-                        d(description='返回').click()
-                        i = i + 1
-                        continue
+                while d(textContains='正在加载').exists:
+                    time.sleep(2)
+                if d(text='关注').exists:
+                    d(text='关注').click()
+                    time.sleep(1)
+                    if d(text='关注').exists:
+                        return
 
-                d(text='发消息').click()
-
-                time.sleep(1)
-                obj = d(className='android.widget.EditText').info  # 将之前消息框的内容删除
-                obj = obj['text']
-                lenth = len(obj)
-                m = 0
-                while m < lenth:
-                    d.press.delete()
-                    m = m + 1
-                d(className='android.widget.EditText').click()
-                z.input(Material)  # ----------------------------------------
-                d(text='发送').click()
-                time.sleep(1)
-                d(description='返回').click()
-                d(text='通讯录').click()
-                i = i + 1
-                t = t + 1
-                continue
-
-            else:
-                if change == 0:  # 一次还没有点击到人
+                    d(text='返回').click()
+                    i = i + 1
+                    t = t + 1
+                else:
+                    d(text='返回').click()  # 该好友已被关注的情况
                     i = i + 1
                     continue
-                else:
-                    d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
-                    time.sleep(2)
-
-                    if ending == 1:  # 结束条件
-                        return
-                    if d(textContains='位联系人').exists:
-                        ending = 1
-
-                        # return
-                    for g in range(0, 12, +1):
-                        time.sleep(0.5)
-                        obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',
-                                                                           index=g).child(
-                            className='android.widget.LinearLayout').child(className='android.view.View')  # 得到微信名
-                        obj = obj.info
-                        Tname = obj['text']
+            else:
+                if d(textContains='暂无更多').exists:
+                    break
+                if d(textContains='显示更多').exists:
+                    d(textContains='显示更多').click()
+                d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
+                for g in range(0, 12, +1):
+                    obj2 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=g) \
+                        .child(className='android.widget.RelativeLayout', index=1).child(
+                        className='android.widget.LinearLayout').child(className='android.widget.TextView')  # 用来点击的
+                    if obj2.exists:
+                        obj2 = obj2.info
+                        Tname = obj2['text']
                         if Tname == name:
                             break
-                    i = g + 1
-                    continue
+                i = g + 1
+                continue
+
+
+
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -213,7 +203,7 @@ if __name__ == "__main__":
     # while True:
     #     d.swipe(width / 2, height * 4 / 5, width / 2, height / 4)
 
-    args = {"repo_number_cate_id":"38","add_count":"3","time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"38",'gender':"男","add_count":"3","time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
 
