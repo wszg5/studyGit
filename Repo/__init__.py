@@ -27,7 +27,7 @@ class Repo:
 
 
 
-    def GetMaterial(self, cateId, interval,limit,wid=''):
+    def GetMaterial(self, cateId, interval,limit,wid=''):    #wid是用来发微信朋友圈的
         path = "/repo_api/material/pick?status=normal&cate_id=%s&interval=%s&limit=%s&wid=%s" % (cateId,interval,limit,wid)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
@@ -67,8 +67,10 @@ class Repo:
         conn.request("GET",path)
 
 
-
-#http://localhost:8888/repo_api/screen/numberInfo?PhoneNumber=&cate_id=
+    def uploadPhoneNumber(self, phoneNumber, numberCateId):
+        path = "/repo_api/screen/numberInfo?PhoneNumber=%s&cate_id=%s" % (phoneNumber, numberCateId)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
 
 
 if __name__ == '__main__':

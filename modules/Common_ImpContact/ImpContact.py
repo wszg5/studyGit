@@ -68,12 +68,10 @@ if __name__ == "__main__":
     # global args
     clazz = getPluginClass()
     o = clazz()
-    #d = Device("FA48VSR03651")
-    #z = ZDevice("FA48VSR03651")
+
     d = Device("HT4AVSK01106")
     z = ZDevice("HT4AVSK01106")
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
-
 
 
     # d.dump(compressed=False)

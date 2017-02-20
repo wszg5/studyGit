@@ -129,16 +129,10 @@ if __name__ == "__main__":
 
     slot = slot('tim')
 
-    # print(d.dump(compressed=False))
-    # print(d.info)
-    slot.restore(d, 1)  # 有２小时没用过的卡槽情况，切换卡槽
-
     d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").communicate()
-    # d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()  # 清除缓存
+
 
     args = {"repo_cate_id":"32","time_delay":"3","time_limit":"120"};    #cate_id是仓库号，length是数量
 
-
-    # args = {"step_id":"17010410261870600","repo_cate_id":"33","time_limit":"3","time_delay":"3"}
     # o.slot.restore(d,1)
     o.action(d,z,args)

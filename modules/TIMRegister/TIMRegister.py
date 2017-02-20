@@ -7,15 +7,15 @@ from zservice import ZDevice
 from random import choice
 import string,random
 
-class TIMQQRegister:
+class TIMRegister:
     def __init__(self):
-        self.XunMa = XunMa()
+        self.xm = None
         self.repo = Repo()
 
 
     def action(self, d,z,args):
         cateId = args['repo_cate_id']
-        numberCateId = args['muchNumber_cate_id']
+        self.xm = XunMa(d.server.adb.device_serial())
 
         for registerQQ in range(1, 1000):
 
@@ -42,7 +42,7 @@ class TIMQQRegister:
                 d(className='android.widget.Button', text='新用户').click()
             time.sleep(2)
 
-            phoneNumber = self.XunMa.GetPhoneNumber( '2111')
+            phoneNumber = self.xm.GetPhoneNumber( '2111')
             print '手机号'
             print phoneNumber
             print '============'
@@ -56,32 +56,38 @@ class TIMQQRegister:
             time.sleep(2)
 
 
-
-            tip = 'True'
-            for j in range(1, 35):
+            for j in range(1, 15):
                 time.sleep(1)
                 if d(text='请输入短信验证码', className='android.widget.EditText').exists:
                     break
                 if d(text='分享', className='android.widget.TextView').exists:
-                    tip = 'False'
-                    break
-            if tip=='False':
+                    d(text='填写手机号码', className='android.widget.TextView').click()
+                    d(text='下一步', className='android.widget.Button').click()
+                    continue
+
+            if j==15:
                 continue
 
-            time.sleep(3)
+            time.sleep(1)
+            while 1:
+                if d(text='请输入短信验证码', className='android.widget.EditText').exists:
+                    break
+                else:
+                    time.sleep(1)
+
             # 关闭设备锁
             if d(description='开启设备锁，保障QQ帐号安全。', className='android.widget.CheckBox').exists:
-                self.XunMa.ReleasePhone(phoneNumber, '2111')
+                self.xm.ReleasePhone(phoneNumber, '2111')
                 continue
 
             else:
 
-                # data = self.XunMa.UploadPhoneNumber(phoneNumber, token)
+                # data = self.xm.UploadPhoneNumber(phoneNumber, token)
                 # if data == 0:
                 #     print "************匹配号码失败**************"
                 #     continue
 
-                vertifyCode = self.XunMa.GetVertifyCode(phoneNumber,'2111')  # 获取验证码
+                vertifyCode = self.xm.GetVertifyCode(phoneNumber,'2111')  # 获取验证码
 
 
                 if vertifyCode == "":
@@ -89,10 +95,10 @@ class TIMQQRegister:
                         d(text='重新发送', className='android.widget.TextView').click()
                         time.sleep(2)
                         print '重新发送'
-                        vertifyCode = self.XunMa.GetVertifyCode(phoneNumber, '2111')
+                        vertifyCode = self.xm.GetVertifyCode(phoneNumber, '2111')
 
                         if vertifyCode=='':
-                            self.XunMa.ReleasePhone(phoneNumber, '2111')
+                            self.xm.ReleasePhone(phoneNumber, '2111')
                             print '验证码获取失败'
                             continue
 
@@ -103,14 +109,14 @@ class TIMQQRegister:
                 d(text='下一步', className='android.widget.Button').click()
                 time.sleep(2)
 
-                try:
-                    d(className='android.widget.TextView',textContains='维持绑定').click()  # ****有问题，会crash****
-                except Exception:
-                    print ('维持绑定失败')
-                    continue
+                while 1:
+                    if d(className='android.widget.TextView', textContains='维持绑定').exists:
+                        d(className='android.widget.TextView', textContains='维持绑定').click
+                        break
+                    else:
+                        time.sleep(1)
 
-                wait = 1
-                while wait == 1:
+                while 1:
                     nickNameList = self.repo.GetMaterial(cateId, 0, 1)
                     if "Error" in nickNameList:  # 没有取到号码的时候
                         d.server.adb.cmd("shell",
@@ -122,15 +128,9 @@ class TIMQQRegister:
                                          "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码%s号仓库为空，等待中\"" % cateId).communicate()
                         time.sleep(1)
                         continue
-                    wait = 0
 
                 nickName = nickNameList[0]["content"]
                 nickName = nickName.encode("utf-8")
-
-                # nickName = ''
-                # while nickName=='':
-                #     nickName = full_name(last_names, first_names)
-                #     continue
 
 
                 d(text='昵称', className='android.widget.EditText').click()
@@ -138,7 +138,7 @@ class TIMQQRegister:
                 print '昵称'
                 print nickName
 
-                password = self.GenPassword()
+                password = self.GenPassword(4,4)
                 d(text='密码', className='android.widget.EditText').set_text(password)
                 d(text='注册', className='android.widget.Button').click()
                 obj = d(index=1, className='android.widget.TextView', resourceId='com.tencent.tim:id/name').info
@@ -147,9 +147,7 @@ class TIMQQRegister:
                 d(text='登录', className='android.widget.Button').click()
                 time.sleep(1)
 
-
-
-
+            numberCateId = args['muchNumber_cate_id']
             self.repo.RegisterAccount(qqNumber, password, phoneNumber, numberCateId)
             # z.set_mobile_data(False)
             # time.sleep(6)
@@ -164,10 +162,10 @@ class TIMQQRegister:
         # alphanumeric, upper and lowercase
         return ''.join([random.choice(letters) for _ in range(length)])
 
-    def GenPassword(self):
+    def GenPassword(self,numOfNum,numOfLetter):
         # 随机出数字的个数
-        numOfNum = 4
-        numOfLetter = 4
+        # numOfNum = 4
+        # numOfLetter = 4
         # 选中numOfNum个数字
         slcNum = [random.choice(string.digits) for i in range(numOfNum)]
         # 选中numOfLetter个字母
@@ -179,7 +177,7 @@ class TIMQQRegister:
 
 
 def getPluginClass():
-    return TIMQQRegister
+    return TIMRegister
 
 if __name__ == "__main__":
     import sys
@@ -188,24 +186,13 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54RSK00679")
-    z = ZDevice("HT54RSK00679")
+    d = Device("HT52DSK00474")
+    z = ZDevice("HT52DSK00474")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").communicate()    #打开android设置页面
 
-    # try:
-    args = {"repo_cate_id": "38","muchNumber_cate_id":"32", "time_delay": "1"};
+    args = {"repo_cate_id": "47","muchNumber_cate_id":"35", "time_delay": "1"};
     o.action(d, z, args)
-
-    # except Exception, e:
-    #     print Exception, ":", e
-    #     if d(className = 'android.widget.Button', text='确定').exists:
-    #         d(className='android.widget.Button', text='确定').click()
-    #         print 'TIM崩了'
-    #         o.action(d, z)
-    #     else:
-    #         print '未知错误'
-    #         o.action(d, z)
 
     # repo = Repo()
     # nickNameList = repo.GetMaterial(56, 0, 1)

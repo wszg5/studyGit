@@ -41,15 +41,16 @@ class TIMAddressSendMessage:
         EndIndex = int(args['EndIndex'])
         while t < EndIndex+1:
             cate_id = args["repo_material_id"]
-            Material = self.repo.GetMaterial(cate_id, 0, 1)
-            wait = 1
-            while wait == 1:
-                try:
-                    Material = Material[0]['content']  # 从素材库取出的要发的材料
-                    wait = 0
-                except Exception:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到消息\"").communicate()
-            time.sleep(2)
+            # message = self.repo.GetMaterial(cate_id, 0, 1)
+            message = '你已经把我忘了吗'
+
+            # while 1:
+            #     try:
+            #         message = message[0]['content']  # 从素材库取出的要发的材料
+            #         wait = 0
+            #     except Exception:
+            #         d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到消息\"").communicate()
+            time.sleep(1)
             obj = d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(resourceId='com.tencent.tim:id/group_item_layout',index=10)
             if obj.exists and i ==10:      #通讯录好友已经到底的情况
                 return
@@ -58,14 +59,14 @@ class TIMAddressSendMessage:
             obj = d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=i).child(resourceId='com.tencent.tim:id/text1',index=1)  # 点击第ｉ个人
             if obj.exists:
                 obj.click()
-                time.sleep(2)
+                time.sleep(1)
             else:
                 i = i+1
                 continue
             d(resourceId='com.tencent.tim:id/txt', text='发消息').click()
             time.sleep(2)
             d(resourceId='com.tencent.tim:id/input', className='android.widget.EditText').click()  # Material
-            z.input(Material)
+            z.input(message)
             time.sleep(1)
             d(resourceId='com.tencent.tim:id/fun_btn', text='发送').click()
             i = i+1
@@ -83,9 +84,9 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT57FSK00089")
-    z = ZDevice("HT57FSK00089")
+    d = Device("HT52DSK00474")
+    z = ZDevice("HT52DSK00474")
     # print(d.dump(compressed=False))
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_material_id":"33","time_delay":"3","EndIndex":"8"};    #cate_id是仓库号，length是数量
+    args = {"repo_material_id":"39","time_delay":"3","EndIndex":"8"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)
