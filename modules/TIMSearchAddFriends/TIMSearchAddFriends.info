@@ -1,11 +1,11 @@
 {
 "id": "TIMSearchAddFriends",
 "cate":"其他模块",
-"name":"TIM版QQ添加好友",
+"name":"TIM搜索加好友",
 "url": "http://www.bejson.com",
 "version": "1.0",
 "icon": "vcard-o",
-"remark":"添加好友",
+"remark":"搜索添加好友",
 "setting":[
 	{
 	"id": "repo_number_cate_id",

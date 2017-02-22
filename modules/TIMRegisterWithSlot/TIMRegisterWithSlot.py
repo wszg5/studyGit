@@ -83,23 +83,10 @@ class TIMRegisterWithSlot:
         if d(text='绑定新QQ号码', className='android.widget.TextView').exists:
             d(text='绑定新QQ号码', className='android.widget.TextView').click()
 
-        while 1:
-            nickNameList = self.repo.GetMaterial(cateId, 0, 1)
-            if "Error" in nickNameList:  # 没有取到素材的时候
-                d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码%s号仓库为空，等待中\"" % cateId).communicate()
-                time.sleep(3)
-                continue
-            elif len(nickNameList) == 0:
-                d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码%s号仓库为空，等待中\"" % cateId).communicate()
-                time.sleep(1)
-                continue
 
+        nickNameList = self.repo.GetMaterial(cateId, 0, 1)
         nickName = nickNameList[0]["content"]
         nickName = nickName.encode("utf-8")
-        print '昵称'
-        print nickName
 
         d(resourceId='com.tencent.tim:id/name', className='android.widget.EditText').click()
         z.input(nickName)
@@ -203,3 +190,16 @@ if __name__ == "__main__":
     args = {"repo_cate_id":"102","time_delay":"3","time_limit":"120"};               #cate_id是仓库号，length是数量
 
     o.action(d,z,args)
+
+    # slot = slot('tim')
+    # slot.restore(d, 6)  # 有２小时没用过的卡槽情况，切换卡槽
+    #
+    # time.sleep(8)
+    #
+    # d.server.adb.cmd("shell",
+    #                  "am broadcast -a com.zunyun.zime.toast --es msg \"TIM卡槽成功切换成" + str(6) + "\"").communicate()
+    # time.sleep(1)
+    #
+    # d.server.adb.cmd("shell",
+    #                  "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+
