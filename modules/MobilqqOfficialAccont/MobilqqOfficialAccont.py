@@ -34,15 +34,14 @@ class MobilqqAddFrRouse:
                 className='android.widget.RelativeLayout', index=1).click()
             if d(text='进入公众号').exists:
                 d(textContains='返回').click()
-                d(description='清除').click()
+                d(descriptionContains='搜索聊天或者联系人').child(description='清空').click()
                 continue
             else:
                 d(text='加关注').click()
                 time.sleep(2)
             d(text='返回').click()
             d(text='返回').click()
-            d(description='清除').click()
-            d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=0).click()
+            d(descriptionContains='搜索聊天或者联系人').child(description='清空').click()
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -58,7 +57,7 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
-    d(description='清除').click()
+
     args = {"repo_material_id":"116","add_count":"2","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
