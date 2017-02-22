@@ -289,7 +289,7 @@ class MobilqqAddByAddressList:
                 d(text='返回').click()
                 i = i+1
                 continue
-            obj = d(className='android.widget.EditText', index=1).info  # 将之前消息框的内容删除
+            obj = d(className='android.widget.EditText').info  # 将之前消息框的内容删除
             obj = obj['text']
             lenth = len(obj)
             delet = 0
@@ -298,8 +298,11 @@ class MobilqqAddByAddressList:
                 delet = delet + 1
             z.input(Material)
             time.sleep(1)
-            # d(text='发送').click()
-            d(text='取消').click()
+            d(text='发送').click()
+            if d(textContains='添加失败').exists:
+                d(text='确定').click()
+                d(text='取消').click()
+            # d(text='取消').click()
             i = i + 1
             t = t + 1
             d(text='返回').click()

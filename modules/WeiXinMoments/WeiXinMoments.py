@@ -26,7 +26,8 @@ class WeiXinMoments:
 
         z.wx_action('opensnsui')
         time.sleep(3)
-        myname = d(className='android.widget.TextView',index=2).info
+        myname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0).child(
+            className='android.widget.TextView').info
         myname = myname['text']
         d.swipe(width / 2, height * 4 / 5, width / 2, height / 4)
         time.sleep(1)

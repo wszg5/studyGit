@@ -28,22 +28,17 @@ class MobilqqAddFrRouse:
         add_count = int(args['add_count'])  # 要添加多少人
 
         repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
-        wait = 1
-        while wait == 1:
-            numbers = self.repo.GetNumber(repo_number_cate_id, 120, add_count)  # 取出add_count条两小时内没有用过的号码
-            lenth = len(numbers)
-            if "Error" in numbers:  #没有取到号码的时候
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到号码\"")
-                continue
-            elif lenth==0:
-                continue
-            wait = 0
+
+        numbers = self.repo.GetNumber(repo_number_cate_id, 120, add_count)  # 取出add_count条两小时内没有用过的号码
+        if "Error" in numbers:  #没有取到号码的时候
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到号码\"")
+
 
         list = numbers  # 将取出的号码保存到一个新的集合
-        print(list)
 
         for i in range (0,add_count,+1):            #总人数
-            numbers = list[i]
+            numbers = list[i]['number']
+            print(numbers)
             time.sleep(1)
             d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"'%numbers)  # qq名片页面
             time.sleep(2)
@@ -83,6 +78,6 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    args = {"repo_number_cate_id":"38","repo_material_cate_id":"40","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"38","repo_material_cate_id":"40","add_count":"2","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

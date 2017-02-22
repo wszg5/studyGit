@@ -5,7 +5,7 @@ import os, time, datetime, random
 from zservice import ZDevice
 
 
-class TIMAdviceTempoAddFriends:
+class TIMAddressAddFriends:
     def __init__(self):
 
         self.repo = Repo()
@@ -73,27 +73,43 @@ class TIMAdviceTempoAddFriends:
             else:
                 i = i + 1
                 continue
-            d(resourceId='com.tencent.tim:id/txt', text='发消息').click()
+            d(className='android.widget.Button', text='加好友').click()
             time.sleep(2)
-            d(resourceId='com.tencent.tim:id/input', className='android.widget.EditText').click()  # Material
+            if not d(index=3, className='android.widget.EditText').exists:
+                d(className='android.widget.TextView', text='返回').click()
+                d(className='android.widget.TextView', text='返回').click()
+                continue
+            d(index=3, className='android.widget.EditText').click()  # Material
+            obj = d(index=3, className='android.widget.EditText').info  # 将之前消息框的内容删除
+            obj = obj['text']
+            lenth = len(obj)
+            delet = 0
+            while delet < lenth:
+                d.press.delete()
+                delet = delet + 1
+            print Material
             z.input(Material)
             time.sleep(1)
-            d(resourceId='com.tencent.tim:id/fun_btn', text='发送').click()
+            d(className='android.widget.TextView', text='下一步').click()
+            d(className='android.widget.TextView', text='发送').click()
             i = i + 1
             t = t + 1
-            d(resourceId='com.tencent.tim:id/ivTitleBtnLeft', description='返回消息界面').click()
-            d(className='android.widget.TabWidget', resourceId='android:id/tabs', index=1).child(
-                className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
+
             continue
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():
-    return TIMAdviceTempoAddFriends
+    return TIMAddressAddFriends
 
 
 if __name__ == "__main__":
+    import sys
+
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
+
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT52DSK00474")

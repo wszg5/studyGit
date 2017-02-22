@@ -29,7 +29,8 @@ class WXDelLable:
         else:
             d(text='通讯录').click()
             d(text='标签').click()
-
+        if d(textContains='暂无标签').exists:
+            return
         gender = args['gender']
         if gender=='不限':
             obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0). \

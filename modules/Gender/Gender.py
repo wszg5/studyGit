@@ -38,8 +38,9 @@ class MobilqqLogin:
             os.mkdir(base_dir)
         sourcePng = os.path.join(base_dir, "%s_s.png" % (self.GetUnique()))
 
-        obj = d(className='android.widget.ListView').child(className='android.widget.RelativeLayout', index=1).child(className='android.widget.RelativeLayout', index=1).\
-            child(resourceId='com.tencent.mobileqq:id/lastMsgTime')  # 得到QQ号
+        obj = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=4) \
+            .child(className='android.widget.RelativeLayout', index=1).child(
+            resourceId='com.tencent.mobileqq:id/lastMsgTime')  # 得到QQ号
         if obj.exists:
             obj = obj.info
             obj = obj['bounds']  # 验证码处的信息
@@ -101,14 +102,9 @@ if __name__ == "__main__":
 
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-    # slot = slot('mobileqq')
-    # slot.restore(d, 5)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    # d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
-    # slot.restore(d, 9)
-
     # d.dump(compressed=False)
+
     args = {"repo_cate_id":"59","time_limit":"30","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

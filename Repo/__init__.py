@@ -27,7 +27,7 @@ class Repo:
 
 
 
-    def GetMaterial(self, cateId, interval,limit,wid=''):
+    def GetMaterial(self, cateId, interval,limit,wid=''):    #wid是用来发微信朋友圈的
         path = "/repo_api/material/pick?status=normal&cate_id=%s&interval=%s&limit=%s&wid=%s" % (cateId,interval,limit,wid)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
@@ -38,8 +38,6 @@ class Repo:
             return  numbers
         else:
             return "Error Getting material, Please check your repo"
-
-
 
 
 
@@ -63,18 +61,16 @@ class Repo:
         conn.request("GET",path)
 
 
-    def RegisterAccount(self,qqNumber,password,phomeNumber, numberCateId):
-        path = "/repo_api/register/numberInfo?QQNumber=%s&QQPassword=%s&PhoneNumber=%s&cate_id=%s" % (qqNumber,password,phomeNumber,numberCateId)
+    def RegisterAccount(self,qqNumber,password,phoneNumber, numberCateId):
+        path = "/repo_api/register/numberInfo?QQNumber=%s&QQPassword=%s&PhoneNumber=%s&cate_id=%s" % (qqNumber,password,phoneNumber,numberCateId)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET",path)
 
 
-    def uploadPhoneNumber(self, phomeNumber, numberCateId):
-        path = "/repo_api/screen/numberInfo?PhoneNumber=%s&cate_id=%s" % (phomeNumber, numberCateId)
+    def uploadPhoneNumber(self, phoneNumber, numberCateId):
+        path = "/repo_api/screen/numberInfo?PhoneNumber=%s&cate_id=%s" % (phoneNumber, numberCateId)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
-
-
 
 
 if __name__ == '__main__':
