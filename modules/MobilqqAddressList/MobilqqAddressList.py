@@ -15,7 +15,7 @@ sys.setdefaultencoding('utf8')
 class MobilqqAddressList:
     def __init__(self):
         self.repo = Repo()
-        self.xuma = XunMa()
+        self.xuma = None
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
@@ -91,6 +91,7 @@ class MobilqqAddressList:
 
 
     def Bind(self,d):
+        self.xuma = XunMa(d.server.adb.device_serial())
         newStart = 1
         while newStart == 1:
             GetBindNumber = self.xuma.GetPhoneNumber('2113')
@@ -223,11 +224,8 @@ class MobilqqAddressList:
         while t < EndIndex+1:
             cate_id = args["repo_material_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
-
             try:
                 Material = Material[0]['content']  # 从素材库取出的要发的材料
-
-                wait = 0
             except Exception:
                 d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
 
@@ -284,7 +282,7 @@ class MobilqqAddressList:
             d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()  # Material
             z.input(Material)
             time.sleep(1)
-            # d(resourceId='com.tencent.mobileqq:id/fun_btn', text='发送').click()
+            d(resourceId='com.tencent.mobileqq:id/fun_btn', text='发送').click()
             i = i + 1
             t = t + 1
             d(resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft', description='返回消息界面').click()

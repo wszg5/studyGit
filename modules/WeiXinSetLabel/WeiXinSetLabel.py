@@ -123,7 +123,7 @@ class WeiXinSetLabel:
                     time.sleep(3)
 
                     if ending == 1:     #结束条件
-                        return
+                        break
                     if d(textContains='位联系人').exists:
                         ending = 1
 

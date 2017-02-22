@@ -27,6 +27,13 @@ class MobilqqConcern:
         d(descriptionContains='等级').click()
         d(descriptionContains='赞').click()
         d(text='我赞过谁').click()
+        obj3 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=i) \
+            .child(className='android.widget.RelativeLayout', index=1).child(
+            className='android.widget.LinearLayout')  # 用来点击的
+        if obj3.exists:
+            print
+        else:        #我没赞过好友的情况
+            return
         set1 = set()
         i = 1
         t = 1

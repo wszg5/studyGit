@@ -118,6 +118,10 @@ class WXYaoYiYao:
                         time.sleep(0.5)
                     else:
                         continue
+                if d(textContains='打招呼消息').exists:
+                    d(textContains='打招呼消息').click()
+                    time.sleep(1)
+                    d(text='返回').click()
                 d(textContains='相距').click()
                 d(text='打招呼').click()
                 d(className='android.widget.EditText').click()

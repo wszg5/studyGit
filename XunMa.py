@@ -23,7 +23,7 @@ class XunMa:
         key = 'XunMa_Token_%s' % self.serial
         if useCache :
 
-            tokenCache = cache.get(key) #讯码token有效期５分钟
+            tokenCache = cache.get(key)
             if tokenCache:
                 return tokenCache
         rk = dbapi.GetCodeSetting()
@@ -54,6 +54,7 @@ class XunMa:
             conn.request("GET", path)
         except Exception:
             ok = 'ok'
+
 
 
     def GetPhoneNumber(self, itemId, times=0):
@@ -118,6 +119,7 @@ class XunMa:
             response = conn.getresponse()
             if response.status == 200:
                 data = response.read().decode('GBK')
+                print(data)
         except Exception:
             return None
 
@@ -158,7 +160,9 @@ class XunMa:
             ok='ok'
 
 
-    def UploadPhoneNumber(self, number, itemId):
+
+    def MatchPhoneNumber(self, number, itemId):
+
         token = self.GetToken()
         path = "/getPhone?ItemId=" + itemId + "&token=" + token + "&Phone="+number+""
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)

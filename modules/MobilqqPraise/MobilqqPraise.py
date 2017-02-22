@@ -29,7 +29,7 @@ class MobilqqPraise:
                 if "Error" in numbers:  # 没有取到号码的时候
                     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到号码\"")
                     time.sleep(5)
-                numbers = numbers[0]
+                numbers = numbers[0]['number']
                 time.sleep(0.5)
                 d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"'%numbers)  # qq名片页面
                 time.sleep(2)

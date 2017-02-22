@@ -1,4 +1,5 @@
 # coding:utf-8
+from XunMa import *
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
@@ -12,7 +13,35 @@ class MobilqqAddByAddressListII:
 
     def __init__(self):
         self.repo = Repo()
+        self.xuma = None
+    def Bind(self, d):
+        self.xuma = XunMa(d.server.adb.device_serial())
+        newStart = 1
+        while newStart == 1:
+            GetBindNumber = self.xuma.GetPhoneNumber('2113')
+            print(GetBindNumber)
+            time.sleep(2)
+            d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(
+                GetBindNumber)  # GetBindNumber
 
+            time.sleep(1)
+            d(text='下一步').click()
+            time.sleep(3)
+            if d(text='下一步', resourceId='com.tencent.mobileqq:id/name', index=2).exists:  # 操作过于频繁的情况
+                return 'false'
+
+            if d(text='确定', resourceId='com.tencent.mobileqq:id/name',
+                 index='2').exists:  # 提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
+                d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').click()
+
+            code = self.xuma.GetVertifyCode(GetBindNumber, '2113', '4')
+
+            newStart = 0
+
+            d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
+            d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
+
+        return 'true'
 
     def action(self, d,z, args):
 
@@ -48,8 +77,17 @@ class MobilqqAddByAddressListII:
         d(description='快捷入口').click()
         d(textContains='加好友').click()
         d(text='添加手机联系人').click()
+        if d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText',index=2).exists:  # 检查到尚未 启用通讯录
+            if d(text=' +null', resourceId='com.tencent.mobileqq:id/name').exists:
+                d(text=' +null', resourceId='com.tencent.mobileqq:id/name').click()
+                d(text='中国', resourceId='com.tencent.mobileqq:id/name').click()
+            text = self.Bind(d)  # 未开启通讯录的，现绑定通讯录
+            if text == 'false':  # 操作过于频繁的情况
+                return
+            time.sleep(7)
+        if d(textContains='没有可匹配的').exists:
+            return
         d(text='多选').click()
-
         while True:
             if d(text='#').exists:
                 for m in range(0,12,+1):
@@ -83,7 +121,7 @@ class MobilqqAddByAddressListII:
                         set1.add(phone)
                         print(phone)
                         obj5 = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=i)\
-                            .child(className='android.widget.FrameLayout').child(text='等待验证')
+                            .child(className='android.widget.FrameLayout').child(text='等待验证')     #验证已经发过的情况
                         if obj5.exists:
                             d(textContains='加好友').click()
                             obj = d(className='android.widget.EditText').info  # 将之前消息框的内容删除
@@ -148,8 +186,16 @@ class MobilqqAddByAddressListII:
                 print(i)
                 continue
 
-
-
+        d(textContains='加好友').click()
+        obj = d(className='android.widget.EditText').info  # 将之前消息框的内容删除
+        obj = obj['text']
+        lenth = len(obj)
+        mn = 0
+        while mn < lenth:
+            d.press.delete()
+            mn = mn + 1
+        z.input(Material)
+        d(text='发送').click()
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
@@ -163,7 +209,7 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_material_id": "36",'EndIndex':'100',"time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "36",'EndIndex':'2',"time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
 
