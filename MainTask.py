@@ -205,6 +205,7 @@ if __name__ == "__main__":
                     else:
                         if (processDict.has_key(deviceid) and processDict.get(deviceid).is_alive()):
                             processDict[deviceid].terminate()
+                            del processDict[deviceid]
         except Exception:
             logger.error(traceback.format_exc())
         time.sleep(30)
