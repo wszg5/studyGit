@@ -4,7 +4,6 @@ from XunMa import *
 from Repo import *
 import time
 from zservice import ZDevice
-from random import choice
 import string,random
 
 class TIMRegister:
@@ -116,27 +115,12 @@ class TIMRegister:
                     else:
                         time.sleep(1)
 
-                while 1:
-                    nickNameList = self.repo.GetMaterial(cateId, 0, 1)
-                    if "Error" in nickNameList:  # 没有取到号码的时候
-                        d.server.adb.cmd("shell",
-                                         "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码%s号仓库为空，等待中\"" % cateId).communicate()
-                        time.sleep(3)
-                        continue
-                    elif len(nickNameList) == 0:
-                        d.server.adb.cmd("shell",
-                                         "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码%s号仓库为空，等待中\"" % cateId).communicate()
-                        time.sleep(1)
-                        continue
-
+                nickNameList = self.repo.GetMaterial(cateId, 0, 1)
                 nickName = nickNameList[0]["content"]
                 nickName = nickName.encode("utf-8")
 
-
                 d(text='昵称', className='android.widget.EditText').click()
                 z.input(nickName)
-                print '昵称'
-                print nickName
 
                 password = self.GenPassword(4,4)
                 d(text='密码', className='android.widget.EditText').set_text(password)
@@ -162,10 +146,7 @@ class TIMRegister:
         # alphanumeric, upper and lowercase
         return ''.join([random.choice(letters) for _ in range(length)])
 
-    def GenPassword(self,numOfNum,numOfLetter):
-        # 随机出数字的个数
-        # numOfNum = 4
-        # numOfLetter = 4
+    def GenPassword(self,numOfNum=4,numOfLetter=4):
         # 选中numOfNum个数字
         slcNum = [random.choice(string.digits) for i in range(numOfNum)]
         # 选中numOfLetter个字母

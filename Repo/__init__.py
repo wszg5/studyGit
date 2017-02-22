@@ -63,14 +63,14 @@ class Repo:
         conn.request("GET",path)
 
 
-    def RegisterAccount(self,qqNumber,password,phomeNumber, numberCateId):
-        path = "/repo_api/register/numberInfo?QQNumber=%s&QQPassword=%s&PhoneNumber=%s&cate_id=%s" % (qqNumber,password,phomeNumber,numberCateId)
+    def RegisterAccount(self,qqNumber,password,phoneNumber, numberCateId):
+        path = "/repo_api/register/numberInfo?QQNumber=%s&QQPassword=%s&PhoneNumber=%s&cate_id=%s" % (qqNumber,password,phoneNumber,numberCateId)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET",path)
 
 
-    def uploadPhoneNumber(self, phomeNumber, numberCateId):
-        path = "/repo_api/screen/numberInfo?PhoneNumber=%s&cate_id=%s" % (phomeNumber, numberCateId)
+    def uploadPhoneNumber(self, phoneNumber, numberCateId):
+        path = "/repo_api/screen/numberInfo?PhoneNumber=%s&cate_id=%s" % (phoneNumber, numberCateId)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
 

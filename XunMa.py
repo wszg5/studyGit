@@ -158,9 +158,9 @@ class XunMa:
             ok='ok'
 
 
-    def UploadPhoneNumber(self, number):
+    def UploadPhoneNumber(self, number, itemId):
         token = self.GetToken()
-        path = "/getPhone?ItemId=144&token=" + token + "&Phone="+number+""
+        path = "/getPhone?ItemId=" + itemId + "&token=" + token + "&Phone="+number+""
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         try:
