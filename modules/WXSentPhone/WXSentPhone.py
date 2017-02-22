@@ -41,7 +41,7 @@ class WXSentPhone:
                 d(text='搜索').click()
                 z.input(PhoneNumber)
                 d(textContains='搜索:').click()
-
+                time.sleep(1)
                 if d(textContains='状态异常').exists:
                     print('没用')
                     d(descriptionContains='清除').click()
@@ -54,8 +54,12 @@ class WXSentPhone:
                 if d(textContains='过于频繁').exists:
                     break
                 SetCateId = args['repo_number_id']
+                if d(textContains='用户不存在'):
+                    print
+                else:
+                    d(descriptionContains='清除').click()
+                    continue
                 self.repo.uploadPhoneNumber(PhoneNumber,SetCateId)    #将有用的号传到库里
-
                 self.xuma.defriendPhoneNumber(PhoneNumber,'2251')       #将有用的号码拉黑
                 d(descriptionContains='清除').click()
                 account = account+1

@@ -69,12 +69,12 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4AVSK01106")
-    z = ZDevice("HT4AVSK01106")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
 
 
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"104",'number_count':'10000',"time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"104",'number_count':'200',"time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

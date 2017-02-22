@@ -30,8 +30,7 @@ class WXPictureMoment:
                 .child(className='android.widget.LinearLayout',index=1).child(className='android.view.View').info
             obj = obj['text']
         cate_id = args['repo_material_id']
-        repo = Repo()
-        materials = repo.GetMaterial(cate_id, 0, 1,obj)
+        materials = self.repo.GetMaterial(cate_id, 0, 1,obj)
         try:
             t = materials[0]  # 取出验证消息的内容
         except Exception:

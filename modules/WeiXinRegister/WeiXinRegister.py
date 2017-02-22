@@ -45,16 +45,14 @@ class RegisterAccount:
                 name = Material[0]['content']  # 从素材库取出的要发的材料
             except Exception:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-            z.input('泥垢了')       #name
+            z.input(name)       #name
             if d(text='中国').exists:
                 print()
             else:
                 d(textContains='国家').click()
-                while True:
-                    d.swipe(width / 2, height * 6 / 7, width / 2, height / 7, 7)
-                    if d(text='中国').exists:
-                        break
-            d(text='中国').click()
+                d(className='android.support.v7.widget.LinearLayoutCompat',index=1).click()
+                z.input('中')
+                d(text='中国').click()
             d(textContains='手机号码').click()
             cate_id = args['repo_number_id']
             PhoneNumber = self.repo.GetNumber(cate_id,120,1)
@@ -104,7 +102,7 @@ class RegisterAccount:
                 self.repo.RegisterAccount('',password,PhoneNumber,cate_id)
                 print ('成功')
                 time.sleep(20)
-                break
+
 
 
 def getPluginClass():
@@ -117,7 +115,8 @@ if __name__ == "__main__":
     z = ZDevice("HT4AVSK01106")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    args = {"repo_name_id": "105","repo_name_id1": "109","repo_number_id": "105", "add_count": "9","time_delay": "3"}  # cate_id是仓库号，发中文问题
+    # d(className='android.support.v7.widget.LinearLayoutCompat', index=1).click()
+    args = {"repo_name_id": "102","repo_number_id1": "109","repo_number_id": "105", "add_count": "9","time_delay": "3"}  # cate_id是仓库号，发中文问题
     o.action(d,z, args)
 
 

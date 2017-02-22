@@ -99,6 +99,13 @@ class MobilqqReplyPraise:
         d(descriptionContains='等级').click()
         d(descriptionContains='赞').click()
         time.sleep(3)
+        obj4 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=1) \
+            .child(className='android.widget.RelativeLayout', index=1).child(
+            className='android.widget.LinearLayout')  # 用来点击的
+        if obj4.exists:      #没有人赞我情况
+            print
+        else:
+            return
         set1 = set()
         i = 1
         t = 1
