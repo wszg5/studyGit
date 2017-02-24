@@ -37,10 +37,13 @@ class ImpContact:
         if numbers:
             file_object = open(filename, 'w')
             lines = ""
+            pname = ""
             for number in numbers:
                 if number["name"] is None:
-                    name = number["number"]
-                lines = "%s%s----%s\r" %(lines, name, number["number"])
+                    pname = number["number"]
+                else:
+                    pname = number["name"]
+                lines = "%s%s----%s\r" %(lines, pname, number["number"])
 
             file_object.writelines(lines)
             file_object.close()

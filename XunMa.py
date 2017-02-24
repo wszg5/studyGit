@@ -61,14 +61,14 @@ class XunMa:
         round = times + 1
         if  round > 30:
             raise 'XunMa has tried 3 minutes'
-        key = 'phone_%s_%s'%(self.serial, itemId)
+        token = self.GetToken()
+        key = 'phone_%s_%s'%(token, itemId)
         phone = cache.popSet(key)
         if phone:
             return phone
 
-        token = self.GetToken()
         try:
-            path = "/getPhone?ItemId=%s&token=%s&Count=3" % (itemId, token)
+            path = "/getPhone?ItemId=%s&token=%s&Count=1" % (itemId, token)
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
             response = conn.getresponse()
