@@ -11,41 +11,29 @@ class EIMAddFrendRouseI:
     def __init__(self):
         self.repo = Repo()
 
-
-
-
     def action(self, d,z, args):
 
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
-
         cate_id = int(args["repo_number_id"])  # 得到取号码的仓库号
-        wait = 1
-        while wait == 1:
-            numbers = self.repo.GetNumber(cate_id, 0, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
-            if "Error" in numbers:  # 没有取到号码的时候
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码%s号仓库为空，等待中\""%cate_id).communicate()
-                time.sleep(20)
-                continue
-            wait = 0
-
+        numbers = self.repo.GetNumber(cate_id, 0, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
+        if len(numbers) == 0:
+            d.server.adb.cmd("shell",
+                             "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码%s号仓库为空，等待中\"" % cate_id).communicate()
+            time.sleep(20)
+            return
         list = numbers  # 将取出的号码保存到一个新的集合
-        print(list)
 
         time.sleep(15)
-
         for i in range (0,totalNumber,+1):
             cate_id = args["repo_material_cate_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
-            wait = 1  # 判断素材仓库里是否由素材
-            while wait == 1:
-                try:
-                    material = Material[0]['content']  # 取出验证消息的内容
-                    wait = 0
-                except Exception:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\""%cate_id).communicate()
-                    time.sleep(20)
-
-            numbers = list[i]
+            if len(Material) == 0:
+                d.server.adb.cmd("shell",
+                                 "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                time.sleep(10)
+                return
+            numbers = list[i]['number']
+            material = Material[0]['content']
             time.sleep(1)
 
             d.server.adb.cmd("shell",
@@ -57,7 +45,9 @@ class EIMAddFrendRouseI:
                 time.sleep(0.5)
                 if d(text='仅此一次').exists:
                     d(text='仅此一次').click()
-
+            if d(textContains='风险提示').exists:
+                d(text='取消').click()
+                continue
             d(text='加为好友').click()
             time.sleep(1)
             if d(text='加为好友').exists:  # 拒绝被添加的情况
@@ -75,8 +65,7 @@ class EIMAddFrendRouseI:
                 t = t + 1
             time.sleep(1)
             z.input(material)
-            d(text='下一步', resourceId='com.tencent.eim:id/ivTitleBtnRightText').click()
-            d(text='发送', resourceId='com.tencent.eim:id/ivTitleBtnRightText').click()
+            d(text='发送').click()
 
 
 
@@ -93,7 +82,9 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    args = {"repo_number_id":"43","repo_material_cate_id":"37","totalNumber":"20","time_delay":"3"};    #cate_id是仓库号，length是数量
+
+
+    args = {"repo_number_id":"119","repo_material_cate_id":"39","totalNumber":"20","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d, z,args)
 

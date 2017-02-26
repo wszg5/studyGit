@@ -7,6 +7,9 @@ import os,re,subprocess
 from Repo import *
 from zservice import ZDevice
 import time, datetime, random
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 class EIMAddFriends:
     def __init__(self):
         self.repo = Repo()
@@ -18,17 +21,14 @@ class EIMAddFriends:
         add_count = int(args['add_count'])  # 要添加多少人
 
         cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
-
         numbers = self.repo.GetNumber(cate_id, 120, add_count)  # 取出add_count条两小时内没有用过的号码
         if len(numbers)==0:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\""%cate_id).communicate()
-            time.sleep(5)
-
-        wait = 0
+            time.sleep(10)
+            return
 
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
-
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.eim").communicate()  # 强制停止   3001369923  Bn2kJq5l
         d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
@@ -43,13 +43,12 @@ class EIMAddFriends:
         for i in range(0,add_count,+1):
             cate_id = args["repo_material_cate_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
-
-            try:
-                material = Material[0]['content']  # 取出验证消息的内容
-                wait = 0
-            except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"验证信息%s号仓库为空，等待中\""%cate_id).communicate()
-
+            if len(Material) == 0:
+                d.server.adb.cmd("shell",
+                                 "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                time.sleep(10)
+                return
+            material = Material[0]['content']
             numbers = list[i]['number']
             d(resourceId='com.tencent.eim:id/name',className='android.widget.EditText').set_text(numbers)    #numbers
             d(text='查找',resourceId='com.tencent.eim:id/name',className='android.widget.Button').click()
@@ -124,5 +123,5 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").communicate()
 
     # d.dump(compressed=False)
-    args = {"repo_number_cate_id":"49","repo_material_cate_id":"33","add_count":"6","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","add_count":"6","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

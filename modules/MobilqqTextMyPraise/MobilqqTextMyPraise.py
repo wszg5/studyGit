@@ -12,7 +12,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-class MobilqqReplyPraise:
+class MobilqqTextMyPraise:
     def __init__(self):
         self.repo = Repo()
 
@@ -107,6 +107,7 @@ class MobilqqReplyPraise:
         # d(descriptionContains='等级').click()
         # d(descriptionContains='赞').click()
         time.sleep(3)
+        d(text='我赞过谁').click()
         obj4 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=1) \
             .child(className='android.widget.RelativeLayout', index=1).child(
             className='android.widget.LinearLayout')  # 用来点击的
@@ -167,7 +168,16 @@ class MobilqqReplyPraise:
                 obj.click()
                 while d(textContains='正在加载').exists:
                     time.sleep(2)
+                if d(text='QQ电话').exists:       #已经是好友的情况
+                    d(text='返回').click()
+                    i = i+1
+                    continue
                 d(text='发消息').click()
+                time.sleep(0.5)
+                if d(textContains='关注').exists:     #当魅力值不够的情况
+                    d(text='返回').click()
+                    i = i+1
+                    continue
                 d(className='android.widget.EditText').click()
                 cate_id = args["repo_material_id"]
                 Material = self.repo.GetMaterial(cate_id, 0, 1)
@@ -207,7 +217,7 @@ class MobilqqReplyPraise:
 
 
 def getPluginClass():
-    return MobilqqReplyPraise
+    return MobilqqTextMyPraise
 
 if __name__ == "__main__":
     clazz = getPluginClass()
@@ -215,7 +225,7 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-
+    z.input('群')
     args = {"repo_material_id":"40",'gender':"不限",'EndIndex':'40',"time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

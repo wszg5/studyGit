@@ -19,13 +19,11 @@ class WeiXinAddFriends:
 
         cate_id = args["repo_material_cate_id"]
         Material = self.repo.GetMaterial(cate_id, 0, 1)
-
-        try:
-            material = Material[0]['content']  # 取出验证消息的内容
-            wait = 0
-        except Exception:
+        if len(Material) == 0:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
-            time.sleep(20)
+            time.sleep(10)
+            return
+        material = Material[0]['content']  # 取出验证消息的内容
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
@@ -45,10 +43,12 @@ class WeiXinAddFriends:
             if account<add_count:
                 cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
                 numbers = self.repo.GetNumber(cate_id, 120, 1)  # 取出add_count条两小时内没有用过的号码
-                if "Error" in numbers:  #
+                if len(numbers) == 0:
                     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
-                    time.sleep(5)
-                d(text='搜索').set_text(numbers[0])       #ccnn527xj  list[i]
+                    time.sleep(20)
+                    return
+                numbers = numbers[0]['number']
+                z.input(numbers)
                 d(textContains='搜索:').click()
                 if d(textContains='操作过于频繁').exists:
                     return
@@ -109,5 +109,5 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    args = {"repo_number_cate_id": "44", "repo_material_cate_id": "39", "add_count": "20", 'gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id": "44", "repo_material_cate_id": "39", "add_count": "3", 'gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

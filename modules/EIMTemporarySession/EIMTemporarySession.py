@@ -19,14 +19,11 @@ class EIMTemporarySession:
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
 
         cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
-        wait = 1
-        while wait == 1:
-            numbers = self.repo.GetNumber(cate_id, 0, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
-            if "Error" in numbers:  # 没有取到号码的时候
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码%s号仓库为空，等待中\""%cate_id).communicate()
-                time.sleep(20)
-                continue
-            wait = 0
+        numbers = self.repo.GetNumber(cate_id, 0, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
+        if len(numbers)==0:
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\""%cate_id).communicate()
+            time.sleep(10)
+            return
 
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
@@ -37,16 +34,15 @@ class EIMTemporarySession:
         for i in range (0,totalNumber,+1):
             cate_id = args["repo_material_cate_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
-            wait = 1  # 判断素材仓库里是否由素材
-            while wait == 1:
-                try:
-                    material = Material[0]['content']  # 取出验证消息的内容
-                    wait = 0
-                except Exception:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\""%cate_id).communicate()
-                    time.sleep(20)
+            if len(Material) == 0:
+                d.server.adb.cmd("shell",
+                                 "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                time.sleep(10)
+                return
+            material = Material[0]['content']  # 取出验证消息的内容
 
-            numbers = list[i]
+
+            numbers = list[i]['number']
             time.sleep(1)
 
             d.server.adb.cmd("shell",
@@ -90,7 +86,7 @@ if __name__ == "__main__":
 
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    args = {"repo_number_cate_id":"43","repo_material_cate_id":"37","totalNumber":"20","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","totalNumber":"20","time_delay":"3"};    #cate_id是仓库号，length是数量
     # z.openQQChat(154343346)   QQTemporarySession
 
     o.action(d, z,args)

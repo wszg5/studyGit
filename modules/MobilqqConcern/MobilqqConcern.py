@@ -23,11 +23,22 @@ class MobilqqConcern:
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(8)
-        d(descriptionContains='帐户及设置').click()
-        d(descriptionContains='等级').click()
-        d(descriptionContains='赞').click()
+        d(className='android.widget.TabWidget', index=2).child(className='android.widget.FrameLayout', index=2).child(
+            className='android.widget.RelativeLayout', index=0).click()
+        d(text='附近').click()
+        while True:
+            if d(text='新鲜事').exists:
+                break
+            else:
+                time.sleep(2)
+        d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout', index=2).child(
+            className='android.widget.LinearLayout', index=0).click()  # 点击进入自己的主页
+        d(descriptionContains='赞').child(className='android.view.View').click()
+        # d(descriptionContains='帐户及设置').click()
+        # d(descriptionContains='等级').click()
+        # d(descriptionContains='赞').click()
         d(text='我赞过谁').click()
-        obj3 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=i) \
+        obj3 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=1) \
             .child(className='android.widget.RelativeLayout', index=1).child(
             className='android.widget.LinearLayout')  # 用来点击的
         if obj3.exists:
@@ -49,6 +60,7 @@ class MobilqqConcern:
                     i = i + 1
                     continue
                 else:
+                    time.sleep(0.5)
                     set1.add(name)
                     print(name)
                 obj.click()
@@ -73,6 +85,7 @@ class MobilqqConcern:
                 if d(textContains='显示更多').exists:
                     d(textContains='显示更多').click()
                 d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
+                time.sleep(2)
                 for g in range(0,12,+1):
                     obj2 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=g) \
                         .child(className='android.widget.RelativeLayout', index=1).child(

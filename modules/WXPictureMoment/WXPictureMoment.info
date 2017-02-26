@@ -9,7 +9,7 @@
 "setting":[
 	{
     "id": "repo_material_id",
-    "name":"验证信息素材库",
+    "name":"朋友圈素材库",
     "type":"repo",
     "source":"material",
     "top_cate_id":"14"

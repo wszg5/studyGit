@@ -39,12 +39,11 @@ class WeiXinAddFriendByAddressList:
         while t < EndIndex :
             cate_id = args["repo_material_id"]   #------------------
             Material = self.repo.GetMaterial(cate_id, 0, 1)
-
-            try:
-                Material = Material[0]['content']  # 从素材库取出的要发的材料
-                wait = 0
-            except Exception:
+            if len(Material) == 0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                time.sleep(10)
+                return
+            Material = Material[0]['content']  # 从素材库取出的要发的材料
 
             time.sleep(1)
             obj = d(className='android.widget.LinearLayout', index=i).child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).child(textContains='微信:')     #得到微信名
@@ -157,19 +156,6 @@ if __name__ == "__main__":
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    # z.wx_action("openaddui")
-    # z.wx_sendtextsns('大开发来解决')
-    # z.wx_yaoyiyao()
-    # z.wx
-    # d(text='你的手机号码').set_text(17601543818)
-    # d(resourceId='com.tencent.mm:id/gr').set_text('13141314abc')
-    # d(className='android.widget.EditText').set_text('13141314abc')
-    # d(text='登录').click()
-    # repo = Repo()
-    # Material = repo.GetMaterial(36, 0, 1,'sdlfk')
-    # print(Material)
 
-
-
-    args = {"repo_material_id": "36",'EndIndex':'100','gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "39",'EndIndex':'100','gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

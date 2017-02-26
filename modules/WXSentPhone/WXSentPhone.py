@@ -15,7 +15,6 @@ class WXSentPhone:
         self.repo = Repo()
         self.xuma = None
 
-
     def action(self, d,z, args):
         self.xuma = XunMa(d.server.adb.device_serial())
 

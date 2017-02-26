@@ -23,12 +23,16 @@ class WeiXinMoments:
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
         time.sleep(7)
+        d(className='android.widget.RelativeLayout', index=3).child(text='我').click()
+        obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=1)\
+            .child(className='android.widget.LinearLayout',index=1).child(className='android.view.View').info
+        myname = obj['text']
 
         z.wx_action('opensnsui')
         time.sleep(3)
-        myname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0).child(
-            className='android.widget.TextView').info
-        myname = myname['text']
+        # myname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0).child(
+        #     className='android.widget.TextView').info
+        # myname = myname['text']
         d.swipe(width / 2, height * 4 / 5, width / 2, height / 4)
         time.sleep(1)
 
@@ -38,11 +42,11 @@ class WeiXinMoments:
         while t < EndIndex :
             cate_id = args["repo_material_id"]   #------------------
             Material = self.repo.GetMaterial(cate_id, 0, 1)
-            try:
-                Material = Material[0]['content']  # 从素材库取出的要发的材料
-                wait = 0
-            except Exception:
+            if len(Material) == 0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                time.sleep(10)
+                return
+            Material = Material[0]['content']  # 从素材库取出的要发的材料
 
             obj = d(className='android.widget.ListView').child(className='android.widget.FrameLayout',index=i).child(className='android.widget.FrameLayout').child(description='评论')   #首先看第i个人是否存在，
             if obj.exists:

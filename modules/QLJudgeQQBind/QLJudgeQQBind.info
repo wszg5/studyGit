@@ -1,22 +1,30 @@
 {
-"id": "WXSearchDepost",
-"cate":"微信模块",
-"name":"微信搜索简存",
+"id": "QLJudgeQQBind",
+"name":"轻聊版判断手机号是否绑定QQ",
+"cate":"QQLite模块",
+"font": "qq",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"icon": "vcard-o",
-"remark":"微信版本，6.5.4",
+"icon":"vcard-o",
+"remark":"轻聊版判断手机号是否绑定QQ",
 "setting":[
 	{
 	"id": "repo_number_id",
-	"name":"号码库分类",
+	"name":"验证的手机号库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"21"
+	},
+	{
+	"id": "repo_number_id1",
+	"name":"保存手机号库",
 	"type":"repo",
 	"source":"number",
 	"top_cate_id":"21"
 	},
     {
 	"id": "add_count",
-	"name":"要简存的个数",
+	"name":"保存号码的个数",
 	"type":"textbox",
 	"defaultValue":"3",
 	"remark":"单位：个"

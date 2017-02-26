@@ -12,7 +12,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-class MobilqqAddByAddressList:
+class MobilqqAddressList:
     def __init__(self):
         self.repo = Repo()
         self.xuma = None
@@ -91,6 +91,12 @@ class MobilqqAddByAddressList:
 
 
     def Bind(self,d):
+        d.server.adb.cmd("shell", "am force-stop io.dcloud.H59ABC8B4").wait()  # 强制停止
+        d.server.adb.cmd("shell", "am start -n io.dcloud.H59ABC8B4/io.dcloud.PandoraEntry").communicate()  # 拉起来
+        time.sleep(7)
+        d(text='登陆').click()
+        time.sleep(2)
+
         self.xuma = XunMa(d.server.adb.device_serial())
         newStart = 1
         while newStart == 1:
@@ -98,6 +104,7 @@ class MobilqqAddByAddressList:
             print(GetBindNumber)
             time.sleep(2)
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(GetBindNumber)  #GetBindNumber
+
             time.sleep(1)
             d(text='下一步').click()
             time.sleep(3)
@@ -111,8 +118,6 @@ class MobilqqAddByAddressList:
 
             newStart = 0
 
-
-
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
             d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
 
@@ -122,7 +127,6 @@ class MobilqqAddByAddressList:
 
     def action(self, d,z, args):
         gender1 = args['gender']
-
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -191,7 +195,7 @@ class MobilqqAddByAddressList:
                         return
                     time.sleep(7)
                     if d(resourceId='com.tencent.mobileqq:id/nickname',className='android.widget.TextView').exists:      #通讯录展开后在另一个页面的情况
-                        d(text='返回').click()
+                        d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').click()
                     time.sleep(7)
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
 
@@ -224,17 +228,15 @@ class MobilqqAddByAddressList:
         while t < EndIndex+1:
             cate_id = args["repo_material_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
-            if len(Material) == 0:
-                d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
-                return
-            Material = Material[0]['content']  # 取出验证消息的内容
+            try:
+                Material = Material[0]['content']  # 从素材库取出的要发的材料
+            except Exception:
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+
             time.sleep(1)
 
             obj = d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=i).child(
                 resourceId='com.tencent.mobileqq:id/text1', index=1)  # 点击第ｉ个人
-            print(i)
             time.sleep(0.5)
             if obj.exists:
                 change = 1
@@ -244,7 +246,6 @@ class MobilqqAddByAddressList:
                 else:
                     i = 3
                     continue
-
                 phone = d(descriptionContains='昵称:').info
                 phone = phone['text']      #得到电话号码，并保存到set集合中成为唯一标识
                 if phone in set1:
@@ -280,38 +281,26 @@ class MobilqqAddByAddressList:
                 obj1 = d(descriptionContains='QQ 昵称').child(className='android.widget.TextView', index=1).info
                 obj1 = obj1['text']
                 Material = Material.replace('[姓名]',obj1)  # -----------------------------------
-                print(Material)
-
-            d(text='加好友').click()
-            if d(textContains='问题').exists:
-                d(text='取消').click()
-                d(text='返回').click()
-                i = i+1
-                continue
-            obj = d(className='android.widget.EditText').info  # 将之前消息框的内容删除
-            obj = obj['text']
-            lenth = len(obj)
-            delet = 0
-            while delet < lenth:
-                d.press.delete()
-                delet = delet + 1
+            d(resourceId='com.tencent.mobileqq:id/txt', text='发消息').click()
+            time.sleep(1)
+            d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()  # Material
             z.input(Material)
             time.sleep(1)
-            d(text='发送').click()
-            if d(textContains='添加失败').exists:
-                d(text='确定').click()
-                d(text='取消').click()
-            # d(text='取消').click()
+            d(resourceId='com.tencent.mobileqq:id/fun_btn', text='发送').click()
             i = i + 1
             t = t + 1
-            d(text='返回').click()
+            d(resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft', description='返回消息界面').click()
+
+            d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(
+                className='android.widget.FrameLayout').child(
+                className='android.widget.RelativeLayout').click()  # 发完消息后点击到联系人
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():
-    return MobilqqAddByAddressList
+    return MobilqqAddressList
 
 if __name__ == "__main__":
     clazz = getPluginClass()
@@ -319,6 +308,5 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    # z.input('13094731693')
-    args = {"repo_material_id":"39",'gender':"不限",'EndIndex':'50',"time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_material_id":"100",'gender':"不限",'EndIndex':'20',"time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

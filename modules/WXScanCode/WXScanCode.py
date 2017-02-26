@@ -23,20 +23,14 @@ class WXScanCode:
         cate_id = args['repo_material_id']
         repo = Repo()
         materials = repo.GetMaterial(cate_id, 0, 1)
-        print(materials)
-        try:
-            t = materials[0]['ext1']  # 取出验证消息的内容
-
-        except Exception:
+        if len(materials) == 0:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"朋友圈素材%s号仓库为空，等待中\"" % cate_id).communicate()
-            time.sleep(30)
+            time.sleep(10)
+            return
+        t = materials[0]['ext1']  # 取出验证消息的内容
         z.wx_scanqr(t)
-        time.sleep(6)
-
-
-
-
-
+        time.sleep(15)
+        d.swipe(130, 532, 402, 575, 1)
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
@@ -51,8 +45,7 @@ if __name__ == "__main__":
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
-
-    args = {"repo_material_id": "43","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "41","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
 

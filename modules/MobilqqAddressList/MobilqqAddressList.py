@@ -119,8 +119,6 @@ class MobilqqAddressList:
 
         return 'true'
 
-
-
     def action(self, d,z, args):
         gender1 = args['gender']
         str = d.info  # 获取屏幕大小等信息
@@ -224,12 +222,12 @@ class MobilqqAddressList:
         while t < EndIndex+1:
             cate_id = args["repo_material_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
-            try:
-                Material = Material[0]['content']  # 从素材库取出的要发的材料
-            except Exception:
-                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-
-            time.sleep(1)
+            if len(Material) == 0:
+                d.server.adb.cmd("shell",
+                                 "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                time.sleep(10)
+                return
+            Material = Material[0]['content']  # 取出验证消息的内容
 
             obj = d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=i).child(
                 resourceId='com.tencent.mobileqq:id/text1', index=1)  # 点击第ｉ个人
@@ -305,5 +303,5 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_material_id":"100",'gender':"不限",'EndIndex':'20',"time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_material_id":"122",'gender':"不限",'EndIndex':'20',"time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

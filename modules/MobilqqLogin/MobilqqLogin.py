@@ -40,17 +40,14 @@ class MobilqqLogin:
         while True:
             time_limit1 = args['time_limit1']
             numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
-            wait = 1
-            while wait == 1:  # 判断仓库是否有东西
-                try:
-                    QQNumber = numbers[0]['number']  # 即将登陆的QQ号
-                    wait = 0
-                except Exception:
-                    d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库为空，等待中\""%cate_id).communicate()
-                    time.sleep(30)
+            if len(numbers) == 0:
+                d.server.adb.cmd("shell",
+                                 "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库为空，等待中\"" % cate_id).communicate()
+                time.sleep(10)
+                return
+            QQNumber = numbers[0]['number']  # 即将登陆的QQ号
             QQPassword = numbers[0]['password']
             time.sleep(1)
-
 
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
             d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
@@ -59,9 +56,9 @@ class MobilqqLogin:
             time.sleep(4)
             d(text='登 录', resourceId='com.tencent.mobileqq:id/btn_login').click()
             time.sleep(1)
-            d(className='android.widget.EditText', index=0).set_text(3004001751)  # ﻿1918697054----xiake1234.  QQNumber
+            d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
             time.sleep(1)
-            d(resourceId='com.tencent.mobileqq:id/password', index=2).set_text('Bn2kJq5l')  # Bn2kJq5l     QQPassword
+            d(resourceId='com.tencent.mobileqq:id/password', index=2).set_text(QQPassword)  # Bn2kJq5l     QQPassword
             d(text='登 录', resourceId='com.tencent.mobileqq:id/login').click()
             time.sleep(1)
             while d(text='登录中').exists:
@@ -241,7 +238,7 @@ if __name__ == "__main__":
 
 
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"37","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"35","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)
