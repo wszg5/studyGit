@@ -15,6 +15,8 @@ WORKDIR /app
 
 COPY . /app
 
+RUN rm -rf /app/modules
+RUN rm -rf /app/plugins
 
 ENV ANDROID_HOME /app/adb/
 ENV PATH /app:$PATH
