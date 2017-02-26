@@ -19,7 +19,16 @@ for op, value in opts:
         const.REPO_API_IP = value
     elif op == "-c" or  op == "--redis_ip" :
         const.REDIS_SERVER = value
-
+    elif op == "-t" or  op == "--tim_slots" :
+        const.MAX_SLOTS_TIM = value
+    elif op == "-w" or  op == "--wechat_slots" :
+        const.MAX_SLOTS_WECHAT = value
+    elif op == "-m" or  op == "--mobile_slots" :
+        const.MAX_SLOTS_MOBILEQQ = value
+    elif op == "-q" or  op == "--qqlite_slots" :
+        const.MAX_SLOTS_QQLITE = value
+    elif op == "-e" or  op == "--eim_slots" :
+        const.MAX_SLOTS_EIM = value
 
 try:
     rst = int(util.exccmd("awk -F. '{print $1}' /proc/uptime"))
