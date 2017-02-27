@@ -11,7 +11,7 @@ import sys, getopt
 #s:server_ip
 #r:repo_ip
 #c:redis_cache_ip
-opts, args = getopt.getopt(sys.argv[1:], "s:r:c:", ["server_ip=", "repo_ip=", "redis_ip="])
+opts, args = getopt.getopt(sys.argv[1:], "s:r:c:", ["server_ip=", "tim_slots=",    "wechat_slots=","mobile_slots=","qqlite_slots=","eim_slots=","repo_ip=", "redis_ip="])
 for op, value in opts:
     if op == "-s" or  op == "--server_ip" :
         const.SERVER_IP = value
