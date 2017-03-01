@@ -1,7 +1,6 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
 from zservice import ZDevice
 from XunMa import *
 import sys
@@ -14,7 +13,6 @@ class WXSentPhone:
     def __init__(self):
         self.repo = Repo()
         self.xuma = None
-
     def action(self, d,z, args):
         self.xuma = XunMa(d.server.adb.device_serial())
 
@@ -53,12 +51,13 @@ class WXSentPhone:
                 if d(textContains='过于频繁').exists:
                     break
                 SetCateId = args['repo_number_id']
-                if d(textContains='用户不存在'):
-                    print
-                else:
+                if not d(textContains='用户不存在'):
+
                     d(descriptionContains='清除').click()
                     continue
                 self.repo.uploadPhoneNumber(PhoneNumber,SetCateId)    #将有用的号传到库里
+                # cache.addSet('wxPhone',PhoneNumber)                     #将有用的号码保存到缓存
+                # print(cache.popSet('wxPhone'))
                 self.xuma.defriendPhoneNumber(PhoneNumber,'2251')       #将有用的号码拉黑
                 d(descriptionContains='清除').click()
                 account = account+1
@@ -78,6 +77,7 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     # z.server.install()
+
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     args = {"repo_number_id": "105","add_count": "100","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

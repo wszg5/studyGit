@@ -45,9 +45,7 @@ class MobilqqSendText:
         if d(text='通讯录').exists:
             d(text='关闭').click()
 
-        if d(text='联系人', resourceId='com.tencent.mobileqq:id/ivTitleName').exists:  # 如果已经到联系人界面
-            print
-        else:
+        if not d(text='联系人', resourceId='com.tencent.mobileqq:id/ivTitleName').exists:  # 如果没到联系人界面
             d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(className='android.widget.FrameLayout').child(
                 className='android.widget.RelativeLayout').click()  # 点击到联系人
             time.sleep(0.5)
@@ -81,7 +79,7 @@ class MobilqqSendText:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                 time.sleep(10)
                 return
-            Material = Material[0]['content']  # 从素材库取出的要发的材料
+            message = Material[0]['content']  # 从素材库取出的要发的材料
             time.sleep(1)
 
             obj = d(resourceId='com.tencent.mobileqq:id/elv_buddies', className='android.widget.AbsListView').child(className='android.widget.LinearLayout', index=i).child(
@@ -90,16 +88,16 @@ class MobilqqSendText:
             if obj.exists:
                 change = 1
                 obj.click()
-                if obj.exists:
+                if obj.exists:     #当第一次没点击上的话再次点击
                     obj.click()
                 time.sleep(2)
                 d.swipe(width / 2, height * 4 / 5, width / 2, height / 3)     #滑动是为了将QQ号显示出来
                 QQNumber = d(resourceId='com.tencent.mobileqq:id/info',className='android.widget.TextView',index=0)
                 if QQNumber.exists:
                     QQNumber = QQNumber.info
-                else:
+                else:       #
                     time.sleep(2)
-                    d.swipe(width / 2, height * 4 / 5, width / 2, height / 3)  # 滑动是为了将QQ号显示出来
+                    d.swipe(width / 2, height * 4 / 5, width / 2, height / 3)  # 上次滑动仍没显示QQ号的情况
                     QQNumber = d(resourceId='com.tencent.mobileqq:id/info', className='android.widget.TextView',index=0)
                     if QQNumber.exists:
                         QQNumber = QQNumber.info
@@ -133,8 +131,8 @@ class MobilqqSendText:
             d(text='发消息').click()
             time.sleep(1)
 
-            d(className='android.widget.EditText').click()  # Material
-            z.input(Material)
+            d(className='android.widget.EditText').click()  # message
+            z.input(message)
             time.sleep(1)
             d(resourceId='com.tencent.mobileqq:id/fun_btn', text='发送').click()
             i = i + 1

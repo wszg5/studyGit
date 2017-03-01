@@ -30,9 +30,9 @@ class MobilqqPraise:
                     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\"" % repo_number_cate_id).communicate()
                     time.sleep(10)
                     return
-                numbers = numbers[0]['number']
+                QQnumber = numbers[0]['number']
                 time.sleep(0.5)
-                d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"'%numbers)  # qq名片页面
+                d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"'%QQnumber)  # qq名片页面
                 time.sleep(2)
                 if d(text='QQ').exists:
                     d(text='QQ').click()
@@ -68,6 +68,6 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    args = {"repo_number_cate_id":"120","add_count":"3","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"119","add_count":"2","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

@@ -23,9 +23,7 @@ class WeiXinAddressList:
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
         time.sleep(7)
         d(text='通讯录').click()
-        if d(text='新的朋友').exists:
-            print()
-        else:
+        if not d(text='新的朋友').exists:
             d(text='通讯录').click()
 
         set1 = set()
@@ -41,14 +39,14 @@ class WeiXinAddressList:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                 time.sleep(10)
                 return
-            Material = Material[0]['content']  # 从素材库取出的要发的材料
+            message = Material[0]['content']  # 从素材库取出的要发的材料
 
             time.sleep(1)
-            obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i).child(className='android.widget.LinearLayout').child(className='android.view.View')     #得到微信名
-            if obj.exists:
+            wxName = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i).child(className='android.widget.LinearLayout').child(className='android.view.View')     #得到微信名
+            if wxName.exists:
                 change = 1      #好友存在且未被添加的情况出现，change值改变
-                obj1 = obj.info
-                name = obj1['text']
+                Name = wxName.info
+                name = Name['text']
                 if name=='微信团队':
                     i = i+1
                     continue
@@ -58,17 +56,16 @@ class WeiXinAddressList:
                 else:
                     set1.add(name)
                     print(name)
-                obj.click()
+                wxName.click()
                 GenderFrom = args['gender']     #-------------------------------
                 if GenderFrom !='不限':
-                    obj = d(className='android.widget.LinearLayout', index=1).child(
+                    Gender = d(className='android.widget.LinearLayout', index=1).child(
                         className='android.widget.LinearLayout').child(className='android.widget.ImageView',index=1)  # 看性别是否有显示
-                    if obj.exists:
-                        Gender = obj.info
+                    if Gender.exists:
+                        Gender = Gender.info
                         Gender = Gender['contentDescription']
-                        if Gender ==GenderFrom:
-                            print()
-                        else:            #如果性别不符号的情况
+                        if Gender !=GenderFrom:
+                                       #如果性别不符号的情况
                             d(description='返回').click()
                             i = i+1
                             continue
@@ -89,8 +86,8 @@ class WeiXinAddressList:
                     d.press.delete()
                     m = m + 1
                 d(className='android.widget.EditText').click()
-                z.input(Material)       #----------------------------------------
-                d(text = '发送').click()
+                z.input(message)       #----------------------------------------
+                # d(text = '发送').click()
                 time.sleep(1)
                 d(description='返回').click()
                 d(text='通讯录').click()
@@ -111,15 +108,8 @@ class WeiXinAddressList:
                     if d(textContains='位联系人').exists:
                         ending = 1
 
-                        # return
-                    for g in range(0,12,+1):
-                        time.sleep(0.5)
-                        obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=g).child(className='android.widget.LinearLayout').child(className='android.view.View')  # 得到微信名
-                        obj = obj.info
-                        Tname = obj['text']
-                        if Tname==name:
-                            break
-                    i = g+1
+
+                    i = 1
                     continue
 
         if (args["time_delay"]):
@@ -135,5 +125,5 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    args = {"repo_material_id": "39",'EndIndex':'100','gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "39",'EndIndex':'10','gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

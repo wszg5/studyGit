@@ -20,6 +20,10 @@ class WXBindMail:
         d(text='设置').click()
         d(textContains='帐号与安全').click()
         d(text='邮件地址').click()
+        if d(textContains='重新发送验证').exists:
+            return
+        if d(textContains='解绑').exists:
+            return
         cate_id = int(args["repo_cate_id"])  # 得到取号码的仓库号
 
         Mail = self.repo.GetNumber(cate_id, 0, 1)  # 取出add_count条两小时内没有用过的号码
@@ -27,9 +31,8 @@ class WXBindMail:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
             time.sleep(10)
             return
-        Mail = Mail[0]['number']
-
-        d(className='android.widget.EditText').set_text(Mail)
+        BindMail = Mail[0]['number']
+        d(className='android.widget.EditText').set_text(BindMail)
         d(text='确定').click()
 
 

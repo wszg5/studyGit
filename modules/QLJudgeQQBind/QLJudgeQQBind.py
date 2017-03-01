@@ -69,8 +69,8 @@ class WXPictureMoment:
                 height = bottom - top
                 width = right - left
                 y = height / 2 + top
-                d.swipe(width + 150, y, width + 200, y, 1)
-            obj = d(className='android.widget.EditText').info
+                d.swipe(width + 150, y, width + 200, y, 1)      #用来一键删除
+            obj = d(className='android.widget.EditText').info   #当上马的一键删除无效时再单个删除
             obj = obj['text']
             print(obj)
             if '手机号码' in obj:

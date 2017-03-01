@@ -5,6 +5,7 @@
 "font": "qq",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"23",
 "icon":"vcard-o",
 "remark":"普通QQ给好友发消息,6.6.6.3025版本",
 "setting":[

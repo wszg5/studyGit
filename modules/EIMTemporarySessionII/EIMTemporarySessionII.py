@@ -11,9 +11,6 @@ class EIMTemporarySessionII:
     def __init__(self):
         self.repo = Repo()
 
-
-
-
     def action(self, d,z, args):
 
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
@@ -28,8 +25,7 @@ class EIMTemporarySessionII:
 
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
-        # d.server.adb.cmd("shell", "am force-stop com.tencent.eim").communicate()  # 强制停止   3001369923  Bn2kJq5l
-        # d.server.adb.cmd("shell","am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+
         time.sleep(15)
 
         for i in range (0,totalNumber,+1):
@@ -40,14 +36,14 @@ class EIMTemporarySessionII:
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                 time.sleep(10)
                 return
-            material = Material[0]['content']  # 取出验证消息的内容
+            message = Material[0]['content']  # 取出验证消息的内容
 
-            numbers = list[i]['number']
+            QQnumber = list[i]['number']
             time.sleep(1)
 
 
             d.server.adb.cmd("shell",
-                             'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % numbers)  # 临时会话发企业QQ）
+                             'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % QQnumber)  # 临时会话发企业QQ）
             time.sleep(2)
 
             if d(text='企业QQ').exists:
@@ -58,23 +54,22 @@ class EIMTemporarySessionII:
 
             if d(textContains='沟通的权限').exists:
                 d.server.adb.cmd("shell",
-                                 'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % numbers)  # 临时会话发企业QQ）
+                                 'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % QQnumber)  # 临时会话发企业QQ）
                 time.sleep(1)
-                if d(text='企业QQ', resourceId='android:id/text1').exists:
-                    d(text='企业QQ', resourceId='android:id/text1').click()
-                    if d(text='仅此一次', resourceId='android:id/button_once').exists:
-                        d(text='仅此一次', resourceId='android:id/button_once').click()
+                if d(text='企业QQ').exists:
+                    d(text='企业QQ').click()
+                    if d(text='仅此一次').exists:
+                        d(text='仅此一次').click()
 
-            if d(resourceId='com.tencent.eim:id/input', className='android.widget.EditText').exists:
-                d(resourceId='com.tencent.eim:id/input', className='android.widget.EditText').click()
-                z.input(material)
+            if d(className='android.widget.EditText').exists:
+                d(className='android.widget.EditText').click()
+                z.input(message)
 
-            d(text='发送', resourceId='com.tencent.eim:id/fun_btn').click()
+            d(text='发送').click()
 
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
-
 
 def getPluginClass():
     return EIMTemporarySessionII

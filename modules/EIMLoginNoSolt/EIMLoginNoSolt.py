@@ -36,7 +36,6 @@ class EIMLoginNoSlot:
         t = 1
         while t == 1:         #直到登陆成功为止
             time_limit = args['time_limit']         #帐号提取时间间隔
-
             cate_id = args["repo_cate_id"]
             numbers = self.repo.GetAccount(cate_id, time_limit, 1)
             if len(numbers) == 0:

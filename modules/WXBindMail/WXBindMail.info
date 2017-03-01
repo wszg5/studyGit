@@ -4,6 +4,7 @@
 "name":"微信绑定邮箱",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"27",
 "icon": "vcard-o",
 "remark":"微信版本，6.5.4",
 "setting":[

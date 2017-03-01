@@ -5,6 +5,7 @@
 "font": "WeiXin",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"31",
 "icon":"vcard-o",
 "remark":"微信删除验证请求，6.5.4版",
 "setting":[

@@ -7,7 +7,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-class EIMAddFrendRouseI:
+class EIMAddFrendRouseII:
     def __init__(self):
         self.repo = Repo()
 
@@ -32,12 +32,11 @@ class EIMAddFrendRouseI:
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                 time.sleep(10)
                 return
-            numbers = list[i]['number']
-            material = Material[0]['content']
+            QQnumber = list[i]['number']
+            message = Material[0]['content']
             time.sleep(1)
 
-            d.server.adb.cmd("shell",
-                             'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"'%numbers )  # QQ咨询
+            d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"'%QQnumber )  # QQ咨询
             time.sleep(2)
 
             if d(text='企业QQ').exists:
@@ -64,7 +63,8 @@ class EIMAddFrendRouseI:
                 d.press.delete()
                 t = t + 1
             time.sleep(1)
-            z.input(material)
+            z.input(message)
+            d(text='下一步').click()
             d(text='发送').click()
 
 
@@ -74,7 +74,7 @@ class EIMAddFrendRouseI:
 
 
 def getPluginClass():
-    return EIMAddFrendRouseI
+    return EIMAddFrendRouseII
 
 if __name__ == "__main__":
     clazz = getPluginClass()
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
 
-    args = {"repo_number_id":"119","repo_material_cate_id":"39","totalNumber":"20","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_id":"119","repo_material_cate_id":"39","totalNumber":"5","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d, z,args)
 

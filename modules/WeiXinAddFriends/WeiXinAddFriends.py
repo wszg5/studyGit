@@ -23,7 +23,7 @@ class WeiXinAddFriends:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
             time.sleep(10)
             return
-        material = Material[0]['content']  # 取出验证消息的内容
+        message = Material[0]['content']  # 取出验证消息的内容
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
@@ -47,8 +47,8 @@ class WeiXinAddFriends:
                     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
                     time.sleep(20)
                     return
-                numbers = numbers[0]['number']
-                z.input(numbers)
+                WXnumber = numbers[0]['number']
+                z.input(WXnumber)
                 d(textContains='搜索:').click()
                 if d(textContains='操作过于频繁').exists:
                     return
@@ -57,19 +57,20 @@ class WeiXinAddFriends:
                     d(descriptionContains='清除',index=2).click()
                     time.sleep(1)
                     continue
+                if d(textContains='状态异常').exists:
+                    d(descriptionContains='清除', index=2).click()
+                    continue
                 gender = args['gender']
                 if gender!='不限':
-                    obj = d(className='android.widget.LinearLayout', index=1).child(
+                    Gender = d(className='android.widget.LinearLayout', index=1).child(
                         className='android.widget.LinearLayout', index=0) \
                         .child(className='android.widget.LinearLayout', index=0).child(
                         className='android.widget.ImageView')
-                    if obj.exists:
-                        Gender = obj.info
+                    if Gender.exists:
+                        Gender = Gender.info
                         Gender = Gender['contentDescription']
                         print(Gender)
-                        if Gender==gender:     #看性别是否满足条件
-                            print()
-                        else:
+                        if Gender!=gender:     #看性别是否满足条件
                             d(description='返回').click()
                             d(descriptionContains='清除').click()
                             continue
@@ -88,14 +89,15 @@ class WeiXinAddFriends:
                         d.press.delete()
                         t = t + 1
                     d(className='android.widget.EditText').click()
-                    z.input(material)
+                    z.input(message)
                     d(text='发送').click()
                     d(descriptionContains='返回').click()
                     d(descriptionContains='清除').click()
                     time.sleep(1)
                     account = account+1
                     continue
-
+            else:
+                break
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 

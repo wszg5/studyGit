@@ -24,7 +24,7 @@ class MobilqqAddFrRouse:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
             time.sleep(10)
             return
-        material = Material[0]['content']  # 取出验证消息的内容
+        message = Material[0]['content']  # 取出验证消息的内容
 
         add_count = int(args['add_count'])  # 要添加多少人
 
@@ -39,10 +39,10 @@ class MobilqqAddFrRouse:
         list = numbers  # 将取出的号码保存到一个新的集合
 
         for i in range (0,add_count,+1):            #总人数
-            numbers = list[i]['number']
-            print(numbers)
+            QQnumber = list[i]['number']
+            print(QQnumber)
             time.sleep(1)
-            d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"'%numbers)  # qq名片页面
+            d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"'%QQnumber)  # qq名片页面
             time.sleep(2)
             if d(text='QQ').exists:
                 d(text='QQ').click()
@@ -63,7 +63,7 @@ class MobilqqAddFrRouse:
                 while t < lenth:
                     d.press.delete()
                     t = t + 1
-                z.input(material)
+                z.input(message)
             d(text='发送').click()
 
 

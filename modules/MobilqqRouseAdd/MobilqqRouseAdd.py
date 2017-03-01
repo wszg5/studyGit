@@ -36,13 +36,13 @@ class MobilqqRouseAdd:
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                 time.sleep(10)
                 return
-            material = Material[0]['content']  # 取出验证消息的内容
+            message = Material[0]['content']  # 取出验证消息的内容
 
-            numbers = list[i]['number']
+            QQnumber = list[i]['number']
             time.sleep(1)
 
             d.server.adb.cmd("shell",
-                             'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=crm\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"'%numbers )  # 临时会话
+                             'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=crm\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"'%QQnumber )  # 临时会话
             time.sleep(2)
 
             if d(text='QQ').exists:
@@ -66,7 +66,7 @@ class MobilqqRouseAdd:
                 while t < lenth:
                     d.press.delete()
                     t = t + 1
-                z.input(material)
+                z.input(message)
             d(text='发送').click()
 
         if (args["time_delay"]):

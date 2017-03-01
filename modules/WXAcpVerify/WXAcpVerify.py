@@ -45,9 +45,8 @@ class WXAcpVerify:
                         if obj.exists:
                             Gender = obj.info
                             Gender = Gender['contentDescription']
-                            if Gender ==GenderFrom:
-                                print()
-                            else:            #如果性别不符号的情况
+                            if Gender !=GenderFrom:
+                                           #如果性别不符号的情况
                                 d(description='返回').click()
                                 i = i+1
                                 continue
@@ -78,19 +77,16 @@ class WXAcpVerify:
                     obj = obj.info
                     name1 = obj['text']      #判断是否已经到底
                     if name1 in set1:
-                        return
-                    for g in range(1,10,+1):
-                        obj = d(className='android.widget.RelativeLayout', index=g).child(index=1).child(className='android.widget.TextView', index=0).info
-                        Tname = obj['text']
-                        if Tname==name:
-                            break
-                    i = g+1
+                        break
+                    i = 1
                     continue
 
         if (args["time_delay"]):
                 time.sleep(int(args["time_delay"]))
+
 def getPluginClass():
     return WXAcpVerify
+
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()

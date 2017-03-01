@@ -25,7 +25,7 @@ class WeiXinMass:
                              "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
             time.sleep(10)
             return
-        material = Material[0]['content']  # 取出验证消息的内容
+        message = Material[0]['content']  # 取出验证消息的内容
 
         time.sleep(2)
         d(text='我').click()
@@ -61,7 +61,7 @@ class WeiXinMass:
                 d(text='全选').click()
                 d(textContains='下一步').click()
                 d(className='android.widget.EditText').click()
-                z.input(material)
+                z.input(message)
                 d(text='发送').click()
                 d(text='新建群发').click()
                 d(text='搜索').click()
@@ -80,7 +80,7 @@ class WeiXinMass:
                 d(text='全选').click()
                 d(textContains='下一步').click()
                 d(className='android.widget.EditText').click()
-                z.input(material)
+                z.input(message)
                 d(text='发送').click()
                 d(text='新建群发').click()
                 d(text='搜索').click()
@@ -99,7 +99,7 @@ class WeiXinMass:
                 d(text='全选').click()
                 d(textContains='下一步').click()
                 d(className='android.widget.EditText').click()
-                z.input(material)
+                z.input(message)
                 d(text='发送').click()
                 d(text='新建群发').click()
                 d(text='搜索').click()
@@ -115,7 +115,7 @@ class WeiXinMass:
                 d(text='全选').click()
                 d(textContains='下一步').click()
                 d(className='android.widget.EditText').click()
-                z.input(material)
+                z.input(message)
                 d(text='发送').click()
                 d(text='新建群发').click()
                 d(text='搜索').click()

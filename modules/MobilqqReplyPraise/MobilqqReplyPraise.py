@@ -110,9 +110,7 @@ class MobilqqReplyPraise:
         obj4 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=1) \
             .child(className='android.widget.RelativeLayout', index=1).child(
             className='android.widget.LinearLayout')  # 用来点击的
-        if obj4.exists:      #没有人赞我情况
-            print
-        else:
+        if not obj4.exists:      #没有人赞我情况
             return
         set1 = set()
         i = 1
@@ -126,15 +124,11 @@ class MobilqqReplyPraise:
             obj3 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=i) \
             .child(className='android.widget.RelativeLayout', index=1).child(
             resourceId='com.tencent.mobileqq:id/lastMsgTime')  # 看性别是否存在
-            if gender=='不限':
-                print
-            else:       #给赞我的人发消息，看性别是否有消息
+            if not gender=='不限':       #给赞我的人发消息，看性别是否有消息
                 if obj3.exists:    #对性别有要求的情况，看性别是否有显示
                     genderfrom = self.Gender(d,i)    #得到第ｉ个人的真实性别
                     print(genderfrom)
-                    if genderfrom == gender:
-                        print
-                    else:
+                    if genderfrom != gender:
                         i = i+1
                         continue
                 else:
@@ -143,17 +137,8 @@ class MobilqqReplyPraise:
                     if d(textContains='显示更多').exists:
                         d(textContains='显示更多').click()
                     d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
-                    for g in range(0, 12, +1):
-                        obj2 = d(className='android.widget.AbsListView').child(
-                            className='android.widget.RelativeLayout', index=g) \
-                            .child(className='android.widget.RelativeLayout', index=1).child(
-                            className='android.widget.LinearLayout').child(className='android.widget.TextView')  # 用来点击的
-                        if obj2.exists:
-                            obj2 = obj2.info
-                            Tname = obj2['text']
-                            if Tname == name:
-                                break
-                    i = g + 1
+
+                    i = 1
                     continue
             if obj1.exists:    #当对性别没要求时，就判断昵称是否存在
                 obj1 = obj1.info
@@ -190,16 +175,7 @@ class MobilqqReplyPraise:
                 if d(textContains='显示更多').exists:
                     d(textContains='显示更多').click()
                 d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
-                for g in range(0, 12, +1):
-                    obj2 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=g) \
-                        .child(className='android.widget.RelativeLayout', index=1).child(
-                        className='android.widget.LinearLayout').child(className='android.widget.TextView')  # 用来点击的
-                    if obj2.exists:
-                        obj2 = obj2.info
-                        Tname = obj2['text']
-                        if Tname == name:
-                            break
-                i = g + 1
+                i = 1
                 continue
 
         if (args["time_delay"]):

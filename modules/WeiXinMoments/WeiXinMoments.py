@@ -24,9 +24,9 @@ class WeiXinMoments:
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
         time.sleep(7)
         d(className='android.widget.RelativeLayout', index=3).child(text='我').click()
-        obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=1)\
-            .child(className='android.widget.LinearLayout',index=1).child(className='android.view.View').info
-        myname = obj['text']
+        wxname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=1)\
+            .child(className='android.widget.LinearLayout',index=1).child(className='android.view.View').info   #得到微信名，为了判断朋友圈哪些已被我点赞评论
+        myname = wxname['text']
 
         z.wx_action('opensnsui')
         time.sleep(3)
@@ -46,10 +46,10 @@ class WeiXinMoments:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                 time.sleep(10)
                 return
-            Material = Material[0]['content']  # 从素材库取出的要发的材料
+            message = Material[0]['content']  # 从素材库取出的要发的材料
 
-            obj = d(className='android.widget.ListView').child(className='android.widget.FrameLayout',index=i).child(className='android.widget.FrameLayout').child(description='评论')   #首先看第i个人是否存在，
-            if obj.exists:
+            judexist = d(className='android.widget.ListView').child(className='android.widget.FrameLayout',index=i).child(className='android.widget.FrameLayout').child(description='评论')   #首先看第i个人是否存在，
+            if judexist.exists:
                 obj1 = d(className='android.widget.ListView').child(className='android.widget.FrameLayout', index=i).child(className='android.widget.LinearLayout',index=4)    #判断该好友是否有点赞评论
                 if obj1.exists:  #给该好友评论的情况
                     getName = d(className='android.widget.FrameLayout', index=i).child(className='android.widget.LinearLayout',index=4).child(index=0,className='android.widget.TextView')
@@ -70,7 +70,7 @@ class WeiXinMoments:
                             i = i + 1
                             continue
 
-                obj.click()
+                judexist.click()
                 if d(text='赞').exists:
                     d(text='赞').click()
                     time.sleep(0.5)
@@ -83,10 +83,10 @@ class WeiXinMoments:
                         i = 1
                     continue
                 time.sleep(0.5)
-                obj.click()
+                judexist.click()
                 d(text='评论').click()
                 d(className='android.widget.EditText').click()
-                z.input(Material)
+                z.input(message)
                 d(text='发送').click()
                 i = i+1
                 t = t+1
@@ -123,7 +123,7 @@ if __name__ == "__main__":
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
-    args = {"repo_material_id": "36",'EndIndex':'100',"time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "39",'EndIndex':'100',"time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
 

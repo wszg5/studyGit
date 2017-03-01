@@ -24,9 +24,7 @@ class WeiXinSetLabel:
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
         time.sleep(7)
         d(text='通讯录').click()
-        if d(text='新的朋友').exists:
-            print()
-        else:
+        if not d(text='新的朋友').exists:
             d(text='通讯录').click()
 
         set1 = set()

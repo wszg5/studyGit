@@ -4,6 +4,7 @@
 "name":"EIM版QQ唤醒加好友（QQ咨询）",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"5",
 "icon": "vcard-o",
 "remark":"EIM版QQ唤醒加2",
 "setting":[

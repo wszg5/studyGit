@@ -7,7 +7,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-class EIMAddFrendRouseI:
+class EIMAddGroup:
     def __init__(self):
         self.repo = Repo()
 
@@ -35,12 +35,12 @@ class EIMAddFrendRouseI:
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                 time.sleep(10)
                 return
-            material = Material[0]['content']
+            message = Material[0]['content']
 
-            numbers = list[i]['number']
+            QQnumber = list[i]['number']
             time.sleep(1)
 
-            d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=group&source=qrcode"'%numbers )  # 群页面
+            d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=group&source=qrcode"'%QQnumber )  # 群页面
             time.sleep(2)
 
             if d(text='企业QQ').exists:
@@ -66,14 +66,14 @@ class EIMAddFrendRouseI:
             while m < lenth:
                 d.press.delete()
                 m = m + 1
-            z.input(material)
+            z.input(message)
             d(text='发送').click()
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
 def getPluginClass():
-    return EIMAddFrendRouseI
+    return EIMAddGroup
 
 if __name__ == "__main__":
     clazz = getPluginClass()

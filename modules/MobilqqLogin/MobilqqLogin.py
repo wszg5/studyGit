@@ -232,8 +232,6 @@ if __name__ == "__main__":
 
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-
-
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
 

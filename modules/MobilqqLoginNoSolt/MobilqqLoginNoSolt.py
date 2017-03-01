@@ -10,7 +10,7 @@ from RClient import *
 import time, datetime, random
 from zservice import ZDevice
 
-class MobilqqLoginSolt:
+class MobilqqLoginNoSolt:
     def __init__(self):
         self.type = 'mobileqq'
         self.repo = Repo()
@@ -153,7 +153,7 @@ def runwatch(d, data):                                  #watcher除了点击还�
             time.sleep(0.5)
 
 def getPluginClass():
-    return MobilqqLoginSolt
+    return MobilqqLoginNoSolt
 
 if __name__ == "__main__":
     clazz = getPluginClass()

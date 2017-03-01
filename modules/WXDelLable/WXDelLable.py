@@ -33,10 +33,10 @@ class WXDelLable:
             return
         gender = args['gender']
         if gender=='不限':
-            obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0). \
-                child(className='android.widget.LinearLayout', index=0).child(className='android.widget.TextView',index=0)  # 看第ｉ个标签是否存在
-            while obj.exists:
-                obj.long_click()
+            lable = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0). \
+                child(className='android.widget.LinearLayout', index=0).child(className='android.widget.TextView',index=0)  # 看标签是否存在
+            while lable.exists:
+                lable.long_click()
                 time.sleep(1)
                 d(text='删除').click()
                 d(text='删除').click()
@@ -47,7 +47,7 @@ class WXDelLable:
             while True:
                 obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i).\
                     child(className='android.widget.LinearLayout',index=0).child(className='android.widget.TextView',index=0)     #看第ｉ个标签是否存在
-                obj1 = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i).\
+                forClick = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i).\
                     child(className='android.widget.LinearLayout',index=0)    #用来点击的
                 if obj.exists:
                     obj = obj.info
@@ -59,7 +59,7 @@ class WXDelLable:
                     else:
                         set1.add(lable)     #将标签添加到集合中
                         if gender in lable:     #性别满足要求的情况
-                           obj1.long_click()
+                           forClick.long_click()
                            d(text='删除').click()
                            d(text='删除').click()
                            time.sleep(1)
@@ -86,18 +86,7 @@ class WXDelLable:
                         if name1 in set1:
                             return
 
-                    for g in range(0, 15, +1):
-                        obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=g). \
-                            child(className='android.widget.LinearLayout', index=0).child(
-                            className='android.widget.TextView', index=0)  # 看第ｉ个标签是否存在
-                        if obj.exists:
-                            obj = obj.info
-                            Tname = obj['text']
-                            if Tname==lable:
-                                break
-                        else:
-                            continue
-                    i = g+1
+                    i = 0
                     continue
 
         if (args["time_delay"]):

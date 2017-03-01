@@ -57,6 +57,7 @@ class RegisterAccount:
             cate_id = args['repo_number_id']
             PhoneNumber = self.repo.GetNumber(cate_id,120,1)
             PhoneNumber = PhoneNumber[0]['number']    #从库里取一条号码
+            # PhoneNumber = cache.popSet('wxPhone')
             print(PhoneNumber)
             print('-------------------------------上面是仓库里的号码')
             backNumber = self.xm.MatchPhoneNumber(PhoneNumber,'2251')     #判断从库里取出的是否可用，当backNumber为０时不可用

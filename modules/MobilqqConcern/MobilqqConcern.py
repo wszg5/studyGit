@@ -38,12 +38,12 @@ class MobilqqConcern:
         # d(descriptionContains='等级').click()
         # d(descriptionContains='赞').click()
         d(text='我赞过谁').click()
+        time.sleep(3)
         obj3 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=1) \
             .child(className='android.widget.RelativeLayout', index=1).child(
             className='android.widget.LinearLayout')  # 用来点击的
-        if obj3.exists:
-            print
-        else:        #我没赞过好友的情况
+        if not obj3.exists:
+            #我没赞过好友的情况
             return
         set1 = set()
         i = 1
@@ -68,9 +68,9 @@ class MobilqqConcern:
                     time.sleep(2)
                 if d(text='关注').exists:
                     d(text='关注').click()
-                    time.sleep(1)
-                    if d(text='关注').exists:
-                        return
+                    time.sleep(1.5)
+                    # if d(text='关注').exists:
+                    #     return
 
                     d(text='返回').click()
                     i = i+1
@@ -86,16 +86,7 @@ class MobilqqConcern:
                     d(textContains='显示更多').click()
                 d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
                 time.sleep(2)
-                for g in range(0,12,+1):
-                    obj2 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=g) \
-                        .child(className='android.widget.RelativeLayout', index=1).child(
-                        className='android.widget.LinearLayout').child(className='android.widget.TextView')  # 用来点击的
-                    if obj2.exists:
-                        obj2 = obj2.info
-                        Tname = obj2['text']
-                        if Tname==name:
-                            break
-                i = g+1
+                i = 1
                 continue
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))

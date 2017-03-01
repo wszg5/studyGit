@@ -25,10 +25,10 @@ class WeiXinSentMoments:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
             time.sleep(10)
             return
-        material = Material[0]['content']  # 取出验证消息的内容
+        message = Material[0]['content']  # 取出验证消息的内容
 
 
-        z.wx_sendtextsns(material)
+        z.wx_sendtextsns(message)
         z.input('.')
         d.press.delete()
         d(text='发送').click()

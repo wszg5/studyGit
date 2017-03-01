@@ -27,8 +27,8 @@ class MobilqqOfficialAccont:
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                 time.sleep(10)
                 return
-            material = Material[0]['content']  # 取出验证消息的内容
-            z.input(material)
+            message = Material[0]['content']  # 取出验证消息的内容
+            z.input(message)
             d(textContains='搜索').click()
             time.sleep(2)
             if d(textContains='没有找到').exists:
