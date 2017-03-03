@@ -23,7 +23,7 @@ class Repo:
             numbers = json.loads(data)
             return  numbers
         else:
-            return "Error Getting Account, Please check your repo"
+            return []
 
 
 
@@ -37,7 +37,7 @@ class Repo:
             numbers = json.loads(data)
             return  numbers
         else:
-            return "Error Getting material, Please check your repo"
+            return []
 
 
 
@@ -51,7 +51,7 @@ class Repo:
             numbers = json.loads(data)
             return  numbers
         else:
-            return None
+            return []
 
 
 

@@ -87,6 +87,9 @@ class MobilqqAddByAddressListII:
             time.sleep(7)
         if d(textContains='没有可匹配的').exists:
             return
+        if d(text='匹配手机通讯录', resourceId='com.tencent.mobileqq:id/name').exists:
+            d(text='匹配手机通讯录', resourceId='com.tencent.mobileqq:id/name').click()
+            time.sleep(10)
         d(text='多选').click()
         while True:
             if d(text='#').exists:

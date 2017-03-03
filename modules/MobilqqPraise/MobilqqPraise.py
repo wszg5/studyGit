@@ -68,6 +68,6 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    args = {"repo_number_cate_id":"119","add_count":"2","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"119","add_count":"6","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

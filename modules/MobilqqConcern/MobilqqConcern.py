@@ -69,6 +69,11 @@ class MobilqqConcern:
                 if d(text='关注').exists:
                     d(text='关注').click()
                     time.sleep(1.5)
+                if d(textContains='取消').exists:
+                    d(text='取消').click()
+                if d(text='关注').exists:     #因为第一次会有个提醒页面，需要再点一次才能关注成功
+                    d(text='关注').click()
+                    time.sleep(1)
                     # if d(text='关注').exists:
                     #     return
 

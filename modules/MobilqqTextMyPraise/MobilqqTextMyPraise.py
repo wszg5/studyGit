@@ -105,6 +105,7 @@ class MobilqqTextMyPraise:
         d(descriptionContains='赞').child(className='android.view.View').click()
         time.sleep(3)
         d(text='我赞过谁').click()
+        time.sleep(2)
         obj4 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=1) \
             .child(className='android.widget.RelativeLayout', index=1).child(
             className='android.widget.LinearLayout')  # 用来点击的

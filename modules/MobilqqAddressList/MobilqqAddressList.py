@@ -112,10 +112,11 @@ class MobilqqAddressList:
 
             newStart = 0
 
-
-
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
             d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
+            time.sleep(2)
+            if d(textContains='没有可匹配的').exists:
+                return 'false'
 
         return 'true'
 
@@ -224,7 +225,7 @@ class MobilqqAddressList:
                 return
             message = Material[0]['content']  # 取出验证消息的内容
 
-            obj = d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=i).child(
+            obj = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=i).child(
                 resourceId='com.tencent.mobileqq:id/text1', index=1)  # 点击第ｉ个人
             time.sleep(0.5)
             if obj.exists:
@@ -253,6 +254,8 @@ class MobilqqAddressList:
             else:
                 if change ==0:        #第一次滑动，开始ｉｎｄｅｘ不是通讯录里的人的时候，当点击开始发消息时将该值变为１
                     i = i + 1
+                    if i>13:     #已绑定通讯录但通讯录一个人都没有时的结束条件
+                        return
                     continue
                 else:
                     obj = d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=i).child(

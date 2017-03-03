@@ -50,9 +50,7 @@ class MobilqqSendText:
                 className='android.widget.RelativeLayout').click()  # 点击到联系人
             time.sleep(0.5)
 
-        if d(className='android.widget.LinearLayout',index=7).child(resourceId='com.tencent.mobileqq:id/text1',className='android.view.View',index=0).exists:   #好友已经展开的情况
-            d.swipe(width / 2, height * 4 / 5, width / 2, height / 3)      #第一次滑动，将第一个人滑到靠上的位置
-        else:
+        if not d(className='android.widget.LinearLayout',index=7).child(resourceId='com.tencent.mobileqq:id/text1',className='android.view.View',index=0).exists:   #好友已经展开的情况
             wait = 1
             while wait == 1:
                 obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.CheckBox',
@@ -64,12 +62,11 @@ class MobilqqSendText:
                 wait = 0
             d(resourceId='com.tencent.mobileqq:id/elv_buddies', className='android.widget.AbsListView').child(
                 resourceId='com.tencent.mobileqq:id/group_item_layout', index=6).click()  # 将好友展开
-            d.swipe(width / 2, height * 4 / 5, width / 2, height / 3)      #第一次滑动，将第一个人滑到靠上的位置
 
 
         set1 = set()
         change = 0
-        i = 1
+        i = 7
         t = 1
         EndIndex = int(args['EndIndex'])
         while t < EndIndex + 1:
@@ -118,10 +115,9 @@ class MobilqqSendText:
                     i = i + 1
                     continue
                 else:
-                    obj = d(resourceId='com.tencent.mobileqq:id/elv_buddies',
-                            className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=i).child(
-                        className='android.widget.CheckBox')         #看是否滑到了最后一个人
-                    if obj.exists:
+
+                    endCondition = d(className='android.widget.AbsListView').child(className='android.widget.FrameLayout',index=i)   #结束条件
+                    if endCondition.exists:
                         return
                     d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)        #没到最后一个人，继续滑动发消息
                     time.sleep(5)
@@ -144,6 +140,7 @@ class MobilqqSendText:
             else:
                 d(textContains='消息').click()
 
+
             d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(
                 className='android.widget.FrameLayout').child(
                 className='android.widget.RelativeLayout').click()  # 发完消息后点击到联系人
@@ -162,7 +159,7 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_material_id":"122",'EndIndex':'30',"time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_material_id":"39",'EndIndex':'30',"time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
 
