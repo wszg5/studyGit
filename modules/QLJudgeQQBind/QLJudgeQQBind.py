@@ -9,7 +9,7 @@ import sys
 reload(sys)
 import os
 sys.setdefaultencoding('utf8')
-class WXPictureMoment:
+class QLJudgeQQBind:
 
     def __init__(self):
         self.repo = Repo()
@@ -86,7 +86,7 @@ class WXPictureMoment:
             time.sleep(int(args["time_delay"]))
 
 def getPluginClass():
-    return WXPictureMoment
+    return QLJudgeQQBind
 
 if __name__ == "__main__":
     clazz = getPluginClass()
