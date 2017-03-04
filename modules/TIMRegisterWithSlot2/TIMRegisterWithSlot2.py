@@ -5,11 +5,9 @@ from Repo import *
 from XunMa import *
 import time
 from slot import slot
-import sys
-reload(sys)
-sys.setdefaultencoding("utf-8")
 
-class TIMRegisterWithSlot:
+
+class TIMRegisterWithSlot2:
 
     def __init__(self):
         self.repo = Repo()
@@ -138,19 +136,21 @@ class TIMRegisterWithSlot:
             d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
 
             self.swipe(d)
-
+            time.sleep(4)
             if d(text='消息',resourceId='com.tencent.tim:id/ivTitleName').exists:
                 obj = self.slot.getSlotInfo(d,name)  #得到切换后的QQ号
                 info = obj['info']  #info为QQ号
                 self.repo.BackupInfo(cate_id,'using',info,'%s_%s'%(d.server.adb.device_serial(),name))  # 将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
             else:
-                info = self.registerWithSlot(d,z,args)
-                if info != False:
-                    #帐号无法登陆则重新注册登陆
-                    self.slot.backup(d, name, info)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
-                    self.repo.BackupInfo(cate_id, 'using', info, '%s_%s'%(d.server.adb.device_serial(),name))  # 将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
-                else:
-                    d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"TIM卡槽备份失败\"").communicate()
+                while 1:
+                    info = self.registerWithSlot(d,z,args)
+                    if info != False:
+                        #帐号无法登陆则重新注册登陆
+                        self.slot.backup(d, name, info)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
+                        self.repo.BackupInfo(cate_id, 'using', info, '%s_%s'%(d.server.adb.device_serial(),name))  # 将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
+                        break
+                    else:
+                        d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"TIM卡槽备份失败\"").communicate()
 
 
         else:                           #有空卡槽的情况
@@ -159,12 +159,14 @@ class TIMRegisterWithSlot:
             time.sleep(3)
             z.set_mobile_data(True)
             time.sleep(8)
-            info = self.registerWithSlot(d,z,args)
-            if info!=False:
-                self.slot.backup(d,name,info)          #设备信息，卡槽号，QQ号
-                self.repo.BackupInfo(cate_id, 'using', info,'%s_%s'%(d.server.adb.device_serial(),name))     #仓库号,使用中,QQ号,设备号_卡槽号
-            else:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"TIM卡槽备份失败\"").communicate()
+            while 1:
+                info = self.registerWithSlot(d,z,args)
+                if info!=False:
+                    self.slot.backup(d,name,info)          #设备信息，卡槽号，QQ号
+                    self.repo.BackupInfo(cate_id, 'using', info,'%s_%s'%(d.server.adb.device_serial(),name))     #仓库号,使用中,QQ号,设备号_卡槽号
+                    break
+                else:
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"TIM卡槽备份失败\"").communicate()
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -190,9 +192,12 @@ class TIMRegisterWithSlot:
 
 
 def getPluginClass():
-    return TIMRegisterWithSlot
+    return TIMRegisterWithSlot2
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
 
     clazz = getPluginClass()
     o = clazz()

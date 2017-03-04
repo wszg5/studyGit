@@ -104,8 +104,8 @@ def deviceTask(deviceid, port, zport):
             while True:
                 steps = dbapi.GetTaskSteps(taskid)
                 #设置zime输入法
-                d.server.adb.cmd("shell","ime set com.zunyun.zime/.ZImeService").wait()
-                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.unlock").wait()
+                d.server.adb.cmd("shell","ime set com.zunyun.zime/.ZImeService").communicate()
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.unlock").communicate()
                 for step in steps:
                     try:
                         runStep(d, z, step)

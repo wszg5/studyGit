@@ -1,20 +1,13 @@
 {
-"id": "TIMAddressCollectData",
+"id": "TIMAddressMatchSwitch",
 "cate":"其他模块",
-"name":"TIM检存通讯录",
+"name":"TIM通讯录匹配开关",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"T06",
+"code":"T04",
 "icon":"vcard-o",
-"remark":"TIM检存通讯录",
+"remark":"通讯录匹配开关",
 "setting":[
-	{
-	"id": "repo_numberCateId_id",
-	"name":"TIM检存通讯录",
-	"type":"repo",
-	"source":"number",
-	"top_cate_id":"21"
-	},
     {
     "id": "time_delay",
     "name":"延时",

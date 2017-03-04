@@ -4,6 +4,7 @@
 "name":"TIM通讯录加好友",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"T08",
 "icon":"vcard-o",
 "remark":"TIM通讯录加好友",
 "setting":[
@@ -13,6 +14,14 @@
 	"type":"repo",
 	"source":"material",
 	"top_cate_id":"12"
+	},
+	{
+	"id": "gender",
+	"name":"性别",
+	"type":"select",
+	"list":{"男":"男","女":"女","不限":"不限"},
+	"defaultValue":"女",
+	"remark":"性别要求"
 	},
 	{
 	"id": "EndIndex",
