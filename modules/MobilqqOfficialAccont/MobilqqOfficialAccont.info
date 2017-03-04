@@ -1,1 +1,35 @@
-MobilqqOfficialAccont
+
+{
+"id": "MobilqqOfficialAccont",
+"cate":"QQ模块",
+"name":"普通QQ关注QQ公众号",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"18",
+"icon": "vcard-o",
+"remark":"添加好友",
+"setting":[
+	{
+    "id": "repo_material_id",
+    "name":"公众号昵称库",
+    "type":"repo",
+    "source":"material",
+    "top_cate_id":"12"
+    },
+
+    {
+	"id": "add_count",
+	"name":"搜索公众号次数",
+	"type":"textbox",
+	"defaultValue":"5",
+	"remark":"单位：个"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

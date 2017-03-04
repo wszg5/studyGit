@@ -3,7 +3,7 @@ import threading
 import time
 from PIL import Image
 from uiautomator import Device
-import os,re,subprocess
+import re,subprocess
 from Repo import *
 from RClient import *
 import time, datetime, random
@@ -36,17 +36,14 @@ class EIMLoginNoSlot:
         t = 1
         while t == 1:         #直到登陆成功为止
             time_limit = args['time_limit']         #帐号提取时间间隔
-            wait = 1
-            while wait == 1:  # 判断仓库是否有东西　　　　　　　直到仓库有东西为止
-                cate_id = args["repo_cate_id"]
-                numbers = self.repo.GetAccount(cate_id, time_limit, 1)
-                print(numbers)
-                try:
-                    QQNumber = numbers[0]['number']  # 即将登陆的QQ号
-                    wait = 0
-                except Exception:
-                    d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"EIM%s号帐号库为空，等待中\""%cate_id).communicate()
-                    time.sleep(20)
+            cate_id = args["repo_cate_id"]
+            numbers = self.repo.GetAccount(cate_id, time_limit, 1)
+            if len(numbers) == 0:
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"EIM%s号帐号库为空，等待中\"" % cate_id).communicate()
+                time.sleep(10)
+                return
+
+            QQNumber = numbers[0]['number']  # 即将登陆的QQ号
             QQPassword = numbers[0]['password']
             d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
             d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
@@ -127,14 +124,14 @@ def getPluginClass():
     return EIMLoginNoSlot
 
 if __name__ == "__main__":
+    import os
     clazz = getPluginClass()
     o = clazz()
-
-    d = Device("HT49XSK01858")
-    z = ZDevice("HT49XSK01858")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
 
 
-    args = {"repo_cate_id":"55","time_limit":"0","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"111","time_limit":"0","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

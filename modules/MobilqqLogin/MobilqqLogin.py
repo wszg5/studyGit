@@ -3,16 +3,14 @@ import threading
 import time
 from PIL import Image
 from uiautomator import Device
-import os,re,subprocess
+import re,subprocess
 import util
 from Repo import *
 from RClient import *
 import time, datetime, random
 from zservice import ZDevice
 from slot import slot
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+
 class MobilqqLogin:
     def __init__(self):
         self.type = 'mobileqq'
@@ -40,17 +38,14 @@ class MobilqqLogin:
         while True:
             time_limit1 = args['time_limit1']
             numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
-            wait = 1
-            while wait == 1:  # 判断仓库是否有东西
-                try:
-                    QQNumber = numbers[0]['number']  # 即将登陆的QQ号
-                    wait = 0
-                except Exception:
-                    d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库为空，等待中\""%cate_id).communicate()
-                    time.sleep(30)
+            if len(numbers) == 0:
+                d.server.adb.cmd("shell",
+                                 "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库为空，等待中\"" % cate_id).communicate()
+                time.sleep(10)
+                return
+            QQNumber = numbers[0]['number']  # 即将登陆的QQ号
             QQPassword = numbers[0]['password']
             time.sleep(1)
-
 
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
             d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
@@ -59,9 +54,9 @@ class MobilqqLogin:
             time.sleep(4)
             d(text='登 录', resourceId='com.tencent.mobileqq:id/btn_login').click()
             time.sleep(1)
-            d(className='android.widget.EditText', index=0).set_text(3004001751)  # ﻿1918697054----xiake1234.  QQNumber
+            d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
             time.sleep(1)
-            d(resourceId='com.tencent.mobileqq:id/password', index=2).set_text('Bn2kJq5l')  # Bn2kJq5l     QQPassword
+            d(resourceId='com.tencent.mobileqq:id/password', index=2).set_text(QQPassword)  # Bn2kJq5l     QQPassword
             d(text='登 录', resourceId='com.tencent.mobileqq:id/login').click()
             time.sleep(1)
             while d(text='登录中').exists:
@@ -112,9 +107,9 @@ class MobilqqLogin:
                         break
 
             else:
-                d.server.adb.cmd("shell", "am force-stop com.tencent1314.mobileqq").wait()  # 强制停止
+                d.server.adb.cmd("shell", "am force-stop com.tencent1314.mobileqq").communicate()  # 强制停止
                 time.sleep(1)
-                d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+                d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
                 time.sleep(4)
 
             if d(text='搜索', resourceId='com.tencent.mobileqq:id/name').exists:  # 不需要验证码的情况
@@ -230,18 +225,20 @@ def getPluginClass():
     return MobilqqLogin
 
 if __name__ == "__main__":
+    import os
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
 
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-
-
+    z.input('1633132378')
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"37","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"35","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)

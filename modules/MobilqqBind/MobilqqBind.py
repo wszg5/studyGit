@@ -10,7 +10,7 @@ from dbapi import *
 from uiautomator import Device, AutomatorDeviceUiObject
 from zservice import ZDevice
 
-class QQLiteStrUseAddressList:
+class QQLiteStrUseAddressList:      #做通讯录绑定的时候单独做的，现在无用了
     def __init__(self):
         self.repo = Repo()
         self.xuma = XunMa()

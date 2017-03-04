@@ -4,6 +4,7 @@
 "name":"微信扫描二维码",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"35",
 "icon": "vcard-o",
 "remark":"微信版本，6.5.4",
 "setting":[
@@ -12,7 +13,7 @@
     "name":"验证信息素材库",
     "type":"repo",
     "source":"material",
-    "top_cate_id":"12"
+    "top_cate_id":"14"
     },
     {
     "id": "time_delay",

@@ -4,12 +4,13 @@
 "name":"微信发朋友圈(图文)",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"32",
 "icon": "vcard-o",
 "remark":"微信版本，6.5.4",
 "setting":[
 	{
     "id": "repo_material_id",
-    "name":"验证信息素材库",
+    "name":"朋友圈素材库",
     "type":"repo",
     "source":"material",
     "top_cate_id":"14"

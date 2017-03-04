@@ -37,10 +37,13 @@ class ImpContact:
         if numbers:
             file_object = open(filename, 'w')
             lines = ""
+            pname = ""
             for number in numbers:
                 if number["name"] is None:
-                    name = number["number"]
-                lines = "%s%s----%s\r" %(lines, name, number["number"])
+                    pname = number["number"]
+                else:
+                    pname = number["name"]
+                lines = "%s%s----%s\r" %(lines, pname, number["number"])
 
             file_object.writelines(lines)
             file_object.close()
@@ -76,6 +79,8 @@ if __name__ == "__main__":
 
     # d.dump(compressed=False)
 
-    args = {"repo_cate_id":"104",'number_count':'500',"time_delay":"3"}    #cate_id是仓库号，length是数量
+
+    args = {"repo_cate_id":"104",'number_count':'50',"time_delay":"3"}    #cate_id是仓库号，length是数量
+
 
     o.action(d,z, args)

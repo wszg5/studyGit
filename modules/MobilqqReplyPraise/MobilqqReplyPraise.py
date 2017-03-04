@@ -2,15 +2,13 @@
 from RClient import *
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import  time, datetime, random
 from zservice import ZDevice
 from XunMa import *
 import traceback
 from PIL import Image
 import colorsys
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+
 
 class MobilqqReplyPraise:
     def __init__(self):
@@ -91,20 +89,26 @@ class MobilqqReplyPraise:
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
-        d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
-        d.server.adb.cmd("shell",
-                         "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+        d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
+        d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(8)
-        d(descriptionContains='帐户及设置').click()
-        d(descriptionContains='等级').click()
-        d(descriptionContains='赞').click()
+        d(className='android.widget.TabWidget',index=2).child(className='android.widget.FrameLayout',index=2).child(className='android.widget.RelativeLayout',index=0).click()
+        d(text='附近').click()
+        while True:
+            if d(text='新鲜事').exists:
+                break
+            else:
+                time.sleep(2)
+        d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=2).child(className='android.widget.LinearLayout',index=0).click()     #点击进入自己的主页
+        d(descriptionContains='赞').child(className='android.view.View').click()
+        # d(descriptionContains='帐户及设置').click()
+        # d(descriptionContains='等级').click()
+        # d(descriptionContains='赞').click()
         time.sleep(3)
         obj4 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=1) \
             .child(className='android.widget.RelativeLayout', index=1).child(
             className='android.widget.LinearLayout')  # 用来点击的
-        if obj4.exists:      #没有人赞我情况
-            print
-        else:
+        if not obj4.exists:      #没有人赞我情况
             return
         set1 = set()
         i = 1
@@ -118,15 +122,11 @@ class MobilqqReplyPraise:
             obj3 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=i) \
             .child(className='android.widget.RelativeLayout', index=1).child(
             resourceId='com.tencent.mobileqq:id/lastMsgTime')  # 看性别是否存在
-            if gender=='不限':
-                print
-            else:       #给赞我的人发消息，看性别是否有消息
+            if not gender=='不限':       #给赞我的人发消息，看性别是否有消息
                 if obj3.exists:    #对性别有要求的情况，看性别是否有显示
                     genderfrom = self.Gender(d,i)    #得到第ｉ个人的真实性别
                     print(genderfrom)
-                    if genderfrom == gender:
-                        print
-                    else:
+                    if genderfrom != gender:
                         i = i+1
                         continue
                 else:
@@ -135,17 +135,8 @@ class MobilqqReplyPraise:
                     if d(textContains='显示更多').exists:
                         d(textContains='显示更多').click()
                     d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
-                    for g in range(0, 12, +1):
-                        obj2 = d(className='android.widget.AbsListView').child(
-                            className='android.widget.RelativeLayout', index=g) \
-                            .child(className='android.widget.RelativeLayout', index=1).child(
-                            className='android.widget.LinearLayout').child(className='android.widget.TextView')  # 用来点击的
-                        if obj2.exists:
-                            obj2 = obj2.info
-                            Tname = obj2['text']
-                            if Tname == name:
-                                break
-                    i = g + 1
+
+                    i = 1
                     continue
             if obj1.exists:    #当对性别没要求时，就判断昵称是否存在
                 obj1 = obj1.info
@@ -161,13 +152,17 @@ class MobilqqReplyPraise:
                     time.sleep(2)
                 d(text='发消息').click()
                 d(className='android.widget.EditText').click()
-                # cate_id = args["repo_material_id"]
-                # Material = self.repo.GetMaterial(cate_id, 0, 1)
-                # try:
-                #     Material = Material[0]['content']  # 从素材库取出的要发的材料
-                # except Exception:
-                #     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                # z.input(Material)
+                cate_id = args["repo_material_id"]
+                Material = self.repo.GetMaterial(cate_id, 0, 1)
+                if len(Material) == 0:
+                    d.server.adb.cmd("shell",
+                                     "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                    time.sleep(10)
+                    return
+                Material = Material[0]['content']  # 从素材库取出的要发的材料
+
+                z.input(Material)
+                d(text='发送').click()
                 d(text='返回').click()
                 i = i+1
                 t = t+1
@@ -178,16 +173,7 @@ class MobilqqReplyPraise:
                 if d(textContains='显示更多').exists:
                     d(textContains='显示更多').click()
                 d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
-                for g in range(0, 12, +1):
-                    obj2 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=g) \
-                        .child(className='android.widget.RelativeLayout', index=1).child(
-                        className='android.widget.LinearLayout').child(className='android.widget.TextView')  # 用来点击的
-                    if obj2.exists:
-                        obj2 = obj2.info
-                        Tname = obj2['text']
-                        if Tname == name:
-                            break
-                i = g + 1
+                i = 1
                 continue
 
         if (args["time_delay"]):
@@ -198,19 +184,16 @@ def getPluginClass():
     return MobilqqReplyPraise
 
 if __name__ == "__main__":
+    import os
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-    # repo = Repo()
-    # Material = repo.GetMaterial(40, 0, 1)
-    # try:
-    #     Material = Material[0]['content']  # 从素材库取出的要发的材料
-    # except Exception:
-    #     d.server.adb.cmd("shell",
-    #                      "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-    # z.input(Material)
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+
     args = {"repo_material_id":"40",'gender':"不限",'EndIndex':'40',"time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

@@ -112,14 +112,13 @@ class MobilqqAddressList:
 
             newStart = 0
 
-
-
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
             d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
+            time.sleep(2)
+            if d(textContains='没有可匹配的').exists:
+                return 'false'
 
         return 'true'
-
-
 
     def action(self, d,z, args):
         gender1 = args['gender']
@@ -129,9 +128,7 @@ class MobilqqAddressList:
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(6)
-        if d(text='消息',resourceId='com.tencent.mobileqq:id/name').exists:                    #到了通讯录这步后看号有没有被冻结
-            print
-        else:
+        if not d(text='消息',resourceId='com.tencent.mobileqq:id/name').exists:                    #到了通讯录这步后看号有没有被冻结
             return 2
         if d(text='绑定手机号码').exists:
             d(text='关闭').click()
@@ -150,12 +147,9 @@ class MobilqqAddressList:
 
 
 
-        if d(text='联系人',resourceId='com.tencent.mobileqq:id/ivTitleName').exists:       #如果已经到联系人界面
-            print
-        else:
+        if not d(text='联系人',resourceId='com.tencent.mobileqq:id/ivTitleName').exists:       #如果没到联系人界面
             d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(
                 className='android.widget.FrameLayout').child(className='android.widget.RelativeLayout').click()  # 点击到联系人
-
         wait = 1
         while wait == 1:
             obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.CheckBox',      #刚进联系人界面看是否有展开的列表
@@ -224,22 +218,20 @@ class MobilqqAddressList:
         while t < EndIndex+1:
             cate_id = args["repo_material_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
-            try:
-                Material = Material[0]['content']  # 从素材库取出的要发的材料
-            except Exception:
-                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+            if len(Material) == 0:
+                d.server.adb.cmd("shell",
+                                 "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                time.sleep(10)
+                return
+            message = Material[0]['content']  # 取出验证消息的内容
 
-            time.sleep(1)
-
-            obj = d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=i).child(
+            obj = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=i).child(
                 resourceId='com.tencent.mobileqq:id/text1', index=1)  # 点击第ｉ个人
             time.sleep(0.5)
             if obj.exists:
                 change = 1
                 obj.click()
-                if d(descriptionContains='昵称:').exists:
-                    print
-                else:
+                if not d(descriptionContains='昵称:').exists:
                     i = 3
                     continue
                 phone = d(descriptionContains='昵称:').info
@@ -262,6 +254,8 @@ class MobilqqAddressList:
             else:
                 if change ==0:        #第一次滑动，开始ｉｎｄｅｘ不是通讯录里的人的时候，当点击开始发消息时将该值变为１
                     i = i + 1
+                    if i>13:     #已绑定通讯录但通讯录一个人都没有时的结束条件
+                        return
                     continue
                 else:
                     obj = d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=i).child(
@@ -269,20 +263,20 @@ class MobilqqAddressList:
                     if obj.exists:
                         return
                     d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
-                    time.sleep(3)
+                    time.sleep(2)
                     i = 2
                     continue
 
-            if '[姓名]' in Material:
+            if '[姓名]' in message:
                 obj1 = d(descriptionContains='QQ 昵称').child(className='android.widget.TextView', index=1).info
                 obj1 = obj1['text']
-                Material = Material.replace('[姓名]',obj1)  # -----------------------------------
+                message = message.replace('[姓名]',obj1)  # -----------------------------------
             d(resourceId='com.tencent.mobileqq:id/txt', text='发消息').click()
             time.sleep(1)
-            d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()  # Material
-            z.input(Material)
+            d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()  # message
+            z.input(message)
             time.sleep(1)
-            d(resourceId='com.tencent.mobileqq:id/fun_btn', text='发送').click()
+            d(text='发送').click()
             i = i + 1
             t = t + 1
             d(resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft', description='返回消息界面').click()
@@ -305,5 +299,5 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_material_id":"100",'gender':"不限",'EndIndex':'20',"time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_material_id":"39",'gender':"不限",'EndIndex':'20',"time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

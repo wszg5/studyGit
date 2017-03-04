@@ -1,12 +1,8 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import time, datetime, random
 from zservice import ZDevice
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 
 class WeiXinAddFriendByAddressList:
 
@@ -30,7 +26,6 @@ class WeiXinAddFriendByAddressList:
         while d(textContains='正在获取').exists:
             time.sleep(3)
 
-
         set1 = set()
         change = 0
         i = 0
@@ -39,41 +34,43 @@ class WeiXinAddFriendByAddressList:
         while t < EndIndex :
             cate_id = args["repo_material_id"]   #------------------
             Material = self.repo.GetMaterial(cate_id, 0, 1)
-
-            try:
-                Material = Material[0]['content']  # 从素材库取出的要发的材料
-                wait = 0
-            except Exception:
+            if len(Material) == 0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                time.sleep(10)
+                return
+            message = Material[0]['content']  # 从素材库取出的要发的材料
 
             time.sleep(1)
-            obj = d(className='android.widget.LinearLayout', index=i).child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).child(textContains='微信:')     #得到微信名
-            if obj.exists:
-                obj2 = d(className='android.widget.LinearLayout', index=i).child(className='android.widget.LinearLayout').child(className='android.widget.FrameLayout').child(text='已添加')     #该编号好友已经被添加的情况
-                if obj2.exists:
+            wxname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=i).child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).child(textContains='微信:')     #得到微信名
+            if wxname.exists:
+                alreadyAdd = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',
+                                                                          index=i).child(
+                    className='android.widget.LinearLayout', index=0).child(className='android.widget.FrameLayout',
+                                                                            index=2).child(
+                    text='已添加')  # 该编号好友已经被添加的情况
+                if alreadyAdd.exists:
                     i = i+1
                     continue
 
                 change = 1      #好友存在且未被添加的情况出现，change值改变
-                obj = obj.info
-                name = obj['text']
+                wxname = wxname.info
+                name = wxname['text']
                 if name in set1:    #判断是否已经给该人发过消息
                     i = i+1
                     continue
                 else:
                     set1.add(name)
-                print(i)
+                print(name)
                 d(className='android.widget.ListView',index=0).child(className='android.widget.LinearLayout',index=i).\
                     child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).click()      #点击第i个人
                 GenderFrom = args['gender']     #-------------------------------
                 if GenderFrom !='不限':
-                    obj = d(className='android.widget.LinearLayout',index=1).child(className='android.widget.LinearLayout').child(className='android.widget.ImageView',index=1)      #看性别是否有显示
-                    if obj.exists:
-                        Gender = obj.info
+                    Gender = d(className='android.widget.LinearLayout',index=1).child(className='android.widget.LinearLayout').child(className='android.widget.ImageView',index=1)      #看性别是否有显示
+                    if Gender.exists:
+                        Gender = Gender.info
                         Gender = Gender['contentDescription']
-                        if Gender ==GenderFrom:
-                            print()
-                        else:            #如果性别不符号的情况
+                        if Gender !=GenderFrom:
+                                     #如果性别不符号的情况
                             d(description='返回').click()
                             i = i+1
                             continue
@@ -101,15 +98,15 @@ class WeiXinAddFriendByAddressList:
                     i = i+1
                     continue
                 time.sleep(1)
-                obj = d(className='android.widget.EditText', index=1).info  # 将之前消息框的内容删除
-                obj = obj['text']
-                lenth = len(obj)
+                deltext = d(className='android.widget.EditText', index=1).info  # 将之前消息框的内容删除
+                deltext = deltext['text']
+                lenth = len(deltext)
                 m = 0
                 while m < lenth:
                     d.press.delete()
                     m = m + 1
                 d(className='android.widget.EditText', index=1).click()
-                z.input(Material)       #----------------------------------------
+                z.input(message)       #----------------------------------------
                 d(text = '发送').click()
                 time.sleep(1)
                 # d(description='返回').click()
@@ -127,21 +124,14 @@ class WeiXinAddFriendByAddressList:
                     continue
                 else:
                     d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
-                    obj = d(className='android.widget.LinearLayout', index=i-1).child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).child(textContains='微信:')
+                    endterm = d(className='android.widget.LinearLayout', index=i-1).child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).child(textContains='微信:')
                     time.sleep(0.5)
-                    if obj.exists:
-                        obj = obj.info
-                        name1 = obj['text']      #判断是否已经到底
+                    if endterm.exists:
+                        endterm = endterm.info
+                        name1 = endterm['text']      #判断是否已经到底
                         if name1 in set1:
                             return
-                    else:
-                        print()
-                    for g in range(1,10,+1):
-                        obj = d(className='android.widget.LinearLayout', index=g).child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).child(textContains='微信:').info
-                        Tname = obj['text']
-                        if Tname==name:
-                            break
-                    i = g+1
+                    i = 1
                     continue
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -150,6 +140,9 @@ def getPluginClass():
     return WeiXinAddFriendByAddressList
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
@@ -157,19 +150,43 @@ if __name__ == "__main__":
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    # z.wx_action("openaddui")
-    # z.wx_sendtextsns('大开发来解决')
-    # z.wx_yaoyiyao()
-    # z.wx
-    # d(text='你的手机号码').set_text(17601543818)
-    # d(resourceId='com.tencent.mm:id/gr').set_text('13141314abc')
-    # d(className='android.widget.EditText').set_text('13141314abc')
-    # d(text='登录').click()
-    # repo = Repo()
-    # Material = repo.GetMaterial(36, 0, 1,'sdlfk')
-    # print(Material)
+    # alreadyAdd = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0).child(
+    #     className='android.widget.LinearLayout',index=0).child(className='android.widget.FrameLayout',index=2).child(
+    #     text='已添加')  # 该编号好友已经被添加的情况
+    # print(alreadyAdd.exists)
 
-
-
-    args = {"repo_material_id": "36",'EndIndex':'100','gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "39",'EndIndex':'100','gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

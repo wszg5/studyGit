@@ -2,12 +2,8 @@
 from XunMa import *
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import  time, datetime, random
 from zservice import ZDevice
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 
 class MobilqqAddByAddressListII:
 
@@ -49,20 +45,20 @@ class MobilqqAddByAddressListII:
         height = str["displayHeight"]
         width = str["displayWidth"]
 
-        d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
+        d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(6)
         cate_id = args["repo_material_id"]  # ------------------
         Material = self.repo.GetMaterial(cate_id, 0, 1)
-        try:
-            Material = Material[0]['content']  # 从素材库取出的要发的材料
-            wait = 0
-        except Exception:
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+        if len(Material) == 0:
+            d.server.adb.cmd("shell",
+                             "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+            time.sleep(10)
+            return
+        message = Material[0]['content']  # 取出验证消息的内容
 
-        if d(text='消息', resourceId='com.tencent.mobileqq:id/name').exists:  # 到了通讯录这步后看号有没有被冻结
-            print
-        else:
+
+        if not d(text='消息', resourceId='com.tencent.mobileqq:id/name').exists:  # 到了通讯录这步后看号有没有被冻结
             return 2
         if d(text='绑定手机号码').exists:
             d(text='关闭').click()
@@ -87,10 +83,13 @@ class MobilqqAddByAddressListII:
             time.sleep(7)
         if d(textContains='没有可匹配的').exists:
             return
+        if d(text='匹配手机通讯录', resourceId='com.tencent.mobileqq:id/name').exists:
+            d(text='匹配手机通讯录', resourceId='com.tencent.mobileqq:id/name').click()
+            time.sleep(10)
         d(text='多选').click()
         while True:
             if d(text='#').exists:
-                for m in range(0,12,+1):
+                for m in range(0,12,+1):     #快速加好友从#号下面的
                     obj = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',
                                                                           index=m).child(className='android.widget.TextView').info
                     if obj['text']=='#':
@@ -100,7 +99,7 @@ class MobilqqAddByAddressListII:
                         continue
 
                 break
-            else:
+            else:         #当前页没有找到＃时滑页
                 d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
         set1 = set()
         i = m+1
@@ -131,7 +130,7 @@ class MobilqqAddByAddressListII:
                             while mn < lenth:
                                 d.press.delete()
                                 mn = mn + 1
-                            z.input(Material)
+                            z.input(message)
                             d(text='发送').click()
                             return
                         obj4 = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=i).child(className='android.widget.CheckBox')  #勾选框没被遮住的情况
@@ -167,23 +166,10 @@ class MobilqqAddByAddressListII:
                     while mn < lenth:
                         d.press.delete()
                         mn = mn + 1
-                    z.input(Material)
+                    z.input(message)
                     d(text='发送').click()
                     return
-
-                for g in range(0,12,+1):
-                    obj3 = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout', index=g)\
-                    .child(className='android.widget.LinearLayout',index=2).child(className='android.widget.TextView')     #第i个内容存在并且是人的情况
-                    if obj3.exists:
-                        obj3 = obj3.info
-                    else:
-                        g = g+1
-                        continue
-                    Tphone = obj3['text']
-                    if Tphone==phone:
-                        break
-                i = g+1
-                print(i)
+                i = 1
                 continue
 
         d(textContains='加好友').click()
@@ -194,7 +180,7 @@ class MobilqqAddByAddressListII:
         while mn < lenth:
             d.press.delete()
             mn = mn + 1
-        z.input(Material)
+        z.input(message)
         d(text='发送').click()
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -203,13 +189,16 @@ def getPluginClass():
     return MobilqqAddByAddressListII
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_material_id": "36",'EndIndex':'2',"time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "39",'EndIndex':'100',"time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
 

@@ -141,5 +141,5 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     # z.input(s)
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"32","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"37","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

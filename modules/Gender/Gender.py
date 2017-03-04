@@ -28,7 +28,6 @@ class MobilqqLogin:
         return uniqueNum
 
 
-
     def action(self, d,z, args):
         co = RClient()
         im_id = ""
@@ -38,23 +37,21 @@ class MobilqqLogin:
             os.mkdir(base_dir)
         sourcePng = os.path.join(base_dir, "%s_s.png" % (self.GetUnique()))
 
-        obj = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=4) \
-            .child(className='android.widget.RelativeLayout', index=1).child(
-            resourceId='com.tencent.mobileqq:id/lastMsgTime')  # 得到QQ号
+        obj = d(className='android.widget.EditText',index=2)      #性别图片
         if obj.exists:
             obj = obj.info
             obj = obj['bounds']  # 验证码处的信息
+            print(obj)
             left = obj["left"]  # 验证码的位置信息
             top = obj['top']
             right = obj['right']
             bottom = obj['bottom']
-
             d.screenshot(sourcePng)  # 截取整个输入验证码时的屏幕
 
             img = Image.open(sourcePng)
-            box = (left, top, right, bottom)  # left top right bottom
+            box = (left, top, right, bottom)  # left top right bottom  470
             region = img.crop(box)  # 截取验证码的图片
-            # show(region)       #展示资料卡上的信息
+            show(region)       #展示资料卡上的信息
             image = region.convert('RGBA')
             # 生成缩略图，减少计算量，减小cpu压力
             image.thumbnail((200, 200))
@@ -82,8 +79,10 @@ class MobilqqLogin:
 
             if red>blue:
                 print('女')
+                return '女'
             else:
                 print('男')
+                return '男'
             return dominant_color
         else:
             return '妖'
@@ -104,7 +103,7 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     # d.dump(compressed=False)
-
+    # z.input('13817732451')
     args = {"repo_cate_id":"59","time_limit":"30","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
