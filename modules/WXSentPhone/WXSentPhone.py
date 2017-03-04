@@ -3,9 +3,6 @@ from uiautomator import Device
 from Repo import *
 from zservice import ZDevice
 from XunMa import *
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 
 class WXSentPhone:
@@ -17,8 +14,8 @@ class WXSentPhone:
         self.xuma = XunMa(d.server.adb.device_serial())
 
         add_count = int(args['add_count'])
-        d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
-        d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
+        d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
+        d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(5)
 
         d(description='更多功能按钮',className='android.widget.RelativeLayout').click()
@@ -72,12 +69,16 @@ def getPluginClass():
     return WXSentPhone
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
+
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     # z.server.install()
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"repo_number_id": "105","add_count": "100","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

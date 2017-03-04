@@ -2,14 +2,8 @@
 from uiautomator import Device
 from Repo import *
 from XunMa import *
-import os, time, string, random
+import time, string, random
 from zservice import ZDevice
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-
-
-
 
 class WeiXinRegister:
     def __init__(self):
@@ -32,8 +26,8 @@ class WeiXinRegister:
         width = str["displayWidth"]
         self.xm = XunMa(d.server.adb.device_serial())
         while True:
-            d.server.adb.cmd("shell", "pm clear com.tencent.mm").wait()  # 清除缓存
-            d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()
+            d.server.adb.cmd("shell", "pm clear com.tencent.mm").communicate()  # 清除缓存
+            d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()
             time.sleep(8)
             d(text='注册').click()
             time.sleep(1)
@@ -109,12 +103,15 @@ def getPluginClass():
     return WeiXinRegister
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4AVSK01106")
     z = ZDevice("HT4AVSK01106")
     # z.server.install()
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # repo = Repo()
     # repo.RegisterAccount('', 'gemb1225', '13045537833', '109')
     args = {"repo_name_id": "102","repo_number_id1": "109","repo_number_id": "105", "add_count": "9","time_delay": "3"}  # cate_id是仓库号，发中文问题

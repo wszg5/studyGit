@@ -1,12 +1,8 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import time, datetime, random
 from zservice import ZDevice
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 
 class WeiXinAddFriendByAddressList:
 
@@ -144,6 +140,9 @@ def getPluginClass():
     return WeiXinAddFriendByAddressList
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")

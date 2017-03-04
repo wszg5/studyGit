@@ -3,7 +3,7 @@ import threading
 import time
 from PIL import Image
 from uiautomator import Device
-import os,re,subprocess
+import re,subprocess
 import util
 from Repo import *
 from RClient import *
@@ -103,9 +103,9 @@ class MobilqqLoginNoSolt:
                         break
 
             else:
-                d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
+                d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
                 time.sleep(1)
-                d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+                d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
                 time.sleep(4)
 
             if d(text='搜索', resourceId='com.tencent.mobileqq:id/name').exists:  # 不需要验证码的情况
@@ -156,13 +156,14 @@ def getPluginClass():
     return MobilqqLoginNoSolt
 
 if __name__ == "__main__":
+    import os
     clazz = getPluginClass()
     o = clazz()
 
     d = Device("HT49XSK01858")
     z = ZDevice("HT49XSK01858")
 
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
     # slot.restore(d, 9)
 

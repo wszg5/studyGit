@@ -2,12 +2,8 @@
 from XunMa import *
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import  time, datetime, random
 from zservice import ZDevice
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 
 class MobilqqAddByAddressListII:
 
@@ -49,7 +45,7 @@ class MobilqqAddByAddressListII:
         height = str["displayHeight"]
         width = str["displayWidth"]
 
-        d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
+        d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(6)
         cate_id = args["repo_material_id"]  # ------------------
@@ -193,6 +189,9 @@ def getPluginClass():
     return MobilqqAddByAddressListII
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")

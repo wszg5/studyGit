@@ -3,13 +3,11 @@ import threading
 import time
 from PIL import Image
 from uiautomator import Device
-import os,re,subprocess
+import re,subprocess
 from Repo import *
 from zservice import ZDevice
 import time, datetime, random
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+
 class EIMAddFriends:
     def __init__(self):
         self.repo = Repo()
@@ -112,6 +110,9 @@ def getPluginClass():
     return EIMAddFriends
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
 

@@ -3,7 +3,7 @@ import threading
 import time
 from PIL import Image
 from uiautomator import Device
-import os,re,subprocess
+import re,subprocess
 from Repo import *
 from RClient import *
 import time, datetime, random
@@ -124,9 +124,9 @@ def getPluginClass():
     return EIMLoginNoSlot
 
 if __name__ == "__main__":
+    import os
     clazz = getPluginClass()
     o = clazz()
-
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()

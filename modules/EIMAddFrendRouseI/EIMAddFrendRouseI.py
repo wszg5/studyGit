@@ -1,18 +1,13 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import  time, datetime, random
 from zservice import ZDevice
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+
 
 class EIMAddFrendRouseI:
     def __init__(self):
         self.repo = Repo()
-
-
-
 
     def action(self, d,z, args):
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
@@ -67,7 +62,6 @@ class EIMAddFrendRouseI:
             d(text='发送').click()
 
 
-
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
@@ -76,11 +70,15 @@ def getPluginClass():
     return EIMAddFrendRouseI
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
+
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").wait()
+    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
     z.server.install()
     z.server.start()
 

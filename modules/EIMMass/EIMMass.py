@@ -1,11 +1,8 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import  time, datetime, random
 from zservice import ZDevice
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 class EIMMass:
     def __init__(self):
@@ -58,7 +55,7 @@ class EIMMass:
                                    d(text='发消息').click()
                                d(className='android.widget.EditText').click()
                                z.input(message)
-                               # d(text='发送').click()-----------------------------------
+                               d(text='发送').click()
                                d(text='返回').click()
                                d(text='返回').click()
                                i = i+1
@@ -79,9 +76,6 @@ class EIMMass:
                break
 
 
-
-
-
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
@@ -90,11 +84,14 @@ def getPluginClass():
     return EIMMass
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
 
     args = {"repo_material_id":"39","time_delay":"3"};    #cate_id是仓库号，length是数量

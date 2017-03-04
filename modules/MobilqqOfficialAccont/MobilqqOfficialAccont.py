@@ -1,11 +1,9 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import  time, datetime, random
 from zservice import ZDevice
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+
 
 class MobilqqOfficialAccont:
     def __init__(self):
@@ -55,11 +53,14 @@ def getPluginClass():
     return MobilqqOfficialAccont
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
 
     args = {"repo_material_id":"39","add_count":"1","time_delay":"3"};    #cate_id是仓库号，length是数量
