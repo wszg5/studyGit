@@ -39,4 +39,4 @@ class _cache:
 
 cache = _cache()
 
-cache.clear()
+# cache.clear()

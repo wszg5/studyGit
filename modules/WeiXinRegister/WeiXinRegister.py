@@ -10,6 +10,7 @@ class WeiXinRegister:
 
         self.repo = Repo()
         self.xm = None
+        self.cache_phone_key = 'cache_phone_key'
 
     def GenPassword(self, numOfNum=4, numOfLetter=4):
         # 选中numOfNum个数字
@@ -47,22 +48,22 @@ class WeiXinRegister:
                 z.input('中')
                 d(text='中国').click()
             d(textContains='手机号码').click()
-            cate_id = args['repo_number_id']
-            PhoneNumber = self.repo.GetNumber(cate_id,120,1)
-            PhoneNumber = PhoneNumber[0]['number']    #从库里取一条号码
-            # PhoneNumber = cache.popSet('wxPhone')
-            print(PhoneNumber)
-            print('-------------------------------上面是仓库里的号码')
-            backNumber = self.xm.MatchPhoneNumber(PhoneNumber,'2251')     #判断从库里取出的是否可用，当backNumber为０时不可用
+            backNumber = 0
             while True:
                 if backNumber==0:
-                    PhoneNumber = self.repo.GetNumber(cate_id, 120, 1)
-                    PhoneNumber = PhoneNumber[0]['number']  # 从库里取一条号码
+                    PhoneNumber = cache.popSet(self.cache_phone_key)
+                    if PhoneNumber is None:
+                        d.server.adb.cmd("shell",
+                                         "am broadcast -a com.zunyun.zime.toast --es msg \"缓存中没有号码\"" ).communicate()
+                        time.sleep(10)
+                        return
+                    print(PhoneNumber)
+                    print('-------------------------------上面是仓库里的号码')
                     backNumber = self.xm.MatchPhoneNumber(PhoneNumber, '2251')  # 判断从库里取出的是否可用，当backNumber为０时不可用
+                    print(backNumber)
+                    print('-------------------------------------上面是backNumber')
                 else:
                     break
-            print(backNumber)
-            print('-------------------------------------上面是backNumber')
             z.input(PhoneNumber)
             d(className='android.widget.LinearLayout',index=3).child(className='android.widget.EditText').click()
             d(textContains='密码').click()
@@ -93,7 +94,7 @@ class WeiXinRegister:
             else:
                 d(text='好').click()
                 d(text='确定', className='android.widget.Button').click()
-                cate_id = args['repo_number_id1']
+                cate_id = args['repo_number_id']
                 self.repo.RegisterAccount('',password,PhoneNumber,cate_id)
                 print ('成功')
                 time.sleep(20)
@@ -114,7 +115,7 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # repo = Repo()
     # repo.RegisterAccount('', 'gemb1225', '13045537833', '109')
-    args = {"repo_name_id": "102","repo_number_id1": "109","repo_number_id": "105", "add_count": "9","time_delay": "3"}  # cate_id是仓库号，发中文问题
+    args = {"repo_name_id": "102","repo_number_id": "109","add_count": "9","time_delay": "3"}  # cate_id是仓库号，发中文问题
     o.action(d,z, args)
 
 

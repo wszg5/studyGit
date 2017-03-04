@@ -10,6 +10,8 @@ class WXSentPhone:
     def __init__(self):
         self.repo = Repo()
         self.xuma = None
+        self.cache_phone_key = 'cache_phone_key'
+
     def action(self, d,z, args):
         self.xuma = XunMa(d.server.adb.device_serial())
 
@@ -47,14 +49,11 @@ class WXSentPhone:
                     continue
                 if d(textContains='过于频繁').exists:
                     break
-                SetCateId = args['repo_number_id']
                 if not d(textContains='用户不存在'):
 
                     d(descriptionContains='清除').click()
                     continue
-                self.repo.uploadPhoneNumber(PhoneNumber,SetCateId)    #将有用的号传到库里
-                # cache.addSet('wxPhone',PhoneNumber)                     #将有用的号码保存到缓存
-                # print(cache.popSet('wxPhone'))
+                cache.addSet(self.cache_phone_key,PhoneNumber)                     #将有用的号码保存到缓存
                 self.xuma.defriendPhoneNumber(PhoneNumber,'2251')       #将有用的号码拉黑
                 d(descriptionContains='清除').click()
                 account = account+1
@@ -80,5 +79,5 @@ if __name__ == "__main__":
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_number_id": "105","add_count": "100","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"add_count": "100","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
