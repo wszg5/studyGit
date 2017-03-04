@@ -5,10 +5,6 @@ from Repo import *
 import time
 from zservice import ZDevice
 import string,random
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 
 class TIMRegister:
     def __init__(self):
@@ -37,7 +33,7 @@ class TIMRegister:
                     d(className='android.widget.Button', text='立即体验').click()
                     break
 
-            if k==34:
+            if k==35:
                 continue
             time.sleep(2)
 
@@ -68,11 +64,10 @@ class TIMRegister:
                     d(text='下一步', className='android.widget.Button').click()
                     continue
 
-            if j==14:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"TIM验证码跳转失败\"").communicate()
+            if j==15:
                 continue
 
-            time.sleep(3)
+            time.sleep(1)
             while 1:
                 if d(text='请输入短信验证码', className='android.widget.EditText').exists:
                     break
@@ -166,7 +161,10 @@ def getPluginClass():
     return TIMRegister
 
 if __name__ == "__main__":
+    import sys
 
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT52DSK00474")
@@ -174,7 +172,7 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").communicate()    #打开android设置页面
 
-    args = {"repo_cate_id": "102","muchNumber_cate_id":"35", "time_delay": "1"};
+    args = {"repo_cate_id": "47","muchNumber_cate_id":"35", "time_delay": "1"};
     o.action(d, z, args)
 
     # repo = Repo()

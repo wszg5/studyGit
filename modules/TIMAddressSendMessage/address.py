@@ -6,6 +6,9 @@ from zservice import ZDevice
 from PIL import Image
 import colorsys
 from RClient import *
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 
 class TIMAddressAddFriends:
@@ -83,40 +86,94 @@ class TIMAddressSendMessage:
         self.repo = Repo()
 
     def action(self, d, z,args):
-
         gender = args['gender']
-        str = d.info  # 获取屏幕大小等信息
-        height = str["displayHeight"]
-        width = str["displayWidth"]
         d.server.adb.cmd("shell", "am force-stop com.tencent.tim").communicate()  # 强制停止
-        d.server.adb.cmd("shell",
-                         "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        time.sleep(5)
-        d(className='android.widget.TabWidget', resourceId='android:id/tabs', index=1).child(
-            className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
-        time.sleep(3)
-        if d(text='联系人', resourceId='com.tencent.tim:id/ivTitleName').exists:  # 如果已经到联系人界面
-            obj = d(className='android.widget.AbsListView', index=1).child(index=8,
-                                                                           resourceId='com.tencent.tim:id/group_item_layout').child(
-                checked='false', resourceId='com.tencent.tim:id/name')
-            if obj.exists:
-                time.sleep(2)
-                d(resourceId='com.tencent.tim:id/group_item_layout', index=8).click()  # 未展开的情况，先点击展开
+        d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+
+        while 1:
+            if d(text='消息',className='android.widget.TextView').exists:
+                d(className='android.widget.TabWidget', index=1).child(className='android.widget.FrameLayout',index=1).click()  # 点击到联系人
                 time.sleep(1)
-                d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+                break
             else:
-                d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
-        else:  # 没有在联系人界面的话
-            d(className='android.widget.TabWidget', resourceId='android:id/tabs', index=1).child(
-                className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
-            obj = d(className='android.widget.AbsListView', index=1).child(index=8,
-                                                                           resourceId='com.tencent.tim:id/group_item_layout').child(
-                checked='false', resourceId='com.tencent.tim:id/name')
-            if obj.exists:
-                d(resourceId='com.tencent.tim:id/group_item_layout', index=8).click()  # 未展开的情况，先点击展开
-                d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
-            else:
-                d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+                time.sleep(1)
+
+        info = d(index=1, className='android.widget.AbsListView').info
+        bHeight = info["visibleBounds"]["bottom"] - info["visibleBounds"]["top"]
+        # bWidth = info["visibleBounds"]["right"] - info["visibleBounds"]["left"]
+        bTop = info["visibleBounds"]["top"]
+        count = d(index=1, className='android.widget.AbsListView').info['childCount']
+        bHeight = bHeight*(count-1)/count
+
+        obj =d(className='android.widget.AbsListView', index=1).child(index=8,resourceId='com.tencent.tim:id/group_item_layout').child(checked='false',resourceId='com.tencent.tim:id/name')
+        tInfo = d(index=8,resourceId='com.tencent.tim:id/group_item_layout').info
+        tHeight = tInfo["visibleBounds"]["top"]
+        tHeight = tHeight-bTop
+
+        if obj.exists:
+            time.sleep(2)
+            d(resourceId='com.tencent.tim:id/group_item_layout', index=8).click()  # 未展开的情况，先点击展开
+            time.sleep(1)
+            d.swipe(0, tHeight+25, 0, 0)                         #30像素是表(tableView)中组(goup)与组的间隔,可以优化
+        else:
+            d.swipe(0, tHeight+25, 0, 0)
+            print '通讯录已经被点'
+
+        numberArr = []
+        judge = True
+        r = 0
+        while judge==True:
+
+            if judge == False:
+                break
+            for i in range(1, count-1):
+                d(index=1, className='android.widget.AbsListView').child(index=1,
+                                                                         className='android.widget.RelativeLayout').click()
+                d(text='返回', className='android.widget.TextView').click()
+                d.swipe(0, 86 * 7, 0, 0)
+                r = r + 1
+                print r
+                # obj = d(index=1, className='android.widget.AbsListView').child(index=i,className='android.widget.RelativeLayout')
+                # if obj.exists:
+                #     obj.click()
+                #
+                #     number = d(index=0, className='android.widget.TextView', descriptionContains='昵称').info["text"]
+                #     d(text='返回', className='android.widget.TextView').click()
+                #     if number.isdigit():
+                #         if number not in numberArr:
+                #             numberArr.append(number)
+                #     else:
+                #         judge = False
+                #         break
+                #
+                #     if count == i + 2:
+                #         d.swipe(0, 86*7, 0, 0)
+                #         r = r+1
+                #         print r
+
+
+
+        print numberArr
+        ok='ok'
+                #     if obj in numberArr:
+                #         ok='ok'
+                #     else:
+                #         if obj.isdigit():
+                #             numberArr.append(obj)
+                #
+                #     if count == i + 1:
+                #         d.swipe(bWidth / 2, bHeight, bWidth / 2, 0)
+                #         nstr = d(index=0, className='android.widget.AbsListView').child(index=i,className='android.widget.LinearLayout').info["contentDescription"]
+                #         if nstr == numberArr[-1]:
+                #             judge = 'False'
+                #             break
+                #
+                # else:
+                #     if i==0:
+                #         continue
+                #     else:
+                #         judge = 'False'
+                #         break
 
 
         i = 1
@@ -170,9 +227,6 @@ def getPluginClass():
     return TIMAddressSendMessage
 
 if __name__ == "__main__":
-    import sys
-    reload(sys)
-    sys.setdefaultencoding("utf-8")
 
     clazz = getPluginClass()
     o = clazz()

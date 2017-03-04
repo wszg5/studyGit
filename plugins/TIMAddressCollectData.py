@@ -1,7 +1,7 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-import time
+import os, time, datetime, random
 from zservice import ZDevice
 
 
@@ -77,10 +77,6 @@ def getPluginClass():
     return TIMAddressCollectData
 
 if __name__ == "__main__":
-    import sys
-    reload(sys)
-    sys.setdefaultencoding("utf-8")
-
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT52DSK00474")

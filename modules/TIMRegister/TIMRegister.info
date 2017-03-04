@@ -4,6 +4,7 @@
 "name":"TIM批量注册QQ",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"T01",
 "icon":"vcard-o",
 "remark":"TIM版本v1.1",
 "setting":[

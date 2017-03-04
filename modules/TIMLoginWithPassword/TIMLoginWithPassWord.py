@@ -152,7 +152,7 @@ class EIMLogin:
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
-    def action(self, d, z,args):
+    def action1(self, d, z,args):
         time_limit = args['time_limit']
         cate_id = args["repo_cate_id"]
 
@@ -215,18 +215,26 @@ class EIMLogin:
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
-def runwatch(d, data):                                  #watcher除了点击还可以做什么，watcher到可以结束方法吗，可以改变参数吗
-    times = 120
-    while True:
-        if data == 1:
-            return True
-        # d.watchers.reset()
-        d.watchers.run()                      #强制运行所有watchers
-        times -= 1
-        if times == 0:
-            break
-        else:
-            time.sleep(0.5)
+
+
+    # def action(self, d, z, args):
+
+
+
+
+
+# def runwatch(d, data):                                  #watcher除了点击还可以做什么，watcher到可以结束方法吗，可以改变参数吗
+#     times = 120
+#     while True:
+#         if data == 1:
+#             return True
+#         # d.watchers.reset()
+#         d.watchers.run()                      #强制运行所有watchers
+#         times -= 1
+#         if times == 0:
+#             break
+#         else:
+#             time.sleep(0.5)
 
 def getPluginClass():
     return EIMLogin
@@ -235,17 +243,19 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT57FSK00089")
-    z = ZDevice("HT57FSK00089")
+    d = Device("HT52ESK00321")
+    z = ZDevice("HT52ESK00321")
 
-    slot = slot('tim')
+    # slot = slot('tim')
 
-    # print(d.dump(compressed=False))
-    # print(d.info)
-    slot.restore(d, 1)  # 有２小时没用过的卡槽情况，切换卡槽
+    # slot.restore(d, 1)  # 有２小时没用过的卡槽情况，切换卡槽
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id":"64","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     # util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)
+    # d.server.adb.cmd("shell", "pm clear com.taojin.dungeon.sy37").communicate()  # 清除缓存
+    # d.server.adb.cmd("shell","am start -n com.taojin.dungeon.sy37/com.taojin.dungeon.MySplashActivity").communicate()  # 拉起来
+
+

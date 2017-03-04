@@ -1,10 +1,10 @@
 {
-"id": "TIMRegisterWithSlot",
+"id": "TIMRegisterWithSlot2",
 "cate":"其他模块",
 "name":"TIM注册入卡槽",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"T02",
+"code":"T03",
 "icon":"vcard-o",
 "remark":"注册入卡槽",
 "setting":[
