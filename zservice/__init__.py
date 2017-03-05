@@ -545,6 +545,11 @@ class ZRemoteDevice(object):
         if action == "openscanui":
             self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openwx\" --es name1 \"scanner\" --es name2 \".ui.BaseScanUI\"").communicate()
 
+        if action == "opennearui":
+            self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"%s\"" % action).communicate()
+            time.sleep(15)
+            return self.server.jsonrpc.wx_result()
+
         else:
             self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"%s\""%action).communicate()
         return True
@@ -609,6 +614,11 @@ class ZRemoteDevice(object):
 
     def wx_openuser(self, userid):
         self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openuser\" --es userid \"%s\""%userid).communicate()
+
+        return True
+
+    def wx_openuserchat(self, userid):
+        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openchatui\" --es userid \"%s\""%userid).communicate()
 
         return True
 
