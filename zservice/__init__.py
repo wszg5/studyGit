@@ -519,7 +519,7 @@ class ZRemoteDevice(object):
         #return self.server.jsonrpc.Input(text)
         return True
 
-    def generateSerial(self, serial):
+    def generateSerial(self, serial=None):
         return self.server.jsonrpc.generateSerial(serial)
 
     '''
