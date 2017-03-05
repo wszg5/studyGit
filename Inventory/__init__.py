@@ -44,5 +44,5 @@ if __name__ == '__main__':
 
     con = inventory.postData(para)
 
-    print con
+    print (con)
 

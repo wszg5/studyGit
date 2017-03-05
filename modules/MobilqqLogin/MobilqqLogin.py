@@ -1,9 +1,6 @@
 # coding:utf-8
-import threading
-import time
 from PIL import Image
 from uiautomator import Device
-import re,subprocess
 import util
 from Repo import *
 from RClient import *

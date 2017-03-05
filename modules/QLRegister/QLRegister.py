@@ -1,4 +1,6 @@
 # coding:utf-8
+import string
+from XunMa import *
 from uiautomator import Device
 from Repo import *
 import time, datetime, random
@@ -6,44 +8,49 @@ from zservice import ZDevice
 from RClient import *
 from PIL import Image
 
-class QLJudgeQQBind:
+class QLRegister:
     def __init__(self):
         self.repo = Repo()
+        self.xuma = None
+
+    def GenPassword(self, numOfNum=4, numOfLetter=4):
+        # 选中numOfNum个数字
+        slcNum = [random.choice(string.digits) for i in range(numOfNum)]
+        # 选中numOfLetter个字母
+        slcLetter = [random.choice(string.lowercase) for i in range(numOfLetter)]
+        slcChar = slcLetter + slcNum
+        genPwd = ''.join([i for i in slcChar])
+        return genPwd
 
     def action(self, d,z, args):
-
+        self.xuma = XunMa(d.server.adb.device_serial())
         d.server.adb.cmd("shell", "pm clear com.tencent.qqlite").communicate()  # 清除缓存
         d.server.adb.cmd("shell", "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 将qq拉起来
         time.sleep(8)
+        # cateId = args['repo_cate_id']
+        # nickNameList = self.repo.GetMaterial(cateId, 0, 1)
+        # nickName = nickNameList[0]["content"]
+        # nickName = nickName.encode("utf-8")
+        # d(text='昵称', className='android.widget.EditText').click()
+        # z.input(nickName)
         d(text='新用户').click()
+        count = args['add_count']
         time.sleep(1)
-
-        add_count = int(args['add_count'])  # 搜索号码的次数
-        for i in range(0, add_count, +1):  # 总人数
-            cate_id = args["repo_number_id"]
-            number = self.repo.GetNumber(cate_id, 0, 1)
-            if len(number) == 0:
-                d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.zime.toast --es msg \"手机号码库%s号仓库为空，等待中\"" % cate_id).communicate()
-                time.sleep(10)
-                return
-            PhoneNumber = number[0]['number']  # 取出验证消息的内容
-
-            z.input(PhoneNumber)
+        condition = 0
+        while condition<count:
+            phoneNumber = self.xuma.GetPhoneNumber('2111')
+            z.input(phoneNumber)
             d(text='下一步').click()
-            time.sleep(1.5)
-            if d(textContains='已绑定其他').exists:
-                SetCateId = args['repo_number_id1']
-                self.repo.uploadPhoneNumber(PhoneNumber, SetCateId)  # 将有用的号传到库里
+            time.sleep(4)
+
+            if d(textContains='已绑定其他QQ号码').exists:
                 d(text='取消').click()
 
-            elif d(textContains='我知道了').exists:
-                d(textContains='我知道了').click()
-                SetCateId = args['repo_number_id1']
-                self.repo.uploadPhoneNumber(PhoneNumber, SetCateId)  # 将有用的号传到库里
 
-            else:
+            if d(description='用QQ浏览器​打开').exists:
                 d(description='向上导航').click()
+
+
 
             obj = d(className='android.widget.EditText', index=2)
             if obj.exists:
@@ -56,23 +63,24 @@ class QLJudgeQQBind:
                 height = bottom - top
                 width = right - left
                 y = height / 2 + top
-                d.swipe(width + 150, y, width + 200, y, 1)      #用来一键删除
-            obj = d(className='android.widget.EditText').info   #当上马的一键删除无效时再单个删除
-            obj = obj['text']
-            if '手机号码' in obj:
+                d.swipe(width + 150, y, width + 200, y, 1)
                 continue
-            else:
+            if not '手机号码' in obj:   #当一键删除失败时一个个删除
                 lenth = len(obj)
                 t = 0
                 while t<lenth:
                     d.press.delete()
                     t = t+1
 
+
+            verifycode = self.xuma.GetVertifyCode(phoneNumber,'2111')
+            z.input(verifycode)
+
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
 def getPluginClass():
-    return QLJudgeQQBind
+    return QLRegister
 
 if __name__ == "__main__":
     import sys
@@ -84,7 +92,7 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_number_id": "44","repo_number_id1": "118","add_count": "100","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_number_id": "44","repo_material_id": "118","add_count": "100","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
 

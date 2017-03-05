@@ -1,7 +1,11 @@
 # coding:utf-8
-
-
-
+# from collections import Iterable
+# a= isinstance(123, Iterable) # str是否可迭代
+# print(a)
+# L = ['Michael', 'Sarah', 'Tracy', 'Bob', 'Jack']
+# L = range(100)
+for i, value in enumerate(['A', 'B', 'C']):
+   print (i, value)
 # def my_abs(x):
 #     if not isinstance(x, (int, float)):
 #         raise TypeError('bad operand type')
