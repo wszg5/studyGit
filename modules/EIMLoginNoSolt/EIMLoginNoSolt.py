@@ -3,7 +3,7 @@ import threading
 import time
 from PIL import Image
 from uiautomator import Device
-import os,re,subprocess
+import re,subprocess
 from Repo import *
 from RClient import *
 import time, datetime, random
@@ -36,7 +36,6 @@ class EIMLoginNoSlot:
         t = 1
         while t == 1:         #直到登陆成功为止
             time_limit = args['time_limit']         #帐号提取时间间隔
-
             cate_id = args["repo_cate_id"]
             numbers = self.repo.GetAccount(cate_id, time_limit, 1)
             if len(numbers) == 0:
@@ -125,9 +124,9 @@ def getPluginClass():
     return EIMLoginNoSlot
 
 if __name__ == "__main__":
+    import os
     clazz = getPluginClass()
     o = clazz()
-
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()

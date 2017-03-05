@@ -4,6 +4,7 @@
 "name":"普通QQ关注我赞过的QQ",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"17",
 "icon": "vcard-o",
 "remark":"普通QQ关注我赞过的QQ",
 "setting":[

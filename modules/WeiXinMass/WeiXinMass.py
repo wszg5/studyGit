@@ -1,12 +1,8 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import time, datetime, random
 from zservice import ZDevice
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 
 class WeiXinMass:
 
@@ -15,8 +11,8 @@ class WeiXinMass:
 
 
     def action(self, d,z, args):
-        d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
-        d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").wait()  # 将微信拉起来
+        d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
+        d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(4)
         cate_id = args["repo_material_id"]
         Material = self.repo.GetMaterial(cate_id, 0, 1)
@@ -25,7 +21,7 @@ class WeiXinMass:
                              "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
             time.sleep(10)
             return
-        material = Material[0]['content']  # 取出验证消息的内容
+        message = Material[0]['content']  # 取出验证消息的内容
 
         time.sleep(2)
         d(text='我').click()
@@ -61,7 +57,7 @@ class WeiXinMass:
                 d(text='全选').click()
                 d(textContains='下一步').click()
                 d(className='android.widget.EditText').click()
-                z.input(material)
+                z.input(message)
                 d(text='发送').click()
                 d(text='新建群发').click()
                 d(text='搜索').click()
@@ -80,7 +76,7 @@ class WeiXinMass:
                 d(text='全选').click()
                 d(textContains='下一步').click()
                 d(className='android.widget.EditText').click()
-                z.input(material)
+                z.input(message)
                 d(text='发送').click()
                 d(text='新建群发').click()
                 d(text='搜索').click()
@@ -99,7 +95,7 @@ class WeiXinMass:
                 d(text='全选').click()
                 d(textContains='下一步').click()
                 d(className='android.widget.EditText').click()
-                z.input(material)
+                z.input(message)
                 d(text='发送').click()
                 d(text='新建群发').click()
                 d(text='搜索').click()
@@ -115,7 +111,7 @@ class WeiXinMass:
                 d(text='全选').click()
                 d(textContains='下一步').click()
                 d(className='android.widget.EditText').click()
-                z.input(material)
+                z.input(message)
                 d(text='发送').click()
                 d(text='新建群发').click()
                 d(text='搜索').click()
@@ -130,12 +126,15 @@ def getPluginClass():
     return WeiXinMass
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     z.server.install()
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
 
     args = {"repo_material_id": "39","time_delay":"3",'gender':"不限",}    #cate_id是仓库号，length是数量

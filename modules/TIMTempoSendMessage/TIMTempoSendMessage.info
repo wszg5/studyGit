@@ -23,7 +23,7 @@
     },
 
     {
-	"id": "totalNumber",
+	"id": "add_count",
 	"name":"发消息总数",
 	"type":"textbox",
 	"defaultValue":"5",

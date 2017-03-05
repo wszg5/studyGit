@@ -4,6 +4,7 @@
 "name":"EIM版QQ加群",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"6",
 "icon": "vcard-o",
 "remark":"EIM版QQ加群",
 "setting":[
@@ -23,7 +24,7 @@
     },
     {
 	"id": "totalNumber",
-	"name":"发消息总数",
+	"name":"唤起次数",
 	"type":"textbox",
 	"defaultValue":"5",
 	"remark":"单位：个"

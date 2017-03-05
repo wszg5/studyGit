@@ -4,6 +4,7 @@
 "name":"TIM搜索加好友",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"T09",
 "icon": "vcard-o",
 "remark":"搜索添加好友",
 "setting":[

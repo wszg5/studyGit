@@ -4,6 +4,7 @@
 "name":"TIM检存通讯录",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"T06",
 "icon":"vcard-o",
 "remark":"TIM检存通讯录",
 "setting":[

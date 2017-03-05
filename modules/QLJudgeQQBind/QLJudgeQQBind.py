@@ -1,32 +1,20 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import time, datetime, random
 from zservice import ZDevice
 from RClient import *
 from PIL import Image
-import sys
-reload(sys)
-import os
-sys.setdefaultencoding('utf8')
-class WXPictureMoment:
+
+class QLJudgeQQBind:
 
     def __init__(self):
         self.repo = Repo()
 
-    def GetUnique(self):
-        nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
-        randomNum = random.randint(0, 1000);  # 生成的随机整数n，其中0<=n<=100
-        if randomNum <= 10:
-            randomNum = str(00) + str(randomNum);
-        uniqueNum = str(nowTime) + str(randomNum);
-        return uniqueNum
-
-
     def action(self, d,z, args):
 
-        d.server.adb.cmd("shell", "pm clear com.tencent.qqlite").wait()  # 清除缓存
-        d.server.adb.cmd("shell", "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").wait()  # 将qq拉起来
+        d.server.adb.cmd("shell", "pm clear com.tencent.qqlite").communicate()  # 清除缓存
+        d.server.adb.cmd("shell", "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 将qq拉起来
         time.sleep(8)
         d(text='新用户').click()
         time.sleep(1)
@@ -69,10 +57,9 @@ class WXPictureMoment:
                 height = bottom - top
                 width = right - left
                 y = height / 2 + top
-                d.swipe(width + 150, y, width + 200, y, 1)
-            obj = d(className='android.widget.EditText').info
+                d.swipe(width + 150, y, width + 200, y, 1)      #用来一键删除
+            obj = d(className='android.widget.EditText').info   #当上马的一键删除无效时再单个删除
             obj = obj['text']
-            print(obj)
             if '手机号码' in obj:
                 continue
             else:
@@ -86,15 +73,18 @@ class WXPictureMoment:
             time.sleep(int(args["time_delay"]))
 
 def getPluginClass():
-    return WXPictureMoment
+    return QLJudgeQQBind
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     z.server.install()
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_id": "44","repo_number_id1": "118","add_count": "100","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 

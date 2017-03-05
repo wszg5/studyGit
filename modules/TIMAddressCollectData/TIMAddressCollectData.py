@@ -1,7 +1,7 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import time
 from zservice import ZDevice
 
 
@@ -10,7 +10,7 @@ class TIMAddressCollectData:
     def __init__(self):
         self.repo = Repo()
 
-    def scrollCell(self, d):
+    def scrollCell(self, d, args):
         while d(text='正在发送请求', className='android.widget.TextView').exists:
             time.sleep(2)
 
@@ -51,7 +51,7 @@ class TIMAddressCollectData:
                         judge = 'False'
                         break
 
-        numberCateId = int(args["repo_numberCateId_id"])
+        numberCateId = args["repo_numberCateId_id"]
 
         if len(numberArr) != 0:
             for i in range(0, len(numberArr)):
@@ -67,7 +67,7 @@ class TIMAddressCollectData:
         d(text='添加手机联系人', className='android.widget.TextView').click()
         time.sleep(2)
 
-        self.scrollCell(d)
+        self.scrollCell(d, args)
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -77,6 +77,10 @@ def getPluginClass():
     return TIMAddressCollectData
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
+
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT52DSK00474")

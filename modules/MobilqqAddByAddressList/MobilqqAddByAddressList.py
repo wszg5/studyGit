@@ -2,15 +2,13 @@
 from RClient import *
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import  time, datetime, random
 from zservice import ZDevice
 from XunMa import *
 import traceback
 from PIL import Image
 import colorsys
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+
 
 class MobilqqAddByAddressList:
     def __init__(self):
@@ -129,9 +127,7 @@ class MobilqqAddByAddressList:
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(6)
-        if d(text='消息',resourceId='com.tencent.mobileqq:id/name').exists:                    #到了通讯录这步后看号有没有被冻结
-            print
-        else:
+        if not d(text='消息',resourceId='com.tencent.mobileqq:id/name').exists:                    #到了通讯录这步后看号有没有被冻结
             return 2
         if d(text='绑定手机号码').exists:
             d(text='关闭').click()
@@ -150,9 +146,7 @@ class MobilqqAddByAddressList:
 
 
 
-        if d(text='联系人',resourceId='com.tencent.mobileqq:id/ivTitleName').exists:       #如果已经到联系人界面
-            print
-        else:
+        if not d(text='联系人',resourceId='com.tencent.mobileqq:id/ivTitleName').exists:       #如果不在联系人界面
             d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(
                 className='android.widget.FrameLayout').child(className='android.widget.RelativeLayout').click()  # 点击到联系人
 
@@ -229,7 +223,7 @@ class MobilqqAddByAddressList:
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                 time.sleep(10)
                 return
-            Material = Material[0]['content']  # 取出验证消息的内容
+            message = Material[0]['content']  # 取出验证消息的内容
             time.sleep(1)
 
             obj = d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=i).child(
@@ -239,9 +233,7 @@ class MobilqqAddByAddressList:
             if obj.exists:
                 change = 1
                 obj.click()
-                if d(descriptionContains='昵称:').exists:
-                    print
-                else:
+                if not d(descriptionContains='昵称:').exists:
                     i = 3
                     continue
 
@@ -272,15 +264,15 @@ class MobilqqAddByAddressList:
                     if obj.exists:
                         return
                     d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
-                    time.sleep(3)
+                    time.sleep(2)
                     i = 2
                     continue
 
-            if '[姓名]' in Material:
+            if '[姓名]' in message:
                 obj1 = d(descriptionContains='QQ 昵称').child(className='android.widget.TextView', index=1).info
                 obj1 = obj1['text']
-                Material = Material.replace('[姓名]',obj1)  # -----------------------------------
-                print(Material)
+                message = message.replace('[姓名]',obj1)  # -----------------------------------
+                print(message)
 
             d(text='加好友').click()
             if d(textContains='问题').exists:
@@ -295,13 +287,15 @@ class MobilqqAddByAddressList:
             while delet < lenth:
                 d.press.delete()
                 delet = delet + 1
-            z.input(Material)
+            z.input(message)
             time.sleep(1)
             d(text='发送').click()
-            if d(textContains='添加失败').exists:
+            while d(textContains='正在发送').exists:
+                time.sleep(2)
+            if d(textContains='发送失败').exists:
                 d(text='确定').click()
                 d(text='取消').click()
-            # d(text='取消').click()
+            # d(text='取消').click()    #---------------------------
             i = i + 1
             t = t + 1
             d(text='返回').click()
@@ -314,11 +308,15 @@ def getPluginClass():
     return MobilqqAddByAddressList
 
 if __name__ == "__main__":
+    import os
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # z.input('13094731693')
-    args = {"repo_material_id":"39",'gender':"不限",'EndIndex':'50',"time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_material_id":"100",'gender':"不限",'EndIndex':'50',"time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

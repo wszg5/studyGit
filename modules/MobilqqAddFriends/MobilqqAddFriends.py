@@ -3,13 +3,10 @@ from PIL.ImageShow import show
 from requests import delete
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import  time, datetime, random
 import util
 from PIL import Image
 from zservice import ZDevice
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 class MobilqqAddFriends:
     def __init__(self):
@@ -26,7 +23,7 @@ class MobilqqAddFriends:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
             time.sleep(10)
             return
-        material = Material[0]['content']  # 取出验证消息的内容
+        message = Material[0]['content']  # 取出验证消息的内容
 
         add_count = int(args['add_count'])  # 要添加多少人
 
@@ -39,8 +36,8 @@ class MobilqqAddFriends:
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
 
-        d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
-        d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+        d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
+        d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(1)
         d(resourceId='com.tencent.mobileqq:id/name',description='快捷入口').click()
         time.sleep(1)
@@ -53,10 +50,11 @@ class MobilqqAddFriends:
         d(className='android.widget.EditText',index=0).click()           #刚进来时点击 QQ号/手机号/群/公众号
         time.sleep(1)
         # d(className='android.widget.EditText',index=0).click()   #QQ号/手机号/群/公众号
-        d(className='android.widget.EditText').set_text(list[0]['number'])  # 第一次添加的帐号 list[0]
+        # d(className='android.widget.EditText').set_text(list[0]['number'])  # 第一次添加的帐号 list[0]
+        z.input(list[0]['number'])
         time.sleep(0.5)
         d(text='找人:', resourceId='com.tencent.mobileqq:id/name').click()
-        time.sleep(4)
+        time.sleep(3)
 
 
         for i in range(1,add_count,+1):                   #给多少人发消息
@@ -79,10 +77,10 @@ class MobilqqAddFriends:
             time.sleep(1)
 
             d.swipe(width / 2, height * 4 / 6, width / 2, height / 6);
-            d(text='加好友',resourceId='com.tencent.mobileqq:id/txt').click()
+            d(text='加好友').click()
             time.sleep(3)
 
-            if d(text='加好友',resourceId='com.tencent.mobileqq:id/txt').exists:                        #拒绝被添加为好友的情况
+            if d(text='加好友').exists:                        #拒绝被添加为好友的情况
                 time.sleep(1)
                 d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').click()
                 d(resourceId='com.tencent.mobileqq:id/ib_clear_text', description='清空').click()
@@ -145,15 +143,14 @@ class MobilqqAddFriends:
                 d.press.delete()
                 t = t + 1
             if d(className='android.widget.EditText',index=4).exists:
-                d(className='android.widget.EditText',index=4).click()  # 发送验证消息  material
-                z.input(material)
+                z.input(message)
             obj = d(text='发送')            #不需要验证可直接添加为好友的情况
             if obj.exists:
                 obj.click()
                 if d(text='添加失败，请勿频繁操作',resourceId='com.tencent.mobileqq:id/name').exists:
                     return
-                d(text='返回', resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').click()
-                d(resourceId='com.tencent.mobileqq:id/ib_clear_text', description='清空').click()
+                d(text='返回').click()
+                d(description='清空').click()
                 obj = d(className='android.widget.EditText',index=0)
                 if obj.exists:
                     obj.set_text(numbers)  # 要改为从库里取-------------------------------
@@ -190,14 +187,16 @@ def getPluginClass():
     return MobilqqAddFriends
 
 if __name__ == "__main__":
-
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     # print(d.dump(compressed=False))
-    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","add_count":"5","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","add_count":"15","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
     o.action(d,z, args)

@@ -2,15 +2,12 @@
 from RClient import *
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import  time, datetime, random
 from zservice import ZDevice
 from XunMa import *
 import traceback
 from PIL import Image
 import colorsys
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 class MobilqqConcern:
     def __init__(self):
@@ -20,7 +17,7 @@ class MobilqqConcern:
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
-        d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
+        d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(8)
         d(className='android.widget.TabWidget', index=2).child(className='android.widget.FrameLayout', index=2).child(
@@ -38,12 +35,12 @@ class MobilqqConcern:
         # d(descriptionContains='等级').click()
         # d(descriptionContains='赞').click()
         d(text='我赞过谁').click()
+        time.sleep(3)
         obj3 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=1) \
             .child(className='android.widget.RelativeLayout', index=1).child(
             className='android.widget.LinearLayout')  # 用来点击的
-        if obj3.exists:
-            print
-        else:        #我没赞过好友的情况
+        if not obj3.exists:
+            #我没赞过好友的情况
             return
         set1 = set()
         i = 1
@@ -68,9 +65,14 @@ class MobilqqConcern:
                     time.sleep(2)
                 if d(text='关注').exists:
                     d(text='关注').click()
+                    time.sleep(1.5)
+                if d(textContains='取消').exists:
+                    d(text='取消').click()
+                if d(text='关注').exists:     #因为第一次会有个提醒页面，需要再点一次才能关注成功
+                    d(text='关注').click()
                     time.sleep(1)
-                    if d(text='关注').exists:
-                        return
+                    # if d(text='关注').exists:
+                    #     return
 
                     d(text='返回').click()
                     i = i+1
@@ -86,16 +88,7 @@ class MobilqqConcern:
                     d(textContains='显示更多').click()
                 d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
                 time.sleep(2)
-                for g in range(0,12,+1):
-                    obj2 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=g) \
-                        .child(className='android.widget.RelativeLayout', index=1).child(
-                        className='android.widget.LinearLayout').child(className='android.widget.TextView')  # 用来点击的
-                    if obj2.exists:
-                        obj2 = obj2.info
-                        Tname = obj2['text']
-                        if Tname==name:
-                            break
-                i = g+1
+                i = 1
                 continue
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -105,11 +98,14 @@ def getPluginClass():
     return MobilqqConcern
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"add_count":"1000","time_delay":"3"}    #cate_id是仓库号，length是数量
 

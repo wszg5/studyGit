@@ -5,6 +5,10 @@ from Repo import *
 import time
 from zservice import ZDevice
 import string,random
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 
 class TIMRegister:
     def __init__(self):
@@ -33,7 +37,7 @@ class TIMRegister:
                     d(className='android.widget.Button', text='立即体验').click()
                     break
 
-            if k==35:
+            if k==34:
                 continue
             time.sleep(2)
 
@@ -64,10 +68,11 @@ class TIMRegister:
                     d(text='下一步', className='android.widget.Button').click()
                     continue
 
-            if j==15:
+            if j==14:
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"TIM验证码跳转失败\"").communicate()
                 continue
 
-            time.sleep(1)
+            time.sleep(3)
             while 1:
                 if d(text='请输入短信验证码', className='android.widget.EditText').exists:
                     break
@@ -110,7 +115,7 @@ class TIMRegister:
 
                 while 1:
                     if d(className='android.widget.TextView', textContains='维持绑定').exists:
-                        d(className='android.widget.TextView', textContains='维持绑定').click
+                        d(className='android.widget.TextView', textContains='维持绑定').click()
                         break
                     else:
                         time.sleep(1)
@@ -161,10 +166,7 @@ def getPluginClass():
     return TIMRegister
 
 if __name__ == "__main__":
-    import sys
 
-    reload(sys)
-    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT52DSK00474")
@@ -172,7 +174,7 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").communicate()    #打开android设置页面
 
-    args = {"repo_cate_id": "47","muchNumber_cate_id":"35", "time_delay": "1"};
+    args = {"repo_cate_id": "102","muchNumber_cate_id":"35", "time_delay": "1"};
     o.action(d, z, args)
 
     # repo = Repo()

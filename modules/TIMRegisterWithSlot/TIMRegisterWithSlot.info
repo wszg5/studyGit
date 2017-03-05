@@ -4,6 +4,7 @@
 "name":"TIM注册入卡槽",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"T02",
 "icon":"vcard-o",
 "remark":"注册入卡槽",
 "setting":[

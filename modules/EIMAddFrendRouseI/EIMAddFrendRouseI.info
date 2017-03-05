@@ -4,6 +4,7 @@
 "name":"EIM版QQ唤醒加好友（名片分享）",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"4",
 "icon": "vcard-o",
 "remark":"EIM版QQ唤醒加1",
 "setting":[
@@ -24,7 +25,7 @@
 
     {
 	"id": "totalNumber",
-	"name":"发消息总数",
+	"name":"唤醒次数",
 	"type":"textbox",
 	"defaultValue":"5",
 	"remark":"单位：个"
