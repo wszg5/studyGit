@@ -464,7 +464,12 @@ class AutomatorServer(object):
             time.sleep(0.1)
             timeout -= 0.1
         if not self.alive:
-            raise IOError("RPC server not started!")
+            #尝试port+4000
+            if self.local_port < 60000 :
+                self.local_port = self.local_port + 4000
+            else :
+                self.local_port = self.local_port - 4000
+            raise IOError("RPC server not started! zport : %s" % self.local_port)
 
     def ping(self):
         try:

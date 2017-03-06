@@ -182,7 +182,7 @@ if __name__ == "__main__":
     cleanEnv()
     logger = util.logger
     port = 30000
-    zport = 33000
+    zport = 32000
     while True:
         try:
             devicelist = finddevices()
