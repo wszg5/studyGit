@@ -5,6 +5,7 @@
 "font": "WeiXin",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"39",
 "icon":"vcard-o",
 "remark":"微信通讯录添加好友，6.5.4版",
 "setting":[

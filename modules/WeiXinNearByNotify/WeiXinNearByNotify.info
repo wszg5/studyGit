@@ -5,6 +5,7 @@
 "font": "WinXin",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"44",
 "icon":"vcard-o",
 "remark":"微信附近的人打招呼，6.5.3版",
 "setting":[

@@ -1,16 +1,11 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import time, datetime, random
 from zservice import ZDevice
 from RClient import *
 from PIL import Image
 import colorsys
-import sys
-reload(sys)
-
-sys.setdefaultencoding('utf8')
-
 
 class WXYaoYiYao:
 
@@ -87,7 +82,7 @@ class WXYaoYiYao:
             return '不限'
 
     def action(self, d,z, args):
-        d.server.adb.cmd("shell", "am force-stop com.tencent.mm").wait()  # 将微信强制停止
+        d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(5)
 
@@ -108,7 +103,7 @@ class WXYaoYiYao:
                                      "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                     time.sleep(10)
                     return
-                Material = Material[0]['content']  # 从素材库取出的要发的材料
+                message = Material[0]['content']  # 从素材库取出的要发的材料
 
                 z.wx_yaoyiyao()
                 time.sleep(5)
@@ -127,7 +122,7 @@ class WXYaoYiYao:
                 d(textContains='相距').click()
                 d(text='打招呼').click()
                 d(className='android.widget.EditText').click()
-                z.input(Material)     #Material
+                z.input(message)     #message
                 d(text='发送').click()
                 t = t+1
                 d(description='返回').click()
@@ -141,6 +136,10 @@ def getPluginClass():
     return WXYaoYiYao
 
 if __name__ == "__main__":
+    import os
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")

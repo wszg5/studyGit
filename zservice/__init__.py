@@ -310,7 +310,7 @@ class AutomatorServer(object):
 
     __apk_files = ["libs/zime.apk"]
     # Used for check if installed
-    __apk_vercode = '1.6.9'
+    __apk_vercode = '1.7.0'
     __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
@@ -524,8 +524,8 @@ class ZRemoteDevice(object):
         #return self.server.jsonrpc.Input(text)
         return True
 
-    def openQQChat(self, number):
-        return self.server.jsonrpc.openQQChat(number)
+    def generateSerial(self, serial=None):
+        return self.server.jsonrpc.generateSerial(serial)
 
     '''
     openyaoyiyao   打开摇一摇界面
@@ -549,6 +549,11 @@ class ZRemoteDevice(object):
 
         if action == "openscanui":
             self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openwx\" --es name1 \"scanner\" --es name2 \".ui.BaseScanUI\"").communicate()
+
+        if action == "opennearui":
+            self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"%s\"" % action).communicate()
+            time.sleep(15)
+            return self.server.jsonrpc.wx_result()
 
         else:
             self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"%s\""%action).communicate()
@@ -614,6 +619,11 @@ class ZRemoteDevice(object):
 
     def wx_openuser(self, userid):
         self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openuser\" --es userid \"%s\""%userid).communicate()
+
+        return True
+
+    def wx_openuserchat(self, userid):
+        self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openchatui\" --es userid \"%s\""%userid).communicate()
 
         return True
 

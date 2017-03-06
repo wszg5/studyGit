@@ -3,42 +3,38 @@ import threading
 import time
 from PIL import Image
 from uiautomator import Device
-import os,re,subprocess
+import re,subprocess
 from Repo import *
 from zservice import ZDevice
 import time, datetime, random
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+
 class EIMAddFriends:
     def __init__(self):
         self.repo = Repo()
 
 
     def action(self, d,z, args):
-
-
+        d.server.adb.cmd("shell", "am force-stop com.tencent.eim").communicate()  # 强制停止   3001369923  Bn2kJq5l
+        d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+        time.sleep(6)
         add_count = int(args['add_count'])  # 要添加多少人
 
         cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
         numbers = self.repo.GetNumber(cate_id, 120, add_count)  # 取出add_count条两小时内没有用过的号码
-        if len(numbers)==0:
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\""%cate_id).communicate()
+        if len(numbers) == 0:
+            d.server.adb.cmd("shell",
+                             "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\"" % cate_id).communicate()
             time.sleep(10)
             return
 
         list = numbers  # 将取出的号码保存到一个新的集合
-        print(list)
 
-        d.server.adb.cmd("shell", "am force-stop com.tencent.eim").communicate()  # 强制停止   3001369923  Bn2kJq5l
-        d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        time.sleep(6)
-        if d(resourceId='com.tencent.eim:id/name',description='发起多人聊天等功能').exists:
-            d(resourceId='com.tencent.eim:id/name',description='发起多人聊天等功能').click()
+        if d(description='发起多人聊天等功能').exists:
+            d(description='发起多人聊天等功能').click()
         else:
             return 2
-        d(text='加好友',resourceId='com.tencent.eim:id/name').click()
-        d(text='添加好友',resourceId='com.tencent.eim:id/name').click()
+        d(text='加好友').click()
+        d(text='添加好友').click()
 
         for i in range(0,add_count,+1):
             cate_id = args["repo_material_cate_id"]
@@ -48,14 +44,14 @@ class EIMAddFriends:
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                 time.sleep(10)
                 return
-            material = Material[0]['content']
-            numbers = list[i]['number']
-            d(resourceId='com.tencent.eim:id/name',className='android.widget.EditText').set_text(numbers)    #numbers
-            d(text='查找',resourceId='com.tencent.eim:id/name',className='android.widget.Button').click()
+            message = Material[0]['content']
+            QQnumber = list[i]['number']
+            z.input(QQnumber)
+            d(text='查找').click()
             time.sleep(2)
 
-            if d(text='查找',resourceId='com.tencent.eim:id/name',className='android.widget.Button').exists:            #该号码不存在的情况
-                obj = d(className='android.widget.EditText', resourceId='com.tencent.eim:id/name').info                 #将文本框已有的东西删除重来
+            if d(text='查找').exists:            #该号码不存在的情况
+                obj = d(className='android.widget.EditText').info                 #将文本框已有的东西删除重来
                 obj = obj['text']
                 lenth = len(obj)
                 t = 0
@@ -65,11 +61,11 @@ class EIMAddFriends:
                     continue
                 continue
 
-            d(text='加好友',resourceId='com.tencent.eim:id/txt').click()
+            d(text='加好友').click()
             time.sleep(1)
-            if d(text='加好友',resourceId='com.tencent.eim:id/txt').exists:                                             #拒绝被添加的情况
-                d(text='返回',resourceId='com.tencent.eim:id/name').click()
-                obj = d(resourceId='com.tencent.eim:id/name', className='android.widget.EditText').info
+            if d(text='加好友').exists:                                             #拒绝被添加的情况
+                d(text='返回').click()
+                obj = d(className='android.widget.EditText').info
                 obj = obj['text']
                 lenth = len(obj)
                 t = 0
@@ -79,10 +75,10 @@ class EIMAddFriends:
                     continue
                 continue
             time.sleep(2)
-            if d(text='必填',resourceId='com.tencent.eim:id/name').exists:
-                d(text='返回',resourceId='com.tencent.eim:id/ivTitleBtnLeft').click()
-                d(text='返回',resourceId='com.tencent.eim:id/name').click()
-                obj = d(className='android.widget.EditText', resourceId='com.tencent.eim:id/name').info  # 将文本框已有的东西删除重来
+            if d(text='必填').exists:
+                d(text='返回').click()
+                d(text='返回').click()
+                obj = d(className='android.widget.EditText').info  # 将文本框已有的东西删除重来
                 obj = obj['text']
                 lenth = len(obj)
                 t = 0
@@ -94,7 +90,7 @@ class EIMAddFriends:
 
 
 
-            obj = d(resourceId='com.tencent.eim:id/name',className='android.widget.EditText').info             #删除之前文本框的验证消息
+            obj = d(className='android.widget.EditText').info             #删除之前文本框的验证消息
             obj = obj['text']
             lenth = len(obj)
             t = 0
@@ -102,11 +98,10 @@ class EIMAddFriends:
                 d.press.delete()
                 t = t + 1
             time.sleep(1)
-            d(className='android.widget.EditText',text='请输入验证信息').click()            #验证信息
-            z.input(material)
-            d(text='下一步',resourceId='com.tencent.eim:id/ivTitleBtnRightText').click()
-            d(text='发送',resourceId='com.tencent.eim:id/ivTitleBtnRightText').click()
-            d(text='添加好友', resourceId='com.tencent.eim:id/name').click()
+            z.input(message)
+            d(text='下一步').click()
+            d(text='发送').click()
+            d(text='添加好友').click()
 
 
         if (args["time_delay"]):
@@ -115,6 +110,9 @@ def getPluginClass():
     return EIMAddFriends
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
 
@@ -123,5 +121,5 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").communicate()
 
     # d.dump(compressed=False)
-    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","add_count":"6","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","add_count":"3","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

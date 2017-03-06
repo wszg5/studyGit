@@ -4,6 +4,7 @@
 "name":"QQ唤醒发临时会话",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"22",
 "icon": "vcard-o",
 "remark":"QQ唤醒发临时会话",
 "setting":[

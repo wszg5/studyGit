@@ -5,6 +5,7 @@
 "font": "WinXin",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"45",
 "icon":"vcard-o",
 "remark":"微信发朋友圈(文字)，6.5.3版",
 "setting":[

@@ -3,16 +3,14 @@ import threading
 import time
 from PIL import Image
 from uiautomator import Device
-import os,re,subprocess
+import re,subprocess
 import util
 from Repo import *
 from RClient import *
 import time, datetime, random
 from zservice import ZDevice
 from slot import slot
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+
 class MobilqqLogin:
     def __init__(self):
         self.type = 'mobileqq'
@@ -109,9 +107,9 @@ class MobilqqLogin:
                         break
 
             else:
-                d.server.adb.cmd("shell", "am force-stop com.tencent1314.mobileqq").wait()  # 强制停止
+                d.server.adb.cmd("shell", "am force-stop com.tencent1314.mobileqq").communicate()  # 强制停止
                 time.sleep(1)
-                d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
+                d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
                 time.sleep(4)
 
             if d(text='搜索', resourceId='com.tencent.mobileqq:id/name').exists:  # 不需要验证码的情况
@@ -227,16 +225,18 @@ def getPluginClass():
     return MobilqqLogin
 
 if __name__ == "__main__":
+    import os
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
 
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
-
-
+    z.input('1633132378')
     # d.dump(compressed=False)
     args = {"repo_cate_id":"35","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)

@@ -4,6 +4,7 @@
 "name":"EIM登录QQ(无卡槽)",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"2",
 "icon":"vcard-o",
 "remark":"EIM登录QQ(无卡槽)",
 "setting":[

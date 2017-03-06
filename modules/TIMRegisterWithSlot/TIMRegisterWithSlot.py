@@ -5,6 +5,9 @@ from Repo import *
 from XunMa import *
 import time
 from slot import slot
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 class TIMRegisterWithSlot:
 
@@ -20,7 +23,7 @@ class TIMRegisterWithSlot:
         d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate()  # 清除缓存
         d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
 
-        self.swipe()
+        self.swipe(d)
 
         if d(className='android.widget.Button', text='新用户').exists:
             d(className='android.widget.Button', text='新用户').click()
@@ -38,7 +41,7 @@ class TIMRegisterWithSlot:
         d(text='下一步', className='android.widget.Button').click()
         time.sleep(2)
 
-        for j in range(1, 15):
+        for j in range(0, 15):
             time.sleep(1)
             if d(text='请输入短信验证码', className='android.widget.EditText').exists:
                 break
@@ -47,8 +50,9 @@ class TIMRegisterWithSlot:
                 d(text='下一步', className='android.widget.Button').click()
                 continue
 
-        if j == 15:
-            return
+        if j == 14:
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"TIM验证码跳转失败\"").communicate()
+            return False
 
         time.sleep(1)
         while 1:
@@ -69,19 +73,27 @@ class TIMRegisterWithSlot:
                 if vertifyCode == '':
                     self.xm.ReleasePhone(phoneNumber, '2111')
                     print '验证码获取失败'
-                    return
+                    return False
 
         print vertifyCode
         self.xm.defriendPhoneNumber(phoneNumber, '2111')
         d(text='请输入短信验证码', className='android.widget.EditText').set_text(vertifyCode)
 
         time.sleep(1)
-        d(text='下一步', className='android.widget.Button').click()
-        time.sleep(2)
+        for i in range(0,3):
+            if d(text='下一步', className='android.widget.Button').exists:
+                d(text='下一步', className='android.widget.Button').click()
+            else:
+                time.sleep(1)
 
-
-        if d(text='绑定新QQ号码', className='android.widget.TextView').exists:
-            d(text='绑定新QQ号码', className='android.widget.TextView').click()
+        while 1:
+            if d(text='绑定新QQ号码', className='android.widget.TextView').exists:
+                d(text='绑定新QQ号码', className='android.widget.TextView').click()
+                break
+            elif d(text='设置昵称', className='android.widget.TextView').exists:
+                break
+            else:
+                time.sleep(1)
 
 
         nickNameList = self.repo.GetMaterial(cateId, 0, 1)
@@ -125,32 +137,39 @@ class TIMRegisterWithSlot:
 
             d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
 
-            self.swipe()
+            self.swipe(d)
 
             if d(text='消息',resourceId='com.tencent.tim:id/ivTitleName').exists:
                 obj = self.slot.getSlotInfo(d,name)  #得到切换后的QQ号
                 info = obj['info']  #info为QQ号
                 self.repo.BackupInfo(cate_id,'using',info,'%s_%s'%(d.server.adb.device_serial(),name))  # 将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
             else:
-                info = self.registerWithSlot(d,z,args)                                             #帐号无法登陆则重新注册登陆
-                self.slot.backup(d, name, info)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
-                self.repo.BackupInfo(cate_id, 'using', info, '%s_%s'%(d.server.adb.device_serial(),name))  # 将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
+                info = self.registerWithSlot(d,z,args)
+                if info != False:
+                    #帐号无法登陆则重新注册登陆
+                    self.slot.backup(d, name, info)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
+                    self.repo.BackupInfo(cate_id, 'using', info, '%s_%s'%(d.server.adb.device_serial(),name))  # 将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
+                else:
+                    d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"TIM卡槽备份失败\"").communicate()
 
 
         else:                           #有空卡槽的情况
+
             z.set_mobile_data(False)
             time.sleep(3)
             z.set_mobile_data(True)
             time.sleep(8)
             info = self.registerWithSlot(d,z,args)
-            self.slot.backup(d,name,info)          #设备信息，卡槽号，QQ号
-            self.repo.BackupInfo(cate_id, 'using', info,'%s_%s'%(d.server.adb.device_serial(),name))     #仓库号,使用中,QQ号,设备号_卡槽号
-
+            if info!=False:
+                self.slot.backup(d,name,info)          #设备信息，卡槽号，QQ号
+                self.repo.BackupInfo(cate_id, 'using', info,'%s_%s'%(d.server.adb.device_serial(),name))     #仓库号,使用中,QQ号,设备号_卡槽号
+            else:
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"TIM卡槽备份失败\"").communicate()
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
-    def swipe(self):
+    def swipe(self, d):
         time.sleep(3)
         for k in range(1, 35):
             time.sleep(1)
@@ -164,8 +183,8 @@ class TIMRegisterWithSlot:
                 d(className='android.widget.Button', text='立即体验').click()
                 break
 
-        if k == 35:
-            return
+        if k == 34:
+            return False
         time.sleep(2)
 
 
@@ -174,10 +193,6 @@ def getPluginClass():
     return TIMRegisterWithSlot
 
 if __name__ == "__main__":
-    import sys
-
-    reload(sys)
-    sys.setdefaultencoding("utf-8")
 
     clazz = getPluginClass()
     o = clazz()
@@ -192,14 +207,15 @@ if __name__ == "__main__":
     o.action(d,z,args)
 
     # slot = slot('tim')
-    # slot.restore(d, 6)  # 有２小时没用过的卡槽情况，切换卡槽
+    # slot.restore(d, 8)  # 有２小时没用过的卡槽情况，切换卡槽
     #
     # time.sleep(8)
     #
     # d.server.adb.cmd("shell",
-    #                  "am broadcast -a com.zunyun.zime.toast --es msg \"TIM卡槽成功切换成" + str(6) + "\"").communicate()
+    #                  "am broadcast -a com.zunyun.zime.toast --es msg \"TIM卡槽成功切换成" + str(8) + "\"").communicate()
     # time.sleep(1)
     #
     # d.server.adb.cmd("shell",
     #                  "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-
+    #
+    # o.swipe(d)

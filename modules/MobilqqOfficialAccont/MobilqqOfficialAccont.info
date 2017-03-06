@@ -5,6 +5,7 @@
 "name":"普通QQ关注QQ公众号",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"18",
 "icon": "vcard-o",
 "remark":"添加好友",
 "setting":[

@@ -11,7 +11,7 @@ import sys, getopt
 #s:server_ip
 #r:repo_ip
 #c:redis_cache_ip
-opts, args = getopt.getopt(sys.argv[1:], "s:r:c:", ["server_ip=", "repo_ip=", "redis_ip="])
+opts, args = getopt.getopt(sys.argv[1:], "s:r:c:", ["server_ip=","tim_slots=","wechat_slots=","mobile_slots=","qqlite_slots=","eim_slots=","repo_ip=","redis_ip="])
 for op, value in opts:
     if op == "-s" or  op == "--server_ip" :
         const.SERVER_IP = value
@@ -113,8 +113,8 @@ def deviceTask(deviceid, port, zport):
             while True:
                 steps = dbapi.GetTaskSteps(taskid)
                 #设置zime输入法
-                d.server.adb.cmd("shell","ime set com.zunyun.zime/.ZImeService").wait()
-                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.unlock").wait()
+                d.server.adb.cmd("shell","ime set com.zunyun.zime/.ZImeService").communicate()
+                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.unlock").communicate()
                 for step in steps:
                     try:
                         runStep(d, z, step)
