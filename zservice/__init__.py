@@ -507,6 +507,10 @@ class ZRemoteDevice(object):
         '''Get the device info.'''
         return self.server.jsonrpc.setMobileData(status)
 
+    def get_mobile_data_state(self):
+        '''Get the device info.'''
+        return self.server.jsonrpc.getMobileDataState()
+
     def input(self, text):
         startPos = 0
         length = 20
