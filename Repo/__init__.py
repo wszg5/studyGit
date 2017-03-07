@@ -53,10 +53,22 @@ class Repo:
         else:
             return []
 
+    def Getserial(self, cateId,cardslot):    #根据卡槽号和设备号得到串号
+        path = "/repo_api/account/IMEIInfo?status=normal&cate_id=%s&cardslot=%s" % (cateId,cardslot)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
+        response = conn.getresponse()
+        if response.status == 200:
+            data = response.read()
+            numbers = json.loads(data)
+            return  numbers
+        else:
+            return []
 
 
-    def BackupInfo(self,cateId,status,Number,remark):           #仓库号，状态，QQ号，备注设备id_卡槽id
-        path = "/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&cardslot=%s" % (cateId,status,Number,remark)
+
+    def BackupInfo(self,cateId,status,Number,IMEI,remark):           #仓库号，状态，QQ号，备注设备id_卡槽id
+        path = "/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&IMEI=%s&cardslot=%s" % (cateId,status,Number,IMEI,remark)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET",path)
 

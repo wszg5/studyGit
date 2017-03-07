@@ -9,6 +9,8 @@ from Repo import *
 from RClient import *
 import time, datetime, random
 from zservice import ZDevice
+import os
+
 
 class MobilqqLoginNoSolt:
     def __init__(self):
@@ -54,6 +56,7 @@ class MobilqqLoginNoSolt:
             d(className='android.widget.EditText', text='QQ号/手机号/邮箱').set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
             time.sleep(1)
             d(resourceId='com.tencent.mobileqq:id/password', description='密码 安全').set_text(QQPassword)  # Bn2kJq5l     QQPassword
+            print('帐号:%s,密码：%s'%(QQNumber,QQPassword))
             d(text='登 录', resourceId='com.tencent.mobileqq:id/login').click()
             time.sleep(1)
             while d(text='登录中').exists:
@@ -156,7 +159,6 @@ def getPluginClass():
     return MobilqqLoginNoSolt
 
 if __name__ == "__main__":
-    import os
     clazz = getPluginClass()
     o = clazz()
 

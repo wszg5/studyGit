@@ -1,0 +1,35 @@
+{
+"id": "MobilqqPraiseII",
+"name":"普通qq给附近的人点赞",
+"cate":"QQ模块",
+"font": "QQ",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQ18",
+"icon":"vcard-o",
+"remark":"普通qq给附近的人点赞",
+"setting":[
+	{
+	"id": "add_count",
+	"name":"点赞的人数",
+	"type":"textbox",
+	"defaultValue":"4",
+	"remark":"单位：个"
+	},
+	{
+	"id": "gender",
+	"name":"性别",
+	"type":"select",
+	"list":{"男":"男","女":"女","不限":"不限"},
+	"defaultValue":"女",
+	"remark":"性别要求"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

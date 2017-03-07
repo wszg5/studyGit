@@ -7,6 +7,8 @@ from RClient import *
 import time, datetime, random
 from zservice import ZDevice
 from slot import slot
+import os
+
 
 class MobilqqLogin:
     def __init__(self):
@@ -54,6 +56,7 @@ class MobilqqLogin:
             d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
             time.sleep(1)
             d(resourceId='com.tencent.mobileqq:id/password', index=2).set_text(QQPassword)  # Bn2kJq5l     QQPassword
+            logger = util.logger
             d(text='登 录', resourceId='com.tencent.mobileqq:id/login').click()
             time.sleep(1)
             while d(text='登录中').exists:
@@ -121,19 +124,20 @@ class MobilqqLogin:
                 return QQNumber
             if d(text='寻找好友').exists:
                 return QQNumber
-            else:
-                self.repo.BackupInfo(cate_id, 'frozen',QQNumber, '')  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
-                time.sleep(1)
-                if d(text='帐号无法登录').exists:
-                    d(text='取消').click()
-                continue
+            if d(textContains='密码错误').exists:
+                logger.info('===========密码错误==============帐号:%s,密码:%s' % (QQNumber, QQPassword))
+            self.repo.BackupInfo(cate_id, 'frozen',QQNumber, '')  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+            time.sleep(1)
+            if d(text='帐号无法登录').exists:
+                d(text='取消').click()
+            continue
 
     def action(self, d,z, args):
         time_limit = args['time_limit']
         cate_id = args["repo_cate_id"]
         name = self.slot.getEmpty(d)  # 取空卡槽
         print(name)
-        if name == 0:
+        if name == 0:    #没有空卡槽的话
             name = self.slot.getSlot(d, time_limit)  # 没有空卡槽，取２小时没用过的卡槽
             print(name)
             while name == 0:  # 2小时没有用过的卡槽也为空的情况
@@ -144,6 +148,10 @@ class MobilqqLogin:
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
             z.set_mobile_data(False)
             time.sleep(5)
+
+            getSerial = self.repo.Getserial(cate_id,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, name))     #设备号，类型，卡槽号，得到要改成的设备信息
+            getSerial = getSerial['imei']
+            z.generateSerial(getSerial)
             self.slot.restore(d, name)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
             z.set_mobile_data(True)
             time.sleep(8)
@@ -155,35 +163,37 @@ class MobilqqLogin:
                 time.sleep(2)
             time.sleep(10)
 
-            if d(resourceId='com.tencent.mobileqq:id/name', index=1).child(className='android.widget.ImageView',index=0).exists:  # 不停的加载的情况
+            if d(resourceId='com.tencent.mobileqq:id/name', index=1).child(className='android.widget.ImageView',index=0).exists:  # 不停的加载的情况,登录失败的情况，其它都是成功的情况
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"该帐号失效，将重新登录\"").communicate()
+                serial = z.generateSerial("788")  # 修改信息
                 info = self.login(d, args)  # 帐号无法登陆则登陆,重新登陆
                 self.slot.backup(d, name, info)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
-                self.repo.BackupInfo(cate_id, 'using', info, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, name))  # 仓库号,使用中,QQ号,设备号_卡槽号
+                self.repo.BackupInfo(cate_id, 'using', info,serial,'%s_%s_%s' % (d.server.adb.device_serial(), self.type, name))  # 仓库号,使用中,QQ号,设备号_卡槽号
             elif d(text='搜索',resourceId='com.tencent.mobileqq:id/name').exists:
                 obj = self.slot.getSlotInfo(d, name)  # 得到切换后的QQ号
                 info = obj['info']  # info为QQ号
-                self.repo.BackupInfo(cate_id, 'using', info,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, name))  # 仓库号，状态，QQ号，备注设备id_卡槽id
+                self.repo.BackupInfo(cate_id, 'using', info,getSerial,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, name))  # 仓库号，状态，QQ号，备注设备id_卡槽id
             elif d(text='消息').exists:
                 obj = self.slot.getSlotInfo(d, name)  # 得到切换后的QQ号
                 info = obj['info']  # info为QQ号
-                self.repo.BackupInfo(cate_id, 'using', info, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, name))  # 仓库号，状态，QQ号，备注设备id_卡槽id
+                self.repo.BackupInfo(cate_id, 'using', info,getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, name))  # 仓库号，状态，QQ号，备注设备id_卡槽id
             elif d(text='主题装扮').exists:
                 obj = self.slot.getSlotInfo(d, name)  # 得到切换后的QQ号
                 info = obj['info']  # info为QQ号
-                self.repo.BackupInfo(cate_id, 'using', info, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, name))  # 仓库号，状态，QQ号，备注设备id_卡槽id
+                self.repo.BackupInfo(cate_id, 'using', info,getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, name))  # 仓库号，状态，QQ号，备注设备id_卡槽id
             elif d(text ='马上绑定').exists:
                 obj = self.slot.getSlotInfo(d, name)  # 得到切换后的QQ号
                 info = obj['info']  # info为QQ号
-                self.repo.BackupInfo(cate_id, 'using', info, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, name))  # 仓库号，状态，QQ号，备注设备id_卡槽id
+                self.repo.BackupInfo(cate_id, 'using', info,getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, name))  # 仓库号，状态，QQ号，备注设备id_卡槽id
             elif d(text='寻找好友').exists:
                 obj = self.slot.getSlotInfo(d, name)  # 得到切换后的QQ号
                 info = obj['info']  # info为QQ号
-                self.repo.BackupInfo(cate_id, 'using', info, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, name))  # 仓库号，状态，QQ号，备注设备id_卡槽id
+                self.repo.BackupInfo(cate_id, 'using', info,getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, name))  # 仓库号，状态，QQ号，备注设备id_卡槽id
             else:        #切换不成功的情况
+                serial = z.generateSerial("788")  # 修改信息
                 info = self.login(d, args)  # 帐号无法登陆则登陆,重新登陆
                 self.slot.backup(d, name, info)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
-                self.repo.BackupInfo(cate_id, 'using', info, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, name))  # 仓库号,使用中,QQ号,设备号_卡槽号
+                self.repo.BackupInfo(cate_id, 'using', info,serial,'%s_%s_%s' % (d.server.adb.device_serial(), self.type, name))  # 仓库号,使用中,QQ号,设备号_卡槽号
 
 
         else:  # 有空卡槽的情况
@@ -191,9 +201,10 @@ class MobilqqLogin:
             time.sleep(5)
             z.set_mobile_data(True)
             time.sleep(8)
+            serial = z.generateSerial("788")    #修改串号等信息
             info = self.login(d,args)
             self.slot.backup(d, name, info)                   #设备信息，卡槽号，QQ号
-            self.repo.BackupInfo(cate_id, 'using', info, '%s_%s_%s' % (d.server.adb.device_serial(), self.type,name))  # 仓库号,使用中,QQ号,设备号_卡槽号
+            self.repo.BackupInfo(cate_id, 'using', info,serial,'%s_%s_%s' % (d.server.adb.device_serial(), self.type,name))  # 仓库号,使用中,QQ号,设备号_卡槽号
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -222,7 +233,6 @@ def getPluginClass():
     return MobilqqLogin
 
 if __name__ == "__main__":
-    import os
     import sys
     reload(sys)
     sys.setdefaultencoding('utf8')
@@ -232,10 +242,18 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-
-    z.input('1633132378')
+    # repo = Repo()
+    # serial = z.generateSerial("788")
+    # print(serial)
+    # repo.BackupInfo(37, 'using','1953350195', serial,'%s_%s_%s' % (d.server.adb.device_serial(), 'qq', 1))
+    #
+    # getSerial = repo.Getserial(37, '%s_%s_%s' % (d.server.adb.device_serial(), 'qq', 1))  # 从备份里取出
+    # getSerial = getSerial['imei']
+    # z.generateSerial(getSerial)
+    # z.input('1633132378')
     # d.dump(compressed=False)
     args = {"repo_cate_id":"35","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)
+    # serial = z.generateSerial("788")登录进去之前修改串号，将串号保存到仓库，所有登录之前都这么做，卡槽恢复之前根据设备号和卡槽号取到串号，调z.generateSerial(serial)将串号恢复
