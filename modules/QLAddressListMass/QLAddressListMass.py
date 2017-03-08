@@ -21,7 +21,9 @@ class QLJudgeQQBind:
         d(text='通讯录').click()
         if d(text='匹配通讯录').exists:
             d(text='匹配通讯录').click()
-            
+            while not d(descriptionContains='发消息').exists:  #匹配通讯录存在延时
+                time.sleep(2)
+
         add_count = int(args['add_count'])  # 给多少人发消息
         gender = args['gender']
         t = 0
@@ -58,6 +60,8 @@ class QLJudgeQQBind:
                 i = i+1
                 t = t+1
             else:
+                if d(text='未启用通讯录的联系人').exists:    #到达未启用的那个人结束发消息
+                    break
                 d.swipe(width / 2, height * 5 / 6, width / 2, height / 6)
                 time.sleep(2)
                 endcondition = d(className='android.view.View').child(className='android.widget.RelativeLayout', index=i-1).child(
