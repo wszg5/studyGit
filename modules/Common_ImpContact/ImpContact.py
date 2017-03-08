@@ -49,8 +49,11 @@ class ImpContact:
             file_object.close()
             d.server.adb.cmd("shell", "am", "start", "-a", "zime.clear.contacts").communicate()
             d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").communicate()
-            d.server.adb.cmd("shell", "am", "start", "-n", "com.zunyun.zime/.ImportActivity").communicate()
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.import.contact --es file \"file:///data/local/tmp/contacts.txt\"").communicate()
+            d.server.adb.cmd("shell", "am", "start", "-n", "com.zunyun.zime/.ImportActivity", "-t", "text/plain", "-d",
+                             "file:///data/local/tmp/contacts.txt").communicate()
+
+
+            #d.server.adb.cmd("shell", "am broadcast -a com.zunyun.import.contact --es file \"file:///data/local/tmp/contacts.txt\"").communicate()
             os.remove(filename)
 
             out = d.server.adb.cmd("shell",
