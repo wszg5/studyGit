@@ -146,8 +146,10 @@ class MobilqqLogin:
                 name = self.slot.getSlot(d, time_limit)
 
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
-            z.set_mobile_data(False)
-            time.sleep(5)
+            judge = z.get_mobile_data_state()
+            if judge == True:
+                z.set_mobile_data(False)
+                time.sleep(5)
 
             getSerial = self.repo.Getserial(cate_id,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, name))     #设备号，类型，卡槽号，得到要改成的设备信息
             getSerial = getSerial['imei']
@@ -197,9 +199,13 @@ class MobilqqLogin:
 
 
         else:  # 有空卡槽的情况
-            z.set_mobile_data(False)
-            time.sleep(5)
-            z.set_mobile_data(True)
+            judge = z.get_mobile_data_state()
+            if judge==True:
+                z.set_mobile_data(False)
+                time.sleep(5)
+                z.set_mobile_data(True)
+            else:
+                z.set_mobile_data(True)
             time.sleep(8)
             serial = z.generateSerial("788")    #修改串号等信息
             info = self.login(d,args)
@@ -252,6 +258,12 @@ if __name__ == "__main__":
     # z.generateSerial(getSerial)
     # z.input('1633132378')
     # d.dump(compressed=False)
+    judge = z.get_mobile_data_state()
+    print(judge)
+    if judge==True:
+        print(111)
+    if judge==False:
+        print(222)
     args = {"repo_cate_id":"35","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 

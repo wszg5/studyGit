@@ -92,6 +92,8 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+    z.input('177751880')
+    z.input('13141314abcd')
     args = {"repo_number_id": "44","repo_material_id": "118","add_count": "100","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
