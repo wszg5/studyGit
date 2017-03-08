@@ -4,7 +4,7 @@
 "name":"普通QQ添加好友",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"15",
+"code":"QQ06",
 "icon": "vcard-o",
 "remark":"添加好友",
 "setting":[

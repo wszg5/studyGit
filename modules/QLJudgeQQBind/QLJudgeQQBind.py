@@ -7,7 +7,6 @@ from RClient import *
 from PIL import Image
 
 class QLJudgeQQBind:
-
     def __init__(self):
         self.repo = Repo()
 

@@ -69,7 +69,7 @@ class slot:
 
         #d.server.adb.cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
 
-        self.dbapi.SaveSlotInfo(d.server.adb.device_serial(), self.type, name, "false", "true", info)
+        self.dbapi.SaveSlotInfo(d.server.adb.device_serial(), self.type, name, "false", "true", info,serial)
 
     def restore(self, d, name):
         d.server.adb.cmd("shell", "pm clear %s"%self.package).communicate()

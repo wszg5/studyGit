@@ -19,12 +19,13 @@ class WeiXinNearByNotify:
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(9)
-        if d(text='发现',index=1).exists:
-            d(text='发现', index=1).click()
-        else:
-            d(text='发现', index=0).click()
-        d(text='附近的人').click()
-        time.sleep(2)
+        # if d(text='发现',index=1).exists:
+        #     d(text='发现', index=1).click()
+        # else:
+        #     d(text='发现', index=0).click()
+        # d(text='附近的人').click()
+        # time.sleep(2)
+        z.wx_action('opennearui')
         while d(textContains='正在查找').exists:
             time.sleep(3)
         if d(text='开始查看').exists:
@@ -130,6 +131,8 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     z.server.install()
+    z.wx_action('opennearui')
+
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"repo_material_id": "39",'EndIndex':'64','gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量

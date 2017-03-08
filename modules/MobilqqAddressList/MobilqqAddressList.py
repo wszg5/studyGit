@@ -114,7 +114,7 @@ class MobilqqAddressList:
 
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
             d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
-            time.sleep(2)
+            time.sleep(5)
             if d(textContains='没有可匹配的').exists:
                 return 'false'
 

@@ -1,0 +1,27 @@
+{
+"id": "JRLogin",
+"name":"今日头条登录",
+"cate":"其他模块",
+"font": "JR",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"JR1",
+"icon":"vcard-o",
+"remark":"普通qq通讯录简存",
+"setting":[
+	{
+	"id": "repo_cate_id",
+	"name":"QQ帐号",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"1"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}
