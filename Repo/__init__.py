@@ -73,6 +73,7 @@ class Repo:
         conn.request("GET",path)
 
 
+
     def RegisterAccount(self,qqNumber,password,phoneNumber, numberCateId):
         path = "/repo_api/register/numberInfo?QQNumber=%s&QQPassword=%s&PhoneNumber=%s&cate_id=%s" % (qqNumber,password,phoneNumber,numberCateId)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)

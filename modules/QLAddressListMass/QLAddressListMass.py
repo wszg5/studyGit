@@ -88,10 +88,13 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT52DSK00474")
+    z = ZDevice("HT52DSK00474")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+    # z.input('1344703864')
+    # z.input('15196769397')
+    # z.input('brbd')
     args = {"repo_material_id":"39",'gender':"女",'add_count':'20',"time_delay":"3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
