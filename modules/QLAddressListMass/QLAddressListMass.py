@@ -95,6 +95,7 @@ if __name__ == "__main__":
     # z.input('1344703864')
     # z.input('15196769397')
     # z.input('brbd')
+    z.input('123   4\\\"\\\"56')
     args = {"repo_material_id":"39",'gender':"女",'add_count':'20',"time_delay":"3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
