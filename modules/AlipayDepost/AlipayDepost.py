@@ -68,20 +68,20 @@ class AlipayRegister:
                     dominant_color = (r, g, b)
             print("---------------------------------------------------------------------------")
             print(dominant_color)
-            if None ==dominant_color:
-                # print('见鬼了')
-                return '不限'
-            red = dominant_color[0]
-            blue = dominant_color[2]
-
-            if red > blue:
-                # print('女')
-                return '女'
-            else:
-                # print('男')
-                return '男'
-        else:                          #没有基本资料的情况
-            return '不限'
+        #     if None ==dominant_color:
+        #         print('见鬼了')
+        #         # return '不限'
+        #     red = dominant_color[0]
+        #     blue = dominant_color[2]
+        #
+        #     if red > blue:
+        #         print('女')
+        #         # return '女'
+        #     else:
+        #         print('男')
+        #         # return '男'
+        # else:                          #没有基本资料的情况
+        #     return '不限'
 
 
     def action(self, d,z, args):
@@ -152,6 +152,10 @@ class AlipayRegister:
 
 def getPluginClass():
     return AlipayRegister
+
+
+
+
 
 if __name__ == "__main__":
     import sys
