@@ -1,0 +1,12 @@
+{
+"id": "ztask",
+"cate":"基础模块",
+"type":"framework",
+"name":"调度后台框架",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"8",
+"icon": "vcard-o",
+"remark":"调度后台框架"
+}
+
