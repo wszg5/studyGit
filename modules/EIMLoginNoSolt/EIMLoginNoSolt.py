@@ -9,6 +9,8 @@ from RClient import *
 import time, datetime, random
 from zservice import ZDevice
 from slot import slot
+import os
+
 
 class EIMLoginNoSlot:
     def __init__(self):
@@ -124,7 +126,6 @@ def getPluginClass():
     return EIMLoginNoSlot
 
 if __name__ == "__main__":
-    import os
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")

@@ -4,7 +4,7 @@
 "name":"EIM版QQ临时会话",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"8",
+"code":"EIM08",
 "icon": "vcard-o",
 "remark":"EIM发临时会话",
 "setting":[

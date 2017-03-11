@@ -4,7 +4,7 @@
 "name":"EIM版QQ群发消息",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"7",
+"code":"EIM07",
 "icon": "vcard-o",
 "remark":"EIM版QQ群发消息",
 "setting":[

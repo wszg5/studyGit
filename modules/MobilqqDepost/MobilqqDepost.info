@@ -1,0 +1,27 @@
+{
+"id": "MobilqqDepost",
+"name":"普通qq通讯录简存",
+"cate":"QQ模块",
+"font": "QQ",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQ17",
+"icon":"vcard-o",
+"remark":"普通qq通讯录简存",
+"setting":[
+	{
+	"id": "repo_number_id",
+	"name":"存储号码库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"21"
+	},
+   {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

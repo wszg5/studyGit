@@ -5,6 +5,7 @@
 "font": "qq",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code" : "QL01",
 "icon":"vcard-o",
 "remark":"轻聊版判断手机号是否绑定QQ",
 "setting":[

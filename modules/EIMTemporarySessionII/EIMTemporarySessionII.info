@@ -4,7 +4,7 @@
 "name":"EIM版QQ临时会话(发企业QQ)",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"9",
+"code":"EIM09",
 "icon": "vcard-o",
 "remark":"EIM发临时会话",
 "setting":[

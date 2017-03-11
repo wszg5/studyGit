@@ -4,7 +4,7 @@
 "name":"微信解绑QQ号",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"36",
+"code":"WX16",
 "icon": "vcard-o",
 "remark":"微信版本，6.5.4",
 "setting":[

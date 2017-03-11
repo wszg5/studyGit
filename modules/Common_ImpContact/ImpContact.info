@@ -4,6 +4,7 @@
     "name": "导入系统通讯录",
     "url": "http://www.bejson.com",
     "version": "1.0",
+    "code": "base01",
     "icon":"vcard-o",
     "remark": "清空通讯录，然后导入通讯录",
     "setting": [
@@ -13,6 +14,14 @@
 	"type":"repo",
 	"source":"number",
 	"top_cate_id":"21"
+	},
+	{
+	"id": "clear",
+	"name":"是否清空通讯录",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"是",
+	"remark":"是否清空通讯录"
 	},
 	{
 	"id": "number_count",

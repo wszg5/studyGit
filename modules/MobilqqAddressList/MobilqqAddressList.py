@@ -102,11 +102,11 @@ class MobilqqAddressList:
             time.sleep(1)
             d(text='下一步').click()
             time.sleep(3)
-            if d(text='下一步',resourceId='com.tencent.mobileqq:id/name',index=2).exists:       #操作过于频繁的情况
+            if d(text='下一步').exists:       #操作过于频繁的情况
                 return 'false'
 
-            if d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').exists:     #提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
-                d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').click()
+            if d(text='确定').exists:     #提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
+                d(text='确定',).click()
 
             code = self.xuma.GetVertifyCode(GetBindNumber, '2113','4')
 
@@ -114,7 +114,7 @@ class MobilqqAddressList:
 
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
             d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
-            time.sleep(2)
+            time.sleep(6)
             if d(textContains='没有可匹配的').exists:
                 return 'false'
 
@@ -189,9 +189,10 @@ class MobilqqAddressList:
                     time.sleep(7)
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
 
-                if d(text='匹配手机通讯录',resourceId='com.tencent.mobileqq:id/name').exists:
-                    d(text='匹配手机通讯录', resourceId='com.tencent.mobileqq:id/name').click()
-                    time.sleep(10)
+                if d(text='匹配手机通讯录').exists:
+                    d(text='匹配手机通讯录').click()
+                    while not d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).exists:
+                        time.sleep(2)
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
                 time.sleep(1)
                 if d(text='启用').exists:
@@ -295,8 +296,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT52DSK00474")
+    z = ZDevice("HT52DSK00474")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"repo_material_id":"39",'gender':"不限",'EndIndex':'20',"time_delay":"3"};    #cate_id是仓库号，length是数量

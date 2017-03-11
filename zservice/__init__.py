@@ -310,7 +310,7 @@ class AutomatorServer(object):
 
     __apk_files = ["libs/zime.apk"]
     # Used for check if installed
-    __apk_vercode = '1.7.0'
+    __apk_vercode = '1.7.1'
     __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
@@ -522,7 +522,7 @@ class ZRemoteDevice(object):
         while len(text) > startPos :
             t = self.mb_substr(text, startPos, length)
             t = t.replace('"', ' ')
-            self.server.adb.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \"%s\"" % t).communicate()
+            self.server.adb.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \\\"%s\\\"" % t).communicate()
             startPos = startPos + length
         '''click at arbitrary coordinates.'''
         #return self.server.jsonrpc.Input(text)
