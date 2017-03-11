@@ -8,9 +8,11 @@ from XunMa import *
 import traceback
 from PIL import Image
 import colorsys
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
-
-class MobilqqAddressList:
+class MobilqqPhone:
     def __init__(self):
         self.repo = Repo()
         self.xuma = None
@@ -215,14 +217,6 @@ class MobilqqAddressList:
         t = 1
         EndIndex = int(args['EndIndex'])
         while t < EndIndex+1:
-            cate_id = args["repo_material_id"]
-            Material = self.repo.GetMaterial(cate_id, 0, 1)
-            if len(Material) == 0:
-                d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
-                return
-            message = Material[0]['content']  # 取出验证消息的内容
 
             obj = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=i).child(
                 resourceId='com.tencent.mobileqq:id/text1', index=1)  # 点击第ｉ个人
@@ -266,41 +260,28 @@ class MobilqqAddressList:
                     i = 2
                     continue
 
-            if '[姓名]' in message:
-                obj1 = d(descriptionContains='QQ 昵称').child(className='android.widget.TextView', index=1).info
-                obj1 = obj1['text']
-                message = message.replace('[姓名]',obj1)  # -----------------------------------
-            d(resourceId='com.tencent.mobileqq:id/txt', text='发消息').click()
-            time.sleep(1)
-            d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()  # message
-            z.input(message)
-            time.sleep(1)
-            d(text='发送').click()
+            d(text='QQ电话').click()
+            d(text='QQ电话').click()
+            time.sleep(6)
+            d(description='结束QQ电话').click()
+            time.sleep(2)
+            d(text='返回').click()
             i = i + 1
             t = t + 1
-            d(resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft', description='返回消息界面').click()
-
-            d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(
-                className='android.widget.FrameLayout').child(
-                className='android.widget.RelativeLayout').click()  # 发完消息后点击到联系人
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():
-    return MobilqqAddressList
+    return MobilqqPhone
 
 if __name__ == "__main__":
-    import sys
-
-    reload(sys)
-    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_material_id":"39",'gender':"不限",'EndIndex':'20',"time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {'gender':"不限",'EndIndex':'20',"time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

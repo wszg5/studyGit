@@ -1,21 +1,14 @@
 {
-"id": "QLAddressListMass",
-"name":"轻聊版通讯录群发",
-"cate":"QQLite模块",
+"id": "MobilqqPhone",
+"name":"普通QQ通讯录打电话",
+"cate":"QQ模块",
 "font": "qq",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"QL02",
+"code":"QQ19",
 "icon":"vcard-o",
-"remark":"轻聊版通讯录群发",
+"remark":"普通QQ通讯录打电话",
 "setting":[
-	{
-	"id": "repo_material_id",
-	"name":"发送消息内容仓库",
-	"type":"repo",
-	"source":"material",
-	"top_cate_id":"12"
-	},
 	{
 	"id": "gender",
 	"name":"性别",
@@ -25,7 +18,7 @@
 	"remark":"性别要求"
 	},
 	{
-	"id": "add_count",
+	"id": "EndIndex",
 	"name":"发消息的总人数",
 	"type":"textbox",
 	"defaultValue":"4",

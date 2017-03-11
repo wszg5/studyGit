@@ -251,26 +251,10 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT52DSK00474")
-    z = ZDevice("HT52DSK00474")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    # repo = Repo()
-    # serial = z.generateSerial("788")
-    # print(serial)
-    # repo.BackupInfo(37, 'using','1953350195', serial,'%s_%s_%s' % (d.server.adb.device_serial(), 'qq', 1))
-    #
-    # getSerial = repo.Getserial(37, '%s_%s_%s' % (d.server.adb.device_serial(), 'qq', 1))  # 从备份里取出
-    # getSerial = getSerial['imei']
-    # z.generateSerial(getSerial)
-    # z.input('1633132378')
-    # d.dump(compressed=False)
-    # judge = z.get_mobile_data_state()
-    # print(judge)
-    # if judge==True:
-    #     print(111)
-    # if judge==False:
-    #     print(222)
-    args = {"repo_cate_id":"134","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"135","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)
