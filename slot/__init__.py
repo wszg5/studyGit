@@ -75,14 +75,17 @@ class slot:
 
         self.dbapi.SaveSlotInfo(d.server.adb.device_serial(), self.type, name, "false", "true", info)
 
-    def restore(self, d, name):
-        d.server.adb.cmd("shell", "pm clear %s"%self.package).communicate()
-        d.server.adb.cmd("shell", "su -c 'chmod -R 777 /data/data/%s/'" % self.package).communicate()
+    def restore(self, d, name, target=None):
+        if target is None:
+            target = self.package
+
+        d.server.adb.cmd("shell", "pm clear %s"%target).communicate()
+        d.server.adb.cmd("shell", "su -c 'chmod -R 777 /data/data/%s/'" % target).communicate()
         d.server.adb.cmd("shell", "su -c 'chmod -R 777 /data/data/com.zy.bak/'").communicate()
         #d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()
         #d.server.adb.cmd("shell", "rm -r -f  /data/data/com.zy.bak/%s/zy_name_*"%type).wait()
         for folder in self.folders:
-            targetPath = '/data/data/%s/%s' % (self.package, folder)
+            targetPath = '/data/data/%s/%s' % (target, folder)
             targetPath = os.path.dirname(targetPath)
             d.server.adb.cmd("shell", "mkdir -p %s" % targetPath).communicate()
             cmd = "cp -f -r -p /data/data/com.zy.bak/%s/%s/%s/  %s" % (self.type, name, folder, targetPath)
@@ -92,7 +95,7 @@ class slot:
            # d.server.adb.cmd("shell", "cp -r -f -p /data/data/com.zy.bak/%s/%s/%s/ /data/data/%s/"%(self.type, name, folder, self.package)).communicate()
 
         for file in self.files:
-            targetFile = '/data/data/%s/%s'%(self.package, file)
+            targetFile = '/data/data/%s/%s'%(target, file)
             targetPath = os.path.dirname(targetFile)
             d.server.adb.cmd("shell", "mkdir -p %s" % targetPath).communicate()
             d.server.adb.cmd("shell", "cp -f /data/data/com.zy.bak/%s/%s/%s %s"%(self.type, name, file, targetFile)).communicate()
@@ -109,10 +112,7 @@ class slot:
             return 1
         logger = util.logger
         if (len(slots) < self.maxSlot ):
-            logger.info('=========================系统设置最大卡槽号:%s'%self.maxSlot)
-
             maxSlot = slots[-1]
-            logger.info('=========================当前最大卡槽号:%s'%maxSlot)
             maxName = maxSlot["name"]
             return int(maxName) + 1
         for slot in slots:
