@@ -136,6 +136,7 @@ class MobilqqLogin:
         time_limit = args['time_limit']
         cate_id = args["repo_cate_id"]
         slotnum = self.slot.getEmpty(d)  # 取空卡槽
+
         print(slotnum)
         if slotnum == 0:    #没有空卡槽的话
             slotnum = self.slot.getSlot(d, time_limit)  # 没有空卡槽，取２小时没用过的卡槽

@@ -1,4 +1,6 @@
 # coding:utf-8
+from PIL.ImageShow import show
+
 from uiautomator import Device
 from Repo import *
 from RClient import *
@@ -45,7 +47,7 @@ class AlipayRegister:
             img = Image.open(sourcePng)
             box = (left, top, right, bottom)  # left top right bottom
             region = img.crop(box)  # 截取验证码的图片
-            # show(region)　　　　　　　#展示资料卡上的信息
+            # show(region)    #展示资料卡上的信息
             image = region.convert('RGBA')
             # 生成缩略图，减少计算量，减小cpu压力
             image.thumbnail((200, 200))
@@ -65,85 +67,233 @@ class AlipayRegister:
                 score = (saturation + 0.1) * count
                 if score > max_score:
                     max_score = score
-                    dominant_color = (r, g, b)
+                    dominant_color = (r, g, b)    #红绿蓝
             print("---------------------------------------------------------------------------")
             print(dominant_color)
-        #     if None ==dominant_color:
-        #         print('见鬼了')
-        #         # return '不限'
-        #     red = dominant_color[0]
-        #     blue = dominant_color[2]
-        #
-        #     if red > blue:
-        #         print('女')
-        #         # return '女'
-        #     else:
-        #         print('男')
-        #         # return '男'
-        # else:                          #没有基本资料的情况
-        #     return '不限'
+            return dominant_color
 
 
     def action(self, d,z, args):
+        str = d.info  # 获取屏幕大小等信息
+        height = str["displayHeight"]
+        width = str["displayWidth"]
+
         d.server.adb.cmd("shell", "am force-stop com.eg.android.AlipayGphone").wait()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.eg.android.AlipayGphone/com.eg.android.AlipayGphone.AlipayLogin").communicate()  # 拉起来
-        d(resourceId='com.alipay.mobile.socialwidget:id/contact_container').click()
+        time.sleep(10)
+        publicpath = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=2) \
+                        .child(className='android.widget.LinearLayout', index=0).child(
+                        className='android.widget.LinearLayout', index=0)                    #为下面的点击做准备
+
+        # d(resourceId='com.alipay.mobile.socialwidget:id/contact_container').click()
+        d(description='通讯录').click()
         d(text='新的朋友').click()
-        d(text='添加手机联系人').click()#支付宝通讯录检存，（字段：手机号码*，*昵称，*会员级别，*支付宝账户，*性别，是否实名，*地区，星座，*真实姓名，是否一对多
-        # 【附带字段：身高，体重，年龄，职业，收入，兴趣爱好】）#支付宝账号如果遇到一对多的账户，选择第一个作为参考资料，同时字段做个标记。
-        while not d(text='搜索').exists:
+        d(text='添加手机联系人').click()
+        while not d(textContains='支付宝:').exists:
             time.sleep(2)
         i = 0
         set1 = set()
+        change = 0
         while True:
             judexist = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i)\
                 .child(className='android.widget.LinearLayout').child(className='android.widget.TextView',index=0)
             if judexist.exists:
+                change = 1
                 phoneNumber = judexist.info['text']
-                print(phoneNumber)      #要保存的电话号码
+                     #要保存的电话号码
                 if phoneNumber in set1:
                     i = i+1
                     continue
                 set1.add(phoneNumber)
+                print(phoneNumber)
                 judexist.click()        #点击第i个人
-                d(text='显示更多').click()
-                if d(className='android.widget.ListView').child(className='android.widget.FrameLayout').child(className='android.widget.TextView').exists:
+                time.sleep(1.5)
+
+                path = d(className='android.widget.ListView').child(className='android.widget.FrameLayout',index=0).child(className='android.widget.ImageView',index=2)
+                getinfo = self.Gender(d, path)
+                if getinfo == None:
+                    rank = '非会员'
+                    print('不是会员')
+                elif getinfo[2] > 200:  # (68, 164, 238)蓝色大众会员  (140, 142, 185)黑色砖石会员  (255, 197, 30)黄金会员
+                    rank = '大众会员'
+                elif getinfo[0] > 200:
+                    rank = '黄金会员'
+                else:
+                    rank = '砖石会员'
+                print('=====================================%s==================================================='%rank)
+                if d(className='android.widget.ListView').child(className='android.widget.FrameLayout').child(className='android.widget.TextView',index=0).exists:
                     nickname = d(className='android.widget.ListView').child(className='android.widget.FrameLayout').child(className='android.widget.TextView').info['text']   #要保存的昵称
                 else:
                     nickname = '空'
+                print('=============================%s=============================================================='%nickname)
+
+
                 if d(text='支付宝账户').exists:
                     account = d(textStartsWith='1').info['text']     #要保存的帐号
                 else:
                     account = '空'
+                print('================================%s============================================================='%account)
+
                 if d(text='真实姓名').exists:
-                    path = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=2) \
-                        .child(className='android.widget.LinearLayout', index=0).child(
-                        className='android.widget.LinearLayout', index=0) \
-                        .child(className='android.widget.LinearLayout', index=1).child(
+                    path = publicpath.child(className='android.widget.LinearLayout', index=1).child(
                         className='android.widget.TextView', index='1')
-                    gender = self.Gender(d,path)
+                    getinfo = self.Gender(d,path)
+                    if getinfo[0]>200:
+                        gender = '女'           #要保存的性别和是否认证
+                        identity = '已实名'
+                    elif getinfo[2]>200:
+                        gender = '男'
+                        identity = '已实名'
+
+                    else:
+                        d(description='返回').click()
+                        i = i+1
+                        continue
+                print('==========================%s==============%s======================================================'%(gender,identity))
+
+                if d(text='显示更多').exists:
+                    d(text='显示更多').click()
+                    time.sleep(1)
+                    if not d(text='收起').exists:
+                        d.swipe(width / 2, height * 3 / 4, width / 2, height / 3)
 
 
                 if d(text='地区').exists:
-                    area = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=2)\
-                        .child(className='android.widget.LinearLayout',index=0).child(className='android.widget.LinearLayout',index=0)\
-                        .child(className='android.widget.LinearLayout',index=2).child(className='android.widget.TextView',index='1').info['text']
+                    area = publicpath.child(className='android.widget.LinearLayout',index=2).child(className='android.widget.TextView',index='1').info['text']
                 else:
                     area = '空'
-                if d(text='星座').exists:
+                print('=========================%s====================================================================='%area)
+
+                if d(text='星座').exists:    #星座
                     zodiac = d(textContains='座',index=1).info['text']
                 else:
                     zodiac = '空'
-                d(text='转账').click()
-                realname = d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=0).child(className='android.widget.RelativeLayout',index=1).child(className='android.widget.TextView').info['text']
 
+                print('=============================%s================================================================='%zodiac)
 
+                if identity=='已实名':
+                    d(text='转账').click()
+                    realname = d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=0).child(className='android.widget.RelativeLayout',index=1).child(className='android.widget.TextView').info['text']
+                    d(description='返回').click()
+                else:
+                    realname = '无'
+                print('=========================%s====================================================================='%realname)
+                if d(text='年龄').exists:
+                    for t in range(1, 14):
+                        if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='年龄').exists:
+                            break
+                    age = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.widget.TextView',
+                                                                                   index=1).info['text']
+                else:
+                    age = '空'
+                print('=================================%s============================================================='%age)
 
+                if d(text='身高').exists:
+                    for t in range(1, 14):
+                        if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='身高').exists:
+                            break
+                    tall = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.widget.TextView',
+                                                                                   index=1).info['text']
+                else:
+                    tall = '空'
+                print('==========================%s===================================================================='%tall)
 
-                para = {"sex": "1", "x_01": "a66669ea", "qq_nickname": "qq_nickname", "x_03": "3333a66669ea", "phone": 13234104557}
+                if d(text='体重').exists:
+                    for t in range(1, 14):
+                        if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='体重').exists:
+                            break
+                    weight = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.widget.TextView',
+                                                                                   index=1).info['text']
+                else:
+                    weight = '空'
+                    print('=============================%s================================================================='%weight)
+                if d(text='职业').exists:
+                    for t in range(1, 14):
+                        if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='职业').exists:
+                            break
+                    carrer = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.widget.TextView',
+                                                                                   index=1).info['text']
+                else:
+                    carrer = '空'
+                print('=============================%s================================================================='%carrer)
+                if d(text='收入').exists:
+                    for t in range(1, 14):
+                        if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='收入').exists:
+                            break
+                    income = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.widget.TextView',
+                                                                                   index=1).info['text']
+                else:
+                    income = '空'
+                print('===============================%s==============================================================='%income)
+
+                if d(text='兴趣爱好').exists:
+                    for t in range(1, 14):
+                        if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='兴趣爱好').exists:
+                            break
+                    idexx = 0
+                    taste = []    #将所有兴趣保存到集合里
+                    while True:
+                        interest = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.widget.TextView',
+                                                                           index=idexx)
+                        if interest.exists:
+                            hobby = interest.info['text']
+                            taste.append(hobby)
+                            idexx = idexx+1
+                        else:
+                            break
+                else:
+                    taste = []
+
+                para = {"phone":phoneNumber,"qq_nickname":nickname,
+                        "real_name":realname,"sex":gender,
+                        "city":area,"birth":age,
+                        "x_01":"AliPay","x_02":rank,
+                        "x_03":account,"x_04":zodiac,
+                        "x_05":identity,"x_06":tall,
+                        "x_07":weight,"x_08":carrer,
+                        "x_09":income,"x_10":taste}
+                inventory = Inventory()
                 con = inventory.postData(para)
                 print(con)
+                i = i+1
+                d(description = '返回').click()
 
+
+            else:
+                if change==0:
+                    d.server.adb.cmd("shell",
+                                     "am broadcast -a com.zunyun.zime.toast --es msg \"通讯录内没有好友\"" ).communicate()
+                    time.sleep(10)
+                    return
+                clickCondition = d(className='android.widget.ListView')
+                obj = clickCondition.info
+                obj = obj['visibleBounds']
+                top = int(obj['top'])
+                bottom = int(obj['bottom'])
+                y = bottom - top
+                d.swipe(width / 2, y, width / 2, 0)
+                obj2 = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=i-1) \
+                    .child(className='android.widget.LinearLayout').child(className='android.widget.TextView', index=0)       #结束判断条件
+                if obj2.exists:
+                    phone = obj2.info['text']
+                    if phone in set1:
+                        break
+                else:
+                    phone = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=i -2) \
+                        .child(className='android.widget.LinearLayout').child(className='android.widget.TextView',
+                                                                              index=0).info['text']                #结束判断条件
+                    if phone in set1:
+                        break
+
+
+                obj1 =d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0) \
+                    .child(className='android.widget.LinearLayout').child(className='android.widget.TextView', index=0)
+                if obj1.exists:      #实现精准滑动后有的能显示第０列的电话号码，有的显示不出来
+                    i = 0
+                    continue
+                else:
+                    i = 1
+                    continue
 
 
         if (args["time_delay"]):

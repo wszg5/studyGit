@@ -5,6 +5,8 @@ from dbapi import dbapi
 from const import const
 import  os
 
+import util
+
 """Python wrapper for Zunyun Service."""
 class slot:
     def __init__(self, type):
@@ -42,6 +44,8 @@ class slot:
 
         else:
             raise SyntaxError("目前还不支持%s卡槽"%self.type)
+
+        self.maxSlot = int(self.maxSlot)
 
     def backup(self, d, name, info):
         d.server.adb.cmd("shell", "su -c 'chmod -R 777 /data/data/%s/'"%self.package).communicate()
@@ -103,8 +107,12 @@ class slot:
         slots = self.dbapi.ListSlots(d.server.adb.device_serial(), self.type)
         if (len(slots)  == 0):
             return 1
+        logger = util.logger
         if (len(slots) < self.maxSlot ):
+            logger.info('=========================系统设置最大卡槽号:%s'%self.maxSlot)
+
             maxSlot = slots[-1]
+            logger.info('=========================当前最大卡槽号:%s'%maxSlot)
             maxName = maxSlot["name"]
             return int(maxName) + 1
         for slot in slots:

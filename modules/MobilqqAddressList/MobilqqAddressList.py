@@ -45,7 +45,7 @@ class MobilqqAddressList:
             img = Image.open(sourcePng)
             box = (left, top, right, bottom)  # left top right bottom
             region = img.crop(box)  # 截取验证码的图片
-            # show(region)　　　　　　　#展示资料卡上的信息
+            # show(region)    #展示资料卡上的信息
             image = region.convert('RGBA')
             # 生成缩略图，减少计算量，减小cpu压力
             image.thumbnail((200, 200))
