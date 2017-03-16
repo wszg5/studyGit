@@ -65,18 +65,6 @@ def cleanEnv():
         os.mkdir('tmp')
 
 
-def runwatch(d, data):
-    times = 120
-    while True:
-        if data == 1:
-            return True
-        # d.watchers.reset()
-        d.watchers.run()
-        times -= 1
-        if times == 0:
-            break
-        else:
-            time.sleep(0.5)
 def finddevices():
     deviceIds = []
     adb_cmd = os.path.join(os.environ["ANDROID_HOME"], "platform-tools", 'adb devices')
@@ -92,63 +80,16 @@ def finddevices():
         logger.error('没有找到手机，请检查')
         return []
         # needcount:需要安装的apk数量，默认为0，既安所有
-def runStep(d, z, step):
-    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"%s\""%step["name"])
-    pluginName = step["mid"]
-    plugin = __import__("plugins." + pluginName, fromlist=[pluginName])
-    clazz = plugin.getPluginClass()
-    o = clazz()
-    if step.has_key("arg"):
-        o.action(d, z, json.loads(step["arg"]))
-def deviceTask(deviceid, port, zport):
-    taskid = dbapi.GetDeviceTask(deviceid)
-    from uiautomator import Device
-    from zservice import ZDevice
-    if  taskid :
-        task = dbapi.GetTask(taskid)
-        if (task and task.get("status") and task["status"] == "running"):
-            d = Device(deviceid, port)
-            #d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
-            z = ZDevice(deviceid, zport)
-            while True:
-                steps = dbapi.GetTaskSteps(taskid)
-                #设置zime输入法
-                d.server.adb.cmd("shell","ime set com.zunyun.zime/.ZImeService").communicate()
-                d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.unlock").communicate()
-                for step in steps:
-                    try:
-                        runStep(d, z, step)
-                    except Exception:
-                        logger.error(step)
-                        logger.error(traceback.format_exc())
-                        time.sleep(3)
-                    #检查设备对应的任务状态
-                    new_taskid = dbapi.GetDeviceTask(deviceid)
-                    if new_taskid is None or new_taskid == "": #任务中删除了该设备
-                        return
-                    if (new_taskid != taskid): #设备对应的taskid发生了变化
-                        return
-                    task = dbapi.GetTask(new_taskid)
-                    if task.get("status") != "running": #任务状态已停止
-                        return
-    else :
-        time.sleep(5)
-def deviceThread(deviceid, port, zport):
-    while True:
-        try:
-            deviceTask(deviceid, port, zport)
-        except Exception:
-            logger.error(traceback.format_exc())
-        time.sleep(5)
-    print("%s thread finished"%deviceid)
-
 
 
 def StartProcess(deviceid):
+    from phoneTask import phoneTask
+
     device_port = portDict[deviceid]
     port = device_port["port"]
     zport = device_port["zport"]
-    processDict[deviceid] = multiprocessing.Process(target=deviceThread, args=(deviceid, port, zport))
+    t = phoneTask(deviceid)
+    processDict[deviceid] = multiprocessing.Process(target=t.deviceThread, args=(deviceid, port, zport))
     processDict[deviceid].name = deviceid
     processDict[deviceid].daemon = True
     processDict[deviceid].start()
