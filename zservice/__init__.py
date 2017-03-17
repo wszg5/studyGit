@@ -14,7 +14,8 @@ import socket
 import re
 import collections
 import uuid
-import requests
+import requests,datetime
+from zcache import cache
 
 DEVICE_PORT = int(os.environ.get('ZSERVICE_DEVICE_PORT', '19008'))
 LOCAL_PORT = int(os.environ.get('ZSERVICE_LOCAL_PORT', '19008'))
@@ -508,6 +509,22 @@ class ZRemoteDevice(object):
         u_s = s.decode(encoding)
         return (u_s[start:(start + length)] if length else u_s[start:]).encode(encoding)
 
+    def cmd(self, *args, **kwargs):
+        self.server.adb.cmd(*args, **kwargs).communicate()
+
+    def toast(self, message):
+        self.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \\\"%s\\\"" % message)
+
+
+    def heartbeat(self):
+        key = 'timeout_%s' % self.server.adb.device_serial()
+        cache.set(key, (datetime.datetime.now()  - datetime.datetime(2017, 1 ,1)).seconds)
+
+    def sleep(self, second):
+        while(second > 0):
+            time.sleep(1)
+            second = second -1
+
     def set_mobile_data(self,status):
         '''Get the device info.'''
         return self.server.jsonrpc.setMobileData(status)
@@ -723,13 +740,6 @@ class ZRemoteDevice(object):
                 return self.server.jsonrpc.pressKey(str(key))
         return _press
 
-    def wakeup(self):
-        '''turn on screen in case of screen off.'''
-        self.server.jsonrpc.wakeUp()
-
-    def sleep(self):
-        '''turn off screen in case of screen on.'''
-        self.server.jsonrpc.sleep()
 
     @property
     def screen(self):
