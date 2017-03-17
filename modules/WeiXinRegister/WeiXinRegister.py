@@ -47,23 +47,35 @@ class WeiXinRegister:
                 d(className='android.support.v7.widget.LinearLayoutCompat',index=1).click()
                 z.input('中')
                 d(text='中国').click()
-            d(textContains='手机号码').click()
-            backNumber = 0
+            if d(textContains='手机号码').exists:
+                d(textContains='手机号码').click()
+            else:
+                d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=2).child(className='android.widget.EditText',index=1).click()
+                d.swipe(474,327,500,329)
             while True:
-                if backNumber==0:
-                    PhoneNumber = cache.popSet(self.cache_phone_key)
-                    if PhoneNumber is None:
-                        d.server.adb.cmd("shell",
-                                         "am broadcast -a com.zunyun.zime.toast --es msg \"缓存中没有号码\"" ).communicate()
-                        time.sleep(10)
-                        return
-                    print(PhoneNumber)
-                    print('-------------------------------上面是仓库里的号码')
-                    backNumber = self.xm.MatchPhoneNumber(PhoneNumber, '2251')  # 判断从库里取出的是否可用，当backNumber为０时不可用
-                    print(backNumber)
-                    print('-------------------------------------上面是backNumber')
-                else:
+                PhoneNumber = self.xm.GetPhoneNumber('2251')
+                print(PhoneNumber)
+                if PhoneNumber.startswith('17'):
                     break
+                else:
+                    self.xm.defriendPhoneNumber(PhoneNumber, '2251')
+            # backNumber = 0
+            # while True:
+            #     if backNumber==0:
+            #         PhoneNumber = self.xuma.GetPhoneNumber('2251')
+            #         PhoneNumber = cache.popSet(self.cache_phone_key)
+            #         if PhoneNumber is None:
+            #             d.server.adb.cmd("shell",
+            #                              "am broadcast -a com.zunyun.zime.toast --es msg \"缓存中没有号码\"" ).communicate()
+            #             time.sleep(10)
+            #             return
+            #         print(PhoneNumber)
+            #         print('-------------------------------上面是仓库里的号码')
+            #         backNumber = self.xm.MatchPhoneNumber(PhoneNumber, '2251')  # 判断从库里取出的是否可用，当backNumber为０时不可用
+            #         print(backNumber)
+            #         print('-------------------------------------上面是backNumber')
+            #     else:
+            #         break
             z.input(PhoneNumber)
             d(className='android.widget.LinearLayout',index=3).child(className='android.widget.EditText').click()
             d(textContains='密码').click()
@@ -79,6 +91,7 @@ class WeiXinRegister:
                 time.sleep(2)
 
             code = self.xm.GetVertifyCode(PhoneNumber,'2251')
+            self.xm.defriendPhoneNumber(PhoneNumber, '2251')
             if '失败'==code:
                 continue
             print(code)
@@ -114,7 +127,7 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-
+    z.input('往事小岛')
     # repo = Repo()
     # repo.RegisterAccount('', 'gemb1225', '13045537833', '109')
     args = {"repo_name_id": "102","repo_number_id": "109","add_count": "9","time_delay": "3"}  # cate_id是仓库号，发中文问题

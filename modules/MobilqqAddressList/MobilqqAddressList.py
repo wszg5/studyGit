@@ -191,6 +191,8 @@ class MobilqqAddressList:
                     d(text='匹配手机通讯录').click()
                     while not d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).exists:
                         time.sleep(2)
+                        if d(textContains='下线通知').exists:
+                            return
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
                 time.sleep(1)
                 if d(text='启用').exists:

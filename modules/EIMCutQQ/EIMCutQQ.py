@@ -181,6 +181,7 @@ class EIMLogin:
             QQnumber = self.login(d, args)
             self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
             self.repo.BackupInfo(cate_id, 'using', QQnumber,serialinfo,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
+            d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -202,5 +203,5 @@ if __name__ == "__main__":
     # slot.restore(d, 2)  # 有２小时没用过的卡槽情况，切换卡槽
 
     # z.input('gfdc')
-    args = {"repo_cate_id":"34","time_limit":"3","time_limit1":"10","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"34","time_limit":"3","time_limit1":"10","kind":"普通QQ","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

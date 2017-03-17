@@ -15,10 +15,11 @@ class WXSaveId:
         time.sleep(7)
         cate_id = args['repo_wxcade_id']
         serial = z.wx_action("opennearui")    #得到微信ｉｄ，字符串样式
+        print(serial)
         ids = json.loads(serial)              #将字符串改为list样式
         lenth = len(ids)
         set_count = int(args['set_count'])
-        if lenth<set_count:
+        if lenth<set_count:        #
             add_count = lenth
         else:
             add_count = set_count

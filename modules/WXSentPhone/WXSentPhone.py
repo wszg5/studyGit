@@ -33,6 +33,8 @@ class WXSentPhone:
         while True:
             if account<add_count:
                 PhoneNumber = self.xuma.GetPhoneNumber('2251')
+                if not PhoneNumber.startswith('17'):
+                    continue
                 print(PhoneNumber)
                 d(text='搜索').click()
                 z.input(PhoneNumber)
@@ -78,6 +80,6 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-
+    print('172349').startswith('17')
     args = {"add_count": "100","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

@@ -3,6 +3,7 @@ from uiautomator import Device
 from Repo import *
 import time, datetime, random
 from zservice import ZDevice
+from Inventory import *
 
 class WeiXinAddFriends:
 
@@ -14,7 +15,7 @@ class WeiXinAddFriends:
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(5)
+        time.sleep(7)
 
         d(description='更多功能按钮',className='android.widget.RelativeLayout').click()
         time.sleep(1)
@@ -39,9 +40,11 @@ class WeiXinAddFriends:
                 WXnumber = numbers[0]['number']
                 z.input(WXnumber)
                 d(textContains='搜索:').click()
+                while d(textContains='正在查找').exists:
+                    time.sleep(2)
                 if d(textContains='操作过于频繁').exists:
                     return
-                time.sleep(2)
+                time.sleep(1)
                 if d(textContains='用户不存在').exists:
                     d(descriptionContains='清除',index=2).click()
                     time.sleep(1)
@@ -50,6 +53,60 @@ class WeiXinAddFriends:
                     d(descriptionContains='清除', index=2).click()
                     continue
 
+                Gender = d(className='android.widget.LinearLayout', index=1).child(
+                    className='android.widget.LinearLayout').child(className='android.widget.ImageView',index=1)  # 看性别是否有显示
+                if Gender.exists:
+                    Gender = Gender.info
+                    Gender = Gender['contentDescription']
+                else:
+                    Gender = '空'
+
+                nickname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',
+                                                                        index=1) \
+                    .child(className='android.widget.LinearLayout', index=1).child(className='android.widget.TextView')
+                if nickname.exists:
+                    nickname = nickname.info['text']
+                else:
+                    nickname = '空'
+                if d(text='地区').exists:
+                    for k in range(3, 10):
+                        if d(className='android.widget.ListView').child(className='android.widget.LinearLayout',
+                                                                        index=k).child(
+                                className='android.widget.LinearLayout', index=0).child(text='地区').exists:
+                            break
+                    area = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',
+                                                                        index=k).child(
+                        className='android.widget.LinearLayout', index=0). \
+                        child(className='android.widget.LinearLayout', index=1).child(
+                        className='android.widget.TextView').info['text']
+                else:
+                    area = '空'
+
+                if d(text='个性签名').exists:
+                    for k in range(3, 10):
+                        if d(className='android.widget.ListView').child(className='android.widget.LinearLayout',
+                                                                        index=k).child(
+                                className='android.widget.LinearLayout', index=0).child(text='个性签名').exists:
+                            break
+                    sign = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',
+                                                                        index=k).child(
+                        className='android.widget.LinearLayout', index=0). \
+                        child(className='android.widget.LinearLayout', index=1).child(
+                        className='android.widget.TextView').info['text']
+                else:
+                    sign = '空'
+
+                para = {"phone": WXnumber, 'qq_nickname': nickname, 'sex': Gender, "city": area, "x_01": sign}
+                print('--%s--%s--%s--%s--%s'%(WXnumber,nickname,Gender,area,sign))
+
+                inventory = Inventory()
+                con = inventory.postData(para)
+                print(con)
+                # if con != True:
+                #     d.server.adb.cmd("shell",
+                #                      "am broadcast -a com.zunyun.zime.toast --es msg \"消息保存失败……\"").communicate()
+                #     time.sleep(10)
+                #     return
                 d(descriptionContains='返回').click()
                 d(descriptionContains='清除').click()
                 time.sleep(1)
@@ -73,6 +130,27 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    d(resourceId='com.tencent.mobileqq:id/press_to_speak_iv').long_click()
-    args = {"repo_number_cate_id": "44", "repo_material_cate_id": "39", "add_count": "3", 'gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id": "44", "add_count": "5", "time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

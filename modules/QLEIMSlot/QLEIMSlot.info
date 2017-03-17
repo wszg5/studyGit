@@ -1,12 +1,12 @@
 {
-"id": "MobilqqEIMSlot",
-"cate":"QQ模块",
-"name":"EIM卡槽登录普通QQ",
+"id": "QLEIMSlot",
+"cate":"QQLite模块",
+"name":"EIM卡槽登录QQ轻聊版",
 "url": "http://www.bejson.com",
 "version": "1.0",
 "icon":"vcard-o",
-"code":"QQ20",
-"remark":"EIM卡槽登录普通QQ",
+"code":"QL03",
+"remark":"EIM卡槽登录QQ轻聊版",
 "setting":[
 {
 "id": "repo_cate_id",
