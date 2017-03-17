@@ -16,6 +16,14 @@
 	"top_cate_id":"21"
 	},
 	{
+	"id": "clear",
+	"name":"是否清空通讯录",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"是",
+	"remark":"是否清空通讯录"
+	},
+	{
 	"id": "number_count",
 	"name":"导入号码个数",
 	"type":"textbox",

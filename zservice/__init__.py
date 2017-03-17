@@ -513,7 +513,7 @@ class ZRemoteDevice(object):
         self.server.adb.cmd(*args, **kwargs).communicate()
 
     def toast(self, message):
-        self.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"%s\"" % message)
+        self.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \\\"%s\\\"" % message)
 
 
     def heartbeat(self):
@@ -535,7 +535,7 @@ class ZRemoteDevice(object):
         while len(text) > startPos :
             t = self.mb_substr(text, startPos, length)
             t = t.replace('"', ' ')
-            self.server.adb.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \"%s\"" % t).communicate()
+            self.server.adb.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \\\"%s\\\"" % t).communicate()
             startPos = startPos + length
         '''click at arbitrary coordinates.'''
         #return self.server.jsonrpc.Input(text)

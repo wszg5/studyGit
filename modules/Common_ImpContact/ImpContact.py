@@ -47,12 +47,14 @@ class ImpContact:
 
             file_object.writelines(lines)
             file_object.close()
-            d.server.adb.cmd("shell", "pm clear com.android.providers.contacts").communicate()
+            isclear = args['clear']
+            if isclear=='是':
+                d.server.adb.cmd("shell", "pm clear com.android.providers.contacts").communicate()
 
             #d.server.adb.cmd("shell", "am", "start", "-a", "zime.clear.contacts").communicate()
             d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").communicate()
             d.server.adb.cmd("shell", "am", "start", "-n", "com.zunyun.zime/.ImportActivity", "-t", "text/plain", "-d",
-                             "file:///data/local/tmp/contacts.txt").communicate()
+                             "file:////data/local/tmp/contacts.txt").communicate()
 
 
             #d.server.adb.cmd("shell", "am broadcast -a com.zunyun.import.contact --es file \"file:///data/local/tmp/contacts.txt\"").communicate()
@@ -77,9 +79,11 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4AVSK01106")
-    z = ZDevice("HT4AVSK01106")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
+
+
     z.server.install()
     #d.server.adb.cmd("shell", "am", "start", "-a", "zime.clear.contacts").communicate()
     d.server.adb.cmd("shell", "pm clear com.android.providers.contacts").communicate()
@@ -90,7 +94,7 @@ if __name__ == "__main__":
     # d.dump(compressed=False)
 
 
-    args = {"repo_cate_id":"104",'number_count':'1000',"time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"104",'number_count':'50',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
 
 
     o.action(d,z, args)

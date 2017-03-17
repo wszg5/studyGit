@@ -1,0 +1,40 @@
+{
+"id": "AlipayRegister",
+"cate":"其他模块",
+"name":"支付宝注册",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"ALi01",
+"icon": "vcard-o",
+"remark":"支付宝注册",
+"setting":[
+	{
+	"id": "repo_number_id",
+	"name":"保存成功号库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"2"
+	},
+	{
+    "id": "repo_name_id",
+    "name":"微信名库",
+    "type":"repo",
+    "source":"material",
+    "top_cate_id":"12"
+    },
+    {
+	"id": "add_count",
+	"name":"添加好友个数",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：个"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

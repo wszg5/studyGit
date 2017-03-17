@@ -5,7 +5,7 @@ from Repo import *
 import  time, datetime, random
 from zservice import ZDevice
 
-class MobilqqAddByAddressListII:
+class MobilqqDepost:
 
     def __init__(self):
         self.repo = Repo()
@@ -141,6 +141,7 @@ class MobilqqAddByAddressListII:
                 EndPhone = obj2['text']
                 if EndPhone in set1:
                     break
+
                 i = 1
                 continue
 
@@ -148,7 +149,7 @@ class MobilqqAddByAddressListII:
             time.sleep(int(args["time_delay"]))
 
 def getPluginClass():
-    return MobilqqAddByAddressListII
+    return MobilqqDepost
 
 if __name__ == "__main__":
     import sys

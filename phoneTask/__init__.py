@@ -19,9 +19,10 @@ class phoneTask:
         self.d = None
         self.z = None
         self.taskid = None
+        self.task = None
 
     def runStep(self, d, step):
-        self.z.toast("任务号:%s,步骤:%s" % (self.taskid, step["name"]))
+        self.z.toast("步骤:%s , 任务:%s" % (step["name"],self.task["name"]))
         pluginName = step["mid"]
         plugin = __import__("plugins." + pluginName, fromlist=[pluginName])
         clazz = plugin.getPluginClass()
@@ -51,8 +52,8 @@ class phoneTask:
         from uiautomator import Device
         from zservice import ZDevice
         if self.taskid:
-            task = dbapi.GetTask(self.taskid)
-            if (task and task.get("status") and task["status"] == "running"):
+            self.task = dbapi.GetTask(self.taskid)
+            if (self.task and self.task.get("status") and self.task["status"] == "running"):
                 self.d = Device(deviceid, port)
                 # d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
                 self.z = ZDevice(deviceid, zport)
