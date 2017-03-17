@@ -520,6 +520,10 @@ class ZRemoteDevice(object):
         key = 'timeout_%s' % self.server.adb.device_serial()
         cache.set(key, (datetime.datetime.now()  - datetime.datetime(2017, 1 ,1)).seconds)
 
+    def sleep(self, second):
+        while(second > 0):
+            time.sleep(1)
+            second = second -1
 
     def set_mobile_data(self,status):
         '''Get the device info.'''
