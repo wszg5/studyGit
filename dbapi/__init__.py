@@ -3,7 +3,7 @@ import rethinkdb as r
 #https://github.com/lucidfrontier45/RethinkPool
 from rethinkpool import RethinkPool
 from const import const
-
+import time, random
 
 
 class dbapi:
@@ -18,6 +18,19 @@ class dbapi:
         with pool.get_resource() as res:
             devices = r.table('devices').filter({'present': True, 'ready': True}).order_by('statusChangedAt').run(res.conn)
             return devices
+
+
+    def log_error(self,serial, summary, message):
+        self.log_warn(serial ,summary, message, "error")
+
+    def log_warn(self, serial,summary, message, level="warn"):
+        pool = RethinkPool(max_conns=120, initial_conns=10, host=const.SERVER_IP,
+                           port=28015,
+                           db=const.RETHINKDB_NAME)
+        with pool.get_resource() as res:
+            uid = time.time() + random.randint(10000, 20000)
+            log = {"id": uid,"serial":serial, "summary":summary, "message": message, "level": level, "UpdatedAt": r.now().run(res.conn, time_format="raw")}
+            r.table("warn_msg").insert(log).run(res.conn)
 
     def GetDeviceTask(self, serial):
         pool = RethinkPool(max_conns=120, initial_conns=10, host=const.SERVER_IP,
