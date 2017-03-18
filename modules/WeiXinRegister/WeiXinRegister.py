@@ -22,6 +22,7 @@ class WeiXinRegister:
         return genPwd
 
     def action(self, d,z, args):
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -40,6 +41,7 @@ class WeiXinRegister:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                 time.sleep(10)
                 return
+            z.heartbeat()
             name = Material[0]['content']  # 从素材库取出的要发的材料
             z.input(name)       #name
             if not d(text='中国').exists:
@@ -52,8 +54,10 @@ class WeiXinRegister:
             else:
                 d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=2).child(className='android.widget.EditText',index=1).click()
                 d.swipe(474,327,500,329)
+            z.heartbeat()
             while True:
                 PhoneNumber = self.xm.GetPhoneNumber('2251')
+                z.heartbeat()
                 print(PhoneNumber)
                 if PhoneNumber.startswith('17'):
                     break
@@ -79,19 +83,21 @@ class WeiXinRegister:
             z.input(PhoneNumber)
             d(className='android.widget.LinearLayout',index=3).child(className='android.widget.EditText').click()
             d(textContains='密码').click()
+            z.heartbeat()
             password = self.GenPassword()
             z.input(password)
             print(password)
             print('-------------------------------------上面是密码')
-
+            z.heartbeat()
             d(text='注册').click()
             d(text='确定').click()
             time.sleep(2)
             while d(textContains='正在验证').exists:
                 time.sleep(2)
-
+            z.heartbeat()
             code = self.xm.GetVertifyCode(PhoneNumber,'2251')
             self.xm.defriendPhoneNumber(PhoneNumber, '2251')
+            z.heartbeat()
             if '失败'==code:
                 continue
             print(code)
@@ -105,6 +111,7 @@ class WeiXinRegister:
             if d(textContains='不可频繁重复注册').exists:
                 continue
             else:
+                z.heartbeat()
                 d(text='好').click()
                 d(text='确定', className='android.widget.Button').click()
                 cate_id = args['repo_number_id']

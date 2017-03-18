@@ -11,7 +11,7 @@ class WXAddresslistDepost:
         self.repo = Repo()
 
     def action(self, d,z, args):
-
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -25,7 +25,7 @@ class WXAddresslistDepost:
         d(text='添加手机联系人').click()
         while d(textContains='正在获取').exists:
             time.sleep(3)
-
+        z.heartbeat()
         set1 = set()
         change = 0
         i = 0
@@ -36,6 +36,7 @@ class WXAddresslistDepost:
                 className='android.widget.LinearLayout').child(className='android.widget.LinearLayout', index=1).child(
                 className='android.widget.TextView', index=0)
             if phone.exists:
+                z.heartbeat()
                 change = 1
                 phonenumber = phone.info['text']
                 if phonenumber in set1:    #判断是否已经给该人发过消息
@@ -43,6 +44,7 @@ class WXAddresslistDepost:
                     continue
                 else:
                     set1.add(phonenumber)
+                z.heartbeat()
                 d(className='android.widget.ListView',index=0).child(className='android.widget.LinearLayout',index=i).\
                     child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).click()      #点击第i个人
                 Gender = d(className='android.widget.LinearLayout', index=1).child(className='android.widget.LinearLayout').child(className='android.widget.ImageView',index=1)  # 看性别是否有显示
@@ -51,13 +53,14 @@ class WXAddresslistDepost:
                     Gender = Gender['contentDescription']
                 else:
                     Gender = '空'
-
+                z.heartbeat()
                 nickname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=1)\
                     .child(className='android.widget.LinearLayout',index=1).child(className='android.widget.TextView')
                 if nickname.exists:
                     nickname = nickname.info['text']
                 else:
                     nickname = '空'
+                z.heartbeat()
                 if d(text='地区').exists:
                     for k in range(3,10):
                         if d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=k).child(className='android.widget.LinearLayout',index=0).child(text='地区').exists:
@@ -66,7 +69,7 @@ class WXAddresslistDepost:
                         child(className='android.widget.LinearLayout',index=1).child(className='android.widget.TextView').info['text']
                 else:
                     area = '空'
-
+                z.heartbeat()
                 if d(text='个性签名').exists:
                     for k in range(3,10):
                         if d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=k).child(className='android.widget.LinearLayout',index=0).child(text='个性签名').exists:
@@ -75,7 +78,7 @@ class WXAddresslistDepost:
                         child(className='android.widget.LinearLayout',index=1).child(className='android.widget.TextView').info['text']
                 else:
                     sign = '空'
-
+                z.heartbeat()
                 para = {"phone":phonenumber,'qq_nickname':nickname,'sex':Gender,"city":area,"x_01":sign}
                 # print('--%s--%s--%s--%s--%s'%(phonenumber,nickname,Gender,area,sign))
 

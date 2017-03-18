@@ -10,6 +10,7 @@ class MobilqqOfficialAccont:
         self.repo = Repo()
 
     def action(self, d,z,args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(6)
@@ -29,6 +30,7 @@ class MobilqqOfficialAccont:
             z.input(message)
             d(textContains='搜索').click()
             time.sleep(2)
+            z.heartbeat()
             if d(textContains='没有找到').exists:
                 d(descriptionContains='搜索聊天或者联系人').child(description='清空').click()
                 continue
@@ -39,6 +41,7 @@ class MobilqqOfficialAccont:
                 d(descriptionContains='搜索聊天或者联系人').child(description='清空').click()
                 continue
             else:
+                z.heartbeat()
                 d(text='加关注').click()
                 time.sleep(2)
                 d(text='返回').click()

@@ -11,7 +11,7 @@ class WeiXinNearByNotify:
 
 
     def action(self, d,z, args):
-
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -28,6 +28,7 @@ class WeiXinNearByNotify:
         z.wx_action('opennearui')
         while d(textContains='正在查找').exists:
             time.sleep(3)
+        z.heartbeat()
         if d(text='开始查看').exists:
             d(text='开始查看').click()
             if d(text='提示').exists:
@@ -37,6 +38,7 @@ class WeiXinNearByNotify:
         if d(textContains='查看附近的人').exists:
             d(textContains='查看附近的人').click()
         time.sleep(3)
+        z.heartbeat()
         d(description='更多').click()
         GenderFrom = args['gender']  # -------------------------------
         if GenderFrom != '不限':
@@ -47,7 +49,7 @@ class WeiXinNearByNotify:
             d(textContains='全部').click()
             while d(textContains='正在查找').exists:
                 time.sleep(2)
-
+        z.heartbeat()
         set1 = set()
         change = 0
         i = 1
@@ -68,6 +70,7 @@ class WeiXinNearByNotify:
                 className='android.widget.TextView',
                 index=0)       #得到微信名
             if obj.exists:
+                z.heartbeat()
                 change = 1
                 obj = obj.info
                 name = obj['text']
@@ -86,7 +89,7 @@ class WeiXinNearByNotify:
                     d(description='返回').click()
                     i = i+1
                     continue
-
+                z.heartbeat()
                 d(className='android.widget.EditText').click()
                 z.input(message)       #----------------------------------------
                 d(text = '发送').click()

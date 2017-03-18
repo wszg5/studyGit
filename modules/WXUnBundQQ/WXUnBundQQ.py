@@ -10,6 +10,7 @@ class WXUnBundQQ:
         self.repo = Repo()
 
     def action(self, d,z, args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(4)
@@ -22,7 +23,7 @@ class WXUnBundQQ:
                 time.sleep(int(args["time_delay"]))
             return
         else:
-
+            z.heartbeat()
             d(description='更多').click()
             d(text='解除绑定').click()
             d(text='开始解绑QQ').click()

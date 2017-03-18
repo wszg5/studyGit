@@ -10,7 +10,7 @@ class EIMAddFrendRouseII:
         self.repo = Repo()
 
     def action(self, d,z, args):
-
+        z.heartbeat()
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
         cate_id = int(args["repo_number_id"])  # 得到取号码的仓库号
         numbers = self.repo.GetNumber(cate_id, 0, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
@@ -20,7 +20,7 @@ class EIMAddFrendRouseII:
             time.sleep(20)
             return
         list = numbers  # 将取出的号码保存到一个新的集合
-
+        z.heartbeat()
         time.sleep(15)
         for i in range (0,totalNumber,+1):
             cate_id = args["repo_material_cate_id"]
@@ -33,7 +33,7 @@ class EIMAddFrendRouseII:
             QQnumber = list[i]['number']
             message = Material[0]['content']
             time.sleep(1)
-
+            z.heartbeat()
             d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"'%QQnumber )  # QQ咨询
             time.sleep(2)
 
@@ -52,7 +52,7 @@ class EIMAddFrendRouseII:
             time.sleep(1)
             if d(text='必填', resourceId='com.tencent.eim:id/name').exists:
                 continue
-
+            z.heartbeat()
             obj = d(className='android.widget.EditText').info  # 删除之前文本框的验证消息
             obj = obj['text']
             lenth = len(obj)
@@ -64,7 +64,7 @@ class EIMAddFrendRouseII:
             z.input(message)
             d(text='下一步').click()
             d(text='发送').click()
-
+            z.heartbeat()
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))

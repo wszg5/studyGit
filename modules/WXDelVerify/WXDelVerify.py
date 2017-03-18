@@ -8,6 +8,7 @@ class WXDelVerify:
     def __init__(self):
         self.repo = Repo()
     def action(self, d,z, args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(7)
@@ -16,6 +17,7 @@ class WXDelVerify:
 
         obj = d(className='android.widget.RelativeLayout', index=1).child(index=1).child(className='android.widget.TextView', index=0)     #得到微信名
         while obj.exists:
+            z.heartbeat()
             obj.long_click()
             d(text='删除').click()
         if (args["time_delay"]):

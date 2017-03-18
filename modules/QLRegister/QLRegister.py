@@ -23,6 +23,7 @@ class QLRegister:
         return genPwd
 
     def action(self, d,z, args):
+        z.heartbeat()
         self.xuma = XunMa(d.server.adb.device_serial())
         d.server.adb.cmd("shell", "pm clear com.tencent.qqlite").communicate()  # 清除缓存
         d.server.adb.cmd("shell", "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 将qq拉起来
@@ -38,6 +39,7 @@ class QLRegister:
         time.sleep(1)
         condition = 0
         while condition<count:
+            z.heartbeat()
             phoneNumber = self.xuma.GetPhoneNumber('2111')
             z.input(phoneNumber)
             d(text='下一步').click()
@@ -50,10 +52,9 @@ class QLRegister:
             if d(description='用QQ浏览器​打开').exists:
                 d(description='向上导航').click()
 
-
-
             obj = d(className='android.widget.EditText', index=2)
             if obj.exists:
+                z.heartbeat()
                 obj = obj.info
                 obj = obj['bounds']  # 验证码处的信息
                 left = obj["left"]  # 验证码的位置信息
@@ -72,7 +73,7 @@ class QLRegister:
                     d.press.delete()
                     t = t+1
 
-
+            z.heartbeat()
             verifycode = self.xuma.GetVertifyCode(phoneNumber,'2111')
             z.input(verifycode)
 

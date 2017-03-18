@@ -18,6 +18,7 @@ class EIMCutQQ:
         self.repo = Repo()
         self.slot = slot(self.type)
 
+
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
         randomNum = random.randint(0, 1000);  # 生成的随机整数n，其中0<=n<=100
@@ -27,14 +28,13 @@ class EIMCutQQ:
         return uniqueNum
 
     def login(self,d,args):
-        z.heartbeat()
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
         sourcePng = os.path.join(base_dir, "%s_s.png" % (self.GetUnique()))
         codePng = os.path.join(base_dir, "%s_c.png" % (self.GetUnique()))
-        time.sleep(1)
 
+        time.sleep(1)
         t = 1
         while t == 1:         #直到登陆成功为止
             time_limit1 = args['time_limit1']
@@ -50,7 +50,6 @@ class EIMCutQQ:
             d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
             d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             time.sleep(5)
-            z.heartbeat()
             d(className='android.widget.Button', index=1, clickable='true').click()
             time.sleep(2)
             d(className='android.widget.EditText', text='企业QQ号/手机号/邮箱').set_text(QQNumber)  # 3001313499  QQNumber  3001346198
@@ -61,9 +60,7 @@ class EIMCutQQ:
                 d(text='企业QQ').click()
                 if d(text='仅此一次').exists:
                     d(text='仅此一次').click()
-            z.heartbeat()
             if d(text='搜索').exists:  # 直接登陆成功的情况
-
                 return  QQNumber   # 放到方法里改为return
 
             if d(text='帐号无法登录', resourceId='com.tencent.eim:id/dialogTitle').exists:  # 帐号被冻结
@@ -100,26 +97,23 @@ class EIMCutQQ:
                 im_id = codeResult["Id"]
                 os.remove(sourcePng)
                 os.remove(codePng)
-                z.heartbeat()
+
                 d(resourceId='com.tencent.eim:id/name', index='2', className="android.widget.EditText").set_text(code)
                 time.sleep(1)
                 d(text='完成').click()
                 time.sleep(4)
                 while d(className='android.widget.ProgressBar',index=0).exists:     #网速较慢，校验验证码未完成的情况
-                    z.heartbeat()
                     time.sleep(2)
 
                 if d(text='搜索', resourceId='com.tencent.eim:id/name').exists:
                     return  QQNumber# 放到方法里改为return
                 if d(text='输入验证码').exists:           #验证码输入错误的情况
-                    z.heartbeat()
                     continue
                 else:
                     self.repo.BackupInfo(cate_id, 'frozen', QQNumber,'')  # 仓库号,使用中,QQ号,设备号_卡槽号
                     break
 
     def action(self, d,z, args):
-        z.heartbeat()
         time_limit = args['time_limit']
         cate_id = args["repo_cate_id"]
         slotnum = self.slot.getEmpty(d)  # 取空卡槽
@@ -128,7 +122,6 @@ class EIMCutQQ:
             slotnum = self.slot.getSlot(d, time_limit)  # 没有空卡槽，取time_limit小时没用过的卡槽
             while slotnum == 0:  # 2小时没有用过的卡槽也为空的情况
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"EIM卡槽全满，无间隔时间段未用\"").communicate()
-                z.heartbeat()
                 time.sleep(30)
                 slotnum = self.slot.getSlot(d, time_limit)
 
@@ -147,13 +140,12 @@ class EIMCutQQ:
                     getSerial = z.generateSerial("788")  # 修改信息
                 else:
                     z.generateSerial(getSerial)  # 将串号保存
-            z.heartbeat()
+
             self.slot.restore(d, slotnum)  # 有２小时没用过的卡槽情况，切换卡槽
             print("切换为" + str(slotnum))
             z.set_mobile_data(True)
             time.sleep(8)
             d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-            z.heartbeat()
             time.sleep(2)
             while d(textContains='正在更新数据').exists:
                 time.sleep(2)
@@ -167,13 +159,11 @@ class EIMCutQQ:
                 d(resourceId='com.tencent.eim:id/name', className='android.widget.Button').click()
                 time.sleep(6)
             if d(text='搜索').exists:
-                z.heartbeat()
                 QQnumber = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                 QQnumber = QQnumber['info']  # info为QQ号
                 self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
             else:  # 切换不成功的情况
-                z.heartbeat()
                 serialinfo = z.generateSerial("788")  # 修改串号等信息
                 print('登陆时的serial%s' % serialinfo)
                 QQnumber = self.login(d, args)
@@ -188,73 +178,62 @@ class EIMCutQQ:
                 print("切换为"+str(slotnum))
                 z.toast('切换为%s号卡槽' % slotnum)
                 d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-                z.heartbeat()
                 time.sleep(2)
                 while d(textContains='正在更新').exists:
                     time.sleep(2)
                 time.sleep(8)
                 if d(text='搜索', resourceId='com.tencent.mobileqq:id/name').exists:
-                    z.heartbeat()
                     obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                     QQnumber = obj['info']  # info为QQ号
                     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                     self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
 
                 elif d(textContains='消息').exists:
-                    z.heartbeat()
                     obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                     QQnumber = obj['info']  # info为QQ号
                     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                     self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
 
                 elif d(text='主题装扮').exists:
-                    z.heartbeat()
                     obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                     QQnumber = obj['info']  # info为QQ号
                     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                     self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
 
                 elif d(text='启用').exists:
-                    z.heartbeat()
                     obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                     QQnumber = obj['info']  # info为QQ号
                     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                     self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
 
                 elif d(text='马上绑定').exists:
-                    z.heartbeat()
                     obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                     QQnumber = obj['info']  # info为QQ号
                     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                     self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
 
                 elif d(text='马上升级').exists:
-                    z.heartbeat()
                     obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                     QQnumber = obj['info']  # info为QQ号
                     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                     self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
 
                 elif d(text='寻找好友').exists:
-                    z.heartbeat()
                     obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                     QQnumber = obj['info']  # info为QQ号
                     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                     self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
 
                 else:  # 切换不成功的情况
-                    z.heartbeat()
                     serialinfo = z.generateSerial("788")  # 修改串号等信息
                     print('登陆时的serial%s' % serialinfo)
                     QQnumber = self.login(d, args)
-                    z.heartbeat()
                     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                     self.repo.BackupInfo(cate_id, 'using', QQnumber, serialinfo, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
                     d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
                     self.slot.restore(d, slotnum, "com.tencent.mobileqq")  # 有２小时没用过的卡槽情况，切换卡槽
                     z.toast('切换为%s号卡槽' % slotnum)
                     d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-                    z.heartbeat()
                     time.sleep(2)
                     while d(textContains='正在更新').exists:
                         time.sleep(2)
@@ -265,13 +244,11 @@ class EIMCutQQ:
                 z.toast('切换为%s号卡槽' % slotnum)
                 print("切换为"+str(slotnum))
                 d.server.adb.cmd("shell", "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-                z.heartbeat()
                 time.sleep(2)
                 while d(textContains='正在更新').exists:
                     time.sleep(2)
                 time.sleep(8)
                 if d(text='消息').exists:
-                    z.heartbeat()
                     obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                     QQnumber = obj['info']  # info为QQ号
                     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
@@ -279,31 +256,26 @@ class EIMCutQQ:
 
 
                 elif d(text='启用').exists:
-                    z.heartbeat()
                     obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                     QQnumber = obj['info']  # info为QQ号
                     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                     self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
 
                 elif d(text='联系人').exists:
-                    z.heartbeat()
                     obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                     QQnumber = obj['info']  # info为QQ号
                     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                     self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
                 else:
-                    z.heartbeat()
                     serialinfo = z.generateSerial("788")  # 修改串号等信息
                     print('登陆时的serial%s' % serialinfo)
                     QQnumber = self.login(d, args)
-                    z.heartbeat()
                     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                     self.repo.BackupInfo(cate_id, 'using', QQnumber, serialinfo, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
                     d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
                     self.slot.restore(d, slotnum, "com.tencent.qqlite")  # 有２小时没用过的卡槽情况，切换卡槽
                     z.toast('切换为%s号卡槽' % slotnum)
                     d.server.adb.cmd("shell", "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-                    z.heartbeat()
                     time.sleep(2)
                     while d(textContains='正在更新').exists:
                         time.sleep(2)
@@ -317,11 +289,9 @@ class EIMCutQQ:
             time.sleep(3)
             z.set_mobile_data(True)
             time.sleep(8)
-            z.heartbeat()
             serialinfo = z.generateSerial("788")  # 修改串号等信息
             print('登陆时的serial%s' % serialinfo)
             QQnumber = self.login(d, args)
-            z.heartbeat()
             self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
             self.repo.BackupInfo(cate_id, 'using', QQnumber,serialinfo,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
             d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
@@ -330,7 +300,6 @@ class EIMCutQQ:
                 self.slot.restore(d, slotnum, "com.tencent.mobileqq")  # 有２小时没用过的卡槽情况，切换卡槽
                 z.toast('切换为%s号卡槽'%slotnum)
                 d.server.adb.cmd("shell" "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-                z.heartbeat()
                 time.sleep(2)
                 while d(textContains='正在更新').exists:
                     time.sleep(2)
@@ -339,7 +308,6 @@ class EIMCutQQ:
                 self.slot.restore(d, slotnum, "com.tencent.qqlite")  # 有２小时没用过的卡槽情况，切换卡槽
                 z.toast('切换为%s号卡槽' % slotnum)
                 d.server.adb.cmd("shell", "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-                z.heartbeat()
                 time.sleep(2)
                 while d(textContains='正在更新').exists:
                     time.sleep(2)

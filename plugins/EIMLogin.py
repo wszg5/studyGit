@@ -114,6 +114,7 @@ class EIMLogin:
                     break
 
     def action(self, d,z, args):
+
         time_limit = args['time_limit']
         cate_id = args["repo_cate_id"]
         slotnum = self.slot.getEmpty(d)  # 取空卡槽
@@ -196,11 +197,6 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    # d.dump(compressed=False)
-    # slot = slot('eim')
-    # d(resourceId='com.tencent.eim:id/name', className='android.widget.Button').click()
-    # slot.restore(d, 2)  # 有２小时没用过的卡槽情况，切换卡槽
 
-    # z.input('gfdc')
     args = {"repo_cate_id":"34","time_limit":"3","time_limit1":"10","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

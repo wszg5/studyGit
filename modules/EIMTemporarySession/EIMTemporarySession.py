@@ -10,9 +10,8 @@ class EIMTemporarySession:
 
 
     def action(self, d,z, args):
-
+        z.heartbeat()
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
-
         cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
         numbers = self.repo.GetNumber(cate_id, 0, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
         if len(numbers)==0:
@@ -35,11 +34,11 @@ class EIMTemporarySession:
             mmessage = Material[0]['content']  # 取出验证消息的内容
             QQnumber = list[i]['number']
             time.sleep(1)
-
+            z.heartbeat()
             d.server.adb.cmd("shell",
                              'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=crm\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % QQnumber)  # 临时会话
             time.sleep(2)
-
+            z.heartbeat()
             if d(text='企业QQ').exists:
                 d(text='企业QQ').click()
                 time.sleep(0.5)
@@ -58,7 +57,7 @@ class EIMTemporarySession:
             if d(className='android.widget.EditText').exists:
                 d(className='android.widget.EditText').click()
                 z.input(mmessage)
-
+            z.heartbeat()
             d(text='发送').click()
 
 

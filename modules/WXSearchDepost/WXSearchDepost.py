@@ -12,7 +12,7 @@ class WeiXinAddFriends:
 
 
     def action(self, d,z, args):
-
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(7)
@@ -26,7 +26,7 @@ class WeiXinAddFriends:
             time.sleep(1)
             d(text='添加朋友').click()
         d(index='1',className='android.widget.TextView').click()   #点击搜索好友的输入框
-
+        z.heartbeat()
         add_count = int(args['add_count'])
         account = 0
         while True:
@@ -40,8 +40,10 @@ class WeiXinAddFriends:
                 WXnumber = numbers[0]['number']
                 z.input(WXnumber)
                 d(textContains='搜索:').click()
+                z.heartbeat()
                 while d(textContains='正在查找').exists:
                     time.sleep(2)
+                z.heartbeat()
                 if d(textContains='操作过于频繁').exists:
                     return
                 time.sleep(1)
@@ -52,7 +54,7 @@ class WeiXinAddFriends:
                 if d(textContains='状态异常').exists:
                     d(descriptionContains='清除', index=2).click()
                     continue
-
+                z.heartbeat()
                 Gender = d(className='android.widget.LinearLayout', index=1).child(
                     className='android.widget.LinearLayout').child(className='android.widget.ImageView',index=1)  # 看性别是否有显示
                 if Gender.exists:
@@ -60,7 +62,7 @@ class WeiXinAddFriends:
                     Gender = Gender['contentDescription']
                 else:
                     Gender = '空'
-
+                z.heartbeat()
                 nickname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',
                                                                         index=1) \
                     .child(className='android.widget.LinearLayout', index=1).child(className='android.widget.TextView')
@@ -68,6 +70,7 @@ class WeiXinAddFriends:
                     nickname = nickname.info['text']
                 else:
                     nickname = '空'
+                z.heartbeat()
                 if d(text='地区').exists:
                     for k in range(3, 10):
                         if d(className='android.widget.ListView').child(className='android.widget.LinearLayout',
@@ -81,7 +84,7 @@ class WeiXinAddFriends:
                         className='android.widget.TextView').info['text']
                 else:
                     area = '空'
-
+                z.heartbeat()
                 if d(text='个性签名').exists:
                     for k in range(3, 10):
                         if d(className='android.widget.ListView').child(className='android.widget.LinearLayout',
@@ -95,7 +98,7 @@ class WeiXinAddFriends:
                         className='android.widget.TextView').info['text']
                 else:
                     sign = '空'
-
+                z.heartbeat()
                 para = {"phone": WXnumber, 'qq_nickname': nickname, 'sex': Gender, "city": area, "x_01": sign}
                 print('--%s--%s--%s--%s--%s'%(WXnumber,nickname,Gender,area,sign))
 

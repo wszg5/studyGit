@@ -136,6 +136,7 @@ class MobilqqLogin:
         time_limit = args['time_limit']
         cate_id = args["repo_cate_id"]
         slotnum = self.slot.getEmpty(d)  # 取空卡槽
+
         print(slotnum)
         if slotnum == 0:    #没有空卡槽的话
             slotnum = self.slot.getSlot(d, time_limit)  # 没有空卡槽，取２小时没用过的卡槽
@@ -153,9 +154,8 @@ class MobilqqLogin:
             getSerial = self.repo.Getserial(cate_id,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, slotnum))     #得到之前的串号
             if len(getSerial)==0:      #之前的信息保存失败的话
                 d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.zime.toast --es msg \"与%s号仓库的连接失败\"" % cate_id).communicate()   #在５１上测时库里有东西但是王红机器关闭后仍获取失败
-                time.sleep(10)
-                return
+                                 "am broadcast -a com.zunyun.zime.toast --es msg \"串号获取失败，重新设置\"" ).communicate()   #在５１上测时库里有东西但是王红机器关闭后仍获取失败
+                getSerial = z.generateSerial("788")  # 修改信息
             else:
                 getSerial = getSerial[0]['imei']      #如果信息保存成功但串号没保存成功的情况
                 print('卡槽切换时的sereial%s'%getSerial)
@@ -183,22 +183,27 @@ class MobilqqLogin:
             elif d(text='搜索',resourceId='com.tencent.mobileqq:id/name').exists:
                 obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                 QQnumber = obj['info']  # info为QQ号
+                self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo(cate_id, 'using', QQnumber,getSerial,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
             elif d(text='消息').exists:
                 obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                 QQnumber = obj['info']  # info为QQ号
+                self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo(cate_id, 'using', QQnumber,getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
             elif d(text='主题装扮').exists:
                 obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                 QQnumber = obj['info']  # info为QQ号
+                self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo(cate_id, 'using', QQnumber,getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
             elif d(text ='马上绑定').exists:
                 obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                 QQnumber = obj['info']  # info为QQ号
+                self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo(cate_id, 'using', QQnumber,getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
             elif d(text='寻找好友').exists:
                 obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                 QQnumber = obj['info']  # info为QQ号
+                self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo(cate_id, 'using', QQnumber,getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
             else:        #切换不成功的情况
                 serialinfo = z.generateSerial("788")  # 修改信息
@@ -251,26 +256,10 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT52DSK00474")
-    z = ZDevice("HT52DSK00474")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    # repo = Repo()
-    # serial = z.generateSerial("788")
-    # print(serial)
-    # repo.BackupInfo(37, 'using','1953350195', serial,'%s_%s_%s' % (d.server.adb.device_serial(), 'qq', 1))
-    #
-    # getSerial = repo.Getserial(37, '%s_%s_%s' % (d.server.adb.device_serial(), 'qq', 1))  # 从备份里取出
-    # getSerial = getSerial['imei']
-    # z.generateSerial(getSerial)
-    # z.input('1633132378')
-    # d.dump(compressed=False)
-    # judge = z.get_mobile_data_state()
-    # print(judge)
-    # if judge==True:
-    #     print(111)
-    # if judge==False:
-    #     print(222)
-    args = {"repo_cate_id":"134","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"135","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)

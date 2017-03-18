@@ -9,9 +9,8 @@ class MobilqqAddFrRouse:
         self.repo = Repo()
 
 
-
-
     def action(self, d,z,args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(6)
@@ -32,7 +31,7 @@ class MobilqqAddFrRouse:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\""%repo_number_cate_id).communicate()
             time.sleep(10)
             return
-
+        z.heartbeat()
         list = numbers  # 将取出的号码保存到一个新的集合
 
         for i in range (0,add_count,+1):            #总人数
@@ -48,6 +47,7 @@ class MobilqqAddFrRouse:
                     d(text='仅此一次').click()
             d(text='加好友').click()
             time.sleep(2)
+            z.heartbeat()
             if d(text='加好友').exists:    #拒绝被添加的轻况
                 continue
             if d(text='输入答案').exists:
@@ -62,7 +62,7 @@ class MobilqqAddFrRouse:
                     t = t + 1
                 z.input(message)
             d(text='发送').click()
-
+            z.heartbeat()
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))

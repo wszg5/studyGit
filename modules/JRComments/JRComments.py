@@ -10,6 +10,7 @@ class WXSaveId:
         self.repo = Repo()
 
     def action(self, d,z, args):
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -22,10 +23,12 @@ class WXSaveId:
         endIndex = int(args['EndIndex'])
         i = 1
         t = 0
+        z.heartbeat()
         while True:
             if t<endIndex:
                 clickCondition = d(className='android.widget.ListView').child(className='android.widget.RelativeLayout',index=i)
                 if clickCondition.exists:
+                    z.heartbeat()
                     if clickCondition.child(textContains='点击刷新').exists:
                         i = i+1
                         continue
@@ -40,7 +43,7 @@ class WXSaveId:
                         time.sleep(10)
                         return
                     message = Material[0]['content']  # 取出验证消息的内容
-
+                    z.heartbeat()
                     # d(text='发表').click()
                     if d(text='我来说两句').exists:
                         d(text='我来说两句').click()
@@ -51,7 +54,7 @@ class WXSaveId:
                         t = t+1
                         continue
 
-
+                    z.heartbeat()
                     d(textContains='写评论').click()
                     z.input(message)
                     d.swipe(452, 825, 519, 829)     #发表按钮无法定位
@@ -62,6 +65,7 @@ class WXSaveId:
                     i = i+1
                     print(t)
                     t = t+1
+                    z.heartbeat()
 
                 else:
                     str = d.info  # 获取屏幕大小等信息

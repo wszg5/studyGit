@@ -74,6 +74,7 @@ class AlipayDepost:
 
 
     def action(self, d,z, args):
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -94,6 +95,8 @@ class AlipayDepost:
 
         while not d(textContains='支付宝:').exists:
             time.sleep(2)
+
+        z.heartbeat()
         i = 0
         set1 = set()
         change = 0
@@ -101,9 +104,9 @@ class AlipayDepost:
             judexist = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i)\
                 .child(className='android.widget.LinearLayout').child(className='android.widget.TextView',index=0)
             if judexist.exists:
+                z.heartbeat()
                 change = 1
-                phoneNumber = judexist.info['text']
-                     #要保存的电话号码
+                phoneNumber = judexist.info['text']#要保存的电话号码
                 if phoneNumber in set1:
                     i = i+1
                     continue
@@ -129,7 +132,7 @@ class AlipayDepost:
                 else:
                     nickname = '空'
                 # print('=============================%s=============================================================='%nickname)
-
+                z.heartbeat()
                 if d(text='支付宝账户').exists:
                     for t in range(0, 14):
                         if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='支付宝账户').exists:
@@ -138,7 +141,7 @@ class AlipayDepost:
                                                                                    index=1).info['text']
                 else:
                     account = '空'
-
+                z.heartbeat()
                 # print('================================%s============================================================='%account)
 
                 if d(text='真实姓名').exists:
@@ -162,7 +165,7 @@ class AlipayDepost:
                     if not d(text='收起').exists:
                         d.swipe(width / 2, height * 3 / 4, width / 2, height / 3)
 
-
+                z.heartbeat()
                 if d(text='地区').exists:
                     area = publicpath.child(className='android.widget.LinearLayout',index=2).child(className='android.widget.TextView',index='1').info['text']
                 else:
@@ -212,6 +215,7 @@ class AlipayDepost:
                 else:
                     weight = '空'
                 # print('=============================%s================================================================='%weight)
+                z.heartbeat()
                 if d(text='职业').exists:
                     for t in range(1, 14):
                         if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='职业').exists:
@@ -221,6 +225,7 @@ class AlipayDepost:
                 else:
                     carrer = '空'
                 # print('=============================%s================================================================='%carrer)
+                z.heartbeat()
                 if d(text='收入').exists:
                     for t in range(1, 14):
                         if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='收入').exists:
@@ -237,6 +242,7 @@ class AlipayDepost:
                             break
                     idexx = 0
                     taste = []    #将所有兴趣保存到集合里
+                    z.heartbeat()
                     while True:
                         interest = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.view.View').child(className='android.widget.TextView',
                                                                            index=idexx)
@@ -262,17 +268,14 @@ class AlipayDepost:
                 con = inventory.postData(para)
                 if con!=True:
                     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息保存失败……\"" ).communicate()
-                    time.sleep(10)
-                    return
-                # print(con)
+
                 i = i+1
                 d(description = '返回').click()
 
 
             else:
                 if change==0:
-                    d.server.adb.cmd("shell",
-                                     "am broadcast -a com.zunyun.zime.toast --es msg \"通讯录内没有好友\"" ).communicate()
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"通讯录内没有好友\"" ).communicate()
                     time.sleep(10)
                     return
                 clickCondition = d(className='android.widget.ListView')
@@ -282,7 +285,6 @@ class AlipayDepost:
                 bottom = int(obj['bottom'])
                 y = bottom - top
                 d.swipe(width / 2, y, width / 2, 0)
-
                 zz = i+2
                 for k in range(1,10):
                     obj2 = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=zz) \
@@ -298,7 +300,6 @@ class AlipayDepost:
                     else:
                         zz = zz-1
                         continue
-
 
                 obj1 =d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0) \
                     .child(className='android.widget.LinearLayout').child(className='android.widget.TextView', index=0)

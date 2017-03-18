@@ -6,7 +6,6 @@ from zservice import ZDevice
 import sys
 reload(sys)
 from XunMa import *
-
 sys.setdefaultencoding('utf8')
 
 class AlipayRegister:
@@ -24,6 +23,7 @@ class AlipayRegister:
         return genPwd
 
     def action(self, d,z, args):
+        z.heartbeat()
         self.xunma = XunMa(d.server.adb.device_serial())
         while True:
             d.server.adb.cmd("shell", "pm clear com.eg.android.AlipayGphone").communicate()  # 清除缓存
@@ -41,6 +41,7 @@ class AlipayRegister:
                 return
             name = Material[0]['content']  # 从素材库取出的要发的材料
             z.input(name)  # name
+            z.heartbeat()
             d(text='中国大陆').click()
             d(text='中国大陆').click()
             d(className='android.widget.ScrollView').child(className='android.widget.RelativeLayout',index=2).click()
@@ -54,6 +55,7 @@ class AlipayRegister:
             d(text='确定').click()
             code = self.xunma.GetVertifyCode(PhoneNumber, '3189')
             z.input(code)
+            z.heartbeat()
             d(text='提交').click()
             time.sleep(5)
             if d(textContains='是我的').exists:
@@ -64,6 +66,7 @@ class AlipayRegister:
                 self.repo.RegisterAccount('', password, PhoneNumber, cate_id)
                 time.sleep(3)
             if d(textContains='没有账号').exists:
+                z.heartbeat()
                 continue
             else:
                 break
@@ -80,6 +83,8 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
+    # z.input('177751880')
+    # z.input('13141314ABC')
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     args = {"repo_name_id": "102","repo_number_id": "136","time_delay": "3"};    #cate_id是仓库号，length是数量
 

@@ -9,7 +9,8 @@ class WXBindMail:
     def __init__(self):
         self.repo = Repo()
 
-    def action(self, d,z, args):
+    def action(self,d,z,args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(7)
@@ -17,6 +18,7 @@ class WXBindMail:
         d(text='设置').click()
         d(textContains='帐号与安全').click()
         d(text='邮件地址').click()
+        z.heartbeat()
         if d(textContains='重新发送验证').exists:
             return
         if d(textContains='解绑').exists:
@@ -31,6 +33,7 @@ class WXBindMail:
         BindMail = Mail[0]['number']
         d(className='android.widget.EditText').set_text(BindMail)
         d(text='确定').click()
+        z.heartbeat()
 
 
         if (args["time_delay"]):

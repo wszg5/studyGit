@@ -11,7 +11,7 @@ class WeiXinAddFriendByAddressList:
 
 
     def action(self, d,z, args):
-
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -25,7 +25,7 @@ class WeiXinAddFriendByAddressList:
         d(text='添加手机联系人').click()
         while d(textContains='正在获取').exists:
             time.sleep(3)
-
+        z.heartbeat()
         set1 = set()
         change = 0
         i = 0
@@ -43,6 +43,7 @@ class WeiXinAddFriendByAddressList:
             time.sleep(1)
             wxname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=i).child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).child(textContains='微信:')     #得到微信名
             if wxname.exists:
+                z.heartbeat()
                 alreadyAdd = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',
                                                                           index=i).child(
                     className='android.widget.LinearLayout', index=0).child(className='android.widget.FrameLayout',
@@ -55,6 +56,7 @@ class WeiXinAddFriendByAddressList:
                 change = 1      #好友存在且未被添加的情况出现，change值改变
                 wxname = wxname.info
                 name = wxname['text']
+                z.heartbeat()
                 if name in set1:    #判断是否已经给该人发过消息
                     i = i+1
                     continue
@@ -67,6 +69,7 @@ class WeiXinAddFriendByAddressList:
                 if GenderFrom !='不限':
                     Gender = d(className='android.widget.LinearLayout',index=1).child(className='android.widget.LinearLayout').child(className='android.widget.ImageView',index=1)      #看性别是否有显示
                     if Gender.exists:
+                        z.heartbeat()
                         Gender = Gender.info
                         Gender = Gender['contentDescription']
                         if Gender !=GenderFrom:
@@ -78,6 +81,7 @@ class WeiXinAddFriendByAddressList:
                         d(description='返回').click()
                         i = i + 1
                         continue
+                z.heartbeat()
                 if d(text='添加到通讯录').exists:
                     d(text='添加到通讯录').click()
                     time.sleep(0.5)
@@ -105,6 +109,7 @@ class WeiXinAddFriendByAddressList:
                 while m < lenth:
                     d.press.delete()
                     m = m + 1
+                z.heartbeat()
                 d(className='android.widget.EditText', index=1).click()
                 z.input(message)       #----------------------------------------
                 d(text = '发送').click()

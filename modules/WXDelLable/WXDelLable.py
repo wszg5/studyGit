@@ -11,7 +11,7 @@ class WXDelLable:
 
 
     def action(self, d,z, args):
-
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -27,11 +27,13 @@ class WXDelLable:
             d(text='标签').click()
         if d(textContains='暂无标签').exists:
             return
+        z.heartbeat()
         gender = args['gender']
         if gender=='不限':
             lable = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0). \
                 child(className='android.widget.LinearLayout', index=0).child(className='android.widget.TextView',index=0)  # 看标签是否存在
             while lable.exists:
+                z.heartbeat()
                 lable.long_click()
                 time.sleep(1)
                 d(text='删除').click()
@@ -46,6 +48,7 @@ class WXDelLable:
                 forClick = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i).\
                     child(className='android.widget.LinearLayout',index=0)    #用来点击的
                 if obj.exists:
+                    z.heartbeat()
                     obj = obj.info
                     lable = obj['text']
                     print(lable)
@@ -55,6 +58,7 @@ class WXDelLable:
                     else:
                         set1.add(lable)     #将标签添加到集合中
                         if gender in lable:     #性别满足要求的情况
+                           z.heartbeat()
                            forClick.long_click()
                            d(text='删除').click()
                            d(text='删除').click()

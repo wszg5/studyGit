@@ -28,6 +28,7 @@ class MobilqqLoginNoSolt:
 
 
     def login(self,d,args):
+        z.heartbeat()
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -47,7 +48,7 @@ class MobilqqLoginNoSolt:
             QQPassword = numbers[0]['password']
             time.sleep(1)
 
-
+            z.heartbeat()
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
             d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             time.sleep(8)
@@ -56,12 +57,13 @@ class MobilqqLoginNoSolt:
             d(className='android.widget.EditText', text='QQ号/手机号/邮箱').set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
             time.sleep(1)
             d(resourceId='com.tencent.mobileqq:id/password', description='密码 安全').set_text(QQPassword)  # Bn2kJq5l     QQPassword
+            z.heartbeat()
             print('帐号:%s,密码：%s'%(QQNumber,QQPassword))
             d(text='登 录', resourceId='com.tencent.mobileqq:id/login').click()
             time.sleep(1)
             while d(text='登录中').exists:
                 time.sleep(2)
-
+            z.heartbeat()
             if d(resourceId='com.tencent.mobileqq:id/name', index='2',className="android.widget.EditText").exists:  # 需要验证码的情况
                 co = RClient()
                 im_id = ""
@@ -93,13 +95,14 @@ class MobilqqLoginNoSolt:
                     im_id = codeResult["Id"]
                     os.remove(sourcePng)
                     os.remove(codePng)
-
+                    z.heartbeat()
                     d(resourceId='com.tencent.mobileqq:id/name', index='2',className="android.widget.EditText").set_text(code)
                     time.sleep(3)
                     d(text='完成', resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText').click()
                     time.sleep(6)
                     while d(className='android.widget.ProgressBar',index=0).exists:        #网速不给力时，点击完成后仍然在加载时的状态
                         time.sleep(2)
+                    z.heartbeat()
                     if d(text='输入验证码',resourceId='com.tencent.mobileqq:id/ivTitleName').exists:
                         continue
                     else:
@@ -110,7 +113,8 @@ class MobilqqLoginNoSolt:
                 time.sleep(1)
                 d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
                 time.sleep(4)
-
+                z.heartbeat()
+            z.heartbeat()
             if d(text='搜索', resourceId='com.tencent.mobileqq:id/name').exists:  # 不需要验证码的情况
                 return QQNumber
             time.sleep(1)
@@ -126,12 +130,15 @@ class MobilqqLoginNoSolt:
                 continue
 
     def action(self, d,z, args):
+        z.heartbeat()
         z.set_mobile_data(False)
         time.sleep(5)
         z.set_mobile_data(True)
         time.sleep(8)
+        z.heartbeat()
+        serialinfo = z.generateSerial("788")  # 修改串号等信息
         self.login(d,args)
-
+        z.heartbeat()
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 

@@ -19,6 +19,7 @@ class EIMLogin:
         self.slot = slot(self.type)
 
     def action(self, d,z, args):
+        z.heartbeat()
         cate_id = args["repo_cate_id"]     #仓库号
         time_limit = args['time_limit']      #登录不用eim
         while True:
@@ -32,6 +33,7 @@ class EIMLogin:
             z.set_mobile_data(False)
             time.sleep(3)
             getSerial = self.repo.Getserial(cate_id, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 得到之前的串号
+            z.heartbeat()
             if len(getSerial) == 0:  # 之前的信息保存失败的话
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"获取串号失败\"").communicate()
                 continue
@@ -42,6 +44,7 @@ class EIMLogin:
                    continue
                 else:
                     z.generateSerial(getSerial)  # 将串号保存
+            z.heartbeat()
             self.slot.restore(d, slotnum,"com.tencent.mobileqq")  # 有２小时没用过的卡槽情况，切换卡槽
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"切换为%s号卡槽\""%slotnum).communicate()
 
@@ -53,43 +56,51 @@ class EIMLogin:
                              "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             while d(textContains='正在更新').exists:
                 time.sleep(2)
+            z.heartbeat()
             time.sleep(10)
             if d(text='搜索', resourceId='com.tencent.mobileqq:id/name').exists:
+                z.heartbeat()
                 obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                 QQnumber = obj['info']  # info为QQ号
                 self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
                 break
             elif d(textContains='消息').exists:
+                z.heartbeat()
                 obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                 QQnumber = obj['info']  # info为QQ号
                 self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
                 break
             elif d(text='主题装扮').exists:
+                z.heartbeat()
                 obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                 QQnumber = obj['info']  # info为QQ号
                 self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
                 break
             elif d(text='启用').exists:
+                z.heartbeat()
                 obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                 QQnumber = obj['info']  # info为QQ号
                 self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
                 break
             elif d(text='马上绑定').exists:
+                z.heartbeat()
                 obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                 QQnumber = obj['info']  # info为QQ号
                 self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
                 break
             elif d(text='马上升级').exists:
+                z.heartbeat()
                 obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                 QQnumber = obj['info']  # info为QQ号
                 self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo(cate_id, 'using', QQnumber, getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
             elif d(text='寻找好友').exists:
+                z.heartbeat()
                 obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                 QQnumber = obj['info']  # info为QQ号
                 self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号

@@ -13,7 +13,7 @@ class WXScanCode:
         self.repo = Repo()
 
     def action(self, d,z, args):
-
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(5)
@@ -25,7 +25,9 @@ class WXScanCode:
             time.sleep(10)
             return
         t = materials[0]['ext1']  # 取出验证消息的内容
+        z.heartbeat()
         z.wx_scanqr(t)
+        z.heartbeat()
         time.sleep(15)
         d.swipe(130, 532, 402, 575, 1)
         if (args["time_delay"]):

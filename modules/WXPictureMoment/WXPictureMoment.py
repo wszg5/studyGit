@@ -10,7 +10,7 @@ class WXPictureMoment:
         self.repo = Repo()
 
     def action(self, d,z, args):
-
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(8)
@@ -32,13 +32,13 @@ class WXPictureMoment:
             time.sleep(10)
             return
         t = materials[0]  # 取出验证消息的内容
-
+        z.heartbeat()
         imgs = []
         for i in range(1,10,+1):
-
+            z.heartbeat()
             if t['ext%s'%i] is not None:
                 imgs.append(t['ext%s'%i])
-
+        z.heartbeat()
         z.wx_sendsnsline(t["content"], imgs)
         d(text='发送').click()
 
