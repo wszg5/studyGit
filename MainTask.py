@@ -37,7 +37,6 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 from dbapi import dbapi
 dbapi = dbapi()
-dbapi.log_warn("", "任务暂缓%s秒后启动" % const.MAX_SLOTS_WECHAT, "系统已经成功启动，任务将在%s秒后启动，请等待..." % const.MAX_SLOTS_WECHAT)
 
 try:
     rst = int(util.exccmd("awk -F. '{print $1}' /proc/uptime"))
