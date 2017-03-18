@@ -4,6 +4,7 @@
 "name":"TIM临时会话咨询来路加好友",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"T15",
 "icon": "vcard-o",
 "remark":"临时会话咨询来路加好友",
 "setting":[

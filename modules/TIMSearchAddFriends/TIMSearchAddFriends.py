@@ -1,12 +1,11 @@
 # coding:utf-8
-from PIL.ImageShow import show
-from requests import delete
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
 import util
-from PIL import Image
 from zservice import ZDevice
+
+
 class TIMSearchAddFriends:
 
     def __init__(self):
@@ -172,6 +171,10 @@ def getPluginClass():
     return TIMSearchAddFriends
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
+
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4BDSK00858")

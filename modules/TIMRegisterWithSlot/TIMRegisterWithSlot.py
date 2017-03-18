@@ -5,9 +5,7 @@ from Repo import *
 from XunMa import *
 import time
 from slot import slot
-import sys
-reload(sys)
-sys.setdefaultencoding("utf-8")
+
 
 class TIMRegisterWithSlot:
 
@@ -193,6 +191,9 @@ def getPluginClass():
     return TIMRegisterWithSlot
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
 
     clazz = getPluginClass()
     o = clazz()

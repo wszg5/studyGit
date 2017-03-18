@@ -4,6 +4,7 @@
 "name":"TIM临时会话加好友",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"T13",
 "icon": "vcard-o",
 "remark":"临时会话加好友",
 "setting":[

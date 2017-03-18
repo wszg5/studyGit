@@ -1,6 +1,7 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
+from Inventory import *
 import os, time, datetime, random
 from zservice import ZDevice
 from PIL import Image
@@ -12,6 +13,7 @@ class TIMAddressCollectDataWithSex:
 
     def __init__(self):
         self.repo = Repo()
+        self.inventory = Inventory()
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
@@ -64,31 +66,23 @@ class TIMAddressCollectDataWithSex:
                 if score > max_score:
                     max_score = score
                     dominant_color = (r, g, b)
-            # print("---------------------------------------------------------------------------")
-            # print(dominant_color)
+
             if None ==dominant_color:
-                # print('见鬼了')
                 return '不限'
             red = dominant_color[0]
             blue = dominant_color[2]
 
             if red > blue:
-                # print('女')
                 return '女'
             else:
-                # print('男')
                 return '男'
         else:                          #没有基本资料的情况
             return '不限'
 
 
-    def scrollCell(self, d, args):
+    def scrollCell(self, d):
         while d(text='正在发送请求', className='android.widget.TextView').exists:
             time.sleep(2)
-
-        maleNumberCateId = args["repo_maleNumberCateId_id"]
-        femaleNumberCateId = args["repo_femaleNumberCateId_id"]
-        nullNumberCateId = args["repo_nullNumberCateId_id"]
 
         info = d(index=0, className='android.widget.AbsListView').info
         bHeight = info["visibleBounds"]["bottom"] - info["visibleBounds"]["top"]
@@ -116,12 +110,10 @@ class TIMAddressCollectDataWithSex:
 
                             numberArr.append(number)
                             gender = self.Gender(d)
-                            if gender == '不限':  # gender是外界设定的，gender2是读取到的
-                                self.repo.uploadPhoneNumber(number, nullNumberCateId)
-                            elif gender == '男':
-                                self.repo.uploadPhoneNumber(number, maleNumberCateId)
-                            elif gender == '女':
-                                self.repo.uploadPhoneNumber(number, femaleNumberCateId)
+
+                            para = {"sex":gender,"phone":int(number)}
+                            self.inventory.postData(para)
+
                             d(textContains='返回').click()
                             d(text='电话', className='android.widget.TextView').click()
 
@@ -140,7 +132,7 @@ class TIMAddressCollectDataWithSex:
                         break
 
 
-    def action(self, d, z, args):
+    def action(self, d, args):
         d.server.adb.cmd("shell", "am force-stop com.tencent.tim").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(3)
@@ -150,7 +142,7 @@ class TIMAddressCollectDataWithSex:
         d(text='添加手机联系人', className='android.widget.TextView').click()
         time.sleep(2)
 
-        self.scrollCell(d, args)
+        self.scrollCell(d)
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -168,11 +160,7 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("HT52DSK00474")
     z = ZDevice("HT52DSK00474")
-    # print(d.dump(compressed=False))
+
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_maleNumberCateId_id":"108","repo_femaleNumberCateId_id":"108","repo_nullNumberCateId_id":"108","time_delay":"3"};    #cate_id是仓库号，length是数量
-    # o.action(d,z, args)
-    # for i in range(0,10):
-    #     obj = d(index=0, className='android.widget.AbsListView').child(index=i,className='android.widget.LinearLayout').child(
-    #                 index=1, className='android.widget.TextView').info['text']
-    #     print obj
+    args = {"time_delay":"3"};    #cate_id是仓库号，length是数量
+    o.action(d, args)

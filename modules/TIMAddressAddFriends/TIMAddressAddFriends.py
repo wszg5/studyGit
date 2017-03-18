@@ -65,7 +65,7 @@ class TIMAddressAddFriends:
                     max_score = score
                     dominant_color = (r, g, b)
 
-            if None ==dominant_color:
+            if None == dominant_color:
                 return '不限'
             red = dominant_color[0]
             blue = dominant_color[2]
@@ -78,20 +78,19 @@ class TIMAddressAddFriends:
             return '不限'
 
     def action(self, d, z, args):
+
         gender = args['gender']
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
         d.server.adb.cmd("shell", "am force-stop com.tencent.tim").communicate()  # 强制停止
-        d.server.adb.cmd("shell",
-                         "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+        d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(5)
         d(className='android.widget.TabWidget', resourceId='android:id/tabs', index=1).child(
             className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
         time.sleep(3)
         if d(text='联系人', resourceId='com.tencent.tim:id/ivTitleName').exists:  # 如果已经到联系人界面
-            obj = d(className='android.widget.AbsListView', index=1).child(index=8,
-                                                                           resourceId='com.tencent.tim:id/group_item_layout').child(
+            obj = d(className='android.widget.AbsListView', index=1).child(index=8,resourceId='com.tencent.tim:id/group_item_layout').child(
                 checked='false', resourceId='com.tencent.tim:id/name')
             if obj.exists:
                 time.sleep(2)
@@ -103,8 +102,7 @@ class TIMAddressAddFriends:
         else:  # 没有在联系人界面的话
             d(className='android.widget.TabWidget', resourceId='android:id/tabs', index=1).child(
                 className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
-            obj = d(className='android.widget.AbsListView', index=1).child(index=8,
-                                                                           resourceId='com.tencent.tim:id/group_item_layout').child(
+            obj = d(className='android.widget.AbsListView', index=1).child(index=8,resourceId='com.tencent.tim:id/group_item_layout').child(
                 checked='false', resourceId='com.tencent.tim:id/name')
             if obj.exists:
                 d(resourceId='com.tencent.tim:id/group_item_layout', index=8).click()  # 未展开的情况，先点击展开
@@ -149,10 +147,10 @@ class TIMAddressAddFriends:
                 d(className='android.widget.TextView', text='返回').click()
                 continue
 
-            Material = self.repo.GetMaterial(cate_id, 0, 1)
-            Material = Material[0]['content']  # 从素材库取出的要发的材料
+            material = self.repo.GetMaterial(cate_id, 0, 1)
+            material = material[0]['content']  # 从素材库取出的要发的材料
 
-            d(index=3, className='android.widget.EditText').click()  # Material
+            d(index=3, className='android.widget.EditText').click()  # material
             obj = d(index=3, className='android.widget.EditText').info  # 将之前消息框的内容删除
             obj = obj['text']
             lenth = len(obj)
@@ -161,7 +159,7 @@ class TIMAddressAddFriends:
                 d.press.delete()
                 delet = delet + 1
 
-            z.input(Material)
+            z.input(material)
             time.sleep(1)
             d(className='android.widget.TextView', text='下一步').click()
             d(className='android.widget.TextView', text='发送').click()
@@ -179,7 +177,6 @@ def getPluginClass():
 
 if __name__ == "__main__":
     import sys
-
     reload(sys)
     sys.setdefaultencoding("utf-8")
 
@@ -191,4 +188,3 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_material_id": "40", 'gender':"不限", "time_delay": "3", "EndIndex": "8"};  # cate_id是仓库号，length是数量
     o.action(d, z, args)
-    #2113

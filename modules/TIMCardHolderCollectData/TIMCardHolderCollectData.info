@@ -4,6 +4,7 @@
 "name":"TIM名片扫数据",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"T12",
 "icon": "vcard-o",
 "remark":"扫数据",
 "setting":[

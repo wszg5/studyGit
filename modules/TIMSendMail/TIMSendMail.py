@@ -1,7 +1,7 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import time
 from zservice import ZDevice
 
 

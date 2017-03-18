@@ -60,7 +60,7 @@ class XunMa:
     def GetPhoneNumber(self, itemId, times=0):
         round = times + 1
         if  round > 30:
-            raise 'XunMa has tried 3 minutes'
+            raise Exception('XunMa has tried 3 minutes')
         token = self.GetToken()
         key = 'phone_%s_%s'%(token, itemId)
         phone = cache.popSet(key)
@@ -148,21 +148,29 @@ class XunMa:
         return ""
 
 
-    def defriendPhoneNumber(self, phoneNumber, itemId):
-        token = self.GetToken()
-        path = "/addBlack?token=%s&phoneList=%s-%s" % (token, itemId, phoneNumber)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET", path)
-        response = conn.getresponse()
-        if response.status == 200:
-            data = response.read()
-        else:
-            ok='ok'
-
+    def defriendPhoneNumber(self, phoneNumber, itemId, times=0):
+        round = times + 1
+        if round > 30:
+            print 'defriendPhoneNumber has tried 3 minutes'
+            return
+        try:
+            token = self.GetToken()
+            path = "/addBlack?token=%s&phoneList=%s-%s" % (token, itemId, phoneNumber)
+            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+            conn.request("GET", path)
+            response = conn.getresponse()
+            if response.status == 200:
+                data = response.read()
+                print phoneNumber,'拉黑成功'
+            else:
+                ok='ok'
+                print phoneNumber,'拉黑失败'
+        except Exception as e:
+            self.logger.info(e.message)
+            return self.defriendPhoneNumber(phoneNumber, itemId,round)
 
 
     def MatchPhoneNumber(self, number, itemId):
-
         token = self.GetToken()
         path = "/getPhone?ItemId=" + itemId + "&token=" + token + "&Phone="+number+""
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)

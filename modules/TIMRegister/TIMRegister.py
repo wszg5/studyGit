@@ -5,9 +5,6 @@ from Repo import *
 import time
 from zservice import ZDevice
 import string,random
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 
 class TIMRegister:
@@ -166,6 +163,9 @@ def getPluginClass():
     return TIMRegister
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
 
     clazz = getPluginClass()
     o = clazz()

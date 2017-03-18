@@ -1,11 +1,8 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-import os, time, datetime, random
+import time
 from zservice import ZDevice
-import sys
-reload(sys)
-sys.setdefaultencoding("utf-8")
 
 
 class TIMTempoAdviceAddFriends:
@@ -81,6 +78,10 @@ def getPluginClass():
     return TIMTempoAdviceAddFriends
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
+
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT529SK00384")
