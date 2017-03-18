@@ -38,7 +38,7 @@ class phoneTask:
             return
 
         checkTime = (datetime.datetime.now() - datetime.datetime(2017, 1 ,1)).seconds
-        print checkTime - int(activeTime)
+        #print checkTime - int(activeTime)
         if (checkTime - int(activeTime)) > 120 :
             raise AssertionError
         elif (checkTime - int(activeTime)) > 60 :

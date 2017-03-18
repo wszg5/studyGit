@@ -515,6 +515,13 @@ class ZRemoteDevice(object):
     def toast(self, message):
         self.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \\\"%s\\\"" % message)
 
+    def log_warn(self, message, level="warn"):
+        from dbapi import dbapi
+        dbapi = dbapi()
+        dbapi.log_warn(self.server.adb.device_serial(), message, level)
+
+    def log_error(self, message):
+        self.log_warn(message, "error")
 
     def heartbeat(self):
         key = 'timeout_%s' % self.server.adb.device_serial()
