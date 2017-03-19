@@ -42,6 +42,16 @@ class dbapi:
                     return device["task_id"]
         return None
 
+
+    def GetBusyVirtualDevices(self):
+        pool = RethinkPool(max_conns=120, initial_conns=10, host=const.SERVER_IP,
+                           port=28015,
+                           db=const.RETHINKDB_NAME)
+        with pool.get_resource() as res:
+            steps = r.table('v_devices').order_by('serial').run(res.conn)
+            return steps
+
+
     def GetTask(self, taskid):
         pool = RethinkPool(max_conns=120, initial_conns=10, host=const.SERVER_IP,
                            port=28015,
@@ -109,17 +119,14 @@ class dbapi:
             list = r.table("slots").get_all(serial, index='serial').filter((r.row["type"] == type) & (r.row["empty"] == 'false') & ( r.row["last_pick"] + int(interval) < r.now()  ) ).order_by('name').run(res.conn)
             return list;
 
-    def GetCodeSetting(self):
+    def GetSetting(self, key):
         pool = RethinkPool(max_conns=120, initial_conns=10, host=const.SERVER_IP,
                            port=28015,
                            db=const.RETHINKDB_NAME)
         with pool.get_resource() as res:
-            rk_user = r.table('setting').get('rk_user').run(res.conn)
-            rk_pwd = r.table('setting').get('rk_password').run(res.conn)
-            xm_user = r.table('setting').get('xm_user').run(res.conn)
-            xm_pwd = r.table('setting').get('xm_password').run(res.conn)
-
-            return {"rk_user":rk_user["value"], "rk_pwd":rk_pwd["value"],"xm_user":xm_user["value"], "xm_pwd":xm_pwd["value"]}
+            setting = r.table('setting').get(key).run(res.conn)
+            if setting:
+                return setting["value"]
 
 
     def GetCache(self, key, interval):
@@ -152,3 +159,4 @@ class dbapi:
         with pool.get_resource() as res:
             r.table("setting").get(key).delete().run(res.conn)
 
+dbapi = dbapi()

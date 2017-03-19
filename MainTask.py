@@ -31,12 +31,15 @@ for op, value in opts:
         const.MAX_SLOTS_QQLITE = int(value)
     elif op == "-e" or op == "--eim_slots":
         const.MAX_SLOTS_EIM = int(value)
-import sys
 
+import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 from dbapi import dbapi
-dbapi = dbapi()
+
+
+from zcache import cache
+cache.set("ztask_active_time", datetime.datetime.now())
 
 try:
     rst = int(util.exccmd("awk -F. '{print $1}' /proc/uptime"))
@@ -122,7 +125,6 @@ portDict = {}
 installDict = {}
 
 
-from zcache import cache
 
 if __name__ == "__main__":
     cleanEnv()
@@ -132,14 +134,18 @@ if __name__ == "__main__":
         zinfo = json.loads(zinfo)
         cache.set("ZTASK_VERSION", zinfo["version"])
     finally:
+        cache.set("ZTASK_VERSION", "UNKNOW")
         file_object.close()
+
+    #启动虚拟任务子进程
+    import virtualTask
+    multiprocessing.Process(target=virtualTask.virtualTask.run)
 
     logger = util.logger
     port = 30000
     zport = 32000
     while True:
-        timestamp = (datetime.datetime.now() - datetime.datetime(2017, 1, 1)).seconds
-        cache.set("timeout_ztask", timestamp)
+        cache.set("ztask_active_time", datetime.datetime.now())
         try:
             devicelist = finddevices()
             for device in devicelist:
@@ -183,6 +189,8 @@ if __name__ == "__main__":
                 if device not in devicelist:
                     dbapi.log_warn(device , "设备被拔出，运行中任务被强制停止")
                     processDict[device].terminate()
+                    del processDict[deviceid]
+
         except Exception:
             logger.error(traceback.format_exc())
-        time.sleep(30)
+        time.sleep(10)

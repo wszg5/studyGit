@@ -1,11 +1,9 @@
 # coding:utf-8
-from RClient import *
+from smsCode import smsCode
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
 from zservice import ZDevice
-from XunMa import *
-import traceback
 from PIL import Image
 import colorsys
 
@@ -13,7 +11,7 @@ import colorsys
 class MobilqqAddressList:
     def __init__(self):
         self.repo = Repo()
-        self.xuma = None
+        self.scode = None
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
@@ -25,9 +23,6 @@ class MobilqqAddressList:
 
 
     def Gender(self,d):
-        co = RClient()
-        im_id = ""
-        co.rk_report_error(im_id)
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -92,10 +87,10 @@ class MobilqqAddressList:
 
 
     def Bind(self,d):
-        self.xuma = XunMa(d.server.adb.device_serial())
+        self.scode = smsCode(d.server.adb.device_serial())
         newStart = 1
         while newStart == 1:
-            GetBindNumber = self.xuma.GetPhoneNumber('2113')
+            GetBindNumber = self.scode.GetPhoneNumber(self.scode.QQ_CONTACT_BIND)
             print(GetBindNumber)
             time.sleep(2)
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(GetBindNumber)  #GetBindNumber
@@ -109,7 +104,7 @@ class MobilqqAddressList:
             if d(text='确定').exists:     #提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
                 d(text='确定',).click()
             z.heartbeat()
-            code = self.xuma.GetVertifyCode(GetBindNumber, '2113','4')
+            code = self.scode.GetVertifyCode(GetBindNumber, self.scode.QQ_CONTACT_BIND, '4')
 
             newStart = 0
 
