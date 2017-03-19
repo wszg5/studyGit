@@ -65,7 +65,7 @@ class QLJudgeQQBind:
                 time.sleep(2)
         if d(text='启用').exists:
             d(text='启用').click()
-            text = self.Bind(d)
+            text = self.Bind(d,z)
             if text == 'false':  # 操作过于频繁的情况
                 return
             time.sleep(3)
