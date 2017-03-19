@@ -10,6 +10,7 @@ class WXSaveId:
         self.repo = Repo()
 
     def action(self, d,z, args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(7)
@@ -22,14 +23,17 @@ class WXSaveId:
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
                 time.sleep(20)
                 return
+            z.heartbeat()
             id = wxid[0]['number']
             z.wx_openuserchat(id)
+            z.heartbeat()
             d(description='聊天信息').click()
             d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=1).child(className='android.widget.RelativeLayout',index=0).click()  #点击搜索到的好友头像到添加界面
             d(text='添加到通讯录').click()
             time.sleep(1.5)
             if d(text='发消息').exists:
                 continue
+            z.heartbeat()
             obj = d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=0)\
                 .child(className='android.widget.LinearLayout',index=0).child(className='android.widget.EditText')    #得到消息框内容
             obj1 = obj.info
@@ -39,6 +43,7 @@ class WXSaveId:
             check = obj.info
             check = check['text']
             lenth = len(check)
+            z.heartbeat()
             while lenth>0:
                 d.press.delete()
                 lenth = lenth-1
@@ -51,6 +56,7 @@ class WXSaveId:
                 return
             message = Material[0]['content']  # 取出验证消息的内容
             z.input(message)
+            z.heartbeat()
             d(text='发送').click()
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))

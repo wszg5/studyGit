@@ -13,7 +13,7 @@ import colorsys
 from XunMa import *
 from Inventory import *
 
-class AlipayRegister:
+class AlipayDepost:
     def __init__(self):
         self.repo = Repo()
         self.xuma = None
@@ -68,12 +68,13 @@ class AlipayRegister:
                 if score > max_score:
                     max_score = score
                     dominant_color = (r, g, b)    #红绿蓝
-            print("---------------------------------------------------------------------------")
-            print(dominant_color)
+            # print("---------------------------------------------------------------------------")
+            # print(dominant_color)
             return dominant_color
 
 
     def action(self, d,z, args):
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -81,16 +82,21 @@ class AlipayRegister:
         d.server.adb.cmd("shell", "am force-stop com.eg.android.AlipayGphone").wait()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.eg.android.AlipayGphone/com.eg.android.AlipayGphone.AlipayLogin").communicate()  # 拉起来
         time.sleep(10)
-        publicpath = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=2) \
-                        .child(className='android.widget.LinearLayout', index=0).child(
-                        className='android.widget.LinearLayout', index=0)                    #为下面的点击做准备
 
-        # d(resourceId='com.alipay.mobile.socialwidget:id/contact_container').click()
         d(description='通讯录').click()
+        if d(text='转到银行卡').exists:
+            d(description ='返回').click()
+            d(description='通讯录').click()
         d(text='新的朋友').click()
         d(text='添加手机联系人').click()
+        publicpath = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=2) \
+            .child(className='android.widget.LinearLayout', index=0).child(
+            className='android.widget.LinearLayout', index=0)  # 为下面的点击做准备
+
         while not d(textContains='支付宝:').exists:
             time.sleep(2)
+
+        z.heartbeat()
         i = 0
         set1 = set()
         change = 0
@@ -98,14 +104,14 @@ class AlipayRegister:
             judexist = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i)\
                 .child(className='android.widget.LinearLayout').child(className='android.widget.TextView',index=0)
             if judexist.exists:
+                z.heartbeat()
                 change = 1
-                phoneNumber = judexist.info['text']
-                     #要保存的电话号码
+                phoneNumber = judexist.info['text']#要保存的电话号码
                 if phoneNumber in set1:
                     i = i+1
                     continue
                 set1.add(phoneNumber)
-                print(phoneNumber)
+                # print(phoneNumber)
                 judexist.click()        #点击第i个人
                 time.sleep(1.5)
 
@@ -113,26 +119,30 @@ class AlipayRegister:
                 getinfo = self.Gender(d, path)
                 if getinfo == None:
                     rank = '非会员'
-                    print('不是会员')
+                    # print('不是会员')
                 elif getinfo[2] > 200:  # (68, 164, 238)蓝色大众会员  (140, 142, 185)黑色砖石会员  (255, 197, 30)黄金会员
                     rank = '大众会员'
                 elif getinfo[0] > 200:
                     rank = '黄金会员'
                 else:
                     rank = '砖石会员'
-                print('=====================================%s==================================================='%rank)
+                # print('=====================================%s==================================================='%rank)
                 if d(className='android.widget.ListView').child(className='android.widget.FrameLayout').child(className='android.widget.TextView',index=0).exists:
-                    nickname = d(className='android.widget.ListView').child(className='android.widget.FrameLayout').child(className='android.widget.TextView').info['text']   #要保存的昵称
+                    nickname = d(className='android.widget.ListView').child(className='android.widget.FrameLayout').child(className='android.widget.TextView',index=0).info['text']   #要保存的昵称
                 else:
                     nickname = '空'
-                print('=============================%s=============================================================='%nickname)
-
-
+                # print('=============================%s=============================================================='%nickname)
+                z.heartbeat()
                 if d(text='支付宝账户').exists:
-                    account = d(textStartsWith='1').info['text']     #要保存的帐号
+                    for t in range(0, 14):
+                        if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='支付宝账户').exists:
+                            break
+                    account = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.widget.TextView',
+                                                                                   index=1).info['text']
                 else:
                     account = '空'
-                print('================================%s============================================================='%account)
+                z.heartbeat()
+                # print('================================%s============================================================='%account)
 
                 if d(text='真实姓名').exists:
                     path = publicpath.child(className='android.widget.LinearLayout', index=1).child(
@@ -144,12 +154,10 @@ class AlipayRegister:
                     elif getinfo[2]>200:
                         gender = '男'
                         identity = '已实名'
-
                     else:
-                        d(description='返回').click()
-                        i = i+1
-                        continue
-                print('==========================%s==============%s======================================================'%(gender,identity))
+                        gender = '无'
+                        identity = '未实名'
+                # print('==========================%s==============%s======================================================'%(gender,identity))
 
                 if d(text='显示更多').exists:
                     d(text='显示更多').click()
@@ -157,19 +165,19 @@ class AlipayRegister:
                     if not d(text='收起').exists:
                         d.swipe(width / 2, height * 3 / 4, width / 2, height / 3)
 
-
+                z.heartbeat()
                 if d(text='地区').exists:
                     area = publicpath.child(className='android.widget.LinearLayout',index=2).child(className='android.widget.TextView',index='1').info['text']
                 else:
                     area = '空'
-                print('=========================%s====================================================================='%area)
+                # print('=========================%s====================================================================='%area)
 
                 if d(text='星座').exists:    #星座
                     zodiac = d(textContains='座',index=1).info['text']
                 else:
                     zodiac = '空'
 
-                print('=============================%s================================================================='%zodiac)
+                # print('=============================%s================================================================='%zodiac)
 
                 if identity=='已实名':
                     d(text='转账').click()
@@ -177,7 +185,7 @@ class AlipayRegister:
                     d(description='返回').click()
                 else:
                     realname = '无'
-                print('=========================%s====================================================================='%realname)
+                # print('=========================%s====================================================================='%realname)
                 if d(text='年龄').exists:
                     for t in range(1, 14):
                         if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='年龄').exists:
@@ -186,7 +194,7 @@ class AlipayRegister:
                                                                                    index=1).info['text']
                 else:
                     age = '空'
-                print('=================================%s============================================================='%age)
+                # print('=================================%s============================================================='%age)
 
                 if d(text='身高').exists:
                     for t in range(1, 14):
@@ -196,7 +204,7 @@ class AlipayRegister:
                                                                                    index=1).info['text']
                 else:
                     tall = '空'
-                print('==========================%s===================================================================='%tall)
+                # print('==========================%s===================================================================='%tall)
 
                 if d(text='体重').exists:
                     for t in range(1, 14):
@@ -206,7 +214,8 @@ class AlipayRegister:
                                                                                    index=1).info['text']
                 else:
                     weight = '空'
-                    print('=============================%s================================================================='%weight)
+                # print('=============================%s================================================================='%weight)
+                z.heartbeat()
                 if d(text='职业').exists:
                     for t in range(1, 14):
                         if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='职业').exists:
@@ -215,7 +224,8 @@ class AlipayRegister:
                                                                                    index=1).info['text']
                 else:
                     carrer = '空'
-                print('=============================%s================================================================='%carrer)
+                # print('=============================%s================================================================='%carrer)
+                z.heartbeat()
                 if d(text='收入').exists:
                     for t in range(1, 14):
                         if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='收入').exists:
@@ -224,7 +234,7 @@ class AlipayRegister:
                                                                                    index=1).info['text']
                 else:
                     income = '空'
-                print('===============================%s==============================================================='%income)
+                # print('===============================%s==============================================================='%income)
 
                 if d(text='兴趣爱好').exists:
                     for t in range(1, 14):
@@ -232,8 +242,9 @@ class AlipayRegister:
                             break
                     idexx = 0
                     taste = []    #将所有兴趣保存到集合里
+                    z.heartbeat()
                     while True:
-                        interest = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.widget.TextView',
+                        interest = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.view.View').child(className='android.widget.TextView',
                                                                            index=idexx)
                         if interest.exists:
                             hobby = interest.info['text']
@@ -243,6 +254,7 @@ class AlipayRegister:
                             break
                 else:
                     taste = []
+                # print(taste)
 
                 para = {"phone":phoneNumber,"qq_nickname":nickname,
                         "real_name":realname,"sex":gender,
@@ -251,18 +263,19 @@ class AlipayRegister:
                         "x_03":account,"x_04":zodiac,
                         "x_05":identity,"x_06":tall,
                         "x_07":weight,"x_08":carrer,
-                        "x_09":income,"x_10":taste}
+                        "x_09":income,"x_50":taste}
                 inventory = Inventory()
                 con = inventory.postData(para)
-                print(con)
+                if con!=True:
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息保存失败……\"" ).communicate()
+
                 i = i+1
                 d(description = '返回').click()
 
 
             else:
                 if change==0:
-                    d.server.adb.cmd("shell",
-                                     "am broadcast -a com.zunyun.zime.toast --es msg \"通讯录内没有好友\"" ).communicate()
+                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"通讯录内没有好友\"" ).communicate()
                     time.sleep(10)
                     return
                 clickCondition = d(className='android.widget.ListView')
@@ -272,19 +285,21 @@ class AlipayRegister:
                 bottom = int(obj['bottom'])
                 y = bottom - top
                 d.swipe(width / 2, y, width / 2, 0)
-                obj2 = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=i-1) \
-                    .child(className='android.widget.LinearLayout').child(className='android.widget.TextView', index=0)       #结束判断条件
-                if obj2.exists:
-                    phone = obj2.info['text']
-                    if phone in set1:
-                        break
-                else:
-                    phone = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=i -2) \
-                        .child(className='android.widget.LinearLayout').child(className='android.widget.TextView',
-                                                                              index=0).info['text']                #结束判断条件
-                    if phone in set1:
-                        break
-
+                zz = i+2
+                for k in range(1,10):
+                    obj2 = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=zz) \
+                        .child(className='android.widget.LinearLayout').child(className='android.widget.TextView', index=0)       #结束判断条件
+                    if obj2.exists:
+                        phone = obj2.info['text']
+                        if phone in set1:            #结束条件，如果
+                            if (args["time_delay"]):
+                                time.sleep(int(args["time_delay"]))
+                            return
+                        else:
+                            break
+                    else:
+                        zz = zz-1
+                        continue
 
                 obj1 =d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0) \
                     .child(className='android.widget.LinearLayout').child(className='android.widget.TextView', index=0)
@@ -296,14 +311,8 @@ class AlipayRegister:
                     continue
 
 
-        if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
-
-
 def getPluginClass():
-    return AlipayRegister
-
-
+    return AlipayDepost
 
 
 
@@ -318,7 +327,31 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
-    args = {"repo_name_id": "102","repo_number_id": "136","time_delay": "3"};    #cate_id是仓库号，length是数量
+    args = {"time_delay": "3"};    #cate_id是仓库号，length是数量
 
     o.action(d, z,args)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

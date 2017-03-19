@@ -12,6 +12,7 @@ class MobilqqAddByAddressListII:
         self.xuma = None
     def Bind(self, d):
         self.xuma = XunMa(d.server.adb.device_serial())
+        z.heartbeat()
         newStart = 1
         while newStart == 1:
             GetBindNumber = self.xuma.GetPhoneNumber('2113')
@@ -19,7 +20,7 @@ class MobilqqAddByAddressListII:
             time.sleep(2)
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(
                 GetBindNumber)  # GetBindNumber
-
+            z.heartbeat()
             time.sleep(1)
             d(text='下一步').click()
             time.sleep(3)
@@ -31,19 +32,20 @@ class MobilqqAddByAddressListII:
                 d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').click()
 
             code = self.xuma.GetVertifyCode(GetBindNumber, '2113', '4')
-
+            z.heartbeat()
             newStart = 0
 
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
             d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
             time.sleep(8)
+            z.heartbeat()
             if d(textContains='没有可匹配的').exists:
                 return 'false'
 
         return 'true'
 
     def action(self, d,z, args):
-
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -60,7 +62,7 @@ class MobilqqAddByAddressListII:
             return
         message = Material[0]['content']  # 取出验证消息的内容
 
-
+        z.heartbeat()
         if not d(text='消息', resourceId='com.tencent.mobileqq:id/name').exists:  # 到了通讯录这步后看号有没有被冻结
             return 2
         if d(text='绑定手机号码').exists:
@@ -76,11 +78,14 @@ class MobilqqAddByAddressListII:
         d(description='快捷入口').click()
         d(textContains='加好友').click()
         d(text='添加手机联系人').click()
+        z.heartbeat()
         if d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText',index=2).exists:  # 检查到尚未 启用通讯录
             if d(text=' +null', resourceId='com.tencent.mobileqq:id/name').exists:
                 d(text=' +null', resourceId='com.tencent.mobileqq:id/name').click()
                 d(text='中国', resourceId='com.tencent.mobileqq:id/name').click()
+            z.heartbeat()
             text = self.Bind(d)  # 未开启通讯录的，现绑定通讯录
+            z.heartbeat()
             if text == 'false':  # 操作过于频繁的情况
                 return
             time.sleep(7)
@@ -90,9 +95,11 @@ class MobilqqAddByAddressListII:
             d(text='匹配手机通讯录').click()
             while not d(text='多选').exists:
                 time.sleep(2)
+        z.heartbeat()
         d(text='多选').click()
         while True:
             if d(text='#').exists:
+                z.heartbeat()
                 for m in range(0,12,+1):     #快速加好友从#号下面的
                     obj = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',
                                                                           index=m).child(className='android.widget.TextView').info
@@ -105,6 +112,7 @@ class MobilqqAddByAddressListII:
                 break
             else:         #当前页没有找到＃时滑页
                 d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
+        z.heartbeat()
         set1 = set()
         i = m+1
         t = 0
@@ -112,6 +120,7 @@ class MobilqqAddByAddressListII:
         while t < EndIndex :
             obj = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=i)  #滑动的条件
             if obj.exists:
+                z.heartbeat()
                 obj1 = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout', index=i)\
                     .child(className='android.widget.LinearLayout',index=2).child(className='android.widget.TextView')     #第i个内容存在并且是人的情况
                 if obj1.exists:
@@ -162,6 +171,7 @@ class MobilqqAddByAddressListII:
                         className='android.widget.TextView').info  # 结束条件
                 EndPhone = obj2['text']
                 if EndPhone in set1:
+                    z.heartbeat()
                     d(textContains='加好友').click()
                     obj = d(className='android.widget.EditText').info  # 将之前消息框的内容删除
                     obj = obj['text']
@@ -181,6 +191,7 @@ class MobilqqAddByAddressListII:
         obj = obj['text']
         lenth = len(obj)
         mn = 0
+        z.heartbeat()
         while mn < lenth:
             d.press.delete()
             mn = mn + 1

@@ -11,12 +11,14 @@ class WXTextGroup:
         self.repo = Repo()
 
     def action(self, d,z, args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(7)
         endIndex = int(args['EndIndex'])
         d(description='搜索').click()
         endCondition = 0
+        z.heartbeat()
         while endCondition<endIndex:
             cate_id = args["repo_material_id"]  # ------------------
             Material = self.repo.GetMaterial(cate_id, 0, 1)
@@ -27,9 +29,10 @@ class WXTextGroup:
                 return
             groupName = Material[0]['content']  # 从素材库取出的要发的材料
             z.input(groupName)
-
+            z.heartbeat()
             if  d(text='群聊').exists:
                 for i in range(0, 13, +1):
+                    z.heartbeat()
                     obj = d(className='android.widget.ListView').child(className='android.widget.RelativeLayout',
                                                                        index=i).child(text='群聊')
                     if obj.exists:
@@ -37,6 +40,7 @@ class WXTextGroup:
                         break
             elif d(text='最常使用').exists:
                 for i in range(0, 13, +1):
+                    z.heartbeat()
                     obj = d(className='android.widget.ListView').child(className='android.widget.RelativeLayout',
                                                                        index=i).child(text='最常使用')
                     if obj.exists:
@@ -59,6 +63,7 @@ class WXTextGroup:
                 return
             message = Material1[0]['content']  # 从素材库取出的要发的材料
             z.input(message)
+            z.heartbeat()
             d(text='发送').click()
             d(description='返回').click()
             d(description='清除').click()

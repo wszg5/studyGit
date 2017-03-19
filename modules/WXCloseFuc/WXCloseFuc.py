@@ -11,6 +11,7 @@ class WeiXinMass:
 
 
     def action(self, d,z, args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(6)
@@ -28,6 +29,7 @@ class WeiXinMass:
                     d(text='清空').click()
                     while d(textContains='正在停用').exists:
                         time.sleep(2)
+                z.heartbeat()
                 if d(text='停用').exists:
                     d(text='停用').click()
                 if d(text='清空').exists:
@@ -40,6 +42,7 @@ class WeiXinMass:
                     d(text='设置').click()
                     d(text='通用').click()
                     d(text='功能').click()
+        z.heartbeat()
         if d(textContains='离线助手').exists:
             d(textContains='离线助手').click()
             if d(text='启用该功能').exists:
@@ -56,6 +59,7 @@ class WeiXinMass:
                     d(text='设置').click()
                     d(text='通用').click()
                     d(text='功能').click()
+        z.heartbeat()
         if d(text='腾讯新闻').exists:
             d(text='腾讯新闻').click()
             if d(text='启用该功能').exists:
@@ -73,6 +77,7 @@ class WeiXinMass:
                     d(text='通用').click()
                     d(text='功能').click()
 
+        z.heartbeat()
         if d(text='语音记事本').exists:
             d(text='语音记事本').click()
             if d(text='启用该功能').exists:

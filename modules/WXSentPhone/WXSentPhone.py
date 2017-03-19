@@ -13,6 +13,7 @@ class WXSentPhone:
         self.cache_phone_key = 'cache_phone_key'
 
     def action(self, d,z, args):
+        z.heartbeat()
         self.xuma = XunMa(d.server.adb.device_serial())
 
         add_count = int(args['add_count'])
@@ -29,15 +30,20 @@ class WXSentPhone:
             time.sleep(1)
             d(text='添加朋友').click()
         d(index='1',className='android.widget.TextView').click()   #点击搜索好友的输入框
+        z.heartbeat()
         account = 0
         while True:
             if account<add_count:
                 PhoneNumber = self.xuma.GetPhoneNumber('2251')
+                if not PhoneNumber.startswith('17'):
+                    z.heartbeat()
+                    continue
                 print(PhoneNumber)
                 d(text='搜索').click()
                 z.input(PhoneNumber)
                 d(textContains='搜索:').click()
                 time.sleep(1)
+                z.heartbeat()
                 if d(textContains='状态异常').exists:
                     print('没用')
                     d(descriptionContains='清除').click()
@@ -53,6 +59,7 @@ class WXSentPhone:
 
                     d(descriptionContains='清除').click()
                     continue
+                z.heartbeat()
                 cache.addSet(self.cache_phone_key,PhoneNumber)                     #将有用的号码保存到缓存
                 self.xuma.defriendPhoneNumber(PhoneNumber,'2251')       #将有用的号码拉黑
                 d(descriptionContains='清除').click()
@@ -78,6 +85,6 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-
+    print('172349').startswith('17')
     args = {"add_count": "100","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

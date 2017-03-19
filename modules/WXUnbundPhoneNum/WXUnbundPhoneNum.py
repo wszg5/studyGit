@@ -10,6 +10,7 @@ class WXUnbundPhoneNum:
         self.repo = Repo()
 
     def action(self, d,z, args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(4)
@@ -20,6 +21,7 @@ class WXUnbundPhoneNum:
         d(description='更多').click()
         d(text='解绑手机号').click()
         d(text='解绑').click()
+        z.heartbeat()
         if d(text='提示').exists:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"这是唯一绑定，无法解绑\"" ).communicate()
             d(text='确定').click()

@@ -11,6 +11,7 @@ class WeiXinAddFriends:
 
 
     def action(self, d,z, args):
+        z.heartbeat()
         add_count = int(args['add_count'])
 
         cate_id = args["repo_material_cate_id"]
@@ -33,6 +34,7 @@ class WeiXinAddFriends:
             d(description='更多功能按钮', className='android.widget.RelativeLayout').click()
             time.sleep(1)
             d(text='添加朋友').click()
+        z.heartbeat()
         d(index='1',className='android.widget.TextView').click()   #点击搜索好友的输入框
         account = 0
         while True:
@@ -45,6 +47,7 @@ class WeiXinAddFriends:
                     return
                 WXnumber = numbers[0]['number']
                 z.input(WXnumber)
+                z.heartbeat()
                 d(textContains='搜索:').click()
                 if d(textContains='操作过于频繁').exists:
                     return
@@ -56,6 +59,7 @@ class WeiXinAddFriends:
                 if d(textContains='状态异常').exists:
                     d(descriptionContains='清除', index=2).click()
                     continue
+                z.heartbeat()
                 gender = args['gender']
                 if gender!='不限':
                     Gender = d(className='android.widget.LinearLayout', index=1).child(
@@ -63,6 +67,7 @@ class WeiXinAddFriends:
                         .child(className='android.widget.LinearLayout', index=0).child(
                         className='android.widget.ImageView')
                     if Gender.exists:
+                        z.heartbeat()
                         Gender = Gender.info
                         Gender = Gender['contentDescription']
                         print(Gender)
@@ -75,6 +80,7 @@ class WeiXinAddFriends:
                         d(descriptionContains='清除').click()
                         continue
 
+                z.heartbeat()
                 if d(text='添加到通讯录').exists:      #存在联系人的情况
                     d(text='添加到通讯录').click()
                     obj = d(className='android.widget.EditText').info  # 将之前消息框的内容删除
@@ -87,6 +93,7 @@ class WeiXinAddFriends:
                     d(className='android.widget.EditText').click()
                     z.input(message)
                     d(text='发送').click()
+                    z.heartbeat()
                     d(descriptionContains='返回').click()
                     d(descriptionContains='清除').click()
                     time.sleep(1)

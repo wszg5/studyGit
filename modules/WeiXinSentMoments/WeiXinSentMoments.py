@@ -11,7 +11,7 @@ class WeiXinSentMoments:
 
 
     def action(self, d,z, args):
-
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(5)
@@ -23,11 +23,12 @@ class WeiXinSentMoments:
             return
         message = Material[0]['content']  # 取出验证消息的内容
 
-
+        z.heartbeat()
         z.wx_sendtextsns(message)
         z.input('.')
         d.press.delete()
         d(text='发送').click()
+        z.heartbeat()
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 

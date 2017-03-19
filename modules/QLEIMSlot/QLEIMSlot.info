@@ -1,0 +1,34 @@
+{
+"id": "QLEIMSlot",
+"cate":"QQLite模块",
+"name":"EIM卡槽登录QQ轻聊版",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"icon":"vcard-o",
+"code":"QL03",
+"remark":"EIM卡槽登录QQ轻聊版",
+"setting":[
+{
+"id": "repo_cate_id",
+"name":"有备份的EIM账号库",
+"type":"repo",
+"source":"account",
+"top_cate_id":"1"
+},
+{
+"id": "time_limit",
+"name":"EIM卡槽提取间隔（单位分钟）",
+"type":"textbox",
+"defaultValue":"120",
+"remark":"提取多长时间未用的卡槽账号"
+},
+{
+"id": "time_delay",
+"name":"延时",
+"type":"textbox",
+"defaultValue":"3",
+"remark":"单位：秒"
+}
+]
+}
+

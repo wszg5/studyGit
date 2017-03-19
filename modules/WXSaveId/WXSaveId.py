@@ -10,19 +10,23 @@ class WXSaveId:
         self.repo = Repo()
 
     def action(self, d,z, args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         time.sleep(7)
         cate_id = args['repo_wxcade_id']
         serial = z.wx_action("opennearui")    #得到微信ｉｄ，字符串样式
+        print(serial)
         ids = json.loads(serial)              #将字符串改为list样式
         lenth = len(ids)
+        z.heartbeat()
         set_count = int(args['set_count'])
-        if lenth<set_count:
+        if lenth<set_count:        #
             add_count = lenth
         else:
             add_count = set_count
         for i in range(add_count):
+            z.heartbeat()
             wxid = ids[i]
             self.repo.uploadPhoneNumber(wxid,cate_id)
         if (args["time_delay"]):

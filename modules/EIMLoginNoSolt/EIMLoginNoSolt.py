@@ -50,6 +50,7 @@ class EIMLoginNoSlot:
             d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
             d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             time.sleep(5)
+            z.heartbeat()
             d(className='android.widget.Button', index=1, clickable='true').click()
             time.sleep(2)
             d(className='android.widget.EditText', text='企业QQ号/手机号/邮箱').set_text(QQNumber)  # 3001313499  QQNumber  3001346198
@@ -60,6 +61,7 @@ class EIMLoginNoSlot:
                 d(text='企业QQ').click()
                 if d(text='仅此一次').exists:
                     d(text='仅此一次').click()
+            z.heartbeat()
             if d(text='搜索', resourceId='com.tencent.eim:id/name').exists:  # 直接登陆成功的情况
                 return  QQNumber   # 放到方法里改为return
 
@@ -98,14 +100,15 @@ class EIMLoginNoSlot:
                 im_id = codeResult["Id"]
                 os.remove(sourcePng)
                 os.remove(codePng)
-
+                z.heartbeat()
                 d(resourceId='com.tencent.eim:id/name', index='2', className="android.widget.EditText").set_text(code)
                 time.sleep(1)
                 d(text='完成', resourceId='com.tencent.eim:id/ivTitleBtnRightText').click()
                 time.sleep(4)
+                z.heartbeat()
                 while d(className='android.widget.ProgressBar',index=0).exists:     #网速较慢，校验验证码未完成的情况
                     time.sleep(2)
-
+                z.heartbeat()
                 if d(text='搜索', resourceId='com.tencent.eim:id/name').exists:
                     return  QQNumber# 放到方法里改为return
                 if d(text='输入验证码').exists:           #验证码输入错误的情况
@@ -118,8 +121,10 @@ class EIMLoginNoSlot:
         time.sleep(5)
         z.set_mobile_data(True)
         time.sleep(8)
+        z.heartbeat()
+        serialinfo = z.generateSerial("788")  # 修改串号等信息
         info = self.login(d, args)
-
+        z.heartbeat()
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 def getPluginClass():

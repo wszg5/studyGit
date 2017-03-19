@@ -10,7 +10,7 @@ class WeiXinAddressList:
 
 
     def action(self, d,z, args):
-
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -21,7 +21,7 @@ class WeiXinAddressList:
         d(text='通讯录').click()
         if not d(text='新的朋友').exists:
             d(text='通讯录').click()
-
+        z.heartbeat()
         set1 = set()
         change = 0
         i = 1
@@ -40,6 +40,7 @@ class WeiXinAddressList:
             time.sleep(1)
             wxName = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i).child(className='android.widget.LinearLayout').child(className='android.view.View')     #得到微信名
             if wxName.exists:
+                z.heartbeat()
                 change = 1      #好友存在且未被添加的情况出现，change值改变
                 Name = wxName.info
                 name = Name['text']
@@ -58,6 +59,7 @@ class WeiXinAddressList:
                     Gender = d(className='android.widget.LinearLayout', index=1).child(
                         className='android.widget.LinearLayout').child(className='android.widget.ImageView',index=1)  # 看性别是否有显示
                     if Gender.exists:
+                        z.heartbeat()
                         Gender = Gender.info
                         Gender = Gender['contentDescription']
                         if Gender !=GenderFrom:
@@ -66,6 +68,7 @@ class WeiXinAddressList:
                             i = i+1
                             continue
                     else:                 #信息里没有显示出性别的话
+                        z.heartbeat()
                         d(description='返回').click()
                         i = i + 1
                         continue
@@ -81,6 +84,7 @@ class WeiXinAddressList:
                 while m < lenth:
                     d.press.delete()
                     m = m + 1
+                z.heartbeat()
                 d(className='android.widget.EditText').click()
                 z.input(message)       #----------------------------------------
                 # d(text = '发送').click()

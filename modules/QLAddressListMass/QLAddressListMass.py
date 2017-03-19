@@ -19,6 +19,7 @@ class QLJudgeQQBind:
             print(getBindNumber)
             time.sleep(2)
             z.input(getBindNumber)
+            z.heartbeat()
 
             time.sleep(1)
             d(text='下一步').click()
@@ -30,9 +31,9 @@ class QLJudgeQQBind:
                     return 'false'
 
             code = self.xuma.GetVertifyCode(getBindNumber, '2113', '4')
-
             newStart = 0
             z.input(code)
+            z.heartbeat()
             d(text='下一步').click()
             time.sleep(4)
             if d(textContains='访问你的通讯录').exists:
@@ -47,6 +48,7 @@ class QLJudgeQQBind:
         return 'true'
 
     def action(self, d,z, args):
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         width = str["displayWidth"]
         height = str["displayHeight"]
@@ -67,7 +69,7 @@ class QLJudgeQQBind:
             if text == 'false':  # 操作过于频繁的情况
                 return
             time.sleep(3)
-
+        z.heartbeat()
         add_count = int(args['add_count'])  # 给多少人发消息
         gender = args['gender']
         t = 0
@@ -78,6 +80,7 @@ class QLJudgeQQBind:
             print(i)
             time.sleep(1.5)
             if forClick.exists:
+                z.heartbeat()
                 savePhone = forClick.info
                 savePhone = savePhone['text']
                 if savePhone in set1:
@@ -87,11 +90,13 @@ class QLJudgeQQBind:
                 print('保存的号码是%s'%savePhone)
                 forClick.click()
                 time.sleep(1)
+                z.heartbeat()
                 if gender!='不限':
                     if not d(textContains=gender).exists:
                         d(description='向上导航').click()
                         i = i+1
                         continue
+                z.heartbeat()
                 d(text='发消息').click()
                 d(className='android.widget.EditText').click()
                 cate_id = args["repo_material_id"]
@@ -103,6 +108,7 @@ class QLJudgeQQBind:
                     return
                 message = Material[0]['content']  # 取出验证消息的内容
                 z.input(message)
+                z.heartbeat()
                 # d(text='发送').click()
                 d(description='向上导航').click()
                 d(description='向上导航').click()

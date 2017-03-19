@@ -12,6 +12,7 @@ class MobilqqPraise:
 
 
     def action(self, d,z,args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(8)
@@ -19,6 +20,7 @@ class MobilqqPraise:
         add_count = int(args['add_count'])  # 要添加多少人
         repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
 
+        z.heartbeat()
         t = 0
         while True:            #总人数
             if t<add_count:
@@ -29,6 +31,7 @@ class MobilqqPraise:
                     return
                 QQnumber = numbers[0]['number']
                 time.sleep(0.5)
+                z.heartbeat()
                 d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"'%QQnumber)  # qq名片页面
                 time.sleep(2)
                 if d(text='QQ').exists:
@@ -36,9 +39,10 @@ class MobilqqPraise:
                     time.sleep(0.5)
                     if d(text='仅此一次').exists:
                         d(text='仅此一次').click()
-
+                z.heartbeat()
                 while True:
                     if d(descriptionContains='赞').exists:
+                        z.heartbeat()
                         for z in range(0,10,+1):
                             d(descriptionContains='赞').click()
                         t = t+1

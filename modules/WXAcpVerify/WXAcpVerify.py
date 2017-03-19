@@ -8,6 +8,7 @@ class WXAcpVerify:
     def __init__(self):
         self.repo = Repo()
     def action(self, d,z, args):
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -17,12 +18,14 @@ class WXAcpVerify:
         d(text='通讯录').click()
         d(className='android.widget.ListView').child(className='android.widget.RelativeLayout',index=1).click()
         time.sleep(1)
+        z.heartbeat()
         set1 = set()
         change = 0
         i = 1
         while True:
             obj = d(className='android.widget.RelativeLayout', index=i).child(index=1).child(className='android.widget.TextView', index=0)  # 得到微信名
             if obj.exists:
+                z.heartbeat()
                 obj = obj.info
                 name = obj['text']
                 if name in set1:  # 判断是否已经给该人发过消息
@@ -31,8 +34,10 @@ class WXAcpVerify:
                 else:
                     set1.add(name)
                     print(name)
+                z.heartbeat()
                 obj2 = d(className='android.widget.RelativeLayout', index=i).child(index=2).child(text='接受')  # 看是否有加好友验证
                 if obj2.exists:
+                    z.heartbeat()
                     change = 1      #好友存在且未被添加的情况出现，change值改变
 
                     d(className='android.widget.ListView',index=0).child(className='android.widget.RelativeLayout',index=i).child(className='android.widget.RelativeLayout',index=1).click()      #点击第i个人
@@ -41,6 +46,7 @@ class WXAcpVerify:
                         obj = d(className='android.widget.LinearLayout', index=1).child(
                             className='android.widget.LinearLayout').child(className='android.widget.ImageView',index=1)  # 看性别是否有显示
                         if obj.exists:
+                            z.heartbeat()
                             Gender = obj.info
                             Gender = Gender['contentDescription']
                             if Gender !=GenderFrom:
@@ -54,7 +60,7 @@ class WXAcpVerify:
                             continue
                     d(text='通过验证').click()
                     d(text='完成').click()
-
+                    z.heartbeat()
                     time.sleep(1)
                     d(description='返回').click()
                     i = i+1

@@ -22,6 +22,7 @@ class MobilqqAddressList:
         uniqueNum = str(nowTime) + str(randomNum);
         return uniqueNum
 
+
     def Gender(self,d):
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
@@ -29,6 +30,7 @@ class MobilqqAddressList:
         sourcePng = os.path.join(base_dir, "%s_s.png" % (self.GetUnique()))
         obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.TextView',descriptionContains='基本信息')  # 当弹出选择QQ框的时候，定位不到验证码图片
         if obj.exists:
+            z.heartbeat()
             obj = obj.info
             obj = obj['bounds']  # 验证码处的信息
             left = obj["left"]  # 验证码的位置信息
@@ -57,13 +59,14 @@ class MobilqqAddressList:
                 # 忽略高亮色
                 if y > 0.9:
                     continue
-
+                z.heartbeat()
                 score = (saturation + 0.1) * count
                 if score > max_score:
                     max_score = score
                     dominant_color = (r, g, b)
             # print("---------------------------------------------------------------------------")
             # print(dominant_color)
+            z.heartbeat()
             if None ==dominant_color:
                 # print('见鬼了')
                 return '不限'
@@ -92,7 +95,7 @@ class MobilqqAddressList:
             print(GetBindNumber)
             time.sleep(2)
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(GetBindNumber)  #GetBindNumber
-
+            z.heartbeat()
             time.sleep(1)
             d(text='下一步').click()
             time.sleep(3)
@@ -101,12 +104,13 @@ class MobilqqAddressList:
 
             if d(text='确定').exists:     #提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
                 d(text='确定',).click()
-
+            z.heartbeat()
             code = self.xuma.GetVertifyCode(GetBindNumber, '2113','4')
 
             newStart = 0
 
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
+            z.heartbeat()
             d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
             time.sleep(6)
             if d(textContains='没有可匹配的').exists:
@@ -115,6 +119,7 @@ class MobilqqAddressList:
         return 'true'
 
     def action(self, d,z, args):
+        z.heartbeat()
         gender1 = args['gender']
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
@@ -128,7 +133,7 @@ class MobilqqAddressList:
             d(text='关闭').click()
             d(text='关闭').click()
             time.sleep(1)
-
+        z.heartbeat()
         d(className='android.widget.TabWidget',resourceId='android:id/tabs').child(className='android.widget.FrameLayout').child(className='android.widget.RelativeLayout').click()     #点击到联系人
         time.sleep(4)
 
@@ -139,7 +144,7 @@ class MobilqqAddressList:
         if d(text='通讯录').exists:
             d(text='关闭').click()
 
-
+        z.heartbeat()
 
         if not d(text='联系人',resourceId='com.tencent.mobileqq:id/ivTitleName').exists:       #如果没到联系人界面
             d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(
@@ -154,7 +159,7 @@ class MobilqqAddressList:
             d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
             time.sleep(2)
             wait = 0
-
+        z.heartbeat()
         time.sleep(1)
         wait1 = 1
         while wait1 == 1:
@@ -165,7 +170,7 @@ class MobilqqAddressList:
                 obj.click()
                 continue
             wait1 = 0
-
+        z.heartbeat()
         for i in range(11, 1, -1):       #收起通讯录之后，再倒序确定通讯录的位置，点击展开并滑动，未绑定通讯录的,先绑定再发消息
             if d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i).exists:
                 d(resourceId='com.tencent.mobileqq:id/elv_buddies', className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()    #点击通讯录
@@ -174,7 +179,9 @@ class MobilqqAddressList:
                     if d(text=' +null',resourceId='com.tencent.mobileqq:id/name').exists:
                         d(text=' +null', resourceId='com.tencent.mobileqq:id/name').click()
                         d(text='中国',resourceId='com.tencent.mobileqq:id/name').click()
+                    z.heartbeat()
                     text = self.Bind(d)                                 #未开启通讯录的，现绑定通讯录
+                    z.heartbeat()
                     if text=='false':                          #操作过于频繁的情况
                         return
                     time.sleep(7)
@@ -185,9 +192,13 @@ class MobilqqAddressList:
 
                 if d(text='匹配手机通讯录').exists:
                     d(text='匹配手机通讯录').click()
+                    z.heartbeat()
                     while not d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).exists:
                         time.sleep(2)
+                        if d(textContains='下线通知').exists:
+                            return
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
+                z.heartbeat()
                 time.sleep(1)
                 if d(text='启用').exists:
                     d(text='启用').click()
@@ -201,10 +212,11 @@ class MobilqqAddressList:
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
                 d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
                 time.sleep(2)
+                z.heartbeat()
                 break
             else:
                 continue           #直到找到通讯录为止
-
+        z.heartbeat()
         set1 = set()
         change = 0
         i = 1
@@ -214,8 +226,7 @@ class MobilqqAddressList:
             cate_id = args["repo_material_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
             if len(Material) == 0:
-                d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                 time.sleep(10)
                 return
             message = Material[0]['content']  # 取出验证消息的内容
@@ -224,6 +235,7 @@ class MobilqqAddressList:
                 resourceId='com.tencent.mobileqq:id/text1', index=1)  # 点击第ｉ个人
             time.sleep(0.5)
             if obj.exists:
+                z.heartbeat()
                 change = 1
                 obj.click()
                 if not d(descriptionContains='昵称:').exists:
@@ -238,8 +250,10 @@ class MobilqqAddressList:
                 else:
                     set1.add(phone)
                     print(phone)
+                z.heartbeat()
                 if gender1 != '不限':
                     gender2 = self.Gender(d)
+                    z.heartbeat()
                     if gender1==gender2:        #gender1是外界设定的，gender2是读取到的
                         time.sleep(1)
                     else:
@@ -261,7 +275,7 @@ class MobilqqAddressList:
                     time.sleep(2)
                     i = 2
                     continue
-
+            z.heartbeat()
             if '[姓名]' in message:
                 obj1 = d(descriptionContains='QQ 昵称').child(className='android.widget.TextView', index=1).info
                 obj1 = obj1['text']
@@ -270,6 +284,7 @@ class MobilqqAddressList:
             time.sleep(1)
             d(resourceId='com.tencent.mobileqq:id/input', className='android.widget.EditText').click()  # message
             z.input(message)
+            z.heartbeat()
             time.sleep(1)
             d(text='发送').click()
             i = i + 1
@@ -279,7 +294,7 @@ class MobilqqAddressList:
             d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(
                 className='android.widget.FrameLayout').child(
                 className='android.widget.RelativeLayout').click()  # 发完消息后点击到联系人
-
+            z.heartbeat()
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 

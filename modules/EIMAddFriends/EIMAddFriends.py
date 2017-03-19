@@ -14,6 +14,7 @@ class EIMAddFriends:
 
 
     def action(self, d,z, args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.eim").communicate()  # 强制停止   3001369923  Bn2kJq5l
         d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(6)
@@ -26,16 +27,15 @@ class EIMAddFriends:
                              "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\"" % cate_id).communicate()
             time.sleep(10)
             return
-
         list = numbers  # 将取出的号码保存到一个新的集合
-
+        z.heartbeat()
         if d(description='发起多人聊天等功能').exists:
             d(description='发起多人聊天等功能').click()
         else:
             return 2
         d(text='加好友').click()
         d(text='添加好友').click()
-
+        z.heartbeat()
         for i in range(0,add_count,+1):
             cate_id = args["repo_material_cate_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
@@ -49,7 +49,7 @@ class EIMAddFriends:
             z.input(QQnumber)
             d(text='查找').click()
             time.sleep(2)
-
+            z.heartbeat()
             if d(text='查找').exists:            #该号码不存在的情况
                 obj = d(className='android.widget.EditText').info                 #将文本框已有的东西删除重来
                 obj = obj['text']
@@ -60,7 +60,7 @@ class EIMAddFriends:
                     t = t + 1
                     continue
                 continue
-
+            z.heartbeat()
             d(text='加好友').click()
             time.sleep(1)
             if d(text='加好友').exists:                                             #拒绝被添加的情况
@@ -75,6 +75,7 @@ class EIMAddFriends:
                     continue
                 continue
             time.sleep(2)
+            z.heartbeat()
             if d(text='必填').exists:
                 d(text='返回').click()
                 d(text='返回').click()
@@ -88,8 +89,7 @@ class EIMAddFriends:
                     continue
                 continue
 
-
-
+            z.heartbeat()
             obj = d(className='android.widget.EditText').info             #删除之前文本框的验证消息
             obj = obj['text']
             lenth = len(obj)
@@ -102,6 +102,7 @@ class EIMAddFriends:
             d(text='下一步').click()
             d(text='发送').click()
             d(text='添加好友').click()
+            z.heartbeat()
 
 
         if (args["time_delay"]):

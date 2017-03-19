@@ -11,7 +11,7 @@ class WeiXinMoments:
 
 
     def action(self, d,z, args):
-
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -23,7 +23,7 @@ class WeiXinMoments:
         wxname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=1)\
             .child(className='android.widget.LinearLayout',index=1).child(className='android.view.View').info   #得到微信名，为了判断朋友圈哪些已被我点赞评论
         myname = wxname['text']
-
+        z.heartbeat()
         z.wx_action('opensnsui')
         time.sleep(3)
         # myname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0).child(
@@ -31,7 +31,7 @@ class WeiXinMoments:
         # myname = myname['text']
         d.swipe(width / 2, height * 4 / 5, width / 2, height / 4)
         time.sleep(1)
-
+        z.heartbeat()
         i = 0
         t = 0
         EndIndex = int(args['EndIndex'])         #------------------
@@ -46,8 +46,10 @@ class WeiXinMoments:
 
             judexist = d(className='android.widget.ListView').child(className='android.widget.FrameLayout',index=i).child(className='android.widget.FrameLayout').child(description='评论')   #首先看第i个人是否存在，
             if judexist.exists:
+                z.heartbeat()
                 obj1 = d(className='android.widget.ListView').child(className='android.widget.FrameLayout', index=i).child(className='android.widget.LinearLayout',index=4)    #判断该好友是否有点赞评论
                 if obj1.exists:  #给该好友评论的情况
+                    z.heartbeat()
                     getName = d(className='android.widget.FrameLayout', index=i).child(className='android.widget.LinearLayout',index=4).child(index=0,className='android.widget.TextView')
                     if getName.exists:
                         getName = getName.info
@@ -58,6 +60,7 @@ class WeiXinMoments:
 
                 obj2 = d(className='android.widget.ListView').child(className='android.widget.FrameLayout', index=i).child(className='android.widget.LinearLayout',index=3)    #判断该好友是否有点赞评论,没有图片index会少一个
                 if obj2.exists:  #给该好友评论的情况
+                    z.heartbeat()
                     getName1 = d(className='android.widget.FrameLayout', index=i).child(className='android.widget.LinearLayout',index=3).child(index=0,className='android.widget.TextView')
                     if getName1.exists:
                         getName1 = getName1.info
@@ -65,19 +68,21 @@ class WeiXinMoments:
                         if myname in getName1:
                             i = i + 1
                             continue
-
+                z.heartbeat()
                 judexist.click()
                 if d(text='赞').exists:
                     d(text='赞').click()
                     time.sleep(0.5)
                 else:                         #赞被屏幕遮住的情况
                     d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
+                    z.heartbeat()
                     time.sleep(2)
                     if d(className='android.widget.FrameLayout', index=0).child(className='android.widget.FrameLayout', index='3').child(description='评论').exists:
                         i = 0
                     else:
                         i = 1
                     continue
+                z.heartbeat()
                 time.sleep(0.5)
                 judexist.click()
                 d(text='评论').click()
@@ -95,6 +100,7 @@ class WeiXinMoments:
                     return
                 d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
                 time.sleep(2)
+                z.heartbeat()
                 obj = d(className='android.widget.ListView').child(className='android.widget.FrameLayout',
                                                                    index=0).child(
                     className='android.widget.FrameLayout').child(description='评论')

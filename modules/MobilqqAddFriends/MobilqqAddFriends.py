@@ -13,6 +13,7 @@ class MobilqqAddFriends:
         self.repo = Repo()
 
     def action(self, d,z, args):
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -35,12 +36,13 @@ class MobilqqAddFriends:
             return
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
-
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         time.sleep(1)
         d(resourceId='com.tencent.mobileqq:id/name',description='快捷入口').click()
         time.sleep(1)
+        z.heartbeat()
         if d(textContains='加好友').exists:
             d(textContains='加好友').click()
         else:
@@ -56,8 +58,9 @@ class MobilqqAddFriends:
         d(text='找人:', resourceId='com.tencent.mobileqq:id/name').click()
         time.sleep(3)
 
-
+        z.heartbeat()
         for i in range(1,add_count,+1):                   #给多少人发消息
+            z.heartbeat()
             numbers = list[i]['number']
             print(numbers)
             time.sleep(1)
@@ -75,7 +78,7 @@ class MobilqqAddFriends:
                     time.sleep(1)
                 continue
             time.sleep(1)
-
+            z.heartbeat()
             d.swipe(width / 2, height * 4 / 6, width / 2, height / 6);
             d(text='加好友').click()
             time.sleep(3)
@@ -97,7 +100,7 @@ class MobilqqAddFriends:
                 continue
             time.sleep(0.5)
 
-
+            z.heartbeat()
             if d(text='必填',resourceId='com.tencent.mobileqq:id/name').exists:                     #要回答问题的情况
                 d(text='返回',resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').click()
                 time.sleep(1)
@@ -115,7 +118,7 @@ class MobilqqAddFriends:
                     time.sleep(1)
                 continue
 
-
+            z.heartbeat()
             if d(textContains='问题').exists:            #要回答问题的情况
                 d(text='取消').click()
                 time.sleep(0.5)
@@ -133,7 +136,7 @@ class MobilqqAddFriends:
                     time.sleep(1)
                 continue
 
-
+            z.heartbeat()
             time.sleep(0.5)
             obj = d(className='android.widget.EditText', resourceId='com.tencent.mobileqq:id/name').info  # 将之前消息框的内容删除
             obj = obj['text']
@@ -146,6 +149,7 @@ class MobilqqAddFriends:
                 z.input(message)
             obj = d(text='发送')            #不需要验证可直接添加为好友的情况
             if obj.exists:
+                z.heartbeat()
                 obj.click()
                 if d(text='添加失败，请勿频繁操作',resourceId='com.tencent.mobileqq:id/name').exists:
                     return
