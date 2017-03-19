@@ -1,5 +1,7 @@
 # coding:utf-8
 from RClient import *
+
+from smsCode import smsCode
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
@@ -97,7 +99,7 @@ class MobilqqAddressList:
         d(text='登陆').click()
         time.sleep(2)
 
-        self.xuma = XunMa(d.server.adb.device_serial())
+        self.scode = smsCode(d.server.adb.device_serial())
         newStart = 1
         while newStart == 1:
             GetBindNumber = self.xuma.GetPhoneNumber('2113')

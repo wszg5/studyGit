@@ -31,8 +31,8 @@ for op, value in opts:
         const.MAX_SLOTS_QQLITE = int(value)
     elif op == "-e" or op == "--eim_slots":
         const.MAX_SLOTS_EIM = int(value)
-import sys
 
+import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 from dbapi import dbapi
