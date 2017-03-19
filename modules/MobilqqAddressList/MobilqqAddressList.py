@@ -1,5 +1,4 @@
 # coding:utf-8
-from RClient import *
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
@@ -24,9 +23,6 @@ class MobilqqAddressList:
         return uniqueNum
 
     def Gender(self,d):
-        co = RClient()
-        im_id = ""
-        co.rk_report_error(im_id)
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)

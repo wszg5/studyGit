@@ -1,9 +1,9 @@
 # coding:utf-8
 from PIL import Image
+from imageCode import imageCode
 from uiautomator import Device
 import util
 from Repo import *
-from RClient import *
 import time, datetime, random
 from zservice import ZDevice
 from slot import slot
@@ -63,11 +63,11 @@ class MobilqqLogin:
                 time.sleep(2)
 
             if d(resourceId='com.tencent.mobileqq:id/name', index='2',className="android.widget.EditText").exists:  # 需要验证码的情况
-                co = RClient()
+                icode = imageCode()
                 im_id = ""
                 for i in range(0, 30, +1):  # 打码循环
                     if i > 0:
-                        co.rk_report_error(im_id)
+                        icode.reportError(im_id)
                     obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.ImageView')      #当弹出选择QQ框的时候，定位不到验证码图片
                     obj = obj.info
                     obj = obj['bounds']  # 验证码处的信息
@@ -86,9 +86,10 @@ class MobilqqLogin:
                     img.paste(region, (0, 0))
 
                     img.save(codePng)
-                    im = open(codePng, 'rb').read()
+                    im = open(codePng, 'rb')
 
-                    codeResult = co.rk_create(im, 3040)
+                    codeResult = icode.getCode(im, icode.CODE_TYPE_4_NUMBER_CHAR)
+
                     code = codeResult["Result"]
                     im_id = codeResult["Id"]
                     os.remove(sourcePng)
