@@ -59,17 +59,17 @@ class slot:
         for folder in self.folders:
             targetPath = '/data/data/com.zy.bak/%s/%s/%s' % (self.type, name, folder)
             targetPath = os.path.dirname(targetPath)
-            d.server.adb.cmd("shell", "mkdir -p %s" % targetPath).communicate()
+            d.server.adb.cmd("shell", "su -c 'mkdir -p %s'" % targetPath).communicate()
             cmd = "cp -f -r -p /data/data/%s/%s/  %s" % (self.package, folder, targetPath)
-            d.server.adb.cmd("shell", cmd).communicate()
+            d.server.adb.cmd("shell", "su -c '%s'"%cmd).communicate()
 
             #d.server.adb.cmd("shell", "su -c 'cp -r -f -p /data/data/%s/%s/  /data/data/com.zy.bak/%s/%s/%s'" % (self.package, folder, self.type, name, folder)).communicate()
         for file in self.files:
             targetFile = '/data/data/com.zy.bak/%s/%s/%s'%(self.type, name, file)
             targetPath = os.path.dirname(targetFile)
-            d.server.adb.cmd("shell", "mkdir -p %s" % targetPath).communicate()
+            d.server.adb.cmd("shell", "su -c 'mkdir -p %s'" % targetPath).communicate()
             cmd = "cp -f  /data/data/%s/%s  %s" % (self.package, file, targetFile)
-            d.server.adb.cmd("shell", cmd ).communicate()
+            d.server.adb.cmd("shell", "su -c '%s'" %cmd ).communicate()
 
         #d.server.adb.cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
 
@@ -87,18 +87,19 @@ class slot:
         for folder in self.folders:
             targetPath = '/data/data/%s/%s' % (target, folder)
             targetPath = os.path.dirname(targetPath)
-            d.server.adb.cmd("shell", "mkdir -p %s" % targetPath).communicate()
+            d.server.adb.cmd("shell", "su -c 'mkdir -p %s'" % targetPath).communicate()
             cmd = "cp -f -r -p /data/data/com.zy.bak/%s/%s/%s/  %s" % (self.type, name, folder, targetPath)
-            d.server.adb.cmd("shell", cmd).communicate()
-
+            d.server.adb.cmd("shell", "su -c '%s'" % cmd).communicate()
+            d.server.adb.cmd("shell", "su -c 'chmod -R 777 %s'" % targetPath).communicate()
         #for folder in self.folders:
            # d.server.adb.cmd("shell", "cp -r -f -p /data/data/com.zy.bak/%s/%s/%s/ /data/data/%s/"%(self.type, name, folder, self.package)).communicate()
 
         for file in self.files:
             targetFile = '/data/data/%s/%s'%(target, file)
             targetPath = os.path.dirname(targetFile)
-            d.server.adb.cmd("shell", "mkdir -p %s" % targetPath).communicate()
-            d.server.adb.cmd("shell", "cp -f /data/data/com.zy.bak/%s/%s/%s %s"%(self.type, name, file, targetFile)).communicate()
+            d.server.adb.cmd("shell", "su -c 'mkdir -p %s'" % targetPath).communicate()
+            d.server.adb.cmd("shell", "su -c 'cp -f /data/data/com.zy.bak/%s/%s/%s %s'"%(self.type, name, file, targetFile)).communicate()
+            d.server.adb.cmd("shell", "su -c 'chmod -R 777 %s'" % targetFile).communicate()
 
         #d.server.adb.cmd("shell", "cp -r -f -p /data/data/com.zy.bak/tim/%s/databases/ /data/data/com.tencent.tim/"%name).wait()
 

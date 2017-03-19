@@ -1,14 +1,13 @@
-MobilqqOldAddressList
 {
-"id": "MobilqqAddressList",
+"id": "MobilqqOldAddressList",
 "name":"5.9版普通QQ通讯录",
 "cate":"QQ模块",
 "font": "qq",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"QQ08",
+"version": "1.2",
+"code":"QQ22",
 "icon":"vcard-o",
-"remark":"普通QQ通讯录，6.6.6.3025版本",
+"remark":"5.9版普通QQ通讯录",
 "setting":[
 	{
 	"id": "repo_material_id",
