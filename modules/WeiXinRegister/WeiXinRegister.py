@@ -1,7 +1,7 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-from XunMa import *
+from smsCode import smsCode
 import time, string, random
 from zservice import ZDevice
 
@@ -26,7 +26,7 @@ class WeiXinRegister:
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
-        self.xm = XunMa(d.server.adb.device_serial())
+        self.scode = smsCode(d.server.adb.device_serial())
         while True:
             d.server.adb.cmd("shell", "pm clear com.tencent.mm").communicate()  # 清除缓存
             d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()
@@ -56,7 +56,7 @@ class WeiXinRegister:
                 d.swipe(474,327,500,329)
             z.heartbeat()
             while True:
-                PhoneNumber = self.xm.GetPhoneNumber('2251')
+                PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER)
                 z.heartbeat()
                 print(PhoneNumber)
                 if PhoneNumber.startswith('17'):
@@ -95,7 +95,7 @@ class WeiXinRegister:
             while d(textContains='正在验证').exists:
                 time.sleep(2)
             z.heartbeat()
-            code = self.xm.GetVertifyCode(PhoneNumber,'2251')
+            code = self.scode.GetVertifyCode(PhoneNumber, self.scode.WECHAT_REGISTER)
             self.xm.defriendPhoneNumber(PhoneNumber, '2251')
             z.heartbeat()
             if '失败'==code:
@@ -134,7 +134,7 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    z.input('往事小岛')
+    'dingdingdingdingdindigdingdingdingdingdingdingdingdingdingdingdingdignin'
     # repo = Repo()
     # repo.RegisterAccount('', 'gemb1225', '13045537833', '109')
     args = {"repo_name_id": "102","repo_number_id": "109","add_count": "9","time_delay": "3"}  # cate_id是仓库号，发中文问题

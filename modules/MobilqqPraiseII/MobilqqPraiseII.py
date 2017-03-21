@@ -13,13 +13,13 @@ class MobilqqPraiseII:
         z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        time.sleep(8)
+        z.sleep(8)
         z.heartbeat()
         d(description='快捷入口').click()
         d(textContains='加好友').click()
         d(textContains='附近的人').click()
         while not d(textContains='等级').exists:
-            time.sleep(2)
+            z.sleep(2)
         count = int(args['add_count'])
         getGender = args['gender']
         if getGender !='不限':
@@ -28,7 +28,7 @@ class MobilqqPraiseII:
             d(text=getGender).click()
             d(text='完成').click()
             while not d(textContains='等级').exists:
-                time.sleep(2)
+                z.sleep(2)
         z.heartbeat()
         t = 0
         i = 3
@@ -42,7 +42,7 @@ class MobilqqPraiseII:
 
                 forClick.click()
                 while not d(text='关注').exists:
-                    time.sleep(2)
+                    z.sleep(2)
                 praise = 0
                 z.heartbeat()
                 while praise<10:
@@ -73,12 +73,12 @@ class MobilqqPraiseII:
                 bottom = int(obj['bottom'])
                 y = bottom - top
                 d.swipe(width / 2, y, width / 2, 0)
-                time.sleep(3)
+                z.sleep(3)
                 i = 1
 
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():

@@ -1,11 +1,10 @@
 # coding:utf-8
 import string
-from XunMa import *
+from smsCode import smsCode
 from uiautomator import Device
 from Repo import *
 import time, datetime, random
 from zservice import ZDevice
-from RClient import *
 from PIL import Image
 
 class QLRegister:
@@ -24,7 +23,7 @@ class QLRegister:
 
     def action(self, d,z, args):
         z.heartbeat()
-        self.xuma = XunMa(d.server.adb.device_serial())
+        self.scode = smsCode(d.server.adb.device_serial())
         d.server.adb.cmd("shell", "pm clear com.tencent.qqlite").communicate()  # 清除缓存
         d.server.adb.cmd("shell", "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 将qq拉起来
         time.sleep(8)
@@ -40,7 +39,7 @@ class QLRegister:
         condition = 0
         while condition<count:
             z.heartbeat()
-            phoneNumber = self.xuma.GetPhoneNumber('2111')
+            phoneNumber = self.scode.GetPhoneNumber(self.scode.QQ_REGISTER)
             z.input(phoneNumber)
             d(text='下一步').click()
             time.sleep(4)
@@ -74,7 +73,7 @@ class QLRegister:
                     t = t+1
 
             z.heartbeat()
-            verifycode = self.xuma.GetVertifyCode(phoneNumber,'2111')
+            verifycode = self.scode.GetVertifyCode(phoneNumber, self.scode.QQ_CONTACT_BIND)
             z.input(verifycode)
 
         if (args["time_delay"]):

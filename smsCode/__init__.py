@@ -47,7 +47,7 @@ class smsCode:
 
 
     def GetPhoneNumber(self, itemId, times=0):
-        return self.client.getPhoneNumber(itemId, times)
+        return self.client.GetPhoneNumber(itemId, times)
 
 
     def GetVertifyCode(self, number, itemId, length=6):
@@ -56,7 +56,8 @@ class smsCode:
     def ReleasePhone(self, phoneNumber, itemId):
         return self.client.releasePhone(phoneNumber, itemId)
 
-
+    def defriendPhoneNumber(self, phoneNumber, itemId):
+        return self.client.defriendPhoneNumber(phoneNumber,itemId)
 
 
 

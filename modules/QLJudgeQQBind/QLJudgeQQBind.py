@@ -3,8 +3,6 @@ from uiautomator import Device
 from Repo import *
 import time, datetime, random
 from zservice import ZDevice
-from RClient import *
-from PIL import Image
 
 class QLJudgeQQBind:
     def __init__(self):

@@ -1,9 +1,9 @@
 # coding:utf-8
 from PIL import Image
+from imageCode import imageCode
 from uiautomator import Device
 import util
 from Repo import *
-from RClient import *
 import time, datetime, random
 from zservice import ZDevice
 from slot import slot
@@ -26,7 +26,7 @@ class MobilqqLogin:
 
 
     def login(self,d,args,z):
-
+        z.heartbeat()
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -38,8 +38,7 @@ class MobilqqLogin:
             time_limit1 = args['time_limit1']
             numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
             if len(numbers) == 0:
-                d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库为空，等待中\"" % cate_id).communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库为空，等待中\"" % cate_id).communicate()
                 z.sleep(10)
                 return
             QQNumber = numbers[0]['number']  # 即将登陆的QQ号
@@ -70,11 +69,11 @@ class MobilqqLogin:
             z.sleep(4)
             z.heartbeat()
             if d(resourceId='com.tencent.mobileqq:id/name', index='2',className="android.widget.EditText").exists:  # 需要验证码的情况
-                co = RClient()
+                icode = imageCode()
                 im_id = ""
                 for i in range(0, 30, +1):  # 打码循环
                     if i > 0:
-                        co.rk_report_error(im_id)
+                        icode.reportError(im_id)
                     obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.ImageView')      #当弹出选择QQ框的时候，定位不到验证码图片
                     obj = obj.info
                     obj = obj['bounds']  # 验证码处的信息
@@ -93,9 +92,10 @@ class MobilqqLogin:
                     img.paste(region, (0, 0))
 
                     img.save(codePng)
-                    im = open(codePng, 'rb').read()
+                    im = open(codePng, 'rb')
 
-                    codeResult = co.rk_create(im, 3040)
+                    codeResult = icode.getCode(im, icode.CODE_TYPE_4_NUMBER_CHAR)
+
                     code = codeResult["Result"]
                     im_id = codeResult["Id"]
                     os.remove(sourcePng)
@@ -297,12 +297,10 @@ if __name__ == "__main__":
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id":"135","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"137","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
-    # d.server.adb.cmd("shell",
-    #                  'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=10000\&version=1\&src_type=web\&web_src=http:://114.qq.com"' )  # QQ咨询
-    # d.server.adb.cmd("shell",
-    #                  'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=10000\&card_type=person\&source=qrcode"')  # qq名片页面
+    d.server.adb.cmd("shell",
+                     "settings put global airplane_mode_on 1 am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()  # 开关飞行模式
 
     o.action(d,z, args)
     # serial = z.generateSerial("788")登录进去之前修改串号，将串号保存到仓库，所有登录之前都这么做，卡槽恢复之前根据设备号和卡槽号取到串号，调z.generateSerial(serial)将串号恢复

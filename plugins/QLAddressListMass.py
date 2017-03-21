@@ -1,24 +1,23 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
+from smsCode import smsCode
 import time, datetime, random
 from zservice import ZDevice
-from RClient import *
 from PIL import Image
-from XunMa import *
 
-class QLJudgeQQBind:
+class QLAddressListMass:
     def __init__(self):
         self.repo = Repo()
 
     def Bind(self, d,z):
-        self.xuma = XunMa(d.server.adb.device_serial())
+        self.scode = smsCode(d.server.adb.device_serial())
         newStart = 1
         while newStart == 1:
-            getBindNumber = self.xuma.GetPhoneNumber('2113')
-            print(getBindNumber)
+            GetBindNumber = self.scode.GetPhoneNumber(self.scode.QQ_CONTACT_BIND)
+            print(GetBindNumber)
             time.sleep(2)
-            z.input(getBindNumber)
+            z.input(GetBindNumber)
             z.heartbeat()
 
             time.sleep(1)
@@ -30,7 +29,7 @@ class QLJudgeQQBind:
                 if d(text='确定').exists:
                     return 'false'
 
-            code = self.xuma.GetVertifyCode(getBindNumber, '2113', '4')
+            code = self.scode.GetVertifyCode(GetBindNumber, self.scode.QQ_CONTACT_BIND, '4')
             newStart = 0
             z.input(code)
             z.heartbeat()
@@ -57,6 +56,7 @@ class QLJudgeQQBind:
         time.sleep(8)
         d(text='联系人').click()
         d(text='通讯录').click()
+        time.sleep(1)
         if d(textContains='访问你的通讯录').exists:
             d(text='好').click()          #没有人的情况要判断
         if d(text='匹配通讯录').exists:
@@ -109,7 +109,11 @@ class QLJudgeQQBind:
                 message = Material[0]['content']  # 取出验证消息的内容
                 z.input(message)
                 z.heartbeat()
-                # d(text='发送').click()
+                d(text='发送').click()
+                while d(className='android.widget.ProgressBar').exists:
+                    time.sleep(1)
+                if d(description='重新发送').exists:
+                    return
                 d(description='向上导航').click()
                 d(description='向上导航').click()
                 i = i+1
@@ -140,15 +144,11 @@ class QLJudgeQQBind:
 
 
 
-
-
-
-
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
 def getPluginClass():
-    return QLJudgeQQBind
+    return QLAddressListMass
 
 if __name__ == "__main__":
     import sys

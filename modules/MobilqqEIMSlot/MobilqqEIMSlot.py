@@ -5,7 +5,7 @@ from PIL import Image
 from uiautomator import Device
 import re,subprocess
 from Repo import *
-from RClient import *
+from imageCode import imageCode
 import time, datetime, random
 from zservice import ZDevice
 from slot import slot
@@ -26,12 +26,12 @@ class EIMLogin:
             slotnum = self.slot.getSlot(d, time_limit)  # 没有空卡槽，取time_limit小时没用过的卡槽
             while slotnum == 0:  # time_limit小时没用过的卡槽为空的情况
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"无间隔时间段未用,等待中\"").communicate()
-                time.sleep(30)
+                z.sleep(30)
                 slotnum = self.slot.getSlot(d, time_limit)
 
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
             z.set_mobile_data(False)
-            time.sleep(3)
+            z.sleep(3)
             getSerial = self.repo.Getserial(cate_id, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 得到之前的串号
             z.heartbeat()
             if len(getSerial) == 0:  # 之前的信息保存失败的话
@@ -50,14 +50,14 @@ class EIMLogin:
 
             print("切换为" + str(slotnum))
             z.set_mobile_data(True)
-            time.sleep(8)
+            z.sleep(8)
 
             d.server.adb.cmd("shell",
                              "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             while d(textContains='正在更新').exists:
-                time.sleep(2)
+                z.sleep(2)
             z.heartbeat()
-            time.sleep(10)
+            z.sleep(10)
             if d(text='搜索', resourceId='com.tencent.mobileqq:id/name').exists:
                 z.heartbeat()
                 obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
@@ -111,7 +111,7 @@ class EIMLogin:
 
         print(QQnumber)
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 def getPluginClass():
     return EIMLogin
 

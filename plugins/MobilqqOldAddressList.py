@@ -7,9 +7,10 @@ from smsCode import smsCode
 
 
 
-class MobilqqOldAddressList:
+class MobilqqAddressList:
     def __init__(self):
         self.repo = Repo()
+        self.xuma = None
 
 
     def Bind(self,d,z):
@@ -197,7 +198,7 @@ class MobilqqOldAddressList:
 
 
 def getPluginClass():
-    return MobilqqOldAddressList
+    return MobilqqAddressList
 
 if __name__ == "__main__":
     import sys

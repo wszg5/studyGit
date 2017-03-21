@@ -5,7 +5,6 @@ from PIL import Image
 from uiautomator import Device
 import re,subprocess
 from Repo import *
-from RClient import *
 import time, datetime, random
 from zservice import ZDevice
 from slot import slot

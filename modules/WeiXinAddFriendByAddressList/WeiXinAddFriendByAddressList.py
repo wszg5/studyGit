@@ -155,11 +155,6 @@ if __name__ == "__main__":
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    # alreadyAdd = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0).child(
-    #     className='android.widget.LinearLayout',index=0).child(className='android.widget.FrameLayout',index=2).child(
-    #     text='已添加')  # 该编号好友已经被添加的情况
-    # print(alreadyAdd.exists)
-
     args = {"repo_material_id": "39",'EndIndex':'100','gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 

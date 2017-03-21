@@ -1,10 +1,8 @@
 # coding:utf-8
-from RClient import *
 from uiautomator import Device
 from Repo import *
 import time, datetime, random
 from zservice import ZDevice
-from XunMa import *
 import traceback
 from PIL import Image
 import colorsys
@@ -16,7 +14,6 @@ class MobilqqSendText:
 
     def action(self, d,z, args):
         z.heartbeat()
-        self.xuma = XunMa(d.server.adb.device_serial())
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]

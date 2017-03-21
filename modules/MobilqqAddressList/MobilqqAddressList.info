@@ -1,11 +1,11 @@
 {
 "id": "MobilqqAddressList",
-"name":"普通QQ通讯录",
+"name":"普通QQ通讯录发消息",
 "cate":"QQ模块",
 "font": "qq",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"QQ08",
+"version": "1.2",
+"code":"QQ08.2",
 "icon":"vcard-o",
 "remark":"普通QQ通讯录，6.6.6.3025版本",
 "setting":[

@@ -3,9 +3,8 @@ import threading
 import time
 from PIL import Image
 from uiautomator import Device
-import re,subprocess
+from imageCode import imageCode
 from Repo import *
-from RClient import *
 import time, datetime, random
 from zservice import ZDevice
 from slot import slot
@@ -71,11 +70,11 @@ class EIMCutQQ:
                 self.repo.BackupInfo(cate_id, 'frozen', QQNumber, '','')
                 break
 
-            co = RClient()
+            icode = imageCode()
             im_id = ""
             for i in range(0, 30, +1):  # 打码循环
                 if i > 0:
-                    co.rk_report_error(im_id)
+                    icode.reportError(im_id)
                 obj = d(resourceId='com.tencent.eim:id/name', className='android.widget.ImageView')
                 obj = obj.info
                 obj = obj['bounds']  # 验证码处的信息
@@ -94,9 +93,9 @@ class EIMCutQQ:
                 img.paste(region, (0, 0))
 
                 img.save(codePng)
-                im = open(codePng, 'rb').read()
+                im = open(codePng, 'rb')
 
-                codeResult = co.rk_create(im, 3040)
+                codeResult = icode.getCode(im, icode.CODE_TYPE_4_NUMBER_CHAR)
                 code = codeResult["Result"]
                 im_id = codeResult["Id"]
                 os.remove(sourcePng)
@@ -139,6 +138,7 @@ class EIMCutQQ:
             time.sleep(3)
 
             getSerial = self.repo.Getserial(cate_id,'%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 得到之前的串号
+            print(getSerial)
             if len(getSerial) == 0:  # 之前的信息保存失败的话
                 d.server.adb.cmd("shell",
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"串号获取失败，重新设置\"").communicate()  # 在５１上测时库里有东西但是王红机器关闭后仍获取失败
@@ -318,8 +318,8 @@ if __name__ == "__main__":
     reload(sys)
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
-    d = Device("8HVSMZKBEQFIBQUW")
-    z = ZDevice("8HVSMZKBEQFIBQUW")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
 
