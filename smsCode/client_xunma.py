@@ -68,7 +68,7 @@ class client_xunma:
 
         try:
             itemcode = self.im_type_list[itemId]
-            path = "/getPhone?ItemId=%s&token=%s&Count=10" % (itemcode, token)
+            path = "/getPhone?ItemId=%s&token=%s&Count=1" % (itemcode, token)
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
             response = conn.getresponse()
