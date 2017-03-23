@@ -31,6 +31,15 @@ for op, value in opts:
         const.MAX_SLOTS_QQLITE = int(value)
     elif op == "-e" or op == "--eim_slots":
         const.MAX_SLOTS_EIM = int(value)
+
+
+if not os.path.exists('plugins/__init__.py'):
+    f = open('plugins/__init__.py', 'w')  # r只读，w可写，a追加
+    f.write("#init")
+    f.close()
+
+
+
 import sys
 
 reload(sys)
