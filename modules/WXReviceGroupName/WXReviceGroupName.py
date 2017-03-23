@@ -10,14 +10,16 @@ class WXReviceGroupName:
         self.repo = Repo()
 
     def action(self, d,z, args):
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(7)
+        z.sleep(7)
         endIndex = int(args['EndIndex'])
         d(description='搜索').click()
+        z.heartbeat()
         endCondition = 0
         while endCondition<endIndex:
             cate_id = args["repo_material_id"]  # ------------------
@@ -25,8 +27,9 @@ class WXReviceGroupName:
             if len(Material) == 0:
                 d.server.adb.cmd("shell",
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
+            z.heartbeat()
             groupName = Material[0]['content']  # 从素材库取出的要发的材料
             z.input(groupName)
             if not d(text='群聊').exists:
@@ -40,6 +43,7 @@ class WXReviceGroupName:
                 if obj.exists:
                     g = i + 1
                     break
+            z.heartbeat()
             d(className='android.widget.ListView').child(className='android.widget.RelativeLayout',index=g).child(className='android.widget.LinearLayout',index=0).click()
             d(description='聊天信息').click()
             d(text='群聊名称').click()
@@ -50,13 +54,13 @@ class WXReviceGroupName:
             while t < lenth:
                 d.press.delete()
                 t = t + 1
-
+            z.heartbeat()
             cate_id1 = args["repo_material_id1"]  # ------------------
             Material1 = self.repo.GetMaterial(cate_id1, 0, 1)
             if len(Material1) == 0:
                 d.server.adb.cmd("shell",
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id1).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             newName = Material1[0]['content']  # 从素材库取出的要发的材料
             z.input(newName)
@@ -64,9 +68,9 @@ class WXReviceGroupName:
             d(description='返回').click()
             d(description='返回').click()
             d(description='清除').click()
-
+            z.heartbeat()
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WXReviceGroupName

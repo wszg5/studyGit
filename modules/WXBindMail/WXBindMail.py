@@ -9,14 +9,16 @@ class WXBindMail:
     def __init__(self):
         self.repo = Repo()
 
-    def action(self, d,z, args):
+    def action(self,d,z,args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(7)
+        z.sleep(7)
         d(text='我').click()
         d(text='设置').click()
         d(textContains='帐号与安全').click()
         d(text='邮件地址').click()
+        z.heartbeat()
         if d(textContains='重新发送验证').exists:
             return
         if d(textContains='解绑').exists:
@@ -26,15 +28,16 @@ class WXBindMail:
         Mail = self.repo.GetNumber(cate_id, 0, 1)  # 取出add_count条两小时内没有用过的号码
         if len(Mail) == 0:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
-            time.sleep(10)
+            z.sleep(10)
             return
         BindMail = Mail[0]['number']
         d(className='android.widget.EditText').set_text(BindMail)
         d(text='确定').click()
+        z.heartbeat()
 
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WXBindMail

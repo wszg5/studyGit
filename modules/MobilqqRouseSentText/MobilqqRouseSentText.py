@@ -9,6 +9,7 @@ class MobilqqRouseSentText:
         self.repo = Repo()
 
     def action(self, d,z, args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell",  "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
@@ -18,29 +19,29 @@ class MobilqqRouseSentText:
         if len(numbers) == 0:
             d.server.adb.cmd("shell",
                              "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\"" % cate_id).communicate()
-            time.sleep(10)
+            z.sleep(10)
             return
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
 
-
+        z.heartbeat()
         for i in range (0,totalNumber,+1):
             cate_id = args["repo_material_cate_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
             if len(Material) == 0:
                 d.server.adb.cmd("shell",
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             message = Material[0]['content']  # 取出验证消息的内容
 
             QQnumber = list[i]['number']
-            time.sleep(1)
-
+            z.sleep(1)
+            z.heartbeat()
             d.server.adb.cmd("shell",
                              'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % QQnumber)  # 临时会话
-            time.sleep(2)
-
+            z.sleep(2)
+            z.heartbeat()
             if d(text='QQ').exists:
                 d(text='QQ').click()
                 time.sleep(0.5)
@@ -48,14 +49,15 @@ class MobilqqRouseSentText:
                     d(text='仅此一次').click()
 
             if d(textContains='沟通的权限').exists:
+                z.heartbeat()
                 d.server.adb.cmd("shell",
                                  'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % QQnumber)  # 临时会话
-                time.sleep(1)
+                z.sleep(1)
                 if d(text='QQ').exists:
                     d(text='QQ').click()
                     if d(text='仅此一次').exists:
                         d(text='仅此一次').click()
-
+            z.heartbeat()
             d(className='android.widget.EditText',resourceId='com.tencent.mobileqq:id/input').click()
             z.input(message)
 
@@ -63,7 +65,7 @@ class MobilqqRouseSentText:
 
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():

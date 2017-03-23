@@ -12,7 +12,7 @@ import datetime
 
 logger = util.logger
 from dbapi import dbapi
-dbapi = dbapi()
+
 class phoneTask:
     def __init__(self, serial):
         self.serial = serial

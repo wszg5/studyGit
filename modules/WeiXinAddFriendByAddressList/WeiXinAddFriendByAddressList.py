@@ -11,21 +11,21 @@ class WeiXinAddFriendByAddressList:
 
 
     def action(self, d,z, args):
-
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(7)
+        z.sleep(7)
         d(description='更多功能按钮').click()
         d(textContains='添加朋友').click()
         d(text='手机联系人').click()
         d(text='添加手机联系人').click()
         while d(textContains='正在获取').exists:
-            time.sleep(3)
-
+            z.sleep(3)
+        z.heartbeat()
         set1 = set()
         change = 0
         i = 0
@@ -36,13 +36,14 @@ class WeiXinAddFriendByAddressList:
             Material = self.repo.GetMaterial(cate_id, 0, 1)
             if len(Material) == 0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             message = Material[0]['content']  # 从素材库取出的要发的材料
 
-            time.sleep(1)
+            z.sleep(1)
             wxname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=i).child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).child(textContains='微信:')     #得到微信名
             if wxname.exists:
+                z.heartbeat()
                 alreadyAdd = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',
                                                                           index=i).child(
                     className='android.widget.LinearLayout', index=0).child(className='android.widget.FrameLayout',
@@ -55,6 +56,7 @@ class WeiXinAddFriendByAddressList:
                 change = 1      #好友存在且未被添加的情况出现，change值改变
                 wxname = wxname.info
                 name = wxname['text']
+                z.heartbeat()
                 if name in set1:    #判断是否已经给该人发过消息
                     i = i+1
                     continue
@@ -67,6 +69,7 @@ class WeiXinAddFriendByAddressList:
                 if GenderFrom !='不限':
                     Gender = d(className='android.widget.LinearLayout',index=1).child(className='android.widget.LinearLayout').child(className='android.widget.ImageView',index=1)      #看性别是否有显示
                     if Gender.exists:
+                        z.heartbeat()
                         Gender = Gender.info
                         Gender = Gender['contentDescription']
                         if Gender !=GenderFrom:
@@ -78,6 +81,7 @@ class WeiXinAddFriendByAddressList:
                         d(description='返回').click()
                         i = i + 1
                         continue
+                z.heartbeat()
                 if d(text='添加到通讯录').exists:
                     d(text='添加到通讯录').click()
                     time.sleep(0.5)
@@ -97,7 +101,7 @@ class WeiXinAddFriendByAddressList:
                     d(description='返回').click()
                     i = i+1
                     continue
-                time.sleep(1)
+                z.sleep(1)
                 deltext = d(className='android.widget.EditText', index=1).info  # 将之前消息框的内容删除
                 deltext = deltext['text']
                 lenth = len(deltext)
@@ -105,10 +109,11 @@ class WeiXinAddFriendByAddressList:
                 while m < lenth:
                     d.press.delete()
                     m = m + 1
+                z.heartbeat()
                 d(className='android.widget.EditText', index=1).click()
                 z.input(message)       #----------------------------------------
                 d(text = '发送').click()
-                time.sleep(1)
+                z.sleep(1)
                 # d(description='返回').click()
                 d(description='返回').click()
                 i = i+1
@@ -134,7 +139,7 @@ class WeiXinAddFriendByAddressList:
                     i = 1
                     continue
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WeiXinAddFriendByAddressList
@@ -149,11 +154,6 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-
-    # alreadyAdd = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0).child(
-    #     className='android.widget.LinearLayout',index=0).child(className='android.widget.FrameLayout',index=2).child(
-    #     text='已添加')  # 该编号好友已经被添加的情况
-    # print(alreadyAdd.exists)
 
     args = {"repo_material_id": "39",'EndIndex':'100','gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

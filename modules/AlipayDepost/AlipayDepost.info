@@ -1,0 +1,20 @@
+{
+"id": "AlipayDepost",
+"name":"支付宝通讯录简存",
+"cate":"其他模块",
+"font": "qq",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"Ali01",
+"icon":"vcard-o",
+"remark":"支付宝通讯录简存",
+"setting":[
+   {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}
