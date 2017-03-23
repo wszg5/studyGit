@@ -28,7 +28,7 @@ class client_hellotrue:
         }
 
     def GetToken(self, useCache=True):
-        key = 'XunMa_Token_%s' % (hash(self.serial) % 10)  # 根据手机串码的hash值尾号共用token, 每10个手机共用一个token
+        key = 'HelloTrue_Token_%s' % (hash(self.serial) % 10)  # 根据手机串码的hash值尾号共用token, 每10个手机共用一个token
         if useCache:
             tokenCache = cache.get(key)
             if tokenCache:
@@ -67,9 +67,9 @@ class client_hellotrue:
     def GetPhoneNumber(self, itemId, times=0):
         round = times + 1
         if round > 30:
-            raise 'XunMa has tried 3 minutes'
+            raise 'Hellotrue has tried 3 minutes'
         token = self.GetToken()
-        key = 'phone_%s_%s' % (token, itemId)
+        key = 'HelloTrue_phone_%s_%s' % (token, itemId)
         phone = cache.popSet(key)
         if phone:
             return phone
@@ -107,7 +107,7 @@ class client_hellotrue:
             ok = 'ok'
 
     def GetCode(self, number, itemId, length=6):
-        key = 'verify_code_%s_%s' % (itemId, number)
+        key = 'hellotrue_verify_code_%s_%s' % (itemId, number)
         code = cache.get(key)
         if code:
             return code
@@ -124,7 +124,7 @@ class client_hellotrue:
                     return None
                 res = re.findall("\d{%s}" % length, data)
                 code = res[0]
-                sms_number_key = 'verify_code_%s_%s' % (itemId, number)
+                sms_number_key = 'hellotrue_verify_code_%s_%s' % (itemId, number)
                 cache.set(sms_number_key, code)
             else:
                 data = response.read()#.decode('GBK')

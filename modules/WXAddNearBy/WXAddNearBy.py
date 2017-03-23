@@ -13,7 +13,7 @@ class WXSaveId:
         z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(7)
+        z.sleep(7)
         add_count = int(args['add_count'])
         for i in range(add_count):
             cate_id = args['repo_wxcade_id']
@@ -21,7 +21,7 @@ class WXSaveId:
             if len(wxid) == 0:
                 d.server.adb.cmd("shell",
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
-                time.sleep(20)
+                z.sleep(20)
                 return
             z.heartbeat()
             id = wxid[0]['number']
@@ -52,14 +52,14 @@ class WXSaveId:
             Material = self.repo.GetMaterial(cate_id, 0, 1)
             if len(Material) == 0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             message = Material[0]['content']  # 取出验证消息的内容
             z.input(message)
             z.heartbeat()
             d(text='发送').click()
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WXSaveId

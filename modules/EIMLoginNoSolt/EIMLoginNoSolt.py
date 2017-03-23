@@ -117,9 +117,12 @@ class EIMLoginNoSlot:
                     break
 
     def action(self, d,z, args):
-        z.set_mobile_data(False)
+        z.heartbeat()
+        d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
         z.sleep(5)
-        z.set_mobile_data(True)
+        d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
         z.sleep(8)
         z.heartbeat()
         serialinfo = z.generateSerial("788")  # 修改串号等信息

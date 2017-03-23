@@ -18,7 +18,7 @@ class WeiXinSetLabel:
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(7)
+        z.sleep(7)
         d(text='通讯录').click()
         if not d(text='新的朋友').exists:
             d(text='通讯录').click()
@@ -34,7 +34,7 @@ class WeiXinSetLabel:
         i = 1
         ending = 0     #用来判断是否到底
         while True:
-            time.sleep(1)
+            z.sleep(1)
             obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i).child(className='android.widget.LinearLayout').child(className='android.view.View')     #得到微信名
             if obj.exists:
                 z.heartbeat()
@@ -105,7 +105,7 @@ class WeiXinSetLabel:
                 d(text='保存').click()
                 d(text='完成').click()
 
-                time.sleep(1)
+                z.sleep(1)
                 d(description='返回').click()
                 i = i+1
                 continue
@@ -116,7 +116,7 @@ class WeiXinSetLabel:
                     continue
                 else:
                     d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
-                    time.sleep(3)
+                    z.sleep(3)
 
                     if ending == 1:     #结束条件
                         break
@@ -135,7 +135,7 @@ class WeiXinSetLabel:
                     continue
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WeiXinSetLabel

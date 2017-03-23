@@ -125,9 +125,11 @@ class EIMTemporaryCut:
 
     def action(self, d,z, args):
         z.heartbeat()
-        z.set_mobile_data(False)
-        z.sleep(3)
-        z.set_mobile_data(True)
+        d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+        z.sleep(5)
+        d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
         z.sleep(8)
         z.heartbeat()
         serialinfo = z.generateSerial("788")  # 修改串号等信息
@@ -138,6 +140,7 @@ class EIMTemporaryCut:
         time.sleep(4)
         self.slot.backup(d,1, QQnumber)  # 设备信息，卡槽号，QQ号
         d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
+        d.server.adb.cmd("shell", "am force-stop com.tencent.eim").wait()  # 强制停止
 
         gener = args['kind']
         if gener == '普通QQ':

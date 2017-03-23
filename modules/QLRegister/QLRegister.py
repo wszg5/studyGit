@@ -26,7 +26,7 @@ class QLRegister:
         self.scode = smsCode(d.server.adb.device_serial())
         d.server.adb.cmd("shell", "pm clear com.tencent.qqlite").communicate()  # 清除缓存
         d.server.adb.cmd("shell", "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 将qq拉起来
-        time.sleep(8)
+        z.sleep(8)
         # cateId = args['repo_cate_id']
         # nickNameList = self.repo.GetMaterial(cateId, 0, 1)
         # nickName = nickNameList[0]["content"]
@@ -35,14 +35,14 @@ class QLRegister:
         # z.input(nickName)
         d(text='新用户').click()
         count = args['add_count']
-        time.sleep(1)
+        z.sleep(1)
         condition = 0
         while condition<count:
             z.heartbeat()
             phoneNumber = self.scode.GetPhoneNumber(self.scode.QQ_REGISTER)
             z.input(phoneNumber)
             d(text='下一步').click()
-            time.sleep(4)
+            z.sleep(4)
 
             if d(textContains='已绑定其他QQ号码').exists:
                 d(text='取消').click()
@@ -77,7 +77,7 @@ class QLRegister:
             z.input(verifycode)
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return QLRegister

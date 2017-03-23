@@ -18,7 +18,7 @@ class WXDelLable:
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(7)
+        z.sleep(7)
         d(text='通讯录').click()
         if d(text='标签').exists:
             d(text='标签').click()
@@ -35,10 +35,10 @@ class WXDelLable:
             while lable.exists:
                 z.heartbeat()
                 lable.long_click()
-                time.sleep(1)
+                z.sleep(1)
                 d(text='删除').click()
                 d(text='删除').click()
-                time.sleep(1)
+                z.sleep(1)
         else:    #要区分性别的情况
             set1 = set()
             i = 0
@@ -62,7 +62,7 @@ class WXDelLable:
                            forClick.long_click()
                            d(text='删除').click()
                            d(text='删除').click()
-                           time.sleep(1)
+                           z.sleep(1)
                         else:
                             i = i+1
                             continue
@@ -90,7 +90,7 @@ class WXDelLable:
                     continue
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WXDelLable

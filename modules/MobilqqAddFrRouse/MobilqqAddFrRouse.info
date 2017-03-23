@@ -1,12 +1,12 @@
 {
 "id": "MobilqqAddFrRouse",
 "cate":"QQ模块",
-"name":"普通QQ唤醒加好友(QQ名片)",
+"name":"普通QQ加好友(名片分享)",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"QQ05",
+"version": "1.1",
+"code":"QQ10",
 "icon": "vcard-o",
-"remark":"添加好友",
+"remark":"普通QQ加好友(名片分享)",
 "setting":[
 	{
 	"id": "repo_number_cate_id",

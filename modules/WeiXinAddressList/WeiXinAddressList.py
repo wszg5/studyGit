@@ -17,7 +17,7 @@ class WeiXinAddressList:
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(7)
+        z.sleep(7)
         d(text='通讯录').click()
         if not d(text='新的朋友').exists:
             d(text='通讯录').click()
@@ -33,11 +33,11 @@ class WeiXinAddressList:
             Material = self.repo.GetMaterial(cate_id, 0, 1)
             if len(Material) == 0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             message = Material[0]['content']  # 从素材库取出的要发的材料
 
-            time.sleep(1)
+            z.sleep(1)
             wxName = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i).child(className='android.widget.LinearLayout').child(className='android.view.View')     #得到微信名
             if wxName.exists:
                 z.heartbeat()
@@ -76,7 +76,7 @@ class WeiXinAddressList:
                 d(text='发消息').click()
 
 
-                time.sleep(1)
+                z.sleep(1)
                 obj = d(className='android.widget.EditText').info  # 将之前消息框的内容删除
                 obj = obj['text']
                 lenth = len(obj)
@@ -88,7 +88,7 @@ class WeiXinAddressList:
                 d(className='android.widget.EditText').click()
                 z.input(message)       #----------------------------------------
                 # d(text = '发送').click()
-                time.sleep(1)
+                z.sleep(1)
                 d(description='返回').click()
                 d(text='通讯录').click()
                 i = i+1
@@ -101,7 +101,7 @@ class WeiXinAddressList:
                     continue
                 else:
                     d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
-                    time.sleep(2)
+                    z.sleep(2)
 
                     if ending == 1:     #结束条件
                         return
@@ -113,7 +113,7 @@ class WeiXinAddressList:
                     continue
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WeiXinAddressList

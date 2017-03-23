@@ -124,11 +124,13 @@ class EIMLogin:
             while slotnum == 0:  # 2小时没有用过的卡槽也为空的情况
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"EIM卡槽全满，无间隔时间段未用\"").communicate()
                 z.sleep(30)
+                z.heartbeat()
                 slotnum = self.slot.getSlot(d, time_limit)
             z.heartbeat()
             d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
-            z.set_mobile_data(False)
-            z.sleep(3)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()   #开飞行模式
+            z.sleep(5)
             getSerial = self.repo.Getserial(cate_id,'%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 得到之前的串号
             if len(getSerial) == 0:  # 之前的信息保存失败的话
                 d.server.adb.cmd("shell",
@@ -144,7 +146,8 @@ class EIMLogin:
             z.heartbeat()
             self.slot.restore(d, slotnum)  # 有２小时没用过的卡槽情况，切换卡槽
             print("切换为"+str(slotnum))
-            z.set_mobile_data(True)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()     #关闭飞行模式
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
             z.sleep(8)
 
             d.server.adb.cmd("shell","am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
@@ -178,9 +181,11 @@ class EIMLogin:
 
         else:  # 有空卡槽的情况
             z.heartbeat()
-            z.set_mobile_data(False)
-            z.sleep(3)
-            z.set_mobile_data(True)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+            z.sleep(5)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
             z.sleep(8)
             serialinfo = z.generateSerial("788")  # 修改串号等信息
             print('登陆时的serial%s' % serialinfo)

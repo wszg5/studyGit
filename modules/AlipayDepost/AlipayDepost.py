@@ -1,22 +1,17 @@
 # coding:utf-8
 from PIL.ImageShow import show
-
 from uiautomator import Device
 from Repo import *
-from RClient import *
 import os, datetime, string, random
 from zservice import ZDevice
 import sys
-reload(sys)
 from PIL import Image
 import colorsys
-from XunMa import *
 from Inventory import *
 
 class AlipayDepost:
     def __init__(self):
         self.repo = Repo()
-        self.xuma = None
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间

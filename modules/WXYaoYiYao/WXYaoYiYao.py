@@ -3,7 +3,6 @@ from uiautomator import Device
 from Repo import *
 import time, datetime, random
 from zservice import ZDevice
-from RClient import *
 from PIL import Image
 import colorsys
 
@@ -21,9 +20,6 @@ class WXYaoYiYao:
         return uniqueNum
 
     def Gender(self, d):
-        co = RClient()
-        im_id = ""
-        co.rk_report_error(im_id)
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -87,13 +83,13 @@ class WXYaoYiYao:
         z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(5)
+        z.sleep(5)
 
         gender1 = args['gender']
 
         if d(text='我知道了').exists:
             d(text='我知道了').click()
-            time.sleep(2)
+            z.sleep(2)
         EndIndex = int(args['EndIndex'])         #------------------
         z.wx_action("openyaoyiyao")
         z.heartbeat()
@@ -105,14 +101,14 @@ class WXYaoYiYao:
                 if len(Material) == 0:
                     d.server.adb.cmd("shell",
                                      "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                    time.sleep(10)
+                    z.sleep(10)
                     return
                 message = Material[0]['content']  # 从素材库取出的要发的材料
                 z.heartbeat()
                 z.wx_yaoyiyao()
-                time.sleep(5)
+                z.sleep(5)
                 while d(textContains='正在搜').exists:
-                    time.sleep(2)
+                    z.sleep(2)
                 z.heartbeat()
                 if gender1 != '不限':
                     z.heartbeat()
@@ -125,7 +121,7 @@ class WXYaoYiYao:
                 z.heartbeat()
                 if d(textContains='打招呼消息').exists:
                     d(textContains='打招呼消息').click()
-                    time.sleep(1)
+                    z.sleep(1)
                     d(text='返回').click()
                 d(textContains='相距').click()
                 d(text='打招呼').click()
@@ -138,7 +134,7 @@ class WXYaoYiYao:
             else:
                 break
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():

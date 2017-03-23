@@ -15,15 +15,15 @@ class WeiXinAddFriends:
         z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(7)
+        z.sleep(7)
 
         d(description='更多功能按钮',className='android.widget.RelativeLayout').click()
-        time.sleep(1)
+        z.sleep(1)
         if d(text='添加朋友').exists:
             d(text='添加朋友').click()
         else:
             d(description='更多功能按钮', className='android.widget.RelativeLayout').click()
-            time.sleep(1)
+            z.sleep(1)
             d(text='添加朋友').click()
         d(index='1',className='android.widget.TextView').click()   #点击搜索好友的输入框
         z.heartbeat()
@@ -35,21 +35,21 @@ class WeiXinAddFriends:
                 numbers = self.repo.GetNumber(cate_id, 120, 1)  # 取出add_count条两小时内没有用过的号码
                 if len(numbers) == 0:
                     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"第%s号号码仓库为空，等待中……\"" % cate_id).communicate()
-                    time.sleep(20)
+                    z.sleep(20)
                     return
                 WXnumber = numbers[0]['number']
                 z.input(WXnumber)
                 d(textContains='搜索:').click()
                 z.heartbeat()
                 while d(textContains='正在查找').exists:
-                    time.sleep(2)
+                    z.sleep(2)
                 z.heartbeat()
                 if d(textContains='操作过于频繁').exists:
                     return
-                time.sleep(1)
+                z.sleep(1)
                 if d(textContains='用户不存在').exists:
                     d(descriptionContains='清除',index=2).click()
-                    time.sleep(1)
+                    z.sleep(1)
                     continue
                 if d(textContains='状态异常').exists:
                     d(descriptionContains='清除', index=2).click()
@@ -112,13 +112,13 @@ class WeiXinAddFriends:
                 #     return
                 d(descriptionContains='返回').click()
                 d(descriptionContains='清除').click()
-                time.sleep(1)
+                z.sleep(1)
                 account = account+1
                 continue
             else:
                 break
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WeiXinAddFriends

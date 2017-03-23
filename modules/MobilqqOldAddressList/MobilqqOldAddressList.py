@@ -60,13 +60,18 @@ class MobilqqOldAddressList:
         width = str["displayWidth"]
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        z.sleep(6)
+        z.sleep(9)
         if not d(text='搜索').exists:                    #到了通讯录这步后看号有没有被冻结
             return 2
         if d(text='绑定手机号码').exists:
             d(text='关闭').click()
             d(text='关闭').click()
             z.sleep(1)
+        if d(text='匹配手机通讯录').exists:
+            d(text='匹配手机通讯录').click()
+        while d(textContains='正在发送').exists:
+            time.sleep(2)
+        time.sleep(4)
         d(className='android.widget.TabWidget').child(className='android.widget.RelativeLayout',index=1).child(className='android.widget.ImageView',index=2).click()     #点击到联系人
         z.sleep(1)
         z.heartbeat()

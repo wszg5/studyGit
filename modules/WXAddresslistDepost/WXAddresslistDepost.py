@@ -18,13 +18,13 @@ class WXAddresslistDepost:
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(7)
+        z.sleep(7)
         d(description='更多功能按钮').click()
         d(textContains='添加朋友').click()
         d(text='手机联系人').click()
         d(text='添加手机联系人').click()
         while d(textContains='正在获取').exists:
-            time.sleep(3)
+            z.sleep(3)
         z.heartbeat()
         set1 = set()
         change = 0
@@ -88,7 +88,7 @@ class WXAddresslistDepost:
                 # if con != True:
                 #     d.server.adb.cmd("shell",
                 #                      "am broadcast -a com.zunyun.zime.toast --es msg \"消息保存失败……\"").communicate()
-                #     time.sleep(10)
+                #     z.sleep(10)
                 #     return
                 d(description='返回').click()
                 i = i+1
@@ -119,7 +119,7 @@ class WXAddresslistDepost:
                             endphone = obj2.info['text']
                             if endphone in set1:  # 结束条件，如果
                                 if (args["time_delay"]):
-                                    time.sleep(int(args["time_delay"]))
+                                    z.sleep(int(args["time_delay"]))
                                 return
                             else:
                                 break

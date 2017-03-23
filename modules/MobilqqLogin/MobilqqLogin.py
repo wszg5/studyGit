@@ -153,18 +153,19 @@ class MobilqqLogin:
             print(slotnum)
             while slotnum == 0:  # 2小时没有用过的卡槽也为空的情况
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ卡槽全满，无间隔时间段未用\"").communicate()
+                z.heartbeat()
                 z.sleep(30)
                 slotnum = self.slot.getSlot(d, time_limit)
             z.heartbeat()
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
 
-            z.set_mobile_data(False)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
             z.sleep(5)
 
             getSerial = self.repo.Getserial(cate_id,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, slotnum))     #得到之前的串号
             if len(getSerial)==0:      #之前的信息保存失败的话
-                d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.zime.toast --es msg \"串号获取失败，重新设置\"" ).communicate()   #在５１上测时库里有东西但是王红机器关闭后仍获取失败
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"串号获取失败，重新设置\"" ).communicate()   #在５１上测时库里有东西但是王红机器关闭后仍获取失败
                 getSerial = z.generateSerial("788")  # 修改信息
             else:
                 getSerial = getSerial[0]['imei']      #如果信息保存成功但串号没保存成功的情况
@@ -175,7 +176,8 @@ class MobilqqLogin:
                     z.generateSerial(getSerial)  # 将串号保存
             z.heartbeat()
             self.slot.restore(d, slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-            z.set_mobile_data(True)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
             z.sleep(8)
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为"+str(slotnum)+"号\"").communicate()
             z.sleep(1)
@@ -250,9 +252,12 @@ class MobilqqLogin:
 
         else:  # 有空卡槽的情况
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
-            z.set_mobile_data(False)
+
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
             z.sleep(5)
-            z.set_mobile_data(True)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
             z.sleep(8)
             serialinfo = z.generateSerial("788")    #修改串号等信息
             print('登陆时的serial%s'%serialinfo)
@@ -264,11 +269,6 @@ class MobilqqLogin:
 
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
-
-
-
-
-
 
 
 
@@ -300,8 +300,5 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id":"137","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
-    d.server.adb.cmd("shell",
-                     "settings put global airplane_mode_on 1 am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()  # 开关飞行模式
 
     o.action(d,z, args)
-    # serial = z.generateSerial("788")登录进去之前修改串号，将串号保存到仓库，所有登录之前都这么做，卡槽恢复之前根据设备号和卡槽号取到串号，调z.generateSerial(serial)将串号恢复

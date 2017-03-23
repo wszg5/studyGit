@@ -16,22 +16,22 @@ class WXScanCode:
         z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(5)
+        z.sleep(5)
         cate_id = args['repo_material_id']
         repo = Repo()
         materials = repo.GetMaterial(cate_id, 0, 1)
         if len(materials) == 0:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"朋友圈素材%s号仓库为空，等待中\"" % cate_id).communicate()
-            time.sleep(10)
+            z.sleep(10)
             return
         t = materials[0]['ext1']  # 取出验证消息的内容
         z.heartbeat()
         z.wx_scanqr(t)
         z.heartbeat()
-        time.sleep(15)
+        z.sleep(15)
         d.swipe(130, 532, 402, 575, 1)
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WXScanCode

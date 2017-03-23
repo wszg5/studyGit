@@ -1,12 +1,12 @@
 {
 "id": "MobilqqConcern",
 "cate":"QQ模块",
-"name":"普通QQ关注我赞过的QQ",
+"name":"普通QQ关注(我赞的人)",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"QQ09",
+"version": "1.1",
+"code":"QQ18",
 "icon": "vcard-o",
-"remark":"普通QQ关注我赞过的QQ",
+"remark":"普通QQ关注(我赞的人)",
 "setting":[
     {
 	"id": "add_count",

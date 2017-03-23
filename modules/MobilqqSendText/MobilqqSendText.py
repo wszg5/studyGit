@@ -19,17 +19,17 @@ class MobilqqSendText:
         width = str["displayWidth"]
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        time.sleep(6)
+        z.sleep(6)
         if not d(text='消息', resourceId='com.tencent.mobileqq:id/name').exists:  # 到了通讯录这步后看号有没有被冻结
             return 2
         if d(text='绑定手机号码').exists:
             d(text='关闭').click()
             d(text='关闭').click()
-            time.sleep(1)
+            z.sleep(1)
 
         d(className='android.widget.TabWidget', resourceId='android:id/tabs').child(
             className='android.widget.FrameLayout').child(className='android.widget.RelativeLayout').click()  # 点击到联系人
-        time.sleep(4)
+        z.sleep(4)
         z.heartbeat()
         if d(text='主题装扮').exists:
             d(text='关闭').click()
@@ -51,7 +51,7 @@ class MobilqqSendText:
                 if obj.exists:
                     obj.click()  # 将展开的全部收起来
                     continue
-                time.sleep(2)
+                z.sleep(2)
                 wait = 0
             d(resourceId='com.tencent.mobileqq:id/elv_buddies', className='android.widget.AbsListView').child(
                 resourceId='com.tencent.mobileqq:id/group_item_layout', index=6).click()  # 将好友展开
@@ -67,28 +67,28 @@ class MobilqqSendText:
             Material = self.repo.GetMaterial(cate_id, 0, 1)
             if len(Material) == 0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             message = Material[0]['content']  # 从素材库取出的要发的材料
-            time.sleep(1)
+            z.sleep(1)
             z.heartbeat()
             obj = d(resourceId='com.tencent.mobileqq:id/elv_buddies', className='android.widget.AbsListView').child(className='android.widget.LinearLayout', index=i).child(
                 resourceId='com.tencent.mobileqq:id/name',index=0)  # 点击第ｉ个人
-            time.sleep(1)
+            z.sleep(1)
             if obj.exists:
                 z.heartbeat()
                 change = 1
                 obj.click()
                 if obj.exists:     #当第一次没点击上的话再次点击
                     obj.click()
-                time.sleep(2)
+                z.sleep(2)
                 d.swipe(width / 2, height * 4 / 5, width / 2, height / 3)     #滑动是为了将QQ号显示出来
                 z.heartbeat()
                 QQNumber = d(resourceId='com.tencent.mobileqq:id/info',className='android.widget.TextView',index=0)
                 if QQNumber.exists:
                     QQNumber = QQNumber.info
                 else:       #
-                    time.sleep(2)
+                    z.sleep(2)
                     d.swipe(width / 2, height * 4 / 5, width / 2, height / 3)  # 上次滑动仍没显示QQ号的情况
                     QQNumber = d(resourceId='com.tencent.mobileqq:id/info', className='android.widget.TextView',index=0)
                     if QQNumber.exists:
@@ -116,17 +116,17 @@ class MobilqqSendText:
                     if endCondition.exists:
                         return
                     d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)        #没到最后一个人，继续滑动发消息
-                    time.sleep(5)
+                    z.sleep(5)
                     i = 2
                     continue
             z.heartbeat()
             time.sleep(0.5)
             d(text='发消息').click()
-            time.sleep(1)
+            z.sleep(1)
 
             d(className='android.widget.EditText').click()  # message
             z.input(message)
-            time.sleep(1)
+            z.sleep(1)
             d(resourceId='com.tencent.mobileqq:id/fun_btn', text='发送').click()
             i = i + 1
             t = t + 1
@@ -144,7 +144,7 @@ class MobilqqSendText:
                 className='android.widget.RelativeLayout').click()  # 发完消息后点击到联系人
             z.heartbeat()
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():

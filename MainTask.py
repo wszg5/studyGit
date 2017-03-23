@@ -134,7 +134,6 @@ if __name__ == "__main__":
         zinfo = json.loads(zinfo)
         cache.set("ZTASK_VERSION", zinfo["version"], None)
     finally:
-        cache.set("ZTASK_VERSION", "UNKNOW", None)
         file_object.close()
 
     #启动虚拟任务子进程

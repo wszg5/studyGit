@@ -5,7 +5,7 @@ from PIL import Image
 from uiautomator import Device
 from imageCode import imageCode
 from Repo import *
-import time, datetime, random
+import datetime, random
 from zservice import ZDevice
 from slot import slot
 import os
@@ -134,13 +134,14 @@ class EIMCutQQ:
                 slotnum = self.slot.getSlot(d, time_limit)
 
             d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
-            z.set_mobile_data(False)
-            z.sleep(3)
+
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+            z.sleep(5)
 
             getSerial = self.repo.Getserial(cate_id,'%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 得到之前的串号
             if len(getSerial) == 0:  # 之前的信息保存失败的话
-                d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.zime.toast --es msg \"串号获取失败，重新设置\"").communicate()  # 在５１上测时库里有东西但是王红机器关闭后仍获取失败
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"串号获取失败，重新设置\"").communicate()  # 在５１上测时库里有东西但是王红机器关闭后仍获取失败
                 getSerial = z.generateSerial("788")  # 修改信息
             else:
                 getSerial = getSerial[0]['imei']      #如果信息保存成功但串号没保存成功的情况
@@ -153,7 +154,9 @@ class EIMCutQQ:
             z.heartbeat()
             self.slot.restore(d, slotnum)  # 有２小时没用过的卡槽情况，切换卡槽
             print("切换为" + str(slotnum))
-            z.set_mobile_data(True)
+
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
             z.sleep(8)
             d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 先将eim拉起来
             z.heartbeat()
@@ -269,9 +272,11 @@ class EIMCutQQ:
 
 
         else:  # 有空卡槽的情况
-            z.set_mobile_data(False)
-            z.sleep(3)
-            z.set_mobile_data(True)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+            z.sleep(5)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
             z.sleep(8)
             z.heartbeat()
             serialinfo = z.generateSerial("788")  # 修改串号等信息

@@ -14,10 +14,10 @@ class WXAcpVerify:
         width = str["displayWidth"]
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(7)
+        z.sleep(7)
         d(text='通讯录').click()
         d(className='android.widget.ListView').child(className='android.widget.RelativeLayout',index=1).click()
-        time.sleep(1)
+        z.sleep(1)
         z.heartbeat()
         set1 = set()
         change = 0
@@ -61,7 +61,7 @@ class WXAcpVerify:
                     d(text='通过验证').click()
                     d(text='完成').click()
                     z.heartbeat()
-                    time.sleep(1)
+                    z.sleep(1)
                     d(description='返回').click()
                     i = i+1
                     continue
@@ -86,7 +86,7 @@ class WXAcpVerify:
                     continue
 
         if (args["time_delay"]):
-                time.sleep(int(args["time_delay"]))
+                z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WXAcpVerify

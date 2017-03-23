@@ -4,10 +4,6 @@ from Repo import *
 import time, string, random
 from zservice import ZDevice
 from smsCode import smsCode
-import sys
-reload(sys)
-from XunMa import *
-sys.setdefaultencoding('utf8')
 
 class AlipayRegister:
     def __init__(self):
@@ -83,6 +79,9 @@ def getPluginClass():
     return AlipayRegister
 
 if __name__ == "__main__":
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")

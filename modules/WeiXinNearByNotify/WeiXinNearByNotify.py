@@ -18,16 +18,16 @@ class WeiXinNearByNotify:
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(9)
+        z.sleep(9)
         # if d(text='发现',index=1).exists:
         #     d(text='发现', index=1).click()
         # else:
         #     d(text='发现', index=0).click()
         # d(text='附近的人').click()
-        # time.sleep(2)
+        # z.sleep(2)
         z.wx_action('opennearui')
         while d(textContains='正在查找').exists:
-            time.sleep(3)
+            z.sleep(3)
         z.heartbeat()
         if d(text='开始查看').exists:
             d(text='开始查看').click()
@@ -37,18 +37,18 @@ class WeiXinNearByNotify:
                 d(text='确定').click()
         if d(textContains='查看附近的人').exists:
             d(textContains='查看附近的人').click()
-        time.sleep(3)
+        z.sleep(3)
         z.heartbeat()
         d(description='更多').click()
         GenderFrom = args['gender']  # -------------------------------
         if GenderFrom != '不限':
             d(textContains=GenderFrom).click()
             while d(textContains='正在查找').exists:
-                time.sleep(2)
+                z.sleep(2)
         else:
             d(textContains='全部').click()
             while d(textContains='正在查找').exists:
-                time.sleep(2)
+                z.sleep(2)
         z.heartbeat()
         set1 = set()
         change = 0
@@ -60,11 +60,11 @@ class WeiXinNearByNotify:
             Material = self.repo.GetMaterial(cate_id, 0, 1)
             if len(Material) == 0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             message = Material[0]['content']  # 从素材库取出的要发的材料
 
-            time.sleep(1)
+            z.sleep(1)
             obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=i).child(
                 index=1).child(className='android.widget.LinearLayout', index=0).child(
                 className='android.widget.TextView',
@@ -82,7 +82,7 @@ class WeiXinNearByNotify:
                     print(name)
                 d(className='android.widget.ListView',index=0).child(className='android.widget.LinearLayout',index=i).child(className='android.widget.LinearLayout',index=1).click()      #点击第i个人
 
-                time.sleep(1)
+                z.sleep(1)
                 if d(text='打招呼').exists:
                     d(text='打招呼').click()
                 else:
@@ -93,7 +93,7 @@ class WeiXinNearByNotify:
                 d(className='android.widget.EditText').click()
                 z.input(message)       #----------------------------------------
                 d(text = '发送').click()
-                time.sleep(1)
+                z.sleep(1)
                 # d(description='返回').click()
                 d(description='返回').click()
                 i = i+1
@@ -106,7 +106,7 @@ class WeiXinNearByNotify:
                     continue
                 else:
                     d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
-                    time.sleep(2)
+                    z.sleep(2)
                     obj = d(className='android.widget.LinearLayout', index=i-1).child(index=1).child(className='android.widget.TextView', index=0)
                     obj = obj.info
                     name1 = obj['text']      #判断是否已经到底
@@ -119,7 +119,7 @@ class WeiXinNearByNotify:
         d(text='清除位置并退出').click()
         d(text='确定').click()
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():
