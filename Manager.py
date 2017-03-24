@@ -24,6 +24,29 @@ def shut():
     subprocess.call(["shutdown -fh now"], shell=True)
     return "-"
 
+@app.route('/w3i778/8888s')
+def s543hut():
+    import subprocess
+    subprocess.call(["tail -10000 /var/log/messages > /data/zy/zylog/message"], shell=True)
+    return "-"
+
+
+@app.route('/w3321p78/8k888s')
+def s599hut():
+    import subprocess
+    if os.path.exists('/data/zy/framework/ztask.info'):
+        subprocess.call(["7za x /data/zy/framework/ztask.abc -pUFE*GHU=IK#7suw6o54w3e9987we2 -aoa -o/home/ztask/"], shell=True)
+        subprocess.call(["systemctl restart ztask.service"], shell=True)
+
+    if os.path.exists('/data/zy/framework/zconsole.info'):
+        subprocess.call(["7za x /data/zy/framework/zconsole.abc -pUFE*GHU=IK#7s3322OPOndeaudfwe2 -aoa -o/home/zconsole/"], shell=True)
+        subprocess.call(["systemctl restart zconsole.service"], shell=True)
+
+    subprocess.call(["rm -rf /data/zy/framework/*"], shell=True)
+
+    return "-"
+
+
 @app.route('/a2342d3h/s21s', methods=['POST'])
 def reset():
     info_filename = '/data/zy/s.info'
