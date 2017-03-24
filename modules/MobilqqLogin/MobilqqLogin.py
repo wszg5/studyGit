@@ -166,6 +166,7 @@ class MobilqqLogin:
             getSerial = self.repo.Getserial(cate_id,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, slotnum))     #得到之前的串号
             if len(getSerial)==0:      #之前的信息保存失败的话
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"串号获取失败，重新设置\"" ).communicate()   #在５１上测时库里有东西但是王红机器关闭后仍获取失败
+                print('切换失败')
                 getSerial = z.generateSerial("788")  # 修改信息
             else:
                 getSerial = getSerial[0]['imei']      #如果信息保存成功但串号没保存成功的情况
@@ -295,8 +296,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4AYSK00084")
-    z = ZDevice("HT4AYSK00084")
+    d = Device("HT4BLSK00255")
+    z = ZDevice("HT4BLSK00255")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id":"137","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
