@@ -20,6 +20,7 @@ class ImpContact:
 
 
     def action(self, d,z, args):
+        z.heartbeat()
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -32,7 +33,7 @@ class ImpContact:
             if len(numbers)> 0:
                 break;
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"电话号码%s号仓库为空，等待中\""%cate_id).communicate()
-            time.sleep(30)
+            z.sleep(30)
 
         if numbers:
             file_object = open(filename, 'w')
@@ -63,13 +64,14 @@ class ImpContact:
             out = d.server.adb.cmd("shell",
                                "dumpsys activity top  | grep ACTIVITY").communicate()[0].decode('utf-8')
             while out.find("com.zunyun.zime/.ImportActivity") > -1:
+                z.heartbeat()
                 out = d.server.adb.cmd("shell",
                                    "dumpsys activity top  | grep ACTIVITY").communicate()[0].decode('utf-8')
-                time.sleep(5)
+                z.sleep(5)
 
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return ImpContact
@@ -79,10 +81,15 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
+<<<<<<< HEAD
 
     d = Device("HT4A4SK00901")
     z = ZDevice("HT4A4SK00901")
 
+=======
+    d = Device("8HVSMZKBEQFIBQUW")
+    z = ZDevice("8HVSMZKBEQFIBQUW")
+>>>>>>> b5cd172cddedac95061b9defd6c32f83a9c03d22
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
 
 
@@ -96,7 +103,7 @@ if __name__ == "__main__":
     # d.dump(compressed=False)
 
 
-    args = {"repo_cate_id":"104",'number_count':'50',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"104",'number_count':'200',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
 
 
     o.action(d,z, args)

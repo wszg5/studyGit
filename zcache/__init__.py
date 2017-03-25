@@ -24,6 +24,10 @@ class _cache:
         r = redis.Redis(connection_pool=self.pool)
         return r.delete(key)
 
+    def deleteBatch(self, key):
+        r = redis.Redis(connection_pool=self.pool)
+        r.get()
+
     def clear(self):
         r = redis.Redis(connection_pool=self.pool)
         r.flushdb()
@@ -31,6 +35,7 @@ class _cache:
     def addSet(self, key, value):
         r = redis.Redis(connection_pool=self.pool)
         r.sadd(key, value)
+
 
     def popSet(self, key):
         r = redis.Redis(connection_pool=self.pool)

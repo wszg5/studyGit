@@ -3,9 +3,9 @@
 "cate":"EIM模块",
 "name":"EIM登录QQ(有卡槽)",
 "url": "http://www.bejson.com",
-"version": "1.0",
+"version": "1.1",
 "icon":"vcard-o",
-"code":"EIM01",
+"code":"EIM01.1",
 "remark":"EIM登录QQ(有卡槽)",
 "setting":[
 {

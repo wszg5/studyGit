@@ -1,10 +1,8 @@
 # coding:utf-8
-from RClient import *
 from uiautomator import Device
 from Repo import *
 import  time, datetime, random
 from zservice import ZDevice
-from XunMa import *
 import traceback
 from PIL import Image
 import colorsys
@@ -22,10 +20,8 @@ class MobilqqReplyPraise:
         uniqueNum = str(nowTime) + str(randomNum);
         return uniqueNum
 
-    def Gender(self, d,i):
-        co = RClient()
-        im_id = ""
-        co.rk_report_error(im_id)
+    def Gender(self, d,z):
+        z.heartbeat()
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -34,6 +30,7 @@ class MobilqqReplyPraise:
             .child(className='android.widget.RelativeLayout', index=1).child(
             resourceId='com.tencent.mobileqq:id/lastMsgTime')  # 得到QQ号
         if obj.exists:
+            z.heartbeat()
             obj = obj.info
             obj = obj['bounds']  # 验证码处的信息
             left = obj["left"]  # 验证码的位置信息
@@ -67,6 +64,7 @@ class MobilqqReplyPraise:
                 if score > max_score:
                     max_score = score
                     dominant_color = (r, g, b)
+            z.heartbeat()
             # print("---------------------------------------------------------------------------")
             # print(dominant_color)
             if None == dominant_color:
@@ -85,31 +83,34 @@ class MobilqqReplyPraise:
             return '不限'
 
     def action(self, d,z,args):
+        z.heartbeat()
         gender = args['gender']
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        time.sleep(8)
+        z.sleep(8)
         d(className='android.widget.TabWidget',index=2).child(className='android.widget.FrameLayout',index=2).child(className='android.widget.RelativeLayout',index=0).click()
         d(text='附近').click()
         while True:
             if d(text='新鲜事').exists:
                 break
             else:
-                time.sleep(2)
+                z.sleep(2)
+        z.heartbeat()
         d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=2).child(className='android.widget.LinearLayout',index=0).click()     #点击进入自己的主页
         d(descriptionContains='赞').child(className='android.view.View').click()
         # d(descriptionContains='帐户及设置').click()
         # d(descriptionContains='等级').click()
         # d(descriptionContains='赞').click()
-        time.sleep(3)
+        z.sleep(3)
         obj4 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=1) \
             .child(className='android.widget.RelativeLayout', index=1).child(
             className='android.widget.LinearLayout')  # 用来点击的
         if not obj4.exists:      #没有人赞我情况
             return
+        z.heartbeat()
         set1 = set()
         i = 1
         t = 1
@@ -122,14 +123,16 @@ class MobilqqReplyPraise:
             obj3 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=i) \
             .child(className='android.widget.RelativeLayout', index=1).child(
             resourceId='com.tencent.mobileqq:id/lastMsgTime')  # 看性别是否存在
-            if not gender=='不限':       #给赞我的人发消息，看性别是否有消息
+            if not gender=='不限':       #给赞我的人发消息，看性别是否有要求
                 if obj3.exists:    #对性别有要求的情况，看性别是否有显示
-                    genderfrom = self.Gender(d,i)    #得到第ｉ个人的真实性别
+                    z.heartbeat()
+                    genderfrom = self.Gender(d,z)    #得到第ｉ个人的真实性别
                     print(genderfrom)
                     if genderfrom != gender:
                         i = i+1
                         continue
                 else:
+                    z.heartbeat()
                     if d(textContains='暂无更多').exists:
                         break
                     if d(textContains='显示更多').exists:
@@ -139,6 +142,7 @@ class MobilqqReplyPraise:
                     i = 1
                     continue
             if obj1.exists:    #当对性别没要求时，就判断昵称是否存在
+                z.heartbeat()
                 obj1 = obj1.info
                 name = obj1['text']
                 if name in set1:  # 判断是否已经关注过该联系人
@@ -149,7 +153,8 @@ class MobilqqReplyPraise:
                     print(name)
                 obj.click()
                 while d(textContains='正在加载').exists:
-                    time.sleep(2)
+                    z.sleep(2)
+                z.heartbeat()
                 d(text='发消息').click()
                 d(className='android.widget.EditText').click()
                 cate_id = args["repo_material_id"]
@@ -157,10 +162,10 @@ class MobilqqReplyPraise:
                 if len(Material) == 0:
                     d.server.adb.cmd("shell",
                                      "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                    time.sleep(10)
+                    z.sleep(10)
                     return
                 Material = Material[0]['content']  # 从素材库取出的要发的材料
-
+                z.heartbeat()
                 z.input(Material)
                 d(text='发送').click()
                 d(text='返回').click()
@@ -177,7 +182,7 @@ class MobilqqReplyPraise:
                 continue
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():

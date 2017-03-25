@@ -11,18 +11,18 @@ class WeiXinSetLabel:
 
 
     def action(self, d,z, args):
-
+        z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(7)
+        z.sleep(7)
         d(text='通讯录').click()
         if not d(text='新的朋友').exists:
             d(text='通讯录').click()
-
+        z.heartbeat()
         set1 = set()
         change = 0
         lady = 0     #统计女士标签人数
@@ -34,10 +34,10 @@ class WeiXinSetLabel:
         i = 1
         ending = 0     #用来判断是否到底
         while True:
-
-            time.sleep(1)
+            z.sleep(1)
             obj = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=i).child(className='android.widget.LinearLayout').child(className='android.view.View')     #得到微信名
             if obj.exists:
+                z.heartbeat()
                 change = 1      #好友存在且未被添加的情况出现，change值改变
                 obj1 = obj.info
                 name = obj1['text']
@@ -51,6 +51,7 @@ class WeiXinSetLabel:
                     set1.add(name)
                     print(name)
                 obj.click()
+                z.heartbeat()
                 if d(text='标签').exists:
                     d(description='返回').click()
                     i = i + 1
@@ -63,6 +64,7 @@ class WeiXinSetLabel:
                     print(Gender)
                 else:
                     Gender = '妖'
+                z.heartbeat()
                 if  d(textContains='备注和标签').exists:
                     d(textContains='备注和标签').click()
                 else:
@@ -70,7 +72,7 @@ class WeiXinSetLabel:
                     i = i + 1
                     continue
                 d(textContains='添加标签').click()
-
+                z.heartbeat()
                 if Gender =='女':
                     if lady<200:
                         lady = lady+1
@@ -99,11 +101,11 @@ class WeiXinSetLabel:
                         yaolabel = chr(h)
                     z.input(yaolabel + Gender)
 
-
+                z.heartbeat()
                 d(text='保存').click()
                 d(text='完成').click()
 
-                time.sleep(1)
+                z.sleep(1)
                 d(description='返回').click()
                 i = i+1
                 continue
@@ -114,7 +116,7 @@ class WeiXinSetLabel:
                     continue
                 else:
                     d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
-                    time.sleep(3)
+                    z.sleep(3)
 
                     if ending == 1:     #结束条件
                         break
@@ -133,7 +135,7 @@ class WeiXinSetLabel:
                     continue
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WeiXinSetLabel

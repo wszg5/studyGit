@@ -10,11 +10,13 @@ class WXPublicNum:
         self.repo = Repo()
 
     def action(self, d,z, args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(7)
+        z.sleep(7)
         endIndex = int(args['EndIndex'])
         d(description='搜索').click()
+        z.heartbeat()
         endCondition = 0
         while endCondition<endIndex:
             cate_id = args["repo_material_id"]  # ------------------
@@ -22,8 +24,9 @@ class WXPublicNum:
             if len(Material) == 0:
                 d.server.adb.cmd("shell",
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
+            z.heartbeat()
             link = Material[0]['content']  # 从素材库取出的要发的材料
             z.input(link)
             d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=0).child(className='android.widget.RelativeLayout',index=0).click()    #点击搜索
@@ -32,7 +35,7 @@ class WXPublicNum:
                 d(description='清除').click()
                 continue
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WXPublicNum

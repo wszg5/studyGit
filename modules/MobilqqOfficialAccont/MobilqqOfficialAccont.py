@@ -10,9 +10,10 @@ class MobilqqOfficialAccont:
         self.repo = Repo()
 
     def action(self, d,z,args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").wait()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        time.sleep(6)
+        z.sleep(6)
         d(textContains='搜索').click()
         d(descriptionContains='公众号').click()
         add_count = int(args['add_count'])  # 要添加多少人
@@ -23,12 +24,13 @@ class MobilqqOfficialAccont:
             if len(Material) == 0:
                 d.server.adb.cmd("shell",
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             message = Material[0]['content']  # 取出验证消息的内容
             z.input(message)
             d(textContains='搜索').click()
-            time.sleep(2)
+            z.sleep(2)
+            z.heartbeat()
             if d(textContains='没有找到').exists:
                 d(descriptionContains='搜索聊天或者联系人').child(description='清空').click()
                 continue
@@ -39,14 +41,15 @@ class MobilqqOfficialAccont:
                 d(descriptionContains='搜索聊天或者联系人').child(description='清空').click()
                 continue
             else:
+                z.heartbeat()
                 d(text='加关注').click()
-                time.sleep(2)
+                z.sleep(2)
                 d(text='返回').click()
                 d(text='返回').click()
                 d(descriptionContains='搜索聊天或者联系人').child(description='清空').click()
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():

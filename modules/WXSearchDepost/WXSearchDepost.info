@@ -1,8 +1,7 @@
-WXSearchDepost
 {
-"id": "WinXinAddFriends",
+"id": "WXSearchDepost",
 "cate":"微信模块",
-"name":"微信搜索加好友",
+"name":"微信搜索简存",
 "url": "http://www.bejson.com",
 "version": "1.0",
 "code":"WX20",
@@ -10,26 +9,11 @@ WXSearchDepost
 "remark":"微信版本，6.5.4",
 "setting":[
 	{
-	"id": "repo_number_id1",
+	"id": "repo_number_cate_id",
 	"name":"被检存的号码库",
 	"type":"repo",
 	"source":"number",
-	"top_cate_id":"23"
-	},
-	{
-    "id": "repo_material_cate_id",
-    "name":"验证信息素材库",
-    "type":"repo",
-    "source":"material",
-    "top_cate_id":"12"
-    },
-    {
-	"id": "gender",
-	"name":"性别",
-	"type":"select",
-	"list":{"男":"男","女":"女","不限":"不限"},
-	"defaultValue":"女",
-	"remark":"性别要求"
+	"top_cate_id":"21"
 	},
     {
 	"id": "add_count",

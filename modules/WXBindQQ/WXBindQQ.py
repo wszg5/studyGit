@@ -10,9 +10,10 @@ class WXBindQQ:
         self.repo = Repo()
 
     def action(self, d,z, args):
+        z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(4)
+        z.sleep(4)
         d(text='我').click()
         d(text='设置').click()
         d(textContains='帐号与安全').click()
@@ -20,28 +21,31 @@ class WXBindQQ:
         if d(text='QQ号').exists:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"该微信已绑定QQ号\"" ).communicate()
             return
+        z.heartbeat()
         cate_id = args["repo_cate_id"]
         time_limit = args['time_limit']
         numbers = self.repo.GetAccount(cate_id, time_limit, 1)
         if len(numbers) == 0:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码%s号仓库为空，等待中\"" % cate_id).communicate()
-            time.sleep(10)
+            z.sleep(10)
             return
         QQNumber = numbers[0]['number']  # 即将登陆的QQ号
         QQPassword = numbers[0]['password']
-        time.sleep(1)
+        z.sleep(1)
+        z.heartbeat()
         d(text='开始绑定').click()
         d(text='QQ号').set_text(QQNumber)
         d(className='android.widget.EditText', index=2).set_text(QQPassword)
         d(text='完成').click()
-        time.sleep(3)
+        z.sleep(3)
+        z.heartbeat()
         if d(text='提示').exists:
             d(text='确定').click()
         if d(textContains='过于频繁').exists:
             return
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():

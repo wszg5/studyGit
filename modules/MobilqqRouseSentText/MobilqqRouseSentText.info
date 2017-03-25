@@ -1,12 +1,12 @@
 {
 "id": "MobilqqRouseSentText",
 "cate":"QQ模块",
-"name":"QQ唤醒发临时会话",
+"name":"普通QQ临时会话(wap)",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"QQ14",
+"code":"QQ15",
 "icon": "vcard-o",
-"remark":"QQ唤醒发临时会话",
+"remark":"普通QQ临时会话(wap)",
 "setting":[
 	{
 	"id": "repo_number_cate_id",
