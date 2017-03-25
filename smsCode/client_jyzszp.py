@@ -58,13 +58,9 @@ class client_jyzszp:
 
     def GetPhoneNumber(self, itemId, times=0):
         round = times + 1
-<<<<<<< HEAD:XunMa.py
-        if  round > 30:
-            raise Exception('XunMa has tried 3 minutes')
-=======
         if round > 30:
             raise 'XunMa has tried 3 minutes'
->>>>>>> b5cd172cddedac95061b9defd6c32f83a9c03d22:smsCode/client_jyzszp.py
+
         token = self.GetToken()
         key = 'phone_%s_%s' % (token, itemId)
         phone = cache.popSet(key)
@@ -151,30 +147,7 @@ class client_jyzszp:
                 return code
         return ""
 
-<<<<<<< HEAD:XunMa.py
 
-    def defriendPhoneNumber(self, phoneNumber, itemId, times=0):
-        round = times + 1
-        if round > 30:
-            print 'defriendPhoneNumber has tried 3 minutes'
-            return
-        try:
-            token = self.GetToken()
-            path = "/addBlack?token=%s&phoneList=%s-%s" % (token, itemId, phoneNumber)
-            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-            conn.request("GET", path)
-            response = conn.getresponse()
-            if response.status == 200:
-                data = response.read()
-                print phoneNumber,'拉黑成功'
-            else:
-                ok='ok'
-                print phoneNumber,'拉黑失败'
-        except Exception as e:
-            self.logger.info(e.message)
-            return self.defriendPhoneNumber(phoneNumber, itemId,round)
-
-=======
     def defriendPhoneNumber(self, phoneNumber, itemId):
         token = self.GetToken()
         path = "/addBlack?token=%s&phoneList=%s-%s" % (token, itemId, phoneNumber)
@@ -185,7 +158,6 @@ class client_jyzszp:
             data = response.read()
         else:
             ok = 'ok'
->>>>>>> b5cd172cddedac95061b9defd6c32f83a9c03d22:smsCode/client_jyzszp.py
 
     def MatchPhoneNumber(self, number, itemId):
         token = self.GetToken()

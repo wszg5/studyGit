@@ -1,0 +1,26 @@
+{
+"id": "TIMCollectData14",
+"cate":"TIM模块",
+"name":"TIM通讯录检存(单字段)",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"TIM14",
+"icon":"vcard-o",
+"remark":"TIM通讯录检存(单字段)",
+"setting":[
+	{
+	"id": "repo_numberCateId_id",
+	"name":"TIM检存通讯录",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"21"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

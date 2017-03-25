@@ -23,7 +23,7 @@
         "top_cate_id":"12"
         },
         {
-        "id": "xm_cateId",
+        "id": "scode_cateId",
         "name":"迅码有效手机号存储",
         "type":"repo",
         "source":"number",

@@ -1,8 +1,8 @@
 # coding:utf-8
 from uiautomator import Device
 from zservice import ZDevice
+from smsCode import smsCode
 from Repo import *
-from XunMa import *
 import time
 from slot import slot
 
@@ -11,12 +11,12 @@ class TIMRegisterWithSlot:
 
     def __init__(self):
         self.repo = Repo()
-        self.xm = None
+        self.scode = None
         self.slot = slot('tim')
 
     def registerWithSlot(self,d,z,args):
         cateId = args['repo_cate_id']
-        self.xm = XunMa(d.server.adb.device_serial())
+        self.scode = smsCode(d.server.adb.device_serial())
 
         d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate()  # 清除缓存
         d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
@@ -27,7 +27,7 @@ class TIMRegisterWithSlot:
             d(className='android.widget.Button', text='新用户').click()
         time.sleep(2)
 
-        phoneNumber = self.xm.GetPhoneNumber('2111')
+        phoneNumber = self.scode.GetPhoneNumber(self.scode.QQ_REGISTER)
         print '手机号'
         print phoneNumber
         print '============'
@@ -59,22 +59,22 @@ class TIMRegisterWithSlot:
             else:
                 time.sleep(1)
 
-        vertifyCode = self.xm.GetVertifyCode(phoneNumber, '2111')  # 获取验证码
+        vertifyCode = self.scode.GetVertifyCode(phoneNumber, self.scode.QQ_REGISTER)  # 获取验证码
 
         if vertifyCode == "":
             if d(text='重新发送', className='android.widget.TextView').exists:
                 d(text='重新发送', className='android.widget.TextView').click()
                 time.sleep(2)
                 print '重新发送'
-                vertifyCode = self.xm.GetVertifyCode(phoneNumber, '2111')
+                vertifyCode = self.scode.GetVertifyCode(phoneNumber, self.scode.QQ_REGISTER)
 
                 if vertifyCode == '':
-                    self.xm.ReleasePhone(phoneNumber, '2111')
+                    self.scode.ReleasePhone(phoneNumber, self.scode.QQ_REGISTER)
                     print '验证码获取失败'
                     return False
 
         print vertifyCode
-        self.xm.defriendPhoneNumber(phoneNumber, '2111')
+        self.scode.defriendPhoneNumber(phoneNumber, self.scode.QQ_REGISTER)
         d(text='请输入短信验证码', className='android.widget.EditText').set_text(vertifyCode)
 
         time.sleep(1)
