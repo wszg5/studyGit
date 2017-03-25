@@ -8,9 +8,7 @@ from XunMa import *
 import traceback
 from PIL import Image
 import colorsys
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+
 
 class MobilqqAddressList:
     def __init__(self):
@@ -47,7 +45,7 @@ class MobilqqAddressList:
             img = Image.open(sourcePng)
             box = (left, top, right, bottom)  # left top right bottom
             region = img.crop(box)  # 截取验证码的图片
-            # show(region)　　　　　　　#展示资料卡上的信息
+            # show(region)    #展示资料卡上的信息
             image = region.convert('RGBA')
             # 生成缩略图，减少计算量，减小cpu压力
             image.thumbnail((200, 200))
@@ -102,11 +100,11 @@ class MobilqqAddressList:
             time.sleep(1)
             d(text='下一步').click()
             time.sleep(3)
-            if d(text='下一步',resourceId='com.tencent.mobileqq:id/name',index=2).exists:       #操作过于频繁的情况
+            if d(text='下一步').exists:       #操作过于频繁的情况
                 return 'false'
 
-            if d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').exists:     #提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
-                d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').click()
+            if d(text='确定').exists:     #提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
+                d(text='确定',).click()
 
             code = self.xuma.GetVertifyCode(GetBindNumber, '2113','4')
 
@@ -114,7 +112,7 @@ class MobilqqAddressList:
 
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
             d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
-            time.sleep(2)
+            time.sleep(6)
             if d(textContains='没有可匹配的').exists:
                 return 'false'
 
@@ -189,9 +187,10 @@ class MobilqqAddressList:
                     time.sleep(7)
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
 
-                if d(text='匹配手机通讯录',resourceId='com.tencent.mobileqq:id/name').exists:
-                    d(text='匹配手机通讯录', resourceId='com.tencent.mobileqq:id/name').click()
-                    time.sleep(10)
+                if d(text='匹配手机通讯录').exists:
+                    d(text='匹配手机通讯录').click()
+                    while not d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).exists:
+                        time.sleep(2)
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
                 time.sleep(1)
                 if d(text='启用').exists:
@@ -293,6 +292,10 @@ def getPluginClass():
     return MobilqqAddressList
 
 if __name__ == "__main__":
+    import sys
+
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT4A4SK00901")

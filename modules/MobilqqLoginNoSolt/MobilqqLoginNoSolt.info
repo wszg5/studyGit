@@ -4,7 +4,7 @@
 "name":"登录普通QQ(无卡槽)",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"11",
+"code":"QQ02",
 "icon":"vcard-o",
 "remark":"登录普通QQ(无卡槽)",
 "setting":[

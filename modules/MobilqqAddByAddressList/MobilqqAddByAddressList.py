@@ -113,6 +113,9 @@ class MobilqqAddByAddressList:
 
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
             d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
+            time.sleep(5)
+            if d(textContains='没有可匹配的').exists:
+                return 'false'
 
         return 'true'
 
@@ -189,9 +192,10 @@ class MobilqqAddByAddressList:
                     time.sleep(7)
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
 
-                if d(text='匹配手机通讯录',resourceId='com.tencent.mobileqq:id/name').exists:
-                    d(text='匹配手机通讯录', resourceId='com.tencent.mobileqq:id/name').click()
-                    time.sleep(10)
+                if d(text='匹配手机通讯录').exists:
+                    d(text='匹配手机通讯录').click()
+                    while not d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).exists:
+                        time.sleep(2)
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
                 time.sleep(1)
                 if d(text='启用').exists:

@@ -4,17 +4,10 @@
 "name":"微信搜索检存(验证讯码手机是否可用)",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"35",
+"code":"WX14",
 "icon": "vcard-o",
 "remark":"微信搜索检存，6.5.4",
 "setting":[
-	{
-	"id": "repo_number_id",
-	"name":"号码库分类",
-	"type":"repo",
-	"source":"number",
-	"top_cate_id":"23"
-	},
     {
 	"id": "add_count",
 	"name":"保存号码的个数",

@@ -20,6 +20,8 @@ class ImpContact:
 
 
     def action(self, d,z, args):
+        time.sleep(180)
+
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -69,12 +71,17 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT49YSK01576")
+    z = ZDevice("HT49YSK01576")
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
-
-
+    z.server.install()
+    # serial = z.wx_action("opennearui")
+    # ids = json.loads(serial)
+    # for id in ids:
+    #     z.wx_openuserchat(id)
+    #     break
+    #serial = z.generateSerial("788")
+    #print jo
     # d.dump(compressed=False)
     args = {"repo_cate_id":"104",'number_count':'100',"time_delay":"3"}    #cate_id是仓库号，length是数量
-
     o.action(d,z, args)

@@ -4,12 +4,12 @@
 "name":"微信搜索加好友",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"40",
+"code":"WX20",
 "icon": "vcard-o",
 "remark":"微信版本，6.5.4",
 "setting":[
 	{
-	"id": "repo_number_cate_id",
+	"id": "repo_number_id1",
 	"name":"号码库分类",
 	"type":"repo",
 	"source":"number",

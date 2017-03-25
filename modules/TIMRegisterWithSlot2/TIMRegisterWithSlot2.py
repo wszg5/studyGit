@@ -219,6 +219,7 @@ if __name__ == "__main__":
 
     o.action(d,z,args)
 
+
     # d(text='请输入你的手机号码', className='android.widget.EditText').set_text('13430803686')
 
     # slot = slot('tim')
