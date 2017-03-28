@@ -189,6 +189,9 @@ if __name__ == "__main__":
                         if processDict.has_key(deviceid) and processDict.get(deviceid).is_alive():
                             processDict[deviceid].terminate()
                             del processDict[deviceid]
+                            from zservice import ZDevice
+                            z = ZDevice(deviceid, 1000)
+                            z.cmd("shell", "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"stop\"");
             #检查运行中的进程是否有手机被拔出电脑
             for device in processDict:
                 if device not in devicelist:

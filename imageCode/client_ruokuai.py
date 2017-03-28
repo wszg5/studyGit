@@ -42,6 +42,7 @@ class client_ruokuai(object):
         }
         params.update(self.base_params)
         files = {'image': ('a.jpg', im.read())}
+        requests.adapters.DEFAULT_RETRIES = 5
         r = requests.post('http://api.ruokuai.com/create.json', data=params, files=files, headers=self.headers)
 
         #{"Result":"答题结果","Id":"题目Id(报错使用)"}
