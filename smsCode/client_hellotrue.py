@@ -28,7 +28,7 @@ class client_hellotrue:
         }
 
     def GetToken(self, useCache=True):
-        key = 'XunMa_Token_%s' % (hash(self.serial) % 10)  # 根据手机串码的hash值尾号共用token, 每10个手机共用一个token
+        key = 'HelloTrue_Token_%s' % (hash(self.serial) % 10)  # 根据手机串码的hash值尾号共用token, 每10个手机共用一个token
         if useCache:
             tokenCache = cache.get(key)
             if tokenCache:
@@ -97,7 +97,8 @@ class client_hellotrue:
 
     def ReleasePhone(self, phoneNumber, itemId):
         token = self.GetToken()
-        path = "/api/do.php?action=cancelRecv&token=%s&phone=%s&sid=%s" % (token, phoneNumber, itemId)
+        itemcode = self.im_type_list[itemId]
+        path = "/api/do.php?action=cancelRecv&token=%s&phone=%s&sid=%s" % (token, phoneNumber, itemcode)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         response = conn.getresponse()
@@ -144,7 +145,8 @@ class client_hellotrue:
 
     def defriendPhoneNumber(self, phoneNumber, itemId):
         token = self.GetToken()
-        path = "/api/do.php?action=addBlacklist&token=%s&sid=%s&phone=%s" % (token, itemId, phoneNumber)
+        itemcode = self.im_type_list[itemId]
+        path = "/api/do.php?action=addBlacklist&token=%s&sid=%s&phone=%s" % (token, itemcode, phoneNumber)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         response = conn.getresponse()

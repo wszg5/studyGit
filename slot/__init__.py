@@ -42,6 +42,12 @@ class slot:
             self.folders = ['files/user','databases']
             self.maxSlot = const.MAX_SLOTS_EIM
 
+        elif (self.type == "token"):
+            self.package = "com.tencent.token"
+            self.files = ['databases/mobiletoken.db']
+            self.folders = ['shared_prefs']
+            self.maxSlot = const.MAX_SLOTS_TOKEN
+
         else:
             raise SyntaxError("目前还不支持%s卡槽"%self.type)
 
