@@ -1,13 +1,13 @@
 {
 "id": "MobilqqReplyPraise",
-"name":"普通QQ给赞我的人发消息",
+"name":"普通QQ打招呼(赞我的人)",
 "cate":"QQ模块",
 "font": "qq",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"QQ12",
+"version": "1.1",
+"code":"QQ20",
 "icon":"vcard-o",
-"remark":"普通QQ给赞我的人发消息",
+"remark":"普通QQ打招呼(赞我的人)",
 "setting":[
 	{
 	"id": "repo_material_id",

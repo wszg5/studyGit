@@ -12,7 +12,7 @@ import multiprocessing
 
 logger = util.logger
 from dbapi import dbapi
-dbapi = dbapi()
+
 class virtualTask:
     def __init__(self, serial):
         self.serial = serial

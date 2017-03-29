@@ -1,7 +1,7 @@
 # coding:utf-8
 from uiautomator import Device
 from Repo import *
-from XunMa import *
+from smsCode import smsCode
 import time, string, random
 from zservice import ZDevice
 
@@ -26,20 +26,20 @@ class WeiXinRegister:
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
-        self.xm = XunMa(d.server.adb.device_serial())
+        self.scode = smsCode(d.server.adb.device_serial())
         while True:
             d.server.adb.cmd("shell", "pm clear com.tencent.mm").communicate()  # 清除缓存
             d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()
-            time.sleep(8)
+            z.sleep(8)
             d(text='注册').click()
-            time.sleep(1)
+            z.sleep(1)
             if d(text='注册').exists:
                 d(text='注册').click()
             cate_id = args['repo_name_id']  # 得到昵称库的id
             Material = self.repo.GetMaterial(cate_id, 0, 1)  # 修改昵称
             if len(Material) == 0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             z.heartbeat()
             name = Material[0]['content']  # 从素材库取出的要发的材料
@@ -56,7 +56,7 @@ class WeiXinRegister:
                 d.swipe(474,327,500,329)
             z.heartbeat()
             while True:
-                PhoneNumber = self.xm.GetPhoneNumber('2251')
+                PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER)
                 z.heartbeat()
                 print(PhoneNumber)
                 if PhoneNumber.startswith('17'):
@@ -71,7 +71,7 @@ class WeiXinRegister:
             #         if PhoneNumber is None:
             #             d.server.adb.cmd("shell",
             #                              "am broadcast -a com.zunyun.zime.toast --es msg \"缓存中没有号码\"" ).communicate()
-            #             time.sleep(10)
+            #             z.sleep(10)
             #             return
             #         print(PhoneNumber)
             #         print('-------------------------------上面是仓库里的号码')
@@ -91,11 +91,11 @@ class WeiXinRegister:
             z.heartbeat()
             d(text='注册').click()
             d(text='确定').click()
-            time.sleep(2)
+            z.sleep(2)
             while d(textContains='正在验证').exists:
-                time.sleep(2)
+                z.sleep(2)
             z.heartbeat()
-            code = self.xm.GetVertifyCode(PhoneNumber,'2251')
+            code = self.scode.GetVertifyCode(PhoneNumber, self.scode.WECHAT_REGISTER)
             self.xm.defriendPhoneNumber(PhoneNumber, '2251')
             z.heartbeat()
             if '失败'==code:
@@ -117,7 +117,7 @@ class WeiXinRegister:
                 cate_id = args['repo_number_id']
                 self.repo.RegisterAccount('',password,PhoneNumber,cate_id)
                 print ('成功')
-                time.sleep(20)
+                z.sleep(20)
 
 
 def getPluginClass():
@@ -134,7 +134,7 @@ if __name__ == "__main__":
     z = ZDevice("HT4A4SK00901")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    z.input('往事小岛')
+    'dingdingdingdingdindigdingdingdingdingdingdingdingdingdingdingdingdignin'
     # repo = Repo()
     # repo.RegisterAccount('', 'gemb1225', '13045537833', '109')
     args = {"repo_name_id": "102","repo_number_id": "109","add_count": "9","time_delay": "3"}  # cate_id是仓库号，发中文问题

@@ -17,7 +17,7 @@ class EIMAddFriends:
         z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.eim").communicate()  # 强制停止   3001369923  Bn2kJq5l
         d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        time.sleep(6)
+        z.sleep(6)
         add_count = int(args['add_count'])  # 要添加多少人
 
         cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
@@ -25,7 +25,7 @@ class EIMAddFriends:
         if len(numbers) == 0:
             d.server.adb.cmd("shell",
                              "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\"" % cate_id).communicate()
-            time.sleep(10)
+            z.sleep(10)
             return
         list = numbers  # 将取出的号码保存到一个新的集合
         z.heartbeat()
@@ -42,13 +42,13 @@ class EIMAddFriends:
             if len(Material) == 0:
                 d.server.adb.cmd("shell",
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             message = Material[0]['content']
             QQnumber = list[i]['number']
             z.input(QQnumber)
             d(text='查找').click()
-            time.sleep(2)
+            z.sleep(2)
             z.heartbeat()
             if d(text='查找').exists:            #该号码不存在的情况
                 obj = d(className='android.widget.EditText').info                 #将文本框已有的东西删除重来
@@ -62,7 +62,7 @@ class EIMAddFriends:
                 continue
             z.heartbeat()
             d(text='加好友').click()
-            time.sleep(1)
+            z.sleep(1)
             if d(text='加好友').exists:                                             #拒绝被添加的情况
                 d(text='返回').click()
                 obj = d(className='android.widget.EditText').info
@@ -74,7 +74,7 @@ class EIMAddFriends:
                     t = t + 1
                     continue
                 continue
-            time.sleep(2)
+            z.sleep(2)
             z.heartbeat()
             if d(text='必填').exists:
                 d(text='返回').click()
@@ -97,7 +97,7 @@ class EIMAddFriends:
             while t<lenth:
                 d.press.delete()
                 t = t + 1
-            time.sleep(1)
+            z.sleep(1)
             z.input(message)
             d(text='下一步').click()
             d(text='发送').click()
@@ -106,7 +106,7 @@ class EIMAddFriends:
 
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 def getPluginClass():
     return EIMAddFriends
 

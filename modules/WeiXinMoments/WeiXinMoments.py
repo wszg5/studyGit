@@ -18,19 +18,19 @@ class WeiXinMoments:
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(7)
+        z.sleep(7)
         d(className='android.widget.RelativeLayout', index=3).child(text='我').click()
         wxname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=1)\
             .child(className='android.widget.LinearLayout',index=1).child(className='android.view.View').info   #得到微信名，为了判断朋友圈哪些已被我点赞评论
         myname = wxname['text']
         z.heartbeat()
         z.wx_action('opensnsui')
-        time.sleep(3)
+        z.sleep(3)
         # myname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0).child(
         #     className='android.widget.TextView').info
         # myname = myname['text']
         d.swipe(width / 2, height * 4 / 5, width / 2, height / 4)
-        time.sleep(1)
+        z.sleep(1)
         z.heartbeat()
         i = 0
         t = 0
@@ -40,7 +40,7 @@ class WeiXinMoments:
             Material = self.repo.GetMaterial(cate_id, 0, 1)
             if len(Material) == 0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             message = Material[0]['content']  # 从素材库取出的要发的材料
 
@@ -76,7 +76,7 @@ class WeiXinMoments:
                 else:                         #赞被屏幕遮住的情况
                     d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
                     z.heartbeat()
-                    time.sleep(2)
+                    z.sleep(2)
                     if d(className='android.widget.FrameLayout', index=0).child(className='android.widget.FrameLayout', index='3').child(description='评论').exists:
                         i = 0
                     else:
@@ -99,7 +99,7 @@ class WeiXinMoments:
                 if obja.exists:
                     return
                 d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
-                time.sleep(2)
+                z.sleep(2)
                 z.heartbeat()
                 obj = d(className='android.widget.ListView').child(className='android.widget.FrameLayout',
                                                                    index=0).child(
@@ -111,7 +111,7 @@ class WeiXinMoments:
                     i = 1
                     continue
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():

@@ -12,7 +12,7 @@ import datetime
 
 logger = util.logger
 from dbapi import dbapi
-dbapi = dbapi()
+
 class phoneTask:
     def __init__(self, serial):
         self.serial = serial
@@ -31,6 +31,11 @@ class phoneTask:
             o.action(d, self.z, json.loads(step["arg"]))
 
     def handler(self, signum, frame):
+        if self.task["show_task_info"]:
+            self.z.cmd("shell", "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"running\" --es task_name \"%s\"" % self.task["name"]);
+        else:
+            self.z.cmd("shell", "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"stop\"");
+
         key = 'timeout_%s' % self.serial
         activeTime = cache.get(key)
         if (activeTime is None):

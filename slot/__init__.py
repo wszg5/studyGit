@@ -10,7 +10,6 @@ import util
 """Python wrapper for Zunyun Service."""
 class slot:
     def __init__(self, type):
-        self.dbapi = dbapi()
         self.type = type
         if (self.type == "tim"):
             self.package = "com.tencent.tim"
@@ -79,7 +78,7 @@ class slot:
 
         #d.server.adb.cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
 
-        self.dbapi.SaveSlotInfo(d.server.adb.device_serial(), self.type, name, "false", "true", info)
+        dbapi.SaveSlotInfo(d.server.adb.device_serial(), self.type, name, "false", "true", info)
 
     def restore(self, d, name, target=None):
         if target is None:
@@ -110,11 +109,11 @@ class slot:
         #d.server.adb.cmd("shell", "cp -r -f -p /data/data/com.zy.bak/tim/%s/databases/ /data/data/com.tencent.tim/"%name).wait()
 
         #d.server.adb.cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
-        self.dbapi.PickSlot(d.server.adb.device_serial(), self.type, name)
+        dbapi.PickSlot(d.server.adb.device_serial(), self.type, name)
 
 
     def getEmpty(self, d):
-        slots = self.dbapi.ListSlots(d.server.adb.device_serial(), self.type)
+        slots = dbapi.ListSlots(d.server.adb.device_serial(), self.type)
         if (len(slots)  == 0):
             return 1
         logger = util.logger
@@ -128,13 +127,13 @@ class slot:
         return 0
 
     def getSlot(self, d, interval):
-        slots = self.dbapi.ListSlotsInterval(d.server.adb.device_serial(), self.type, int(interval) * 60)
+        slots = dbapi.ListSlotsInterval(d.server.adb.device_serial(), self.type, int(interval) * 60)
         if (len(slots) > 0):
             return int(slots[0]["name"])
         return 0
 
     def getSlotInfo(self, d, name):
-        return self.dbapi.GetSlotInfo(d.server.adb.device_serial(), self.type, name)
+        return dbapi.GetSlotInfo(d.server.adb.device_serial(), self.type, name)
 
 
 

@@ -1,12 +1,12 @@
 {
 "id": "MobilqqPraise",
 "cate":"QQ模块",
-"name":"普通QQ点赞",
+"name":"普通QQ点赞(名片分享)",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"QQ11",
+"version": "1.1",
+"code":"QQ17",
 "icon": "vcard-o",
-"remark":"普通QQ点赞",
+"remark":"普通QQ点赞(名片分享)",
 "setting":[
 	{
 	"id": "repo_number_cate_id",

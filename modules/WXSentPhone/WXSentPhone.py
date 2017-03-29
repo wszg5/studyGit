@@ -1,8 +1,9 @@
 # coding:utf-8
+import time
+
 from uiautomator import Device
 from Repo import *
 from zservice import ZDevice
-from XunMa import *
 
 
 class WXSentPhone:

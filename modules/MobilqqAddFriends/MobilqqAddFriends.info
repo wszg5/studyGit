@@ -1,12 +1,12 @@
 {
 "id": "MobilqqAddFriends",
 "cate":"QQ模块",
-"name":"普通QQ添加好友",
+"name":"普通QQ加好友(搜索查找)",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"QQ06",
+"version": "1.1",
+"code":"QQ09",
 "icon": "vcard-o",
-"remark":"添加好友",
+"remark":"普通QQ加好友(搜索查找)",
 "setting":[
 	{
 	"id": "repo_number_cate_id",

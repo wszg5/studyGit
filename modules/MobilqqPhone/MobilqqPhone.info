@@ -1,13 +1,13 @@
 {
 "id": "MobilqqPhone",
-"name":"普通QQ通讯录打电话",
+"name":"普通QQ通讯录(语音电话)",
 "cate":"QQ模块",
 "font": "qq",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"QQ19",
+"code":"QQ08",
 "icon":"vcard-o",
-"remark":"普通QQ通讯录打电话",
+"remark":"普通QQ通讯录(语音电话)",
 "setting":[
 	{
 	"id": "gender",

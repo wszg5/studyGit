@@ -15,12 +15,12 @@ class EIMTemporarySessionII:
         numbers = self.repo.GetNumber(cate_id, 0, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
         if len(numbers) == 0:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\"" % cate_id).communicate()
-            time.sleep(10)
+            z.sleep(10)
             return
 
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
-        time.sleep(15)
+        z.sleep(15)
         z.heartbeat()
         for i in range (0,totalNumber,+1):
             cate_id = args["repo_material_cate_id"]
@@ -28,21 +28,21 @@ class EIMTemporarySessionII:
             if len(Material) == 0:
                 d.server.adb.cmd("shell",
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             message = Material[0]['content']  # 取出验证消息的内容
 
             QQnumber = list[i]['number']
-            time.sleep(1)
+            z.sleep(1)
 
             z.heartbeat()
             d.server.adb.cmd("shell",
                              'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % QQnumber)  # 临时会话发企业QQ）
-            time.sleep(2)
+            z.sleep(2)
             z.heartbeat()
             if d(text='企业QQ').exists:
                 d(text='企业QQ').click()
-                time.sleep(0.5)
+                z.sleep(0.5)
                 if d(text='仅此一次').exists:
                     d(text='仅此一次').click()
 
@@ -50,7 +50,7 @@ class EIMTemporarySessionII:
                 d.server.adb.cmd("shell",
                                  'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % QQnumber)  # 临时会话发企业QQ）
                 z.heartbeat()
-                time.sleep(1)
+                z.sleep(1)
                 if d(text='企业QQ').exists:
                     d(text='企业QQ').click()
                     if d(text='仅此一次').exists:
@@ -64,7 +64,7 @@ class EIMTemporarySessionII:
 
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return EIMTemporarySessionII

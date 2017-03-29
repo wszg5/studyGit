@@ -3,7 +3,7 @@
     "cate":"基础模块",
     "name": "导入系统通讯录",
     "url": "http://www.bejson.com",
-    "version": "1.0",
+    "version": "1.1",
     "code": "base01",
     "icon":"vcard-o",
     "remark": "清空通讯录，然后导入通讯录",

@@ -1,5 +1,5 @@
 # coding:utf-8
-from XunMa import *
+from smsCode import smsCode
 from uiautomator import Device
 from Repo import *
 import  time, datetime, random
@@ -11,19 +11,19 @@ class MobilqqAddByAddressListII:
         self.repo = Repo()
         self.xuma = None
     def Bind(self, d):
-        self.xuma = XunMa(d.server.adb.device_serial())
+        self.scode = smsCode(d.server.adb.device_serial())
         z.heartbeat()
         newStart = 1
         while newStart == 1:
-            GetBindNumber = self.xuma.GetPhoneNumber('2113')
+            GetBindNumber = self.scode.GetPhoneNumber(self.scode.QQ_CONTACT_BIND)
             print(GetBindNumber)
-            time.sleep(2)
+            z.sleep(2)
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(
                 GetBindNumber)  # GetBindNumber
             z.heartbeat()
-            time.sleep(1)
+            z.sleep(1)
             d(text='下一步').click()
-            time.sleep(3)
+            z.sleep(3)
             if d(text='下一步', resourceId='com.tencent.mobileqq:id/name', index=2).exists:  # 操作过于频繁的情况
                 return 'false'
 
@@ -31,13 +31,13 @@ class MobilqqAddByAddressListII:
                  index='2').exists:  # 提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
                 d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').click()
 
-            code = self.xuma.GetVertifyCode(GetBindNumber, '2113', '4')
+            code = self.scode.GetVertifyCode(GetBindNumber, self.scode.QQ_CONTACT_BIND, '4')
             z.heartbeat()
             newStart = 0
 
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
             d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
-            time.sleep(8)
+            z.sleep(8)
             z.heartbeat()
             if d(textContains='没有可匹配的').exists:
                 return 'false'
@@ -52,13 +52,13 @@ class MobilqqAddByAddressListII:
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        time.sleep(6)
+        z.sleep(6)
         cate_id = args["repo_material_id"]  # ------------------
         Material = self.repo.GetMaterial(cate_id, 0, 1)
         if len(Material) == 0:
             d.server.adb.cmd("shell",
                              "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-            time.sleep(10)
+            z.sleep(10)
             return
         message = Material[0]['content']  # 取出验证消息的内容
 
@@ -68,7 +68,7 @@ class MobilqqAddByAddressListII:
         if d(text='绑定手机号码').exists:
             d(text='关闭').click()
             d(text='关闭').click()
-            time.sleep(1)
+            z.sleep(1)
         if d(text='主题装扮').exists:
             d(text='关闭').click()
         if d(text='马上绑定').exists:
@@ -88,13 +88,13 @@ class MobilqqAddByAddressListII:
             z.heartbeat()
             if text == 'false':  # 操作过于频繁的情况
                 return
-            time.sleep(7)
+            z.sleep(7)
         if d(textContains='没有可匹配的').exists:
             return
         if d(text='匹配手机通讯录').exists:
             d(text='匹配手机通讯录').click()
             while not d(text='多选').exists:
-                time.sleep(2)
+                z.sleep(2)
         z.heartbeat()
         d(text='多选').click()
         while True:
@@ -135,6 +135,7 @@ class MobilqqAddByAddressListII:
                         obj5 = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=i)\
                             .child(className='android.widget.FrameLayout').child(text='等待验证')     #验证已经发过的情况
                         if obj5.exists:
+                            z.heartbeat()
                             d(textContains='加好友').click()
                             obj = d(className='android.widget.EditText').info  # 将之前消息框的内容删除
                             obj = obj['text']
@@ -198,7 +199,7 @@ class MobilqqAddByAddressListII:
         z.input(message)
         d(text='发送').click()
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return MobilqqAddByAddressListII

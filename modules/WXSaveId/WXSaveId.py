@@ -13,7 +13,7 @@ class WXSaveId:
         z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        time.sleep(7)
+        z.sleep(7)
         cate_id = args['repo_wxcade_id']
         serial = z.wx_action("opennearui")    #得到微信ｉｄ，字符串样式
         print(serial)
@@ -30,7 +30,7 @@ class WXSaveId:
             wxid = ids[i]
             self.repo.uploadPhoneNumber(wxid,cate_id)
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return WXSaveId

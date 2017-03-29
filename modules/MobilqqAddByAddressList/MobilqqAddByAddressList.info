@@ -1,13 +1,13 @@
 {
 "id": "MobilqqAddByAddressList",
-"name":"普通QQ通讯录加好友",
+"name":"普通QQ通讯录加好友(单选)",
 "cate":"QQ模块",
 "font": "qq",
 "url": "http://www.bejson.com",
-"version": "1.0",
+"version": "1.1",
 "code":"QQ03",
 "icon":"vcard-o",
-"remark":"普通QQ通讯录加好友，6.6.6.3025版本",
+"remark":"普通QQ通讯录加好友(单选)",
 "setting":[
 	{
 	"id": "repo_material_id",

@@ -34,6 +34,12 @@ for op, value in opts:
     elif op == "-o" or op == "--token_slots":
         const.MAX_SLOTS_TOKEN = int(value)
 
+
+if not os.path.exists('plugins/__init__.py'):
+    f = open('plugins/__init__.py', 'w')  # r只读，w可写，a追加
+    f.write("#init")
+    f.close()
+
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -136,7 +142,6 @@ if __name__ == "__main__":
         zinfo = json.loads(zinfo)
         cache.set("ZTASK_VERSION", zinfo["version"], None)
     finally:
-        cache.set("ZTASK_VERSION", "UNKNOW", None)
         file_object.close()
 
     #启动虚拟任务子进程
@@ -186,6 +191,9 @@ if __name__ == "__main__":
                         if processDict.has_key(deviceid) and processDict.get(deviceid).is_alive():
                             processDict[deviceid].terminate()
                             del processDict[deviceid]
+                            from zservice import ZDevice
+                            z = ZDevice(deviceid, 1000)
+                            z.cmd("shell", "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"stop\"");
             #检查运行中的进程是否有手机被拔出电脑
             for device in processDict:
                 if device not in devicelist:

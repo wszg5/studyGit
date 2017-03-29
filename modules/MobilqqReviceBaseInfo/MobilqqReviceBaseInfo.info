@@ -1,0 +1,35 @@
+{
+"id": "MobilqqReviceBaseInfo",
+"name":"普通QQ资料修改(基本)",
+"cate":"QQ模块",
+"font": "qq",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"QQ29",
+"icon":"vcard-o",
+"remark":"普通QQ资料修改(基本)",
+"setting":[
+	{
+	"id": "repo_material_id",
+	"name":"昵称库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "gender",
+	"name":"性别",
+	"type":"select",
+	"list":{"男":"男","女":"女","不限":"不限"},
+	"defaultValue":"女",
+	"remark":"性别要求"
+	},
+   {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

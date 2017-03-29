@@ -146,6 +146,7 @@ class client_jyzszp:
                 return code
         return ""
 
+
     def defriendPhoneNumber(self, phoneNumber, itemId):
         token = self.GetToken()
         itemcode = self.im_type_list[itemId]
@@ -159,7 +160,6 @@ class client_jyzszp:
             ok = 'ok'
 
     def MatchPhoneNumber(self, number, itemId):
-
         token = self.GetToken()
         path = "/getPhone?ItemId=" + itemId + "&token=" + token + "&Phone=" + number + ""
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)

@@ -3,8 +3,6 @@ from uiautomator import Device
 from Repo import *
 import time, datetime, random
 from zservice import ZDevice
-from RClient import *
-from PIL import Image
 
 class QLJudgeQQBind:
     def __init__(self):
@@ -14,9 +12,9 @@ class QLJudgeQQBind:
         z.heartbeat()
         d.server.adb.cmd("shell", "pm clear com.tencent.qqlite").communicate()  # 清除缓存
         d.server.adb.cmd("shell", "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 将qq拉起来
-        time.sleep(8)
+        z.sleep(8)
         d(text='新用户').click()
-        time.sleep(1)
+        z.sleep(1)
 
         add_count = int(args['add_count'])  # 搜索号码的次数
         for i in range(0, add_count, +1):  # 总人数
@@ -25,14 +23,14 @@ class QLJudgeQQBind:
             if len(number) == 0:
                 d.server.adb.cmd("shell",
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"手机号码库%s号仓库为空，等待中\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             PhoneNumber = number[0]['number']  # 取出验证消息的内容
 
             z.input(PhoneNumber)
             z.heartbeat()
             d(text='下一步').click()
-            time.sleep(1.5)
+            z.sleep(1.5)
             if d(textContains='已绑定其他').exists:
                 z.heartbeat()
                 SetCateId = args['repo_number_id1']
@@ -73,7 +71,7 @@ class QLJudgeQQBind:
                     t = t+1
             z.heartbeat()
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return QLJudgeQQBind

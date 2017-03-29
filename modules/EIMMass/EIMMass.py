@@ -15,12 +15,12 @@ class EIMMass:
         width = str["displayWidth"]
         d.server.adb.cmd("shell", "am force-stop com.tencent.eim").communicate()  # 强制停止   3001369923  Bn2kJq5l
         d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        time.sleep(5)
+        z.sleep(5)
         z.heartbeat()
         d(description='联系人栏').click()
         d(text='外部联系人').click()
         set1 = set()
-        time.sleep(2)
+        z.sleep(2)
         for out1 in range(3,13,+1):   #用来控制分组
            z.heartbeat()
            if d(index=out1,descriptionContains='分组已折叠').exists:
@@ -41,7 +41,7 @@ class EIMMass:
                        Material = self.repo.GetMaterial(cate_id, 0, 1)
                        if len(Material) == 0:
                            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                           time.sleep(10)
+                           z.sleep(10)
                            return
                        message = Material[0]['content']  # 从素材库取出的要发的材料
                        QQName = d(index=t,className='android.widget.RelativeLayout').child(className='android.widget.TextView',index=1)    #QQ网名
@@ -85,7 +85,7 @@ class EIMMass:
 
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():

@@ -20,7 +20,7 @@ class MobilqqConcern:
         width = str["displayWidth"]
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        time.sleep(8)
+        z.sleep(8)
         d(className='android.widget.TabWidget', index=2).child(className='android.widget.FrameLayout', index=2).child(
             className='android.widget.RelativeLayout', index=0).click()
         d(text='附近').click()
@@ -29,7 +29,7 @@ class MobilqqConcern:
             if d(text='新鲜事').exists:
                 break
             else:
-                time.sleep(2)
+                z.sleep(2)
         d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout', index=2).child(
             className='android.widget.LinearLayout', index=0).click()  # 点击进入自己的主页
         d(descriptionContains='赞').child(className='android.view.View').click()
@@ -38,7 +38,7 @@ class MobilqqConcern:
         # d(descriptionContains='赞').click()
         d(text='我赞过谁').click()
         z.heartbeat()
-        time.sleep(3)
+        z.sleep(3)
         obj3 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=1) \
             .child(className='android.widget.RelativeLayout', index=1).child(
             className='android.widget.LinearLayout')  # 用来点击的
@@ -67,16 +67,16 @@ class MobilqqConcern:
                     print(name)
                 obj.click()
                 while d(textContains='正在加载').exists:
-                    time.sleep(2)
+                    z.sleep(2)
                 z.heartbeat()
                 if d(text='关注').exists:
                     d(text='关注').click()
-                    time.sleep(1.5)
+                    z.sleep(1.5)
                 if d(textContains='取消').exists:
                     d(text='取消').click()
                 if d(text='关注').exists:     #因为第一次会有个提醒页面，需要再点一次才能关注成功
                     d(text='关注').click()
-                    time.sleep(1)
+                    z.sleep(1)
                     # if d(text='关注').exists:
                     #     return
 
@@ -94,11 +94,11 @@ class MobilqqConcern:
                 if d(textContains='显示更多').exists:
                     d(textContains='显示更多').click()
                 d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
-                time.sleep(2)
+                z.sleep(2)
                 i = 1
                 continue
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():

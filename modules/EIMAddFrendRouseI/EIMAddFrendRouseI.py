@@ -16,37 +16,37 @@ class EIMAddFrendRouseI:
         numbers = self.repo.GetNumber(cate_id, 0, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
         if len(numbers)==0:
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码%s号仓库为空，等待中\""%cate_id).communicate()
-            time.sleep(20)
+            z.sleep(20)
             return
         list = numbers  # 将取出的号码保存到一个新的集合
-        time.sleep(15)
+        z.sleep(15)
         z.heartbeat()
         for i in range (0,totalNumber,+1):
             cate_id = args["repo_material_cate_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
             if len(Material)==0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             message = Material[0]['content']
             QQnumber = list[i]['number']
-            time.sleep(1)
+            z.sleep(1)
             z.heartbeat()
             d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"'%QQnumber )  # qq名片页面
-            time.sleep(2)
+            z.sleep(2)
 
             if d(text='企业QQ').exists:
                 d(text='企业QQ').click()
-                time.sleep(0.5)
+                z.sleep(0.5)
                 if d(text='仅此一次').exists:
                     d(text='仅此一次').click()
 
             d(text='加好友').click()
-            time.sleep(1)
+            z.sleep(1)
             if d(text='加好友').exists:  # 拒绝被添加的情况
 
                 continue
-            time.sleep(2)
+            z.sleep(2)
             if d(text='必填').exists:
                 continue
             z.heartbeat()
@@ -57,14 +57,14 @@ class EIMAddFrendRouseI:
             while t < lenth:
                 d.press.delete()
                 t = t + 1
-            time.sleep(1)
+            z.sleep(1)
             z.input(message)
             d(text='下一步').click()
             d(text='发送').click()
             z.heartbeat()
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():

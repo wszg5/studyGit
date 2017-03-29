@@ -18,10 +18,10 @@ class client_xunma:
         self.username = username
         self.password = password
         self.im_type_list = {
-            'wechat_register': 1001,
+            'wechat_register': '2251',
             'qq_contact_bind': '2113',
             'qq_register': '2111',
-            'alipay_register': 1001,
+            'alipay_register': '3189',
         }
 
     def GetToken(self, useCache=True):
@@ -106,7 +106,8 @@ class client_xunma:
             ok = 'ok'
 
     def GetCode(self, number, itemId, length=6):
-        key = 'verify_code_%s_%s' % (itemId, number)
+        itemcode = self.im_type_list[itemId]
+        key = 'verify_code_%s_%s' % (itemcode, number)
         code = cache.get(key)
         if code:
             return code
@@ -118,7 +119,7 @@ class client_xunma:
             response = conn.getresponse()
             if response.status == 200:
                 data = response.read().decode('GBK')
-
+                print(data)
                 if 'Session 过期' in data or 'Session过期' in data:
                     self.GetToken(False)
                     return None
@@ -150,15 +151,20 @@ class client_xunma:
     def defriendPhoneNumber(self, phoneNumber, itemId):
         token = self.GetToken()
         itemcode = self.im_type_list[itemId]
-
         path = "/addBlack?token=%s&phoneList=%s-%s" % (token, itemcode, phoneNumber)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
+
         response = conn.getresponse()
+        # except Exception:
+        #     print('拉黑失败')
+        #     return 'ok'
+
+
         if response.status == 200:
             data = response.read()
         else:
-            ok = 'ok'
+            return 'ok'
 
     def MatchPhoneNumber(self, number, itemId):
         itemcode = self.im_type_list[itemId]
@@ -187,7 +193,6 @@ if __name__ == '__main__':
 
     reload(sys)
     sys.setdefaultencoding('utf8')
-
 
     xunma = client_xunma("asdfasdfasdf", "powerman","12341234abc")
     print xunma.GetPhoneNumber("qq_register")

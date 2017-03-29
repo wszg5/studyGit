@@ -19,7 +19,7 @@ class MobilqqRouseSentText:
         if len(numbers) == 0:
             d.server.adb.cmd("shell",
                              "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\"" % cate_id).communicate()
-            time.sleep(10)
+            z.sleep(10)
             return
         list = numbers  # 将取出的号码保存到一个新的集合
         print(list)
@@ -31,16 +31,16 @@ class MobilqqRouseSentText:
             if len(Material) == 0:
                 d.server.adb.cmd("shell",
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             message = Material[0]['content']  # 取出验证消息的内容
 
             QQnumber = list[i]['number']
-            time.sleep(1)
+            z.sleep(1)
             z.heartbeat()
             d.server.adb.cmd("shell",
                              'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % QQnumber)  # 临时会话
-            time.sleep(2)
+            z.sleep(2)
             z.heartbeat()
             if d(text='QQ').exists:
                 d(text='QQ').click()
@@ -52,7 +52,7 @@ class MobilqqRouseSentText:
                 z.heartbeat()
                 d.server.adb.cmd("shell",
                                  'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % QQnumber)  # 临时会话
-                time.sleep(1)
+                z.sleep(1)
                 if d(text='QQ').exists:
                     d(text='QQ').click()
                     if d(text='仅此一次').exists:
@@ -65,7 +65,7 @@ class MobilqqRouseSentText:
 
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 
 def getPluginClass():

@@ -1,22 +1,17 @@
 # coding:utf-8
 from PIL.ImageShow import show
-
 from uiautomator import Device
 from Repo import *
-from RClient import *
 import os, datetime, string, random
 from zservice import ZDevice
 import sys
-reload(sys)
 from PIL import Image
 import colorsys
-from XunMa import *
 from Inventory import *
 
 class AlipayDepost:
     def __init__(self):
         self.repo = Repo()
-        self.xuma = None
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
@@ -27,9 +22,7 @@ class AlipayDepost:
         return uniqueNum
 
     def Gender(self,d,obj):
-        co = RClient()
-        im_id = ""
-        co.rk_report_error(im_id)
+
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -81,7 +74,7 @@ class AlipayDepost:
 
         d.server.adb.cmd("shell", "am force-stop com.eg.android.AlipayGphone").wait()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.eg.android.AlipayGphone/com.eg.android.AlipayGphone.AlipayLogin").communicate()  # 拉起来
-        time.sleep(10)
+        z.sleep(10)
 
         d(description='通讯录').click()
         if d(text='转到银行卡').exists:
@@ -94,7 +87,7 @@ class AlipayDepost:
             className='android.widget.LinearLayout', index=0)  # 为下面的点击做准备
 
         while not d(textContains='支付宝:').exists:
-            time.sleep(2)
+            z.sleep(2)
 
         z.heartbeat()
         i = 0
@@ -113,7 +106,7 @@ class AlipayDepost:
                 set1.add(phoneNumber)
                 # print(phoneNumber)
                 judexist.click()        #点击第i个人
-                time.sleep(1.5)
+                z.sleep(1.5)
 
                 path = d(className='android.widget.ListView').child(className='android.widget.FrameLayout',index=0).child(className='android.widget.ImageView',index=2)
                 getinfo = self.Gender(d, path)
@@ -161,7 +154,7 @@ class AlipayDepost:
 
                 if d(text='显示更多').exists:
                     d(text='显示更多').click()
-                    time.sleep(1)
+                    z.sleep(1)
                     if not d(text='收起').exists:
                         d.swipe(width / 2, height * 3 / 4, width / 2, height / 3)
 
@@ -255,7 +248,7 @@ class AlipayDepost:
                 else:
                     taste = []
                 # print(taste)
-
+                z.heartbeat()
                 para = {"phone":phoneNumber,"qq_nickname":nickname,
                         "real_name":realname,"sex":gender,
                         "city":area,"birth":age,
@@ -276,7 +269,7 @@ class AlipayDepost:
             else:
                 if change==0:
                     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"通讯录内没有好友\"" ).communicate()
-                    time.sleep(10)
+                    z.sleep(10)
                     return
                 clickCondition = d(className='android.widget.ListView')
                 obj = clickCondition.info
@@ -293,7 +286,7 @@ class AlipayDepost:
                         phone = obj2.info['text']
                         if phone in set1:            #结束条件，如果
                             if (args["time_delay"]):
-                                time.sleep(int(args["time_delay"]))
+                                z.sleep(int(args["time_delay"]))
                             return
                         else:
                             break

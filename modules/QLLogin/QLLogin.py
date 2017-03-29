@@ -3,7 +3,7 @@ from uiautomator import Device
 from Repo import *
 import time, datetime, random
 from zservice import ZDevice
-from RClient import *
+from imageCode import imageCode
 from PIL import Image
 import os
 
@@ -29,7 +29,7 @@ class QLJudgeQQBind:
         while True:
             d.server.adb.cmd("shell", "pm clear com.tencent.qqlite").communicate()  # 清除缓存
             d.server.adb.cmd("shell", "am start -n com.tencent.qqlite/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 将qq拉起来
-            time.sleep(8)
+            z.sleep(8)
 
             d(text='登 录').click()
             d(textContains='QQ号').click()
@@ -39,7 +39,7 @@ class QLJudgeQQBind:
             if len(numbers) == 0:
                 d.server.adb.cmd("shell",
                                  "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库为空，等待中\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             QQNumber = numbers[0]['number']  # 即将登陆的QQ号
             QQPassword = numbers[0]['password']
@@ -48,15 +48,15 @@ class QLJudgeQQBind:
             z.input(QQPassword)
             d(text='登 录').click()
             while d(textContains='登录中').exists:
-                time.sleep(2)
-            time.sleep(3)
+                z.sleep(2)
+            z.sleep(3)
 
             if d(textContains='输入验证码').exists:
-                co = RClient()
+                icode = imageCode()
                 im_id = ""
                 for i in range(0, 30, +1):  # 打码循环
                     if i > 0:
-                        co.rk_report_error(im_id)
+                        icode.reportError(im_id)
                     obj = d(className='android.widget.ImageView')  # 当弹出选择QQ框的时候，定位不到验证码图片
                     obj = obj.info
                     obj = obj['bounds']  # 验证码处的信息
@@ -75,9 +75,9 @@ class QLJudgeQQBind:
                     img.paste(region, (0, 0))
 
                     img.save(codePng)
-                    im = open(codePng, 'rb').read()
+                    im = open(codePng, 'rb')
 
-                    codeResult = co.rk_create(im, 3040)
+                    codeResult = icode.getCode(im, icode.CODE_TYPE_4_NUMBER_CHAR)
                     code = codeResult["Result"]
                     im_id = codeResult["Id"]
                     os.remove(sourcePng)
@@ -85,8 +85,8 @@ class QLJudgeQQBind:
                     z.input(code)
                     d(text='完成').click()
                     while d(className='android.widget.ProgressBar', index=0).exists:  # 网速不给力时，点击完成后仍然在加载时的状态
-                        time.sleep(2)
-                    time.sleep(3)
+                        z.sleep(2)
+                    z.sleep(3)
                     if d(text='输入验证码').exists:
                         continue
                     else:
@@ -101,7 +101,7 @@ class QLJudgeQQBind:
 
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
     return QLJudgeQQBind

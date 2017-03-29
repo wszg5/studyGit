@@ -1,11 +1,9 @@
 # coding:utf-8
-import threading
-import time
+from imageCode import imageCode
 from PIL import Image
 from uiautomator import Device
 import re,subprocess
 from Repo import *
-from RClient import *
 import time, datetime, random
 from zservice import ZDevice
 from slot import slot
@@ -34,7 +32,7 @@ class EIMLogin:
         sourcePng = os.path.join(base_dir, "%s_s.png" % (self.GetUnique()))
         codePng = os.path.join(base_dir, "%s_c.png" % (self.GetUnique()))
 
-        time.sleep(1)
+        z.sleep(1)
         t = 1
         while t == 1:         #直到登陆成功为止
             time_limit1 = args['time_limit1']
@@ -42,21 +40,21 @@ class EIMLogin:
             numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
             if len(numbers) == 0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"EIM%s号帐号库为空，等待中\"" % cate_id).communicate()
-                time.sleep(10)
+                z.sleep(10)
                 return
             QQNumber = numbers[0]['number']  # 即将登陆的QQ号
             QQPassword = numbers[0]['password']
             print('QQ号是：%s,QQ密码是：%s'%(QQNumber,QQPassword))
             d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
             d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-            time.sleep(5)
+            z.sleep(5)
             z.heartbeat()
             d(className='android.widget.Button', index=1, clickable='true').click()
-            time.sleep(2)
+            z.sleep(2)
             d(className='android.widget.EditText', text='企业QQ号/手机号/邮箱').set_text(QQNumber)  # 3001313499  QQNumber  3001346198
             d(resourceId='com.tencent.eim:id/password', description='请输入密码').set_text(QQPassword)  # Bn2kJq5l   QQPassword
             d(text='登 录').click()
-            time.sleep(4)
+            z.sleep(4)
             if d(text='企业QQ').exists:
                 d(text='企业QQ').click()
                 if d(text='仅此一次').exists:
@@ -69,11 +67,11 @@ class EIMLogin:
                 self.repo.BackupInfo(cate_id, 'frozen', QQNumber, '','')
                 break
 
-            co = RClient()
+            icode = imageCode()
             im_id = ""
             for i in range(0, 30, +1):  # 打码循环
                 if i > 0:
-                    co.rk_report_error(im_id)
+                    icode.reportError(im_id)
                 obj = d(resourceId='com.tencent.eim:id/name', className='android.widget.ImageView')
                 obj = obj.info
                 obj = obj['bounds']  # 验证码处的信息
@@ -92,20 +90,20 @@ class EIMLogin:
                 img.paste(region, (0, 0))
 
                 img.save(codePng)
-                im = open(codePng, 'rb').read()
+                im = open(codePng, 'rb')
 
-                codeResult = co.rk_create(im, 3040)
+                codeResult = icode.getCode(im, icode.CODE_TYPE_4_NUMBER_CHAR)
                 code = codeResult["Result"]
                 im_id = codeResult["Id"]
                 os.remove(sourcePng)
                 os.remove(codePng)
                 z.heartbeat()
                 d(resourceId='com.tencent.eim:id/name', index='2', className="android.widget.EditText").set_text(code)
-                time.sleep(1)
+                z.sleep(1)
                 d(text='完成').click()
-                time.sleep(4)
+                z.sleep(4)
                 while d(className='android.widget.ProgressBar',index=0).exists:     #网速较慢，校验验证码未完成的情况
-                    time.sleep(2)
+                    z.sleep(2)
                 z.heartbeat()
                 if d(text='搜索', resourceId='com.tencent.eim:id/name').exists:
                     return  QQNumber# 放到方法里改为return
@@ -125,12 +123,14 @@ class EIMLogin:
             slotnum = self.slot.getSlot(d, time_limit)  # 没有空卡槽，取time_limit小时没用过的卡槽
             while slotnum == 0:  # 2小时没有用过的卡槽也为空的情况
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"EIM卡槽全满，无间隔时间段未用\"").communicate()
-                time.sleep(30)
+                z.sleep(30)
+                z.heartbeat()
                 slotnum = self.slot.getSlot(d, time_limit)
             z.heartbeat()
             d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
-            z.set_mobile_data(False)
-            time.sleep(3)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()   #开飞行模式
+            z.sleep(5)
             getSerial = self.repo.Getserial(cate_id,'%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 得到之前的串号
             if len(getSerial) == 0:  # 之前的信息保存失败的话
                 d.server.adb.cmd("shell",
@@ -146,24 +146,25 @@ class EIMLogin:
             z.heartbeat()
             self.slot.restore(d, slotnum)  # 有２小时没用过的卡槽情况，切换卡槽
             print("切换为"+str(slotnum))
-            z.set_mobile_data(True)
-            time.sleep(8)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()     #关闭飞行模式
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+            z.sleep(8)
 
             d.server.adb.cmd("shell","am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-            time.sleep(2)
+            z.sleep(2)
             z.heartbeat()
             while d(textContains='正在更新数据').exists:
-                time.sleep(2)
+                z.sleep(2)
             z.heartbeat()
             d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为%s号\""%slotnum).communicate()
-            time.sleep(6)
+            z.sleep(6)
             if d(textContains='开启精彩').exists:
                 d(textContains='开启精彩').click()
             if d(descriptionContains='开启精彩').exists:
                 d(descriptionContains='开启精彩').click()
             if d(resourceId='com.tencent.eim:id/name',className='android.widget.Button').exists:     #点击开始体验
                 d(resourceId='com.tencent.eim:id/name', className='android.widget.Button').click()
-                time.sleep(6)
+                z.sleep(6)
             z.heartbeat()
             if d(text='搜索').exists:
                 QQnumber = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
@@ -180,10 +181,12 @@ class EIMLogin:
 
         else:  # 有空卡槽的情况
             z.heartbeat()
-            z.set_mobile_data(False)
-            time.sleep(3)
-            z.set_mobile_data(True)
-            time.sleep(8)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+            z.sleep(5)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+            z.sleep(8)
             serialinfo = z.generateSerial("788")  # 修改串号等信息
             print('登陆时的serial%s' % serialinfo)
             QQnumber = self.login(d, args)
@@ -192,7 +195,7 @@ class EIMLogin:
             self.repo.BackupInfo(cate_id, 'using', QQnumber,serialinfo,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
 
         if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
+            z.sleep(int(args["time_delay"]))
 def getPluginClass():
     return EIMLogin
 
