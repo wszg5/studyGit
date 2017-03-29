@@ -1,12 +1,12 @@
 {
 "id": "EIMAddFriends",
 "cate":"EIM模块",
-"name":"EIM版QQ添加好友",
+"name":"EIM添加好友(搜索查找)",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"EIM05",
+"version": "1.1",
+"code":"EIM03",
 "icon": "vcard-o",
-"remark":"添加好友",
+"remark":"EIM添加好友(搜索查找)",
 "setting":[
 	{
 	"id": "repo_number_cate_id",

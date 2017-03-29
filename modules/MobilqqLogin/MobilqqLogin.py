@@ -38,18 +38,19 @@ class MobilqqLogin:
             time_limit1 = args['time_limit1']
             numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
             if len(numbers) == 0:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库为空，等待中\"" % cate_id).communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库无%s分钟未用，等待中\"" % (cate_id,time_limit1)).communicate()
                 z.sleep(10)
                 return
             QQNumber = numbers[0]['number']  # 即将登陆的QQ号
             QQPassword = numbers[0]['password']
             z.sleep(1)
             z.heartbeat()
+            d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
             d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             while d(textContains='正在更新数据').exists:
                 z.sleep(2)
             z.sleep(4)
-            d(text='登 录', resourceId='com.tencent.mobileqq:id/btn_login').click()
+            d(text='登 录').click()
             z.sleep(1)
             d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
             z.sleep(1)
@@ -161,9 +162,10 @@ class MobilqqLogin:
 
             d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
             d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-            z.sleep(5)
+            z.sleep(6)
 
             getSerial = self.repo.Getserial(cate_id,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, slotnum))     #得到之前的串号
+            time.sleep(1)
             if len(getSerial)==0:      #之前的信息保存失败的话
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"串号获取失败，重新设置\"" ).communicate()   #在５１上测时库里有东西但是王红机器关闭后仍获取失败
                 print('切换失败')
@@ -179,7 +181,13 @@ class MobilqqLogin:
             self.slot.restore(d, slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
             d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
             d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
-            z.sleep(8)
+            z.heartbeat()
+            while True:
+                ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
+                print(ping)
+                if 'icmp_seq'and 'bytes from'and'time' in ping[0]:
+                    break
+                z.sleep(2)
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为"+str(slotnum)+"号\"").communicate()
             z.sleep(1)
             d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
@@ -187,7 +195,7 @@ class MobilqqLogin:
             z.heartbeat()
             while d(textContains='正在更新数据').exists:
                 z.sleep(2)
-            z.sleep(3)
+            z.sleep(5)
             z.heartbeat()
             d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=10000\&card_type=person\&source=qrcode"')  # qq名片页面
             z.sleep(3)
@@ -256,10 +264,16 @@ class MobilqqLogin:
 
             d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
             d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-            z.sleep(5)
+            z.sleep(6)
             d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
             d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
-            z.sleep(8)
+            z.heartbeat()
+            while True:
+                ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
+                print(ping)
+                if 'icmp_seq'and 'bytes from'and'time' in ping[0]:
+                    break
+                z.sleep(2)
             serialinfo = z.generateSerial("788")    #修改串号等信息
             print('登陆时的serial%s'%serialinfo)
             z.heartbeat()
@@ -296,10 +310,10 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4BLSK00255")
-    z = ZDevice("HT4BLSK00255")
+    d = Device("HT52ESK00321")
+    z = ZDevice("HT52ESK00321")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id":"137","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"138","time_limit":"20","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)

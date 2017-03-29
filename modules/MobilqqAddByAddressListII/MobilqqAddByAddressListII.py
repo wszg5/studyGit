@@ -198,6 +198,9 @@ class MobilqqAddByAddressListII:
             mn = mn + 1
         z.input(message)
         d(text='发送').click()
+        while d(textContains='发送').exists:
+            time.sleep(2)
+        time.sleep(6)
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
 

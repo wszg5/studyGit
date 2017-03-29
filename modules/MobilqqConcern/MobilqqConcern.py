@@ -1,13 +1,8 @@
 # coding:utf-8
-from RClient import *
 from uiautomator import Device
 from Repo import *
-import  time, datetime, random
+import  time
 from zservice import ZDevice
-from XunMa import *
-import traceback
-from PIL import Image
-import colorsys
 
 class MobilqqConcern:
     def __init__(self):
@@ -110,8 +105,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT52ESK00321")
+    z = ZDevice("HT52ESK00321")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"add_count":"1000","time_delay":"3"}    #cate_id是仓库号，length是数量

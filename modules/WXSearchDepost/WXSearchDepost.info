@@ -1,10 +1,10 @@
 {
 "id": "WXSearchDepost",
 "cate":"微信模块",
-"name":"微信搜索简存",
+"name":"微信搜索扫资料",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"WX20",
+"code":"WX19",
 "icon": "vcard-o",
 "remark":"微信版本，6.5.4",
 "setting":[

@@ -1,15 +1,15 @@
 {
-"id": "EIMAddFrendRouseI",
-"cate":"EIM模块",
-"name":"EIM添加好友（名片分享）",
+"id": "MobilqqRouseSentTextII",
+"cate":"QQ模块",
+"name":"普通QQ临时会话(crm)",
 "url": "http://www.bejson.com",
-"version": "1.1",
-"code":"EIM04",
+"version": "1.0",
+"code":"QQ16",
 "icon": "vcard-o",
-"remark":"EIM添加好友（名片分享）",
+"remark":"普通QQ临时会话(crm)",
 "setting":[
 	{
-	"id": "repo_number_id",
+	"id": "repo_number_cate_id",
 	"name":"号码库分类",
 	"type":"repo",
 	"source":"number",
@@ -22,10 +22,9 @@
     "source":"material",
     "top_cate_id":"12"
     },
-
     {
 	"id": "totalNumber",
-	"name":"唤醒次数",
+	"name":"发消息总数",
 	"type":"textbox",
 	"defaultValue":"5",
 	"remark":"单位：个"

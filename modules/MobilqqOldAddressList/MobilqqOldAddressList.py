@@ -85,6 +85,10 @@ class MobilqqOldAddressList:
         if not closecheck.exists:  # 通讯录下面没有好友的情况
             d(className='android.view.View').child(className='android.widget.RelativeLayout', index=4).click()    #点击展开
             time.sleep(0.5)
+            if d(textContains='匹配手机通讯录').exists:
+                d(text='好').click()
+                z.sleep(3)
+                d(className='android.view.View').child(className='android.widget.RelativeLayout',index=4).click()  # 点击展开
             if d(text='查看开启方法').exists:
                 return
             time.sleep(0.5)
@@ -178,6 +182,7 @@ class MobilqqOldAddressList:
                 time.sleep(0.5)
                 if d(description='收起语音面板').exists:
                     d(text='文字输入').click()
+                print(message)
                 z.input(message)
                 z.heartbeat()
                 time.sleep(0.4)
@@ -214,5 +219,5 @@ if __name__ == "__main__":
     d = Device("8HVSMZKBEQFIBQUW")
     z = ZDevice("8HVSMZKBEQFIBQUW")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_material_id":"122",'gender':"女",'EndIndex':'40',"time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_material_id":"100",'gender':"女",'EndIndex':'40',"time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

@@ -213,9 +213,19 @@ class MobilqqAddByAddressList:
                     if obj.exists:
                         obj.click()
                     d(resourceId='com.tencent.mobileqq:id/elv_buddies',className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout', index=i - 1).click()
-                z.heartbeat()
-                d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+
+                clickCondition = d(className='android.widget.AbsListView')
+                obj = clickCondition.info
+                obj = obj['visibleBounds']
+                top = int(obj['top'])
+                clickCondition = \
+                d(className='android.widget.AbsListView').child(resourceId='com.tencent.mobileqq:id/group_item_layout',
+                                                                index=i - 1).info['visibleBounds']
+                top1 = int(clickCondition['top'])
+                y = top1 - top
+                d.swipe(width / 2, y, width / 2, 0)
                 z.sleep(2)
+                z.heartbeat()
                 break
             else:
                 continue           #直到找到通讯录为止
@@ -288,7 +298,13 @@ class MobilqqAddByAddressList:
                 message = message.replace('[姓名]',obj1)  # -----------------------------------
                 print(message)
             z.heartbeat()
+
             d(text='加好友').click()
+            time.sleep(1)
+            if d(text='加好友').exists:
+                time.sleep(1.5)
+                z.toast('请求失败，程序结束')
+                return
             if d(textContains='问题').exists:
                 d(text='取消').click()
                 d(text='返回').click()
@@ -330,8 +346,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT4BLSK00255")
+    z = ZDevice("HT4BLSK00255")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # z.input('13094731693')
     args = {"repo_material_id":"100",'gender':"不限",'EndIndex':'50',"time_delay":"3"};    #cate_id是仓库号，length是数量

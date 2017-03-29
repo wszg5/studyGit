@@ -1,10 +1,10 @@
 {
 "id": "WXAddNearBy",
 "cate":"微信模块",
-"name":"微信附近的人加好友",
+"name":"微信附近的人加好友(唤醒ID)",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"WX28",
+"code":"WX29",
 "icon": "vcard-o",
 "remark":"通过微信id加好友，版本6.5.4",
 "setting":[

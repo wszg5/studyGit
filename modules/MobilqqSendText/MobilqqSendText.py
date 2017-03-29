@@ -61,6 +61,7 @@ class MobilqqSendText:
         change = 0
         i = 7
         t = 1
+        gg = 0
         EndIndex = int(args['EndIndex'])
         while t < EndIndex + 1:
             cate_id = args["repo_material_id"]
@@ -108,8 +109,12 @@ class MobilqqSendText:
                     print(QQNumber)
             else:
                 if change == 0:  # 第一次滑动，开始ｉｎｄｅｘ不是通讯录里的人的时候，当点击开始发消息时将该值变为１
-                    i = i + 1
-                    continue
+                    if gg==0:
+                        i = i + 1
+                        gg = 1
+                        continue
+                    else:
+                        return
                 else:
 
                     endCondition = d(className='android.widget.AbsListView').child(className='android.widget.FrameLayout',index=i)   #结束条件

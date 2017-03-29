@@ -148,7 +148,13 @@ class EIMLogin:
             print("切换为"+str(slotnum))
             d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()     #关闭飞行模式
             d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
-            z.sleep(8)
+            z.heartbeat()
+            while True:
+                ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
+                print(ping)
+                if 'icmp_seq'and 'bytes from'and'time' in ping[0]:
+                    break
+                z.sleep(2)
 
             d.server.adb.cmd("shell","am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             z.sleep(2)
@@ -186,7 +192,13 @@ class EIMLogin:
             z.sleep(5)
             d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
             d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
-            z.sleep(8)
+            z.heartbeat()
+            while True:
+                ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
+                print(ping)
+                if 'icmp_seq'and 'bytes from'and'time' in ping[0]:
+                    break
+                z.sleep(2)
             serialinfo = z.generateSerial("788")  # 修改串号等信息
             print('登陆时的serial%s' % serialinfo)
             QQnumber = self.login(d, args)
@@ -205,8 +217,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT52ESK00321")
+    z = ZDevice("HT52ESK00321")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.dump(compressed=False)
     # slot = slot('eim')

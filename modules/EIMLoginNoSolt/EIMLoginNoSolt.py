@@ -123,7 +123,13 @@ class EIMLoginNoSlot:
         z.sleep(5)
         d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
         d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
-        z.sleep(8)
+        z.heartbeat()
+        while True:
+            ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
+            print(ping)
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                break
+            z.sleep(2)
         z.heartbeat()
         serialinfo = z.generateSerial("788")  # 修改串号等信息
         info = self.login(d, args,z)
@@ -136,11 +142,11 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("9ddbd665")
+    z = ZDevice("9ddbd665")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
 
 
-    args = {"repo_cate_id":"111","time_limit":"0","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"34","time_limit":"0","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)
