@@ -96,6 +96,31 @@ def finddevices():
         return []
         # needcount:需要安装的apk数量，默认为0，既安所有
 
+def CommandListen():
+    import redis
+    pool = redis.ConnectionPool(host=const.REDIS_SERVER, port=6379, db=0)
+    r = redis.StrictRedis(connection_pool=pool)
+    p = r.pubsub()
+    p.subscribe('TASK_COMMAND')
+    for item in p.listen():
+        try:
+            print item
+            if item['type'] == 'message':
+                data = item['data']
+                data = json.loads(data);
+                if data["COMMAND"] == "START_TASK":
+                    #//DO NOTHINGr.set('s', 32)
+                    a = 1
+                elif data["COMMAND"] == "STOP_TASK":
+                    taskId = data["TASK_ID"]
+                    devices = dbapi.GetDevicesByTask(taskId)
+                    for device in devices:
+                        serial= device["serial"]
+                        if processDict.has_key(serial):
+                            processDict[deviceid].terminate()
+                            del processDict[deviceid]
+        finally:
+            h=1
 
 def startProcess(deviceid):
     from phoneTask import phoneTask
@@ -142,6 +167,11 @@ if __name__ == "__main__":
     finally:
         file_object.close()
 
+    import threading
+    t = threading.Thread(target=CommandListen)
+    t.setDaemon(True)
+    t.start()
+
     #启动虚拟任务子进程
     import virtualTask
     multiprocessing.Process(target=virtualTask.virtualTask.run)
@@ -162,7 +192,6 @@ if __name__ == "__main__":
 
                 if deviceid not in installDict:
                     installDict[deviceid] = True
-                    import threading
                     t = threading.Thread(target=installApk, args=(deviceid,))
                     t.setDaemon(True)
                     t.start()
@@ -186,7 +215,7 @@ if __name__ == "__main__":
                                        processDict[deviceid].terminate()
                                        startProcess(deviceid)
                     else:
-                        if processDict.has_key(deviceid) and processDict.get(deviceid).is_alive():
+                        if processDict.has_key(deviceid):# and processDict.get(deviceid).is_alive():
                             processDict[deviceid].terminate()
                             del processDict[deviceid]
                             from zservice import ZDevice
