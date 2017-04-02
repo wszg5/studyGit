@@ -42,6 +42,15 @@ class dbapi:
                     return device["task_id"]
         return None
 
+    def GetDevicesByTask(self, taskId):
+        pool = RethinkPool(max_conns=120, initial_conns=10, host=const.SERVER_IP,
+                           port=28015,
+                           db=const.RETHINKDB_NAME)
+        with pool.get_resource() as res:
+                devices = r.table('devices').filter({"task_id",taskId}).run(res.conn)
+                return devices
+        return None
+
 
     def GetBusyVirtualDevices(self):
         pool = RethinkPool(max_conns=120, initial_conns=10, host=const.SERVER_IP,
