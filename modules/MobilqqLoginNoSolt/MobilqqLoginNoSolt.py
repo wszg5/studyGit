@@ -52,13 +52,13 @@ class MobilqqLoginNoSolt:
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
             d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             z.sleep(8)
-            d(text='登 录', resourceId='com.tencent.mobileqq:id/btn_login').click()
+            d(text='登 录').click()
             z.sleep(1)
             d(className='android.widget.EditText', text='QQ号/手机号/邮箱').set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
             z.sleep(1)
             d(resourceId='com.tencent.mobileqq:id/password', description='密码 安全').set_text(QQPassword)  # Bn2kJq5l     QQPassword
             z.heartbeat()
-            print('帐号:%s,密码：%s'%(QQNumber,QQPassword))
+            # print('帐号:%s,密码：%s'%(QQNumber,QQPassword))
             d(text='登 录', resourceId='com.tencent.mobileqq:id/login').click()
             z.sleep(1)
             while d(text='登录中').exists:
@@ -115,15 +115,24 @@ class MobilqqLoginNoSolt:
                 z.sleep(4)
                 z.heartbeat()
             z.heartbeat()
-            if d(text='搜索', resourceId='com.tencent.mobileqq:id/name').exists:  # 不需要验证码的情况
+            if d(textContains='主题装扮').exists:
+                d(text='关闭').click()
+                z.sleep(1)
+            z.sleep(3)
+            d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=10000\&card_type=person\&source=qrcode"')  # qq名片页面
+            z.sleep(3)
+            if d(text='QQ').exists:
+                d(text='QQ').click()
+                if d(text='仅此一次').exists:
+                    d(text='仅此一次').click()
+            z.sleep(15)
+            if d(text='系统消息').exists:
+                d(text='返回').click()
+                z.heartbeat()
                 return QQNumber
-            z.sleep(1)
-            if d(text='马上绑定').exists:
-                return QQNumber
-            z.sleep(1)
-            if d(text='通讯录').exists:              #登陆上后弹出t通讯录的情况
-                return QQNumber
+
             else:
+                self.repo.BackupInfo(cate_id, 'frozen', QQNumber, '', '')  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
                 z.sleep(1)
                 if d(text='帐号无法登录').exists:
                     d(text='取消').click()
@@ -177,15 +186,15 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT49XSK01858")
-    z = ZDevice("HT49XSK01858")
+    d = Device("HT4AYSK00084")
+    z = ZDevice("HT4AYSK00084")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
     # slot.restore(d, 9)
 
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"59","time_limit":"1","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"143","time_limit":"1","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)

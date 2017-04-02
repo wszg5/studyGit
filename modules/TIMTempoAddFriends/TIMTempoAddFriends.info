@@ -4,6 +4,7 @@
 "name":"TIM发邮件",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"T14",
 "icon": "vcard-o",
 "remark":"TIM发邮件",
 "setting":[

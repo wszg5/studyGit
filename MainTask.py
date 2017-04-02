@@ -31,6 +31,8 @@ for op, value in opts:
         const.MAX_SLOTS_QQLITE = int(value)
     elif op == "-e" or op == "--eim_slots":
         const.MAX_SLOTS_EIM = int(value)
+    elif op == "-o" or op == "--token_slots":
+        const.MAX_SLOTS_TOKEN = int(value)
 
 
 if not os.path.exists('plugins/__init__.py'):
@@ -189,6 +191,9 @@ if __name__ == "__main__":
                         if processDict.has_key(deviceid) and processDict.get(deviceid).is_alive():
                             processDict[deviceid].terminate()
                             del processDict[deviceid]
+                            from zservice import ZDevice
+                            z = ZDevice(deviceid, 1000)
+                            z.cmd("shell", "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"stop\"");
             #检查运行中的进程是否有手机被拔出电脑
             for device in processDict:
                 if device not in devicelist:

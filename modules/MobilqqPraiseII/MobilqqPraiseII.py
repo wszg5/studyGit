@@ -37,7 +37,7 @@ class MobilqqPraiseII:
         i = 3
         while t<count:
             forClick = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=i).child(className='android.widget.RelativeLayout')
-            if forClick.exists:
+            if forClick.child(className='android.widget.LinearLayout',index=2).exists:
                 z.heartbeat()
                 if forClick.child(text='直播中').exists:
                     i = i+1
@@ -72,7 +72,7 @@ class MobilqqPraiseII:
                     d(text='发消息').click()
                     z.sleep(1)
                     if d(text='发消息').exists:
-                        z.toast('无法再发消息')
+                        z.toast('无法发消息')
                         d(text='返回').click()
                         i = i + 1
                         t = t + 1

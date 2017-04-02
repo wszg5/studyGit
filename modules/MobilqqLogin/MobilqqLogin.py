@@ -37,10 +37,12 @@ class MobilqqLogin:
         while True:
             time_limit1 = args['time_limit1']
             numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
-            if len(numbers) == 0:
+            while len(numbers) == 0:
+                z.heartbeat()
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库无%s分钟未用，等待中\"" % (cate_id,time_limit1)).communicate()
                 z.sleep(10)
-                return
+                numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
+
             QQNumber = numbers[0]['number']  # 即将登陆的QQ号
             QQPassword = numbers[0]['password']
             z.sleep(1)
@@ -189,7 +191,11 @@ class MobilqqLogin:
                     break
                 z.sleep(2)
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为"+str(slotnum)+"号\"").communicate()
-            z.sleep(1)
+            z.sleep(2)
+            if d(textContains='主题装扮').exists:
+                d(text='关闭').click()
+                z.sleep(1)
+
             d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             z.sleep(2)
             z.heartbeat()
@@ -197,6 +203,9 @@ class MobilqqLogin:
                 z.sleep(2)
             z.sleep(5)
             z.heartbeat()
+            if d(textContains='主题装扮').exists:
+                d(text='关闭').click()
+                z.sleep(1)
             d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=10000\&card_type=person\&source=qrcode"')  # qq名片页面
             z.sleep(3)
             if d(text='QQ').exists:
@@ -313,7 +322,7 @@ if __name__ == "__main__":
     d = Device("HT52ESK00321")
     z = ZDevice("HT52ESK00321")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id":"138","time_limit":"20","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"143","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)

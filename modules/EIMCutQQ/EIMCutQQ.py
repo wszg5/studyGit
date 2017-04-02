@@ -39,10 +39,11 @@ class EIMCutQQ:
             time_limit1 = args['time_limit1']
             cate_id = args["repo_cate_id"]
             numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
-            if len(numbers) == 0:
+            while len(numbers) == 0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"EIM%s号帐号库为空，等待中\"" % cate_id).communicate()
                 z.sleep(10)
-                return
+                numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
+
             QQNumber = numbers[0]['number']  # 即将登陆的QQ号
             QQPassword = numbers[0]['password']
             print('QQ号是：%s,QQ密码是：%s'%(QQNumber,QQPassword))
@@ -339,8 +340,8 @@ if __name__ == "__main__":
     reload(sys)
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
-    d = Device("8HVSMZKBEQFIBQUW")
-    z = ZDevice("8HVSMZKBEQFIBQUW")
+    d = Device("HT4AVSK00981")
+    z = ZDevice("HT4AVSK00981")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"repo_cate_id":"34","time_limit":"30","time_limit1":"10","kind":"普通QQ","time_delay":"3"};    #cate_id是仓库号，length是数量

@@ -4,6 +4,7 @@
 "name":"TIM名片加好友",
 "url": "http://www.bejson.com",
 "version": "1.0",
+"code":"T11",
 "icon": "vcard-o",
 "remark":"名片加好友",
 "setting":[

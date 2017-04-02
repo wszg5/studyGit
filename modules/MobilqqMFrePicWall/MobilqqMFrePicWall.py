@@ -234,6 +234,9 @@ class MobilqqPicWall:
 
         d(text='完成').click()
         z.sleep(2)
+        if d(text='发布资料').exists:
+            d(text='发布资料').click()
+        z.sleep(3)
 
 
         if (args["time_delay"]):

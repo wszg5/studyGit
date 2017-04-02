@@ -3,7 +3,9 @@ import threading
 import time
 from PIL import Image
 from uiautomator import Device
+
 from imageCode import imageCode
+
 from Repo import *
 import time, datetime, random
 from zservice import ZDevice
@@ -26,7 +28,9 @@ class EIMTemporaryCut:
         return uniqueNum
 
     def login(self,d,args,z):
+
         z.heartbeat()
+
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -48,11 +52,17 @@ class EIMTemporaryCut:
             print('QQ号是：%s,QQ密码是：%s'%(QQNumber,QQPassword))
             d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
             d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+<<<<<<< HEAD
             z.sleep(3)
             while d(textContains='正在更新').exists:
                 z.sleep(2)
             z.sleep(6)
+=======
+            z.sleep(5)
+
+>>>>>>> 4e4f21f1884a754d94ef7f78793387f981d2652c
             z.heartbeat()
+
             d(className='android.widget.Button', index=1, clickable='true').click()
             z.sleep(2)
             d(className='android.widget.EditText', text='企业QQ号/手机号/邮箱').set_text(QQNumber)  # 3001313499  QQNumber  3001346198
@@ -61,9 +71,16 @@ class EIMTemporaryCut:
             z.sleep(4)
             if d(text='企业QQ').exists:
                 d(text='企业QQ').click()
+<<<<<<< HEAD
             if d(text='仅此一次').exists:
                 d(text='仅此一次').click()
+=======
+                if d(text='仅此一次').exists:
+                    d(text='仅此一次').click()
+
+>>>>>>> 4e4f21f1884a754d94ef7f78793387f981d2652c
             z.heartbeat()
+
 
             if d(text='搜索').exists:  # 直接登陆成功的情况
 
@@ -78,6 +95,7 @@ class EIMTemporaryCut:
             for i in range(0, 30, +1):  # 打码循环
                 if i > 0:
                     icode.reportError(im_id)
+
                 obj = d(resourceId='com.tencent.eim:id/name', className='android.widget.ImageView')
                 obj = obj.info
                 obj = obj['bounds']  # 验证码处的信息
@@ -96,6 +114,7 @@ class EIMTemporaryCut:
                 img.paste(region, (0, 0))
 
                 img.save(codePng)
+
                 im = open(codePng, 'rb')
 
                 codeResult = icode.getCode(im, icode.CODE_TYPE_4_NUMBER_CHAR)
@@ -109,18 +128,23 @@ class EIMTemporaryCut:
                 os.remove(sourcePng)
                 os.remove(codePng)
                 z.heartbeat()
+
                 d(resourceId='com.tencent.eim:id/name', index='2', className="android.widget.EditText").set_text(code)
                 z.sleep(1)
                 d(text='完成').click()
                 z.sleep(4)
                 while d(className='android.widget.ProgressBar',index=0).exists:     #网速较慢，校验验证码未完成的情况
+
                     z.heartbeat()
+
                     z.sleep(2)
 
                 if d(text='搜索', resourceId='com.tencent.eim:id/name').exists:
                     return  QQNumber# 放到方法里改为return
                 if d(text='输入验证码').exists:           #验证码输入错误的情况
+
                     z.heartbeat()
+
                     continue
                 else:
                     break
@@ -181,6 +205,7 @@ class EIMTemporaryCut:
 
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
+
 def getPluginClass():
     return EIMTemporaryCut
 
@@ -194,6 +219,7 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"repo_cate_id":"34","time_limit1":"10","kind":"轻聊版","time_delay":"3"};    #cate_id是仓库号，length是数量
+
     o = clazz()
     o.action(d,z, args)
 

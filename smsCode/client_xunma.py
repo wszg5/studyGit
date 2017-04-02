@@ -95,7 +95,8 @@ class client_xunma:
 
     def ReleasePhone(self, phoneNumber, itemId):
         token = self.GetToken()
-        path = "/releasePhone?token=%s&phoneList=%s-%s" % (token, phoneNumber, itemId)
+        itemcode = self.im_type_list[itemId]
+        path = "/releasePhone?token=%s&phoneList=%s-%s" % (token, phoneNumber, itemcode)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         response = conn.getresponse()
@@ -149,7 +150,8 @@ class client_xunma:
 
     def defriendPhoneNumber(self, phoneNumber, itemId):
         token = self.GetToken()
-        path = "/addBlack?token=%s&phoneList=%s-%s" % (token,phoneNumber,itemId)
+        itemcode = self.im_type_list[itemId]
+        path = "/addBlack?token=%s&phoneList=%s-%s" % (token, itemcode, phoneNumber)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
 
@@ -165,9 +167,10 @@ class client_xunma:
             return 'ok'
 
     def MatchPhoneNumber(self, number, itemId):
+        itemcode = self.im_type_list[itemId]
 
         token = self.GetToken()
-        path = "/getPhone?ItemId=" + itemId + "&token=" + token + "&Phone=" + number + ""
+        path = "/getPhone?ItemId=" + itemcode + "&token=" + token + "&Phone=" + number + ""
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         try:

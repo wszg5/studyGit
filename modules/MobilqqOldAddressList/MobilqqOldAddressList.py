@@ -13,6 +13,7 @@ class MobilqqOldAddressList:
 
 
     def Bind(self,d,z):
+        circle = 0
         self.scode = smsCode(d.server.adb.device_serial())
         newStart = 1
         while newStart == 1:
@@ -34,18 +35,38 @@ class MobilqqOldAddressList:
                     z.toast('请求失败，结束程序')
                     return 'false'
             z.heartbeat()
+
             code = self.scode.GetVertifyCode(GetBindNumber, self.scode.QQ_CONTACT_BIND, '4')
+            print(code)
             newStart = 0
             d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
+            if d(text='请输入验证码').exists:
+                if circle < 4:
+                    z.toast('没有接收到验证码')
+                    d(textContains='返回').click()
+                    if d(text='取消').exists:
+                        d(text='取消').click()
+                    d(textContains='联系人').click()
+                    d(className='android.view.View').child(className='android.widget.RelativeLayout', index=4).click()
+                    circle = circle+1
+                    newStart = 1
+                    continue
+                else:
+                    z.toast('程序结束')
+                    return 'false'
+
             z.heartbeat()
             d(text='下一步').click()
             z.sleep(2)
+            if d(text='请求失败').exists:
+                d(text='确定').click()
+                return 'false'
             if d(textContains='匹配手机通讯录').exists:
-                d(text='好').click()
+                d(text='匹配手机通讯录').click()
                 time.sleep(10)
             self.scode.defriendPhoneNumber(GetBindNumber,self.scode.QQ_CONTACT_BIND)
             if d(textContains='匹配手机通讯录').exists:
-                d(text='好').click()
+                d(text='匹配手机通讯录').click()
                 z.sleep(15)
 
 
@@ -71,7 +92,7 @@ class MobilqqOldAddressList:
             d(text='匹配手机通讯录').click()
         while d(textContains='正在发送').exists:
             time.sleep(2)
-        time.sleep(4)
+        time.sleep(6)
         d(className='android.widget.TabWidget').child(className='android.widget.RelativeLayout',index=1).child(className='android.widget.ImageView',index=2).click()     #点击到联系人
         z.sleep(1)
         z.heartbeat()
@@ -86,8 +107,8 @@ class MobilqqOldAddressList:
             d(className='android.view.View').child(className='android.widget.RelativeLayout', index=4).click()    #点击展开
             time.sleep(0.5)
             if d(textContains='匹配手机通讯录').exists:
-                d(text='好').click()
-                z.sleep(3)
+                d(text='匹配手机通讯录').click()
+                z.sleep(7)
                 d(className='android.view.View').child(className='android.widget.RelativeLayout',index=4).click()  # 点击展开
             if d(text='查看开启方法').exists:
                 return
@@ -187,6 +208,8 @@ class MobilqqOldAddressList:
                 z.heartbeat()
                 time.sleep(0.4)
                 d(text='发送').click()
+                saveid = args['repo_cate_id']
+                self.repo.uploadPhoneNumber(phone, saveid)
                 i = i + 1
                 t = t + 1
                 while d(className='android.widget.ProgressBar').exists:
@@ -216,8 +239,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("8HVSMZKBEQFIBQUW")
-    z = ZDevice("8HVSMZKBEQFIBQUW")
+    d = Device("HT4AVSK00981")
+    z = ZDevice("HT4AVSK00981")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_material_id":"100",'gender':"女",'EndIndex':'40',"time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_material_id":"39","repo_cate_id":"144",'gender':"不限",'EndIndex':'40',"time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

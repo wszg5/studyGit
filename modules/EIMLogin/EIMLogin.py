@@ -38,10 +38,11 @@ class EIMLogin:
             time_limit1 = args['time_limit1']
             cate_id = args["repo_cate_id"]
             numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
-            if len(numbers) == 0:
+            while len(numbers) == 0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"EIM%s号帐号库为空，等待中\"" % cate_id).communicate()
                 z.sleep(10)
-                return
+                numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
+
             QQNumber = numbers[0]['number']  # 即将登陆的QQ号
             QQPassword = numbers[0]['password']
             print('QQ号是：%s,QQ密码是：%s'%(QQNumber,QQPassword))

@@ -3,7 +3,9 @@ import threading
 import time
 from PIL import Image
 from uiautomator import Device
+
 from imageCode import imageCode
+
 from Repo import *
 import time, datetime, random
 from zservice import ZDevice
@@ -26,7 +28,9 @@ class EIMTemporaryCut:
         return uniqueNum
 
     def login(self,d,args,z):
+
         z.heartbeat()
+
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -49,7 +53,9 @@ class EIMTemporaryCut:
             d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
             d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             z.sleep(5)
+
             z.heartbeat()
+
             d(className='android.widget.Button', index=1, clickable='true').click()
             z.sleep(2)
             d(className='android.widget.EditText', text='企业QQ号/手机号/邮箱').set_text(QQNumber)  # 3001313499  QQNumber  3001346198
@@ -60,7 +66,9 @@ class EIMTemporaryCut:
                 d(text='企业QQ').click()
                 if d(text='仅此一次').exists:
                     d(text='仅此一次').click()
+
             z.heartbeat()
+
 
             if d(text='搜索').exists:  # 直接登陆成功的情况
 
@@ -75,6 +83,7 @@ class EIMTemporaryCut:
             for i in range(0, 30, +1):  # 打码循环
                 if i > 0:
                     icode.reportError(im_id)
+
                 obj = d(resourceId='com.tencent.eim:id/name', className='android.widget.ImageView')
                 obj = obj.info
                 obj = obj['bounds']  # 验证码处的信息
@@ -93,6 +102,7 @@ class EIMTemporaryCut:
                 img.paste(region, (0, 0))
 
                 img.save(codePng)
+
                 im = open(codePng, 'rb')
 
                 codeResult = icode.getCode(im, icode.CODE_TYPE_4_NUMBER_CHAR)
@@ -106,18 +116,23 @@ class EIMTemporaryCut:
                 os.remove(sourcePng)
                 os.remove(codePng)
                 z.heartbeat()
+
                 d(resourceId='com.tencent.eim:id/name', index='2', className="android.widget.EditText").set_text(code)
                 z.sleep(1)
                 d(text='完成').click()
                 z.sleep(4)
                 while d(className='android.widget.ProgressBar',index=0).exists:     #网速较慢，校验验证码未完成的情况
+
                     z.heartbeat()
+
                     z.sleep(2)
 
                 if d(text='搜索', resourceId='com.tencent.eim:id/name').exists:
                     return  QQNumber# 放到方法里改为return
                 if d(text='输入验证码').exists:           #验证码输入错误的情况
+
                     z.heartbeat()
+
                     continue
                 else:
                     break
@@ -125,9 +140,11 @@ class EIMTemporaryCut:
 
     def action(self, d,z, args):
         z.heartbeat()
-        z.set_mobile_data(False)
-        z.sleep(3)
-        z.set_mobile_data(True)
+        d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+        z.sleep(5)
+        d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
         z.sleep(8)
         z.heartbeat()
         serialinfo = z.generateSerial("788")  # 修改串号等信息
@@ -138,6 +155,7 @@ class EIMTemporaryCut:
         time.sleep(4)
         self.slot.backup(d,1, QQnumber)  # 设备信息，卡槽号，QQ号
         d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
+        d.server.adb.cmd("shell", "am force-stop com.tencent.eim").wait()  # 强制停止
 
         gener = args['kind']
         if gener == '普通QQ':
@@ -169,6 +187,7 @@ class EIMTemporaryCut:
 
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
+
 def getPluginClass():
     return EIMTemporaryCut
 
@@ -181,7 +200,8 @@ if __name__ == "__main__":
     z = ZDevice("8HVSMZKBEQFIBQUW")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_cate_id":"34","time_limit1":"10","kind":"普通QQ","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"34","time_limit1":"10","kind":"轻聊版","time_delay":"3"};    #cate_id是仓库号，length是数量
+
     o = clazz()
     o.action(d,z, args)
 

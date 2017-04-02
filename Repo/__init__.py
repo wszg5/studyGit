@@ -87,6 +87,12 @@ class Repo:
         conn.request("GET", path)
 
 
+    def savePhonenumberXM(self,phoneNumber, cateid, status):                    #迅码上传失效/有效的手机号
+        path = "/repo_api/check/numberInfo?PhoneNumber=%s&cate_id=%s&status=%s" % (phoneNumber, cateid, status)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
+
+
 if __name__ == '__main__':
     repo = Repo()
     result = repo.GetAccount("6", 120, 1)

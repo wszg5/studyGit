@@ -1,8 +1,8 @@
 # coding:utf-8
 from uiautomator import Device
 from zservice import ZDevice
+from smsCode import smsCode
 from Repo import *
-from XunMa import *
 import time
 from slot import slot
 
@@ -11,12 +11,14 @@ class TIMRegisterWithSlot2:
 
     def __init__(self):
         self.repo = Repo()
-        self.xm = None
+        self.scode = None
         self.slot = slot('tim')
 
     def registerWithSlot(self,d,z,args):
-        cateId = args['repo_cate_id']
-        self.xm = XunMa(d.server.adb.device_serial())
+        cateId = args['material_cateId']
+        scode_cateId = args['scode_cateId']
+
+        self.scode = smsCode(d.server.adb.device_serial())
 
         d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate()  # 清除缓存
         d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
@@ -27,30 +29,34 @@ class TIMRegisterWithSlot2:
             d(className='android.widget.Button', text='新用户').click()
         time.sleep(2)
 
-        phoneNumber = self.xm.GetPhoneNumber('2111')
-        print '手机号'
-        print phoneNumber
-        print '============'
-        time.sleep(2)
+        # phoneNumber = self.repo.GetNumber(scode_cateId,0,1)
+        # if len(phoneNumber)==0:
+        #     oh='oh'
 
-        d(text='请输入你的手机号码', className='android.widget.EditText').set_text(phoneNumber)
 
-        time.sleep(1)
-        d(text='下一步', className='android.widget.Button').click()
-        time.sleep(2)
+        while 1:
+            phoneNumber = self.scode.GetPhoneNumber(self.scode.QQ_REGISTER)
+            print phoneNumber
+            d(text='请输入你的手机号码', className='android.widget.EditText').set_text(phoneNumber)
+            d(text='下一步', className='android.widget.Button').click()
+            time.sleep(2)
 
-        for j in range(0, 15):
-            time.sleep(1)
-            if d(text='请输入短信验证码', className='android.widget.EditText').exists:
-                break
-            if d(text='分享', className='android.widget.TextView').exists:
-                d(text='填写手机号码', className='android.widget.TextView').click()
-                d(text='下一步', className='android.widget.Button').click()
-                continue
+            while 1:
+                if d(text='填写手机号码', className='android.widget.TextView').exists:
+                    if d(text='请输入短信验证码', className='android.widget.EditText').exists:
+                        break
+                    if d(text='分享', className='android.widget.TextView').exists:
+                        self.scode.defriendPhoneNumber(phoneNumber,self.scode.QQ_REGISTER)                         #手机号注册超过10次，迅码需要拉黑
+                        d(text='填写手机号码', className='android.widget.TextView').click()
+                        d(description = '删除 按钮',className='android.view.View').click()
+                        break
+                    else:
+                        print '手机串号失效＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝'
+                        time.sleep(10)
+                        return False
 
-        if j == 14:
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"TIM验证码跳转失败\"").communicate()
-            return False
+
+
 
         time.sleep(1)
         while 1:
@@ -59,22 +65,22 @@ class TIMRegisterWithSlot2:
             else:
                 time.sleep(1)
 
-        vertifyCode = self.xm.GetVertifyCode(phoneNumber, '2111')  # 获取验证码
+        vertifyCode = self.scode.GetVertifyCode(phoneNumber, self.scode.QQ_REGISTER)  # 获取验证码
 
         if vertifyCode == "":
             if d(text='重新发送', className='android.widget.TextView').exists:
                 d(text='重新发送', className='android.widget.TextView').click()
                 time.sleep(2)
                 print '重新发送'
-                vertifyCode = self.xm.GetVertifyCode(phoneNumber, '2111')
+                vertifyCode = self.scode.GetVertifyCode(phoneNumber, self.scode.QQ_REGISTER)
 
                 if vertifyCode == '':
-                    self.xm.ReleasePhone(phoneNumber, '2111')
+                    self.scode.ReleasePhone(phoneNumber, self.scode.QQ_REGISTER)
                     print '验证码获取失败'
                     return False
 
         print vertifyCode
-        self.xm.defriendPhoneNumber(phoneNumber, '2111')
+        self.scode.defriendPhoneNumber(phoneNumber, self.scode.QQ_REGISTER)
         d(text='请输入短信验证码', className='android.widget.EditText').set_text(vertifyCode)
 
         time.sleep(1)
@@ -106,13 +112,15 @@ class TIMRegisterWithSlot2:
         d(text='登录', resourceId='com.tencent.tim:id/name').click()
         time.sleep(2)
 
+        self.repo.savePhonenumberXM(phoneNumber, scode_cateId, 'picked')
+
         return info
 
 
     def action(self, d, z,args):
 
         time_limit = args['time_limit']
-        cate_id = args["repo_cate_id"]
+        cate_id = args["slot_cateId"]
 
         name = self.slot.getEmpty(d)                    #取空卡槽
         print name
@@ -201,15 +209,18 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT52DSK00474")
-    z = ZDevice("HT52DSK00474")
+    d = Device("HT52ESK00321")
+    z = ZDevice("HT52ESK00321")
 
 
     d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_cate_id":"102","time_delay":"3","time_limit":"120"};               #cate_id是仓库号，length是数量
+    args = {"material_cateId":"102","slot_cateId":"102","scode_cateId":"130","time_delay":"3","time_limit":"120"};               #cate_id是仓库号，length是数量
 
     o.action(d,z,args)
+
+
+    # d(text='请输入你的手机号码', className='android.widget.EditText').set_text('13430803686')
 
     # slot = slot('tim')
     # slot.restore(d, 8)  # 有２小时没用过的卡槽情况，切换卡槽
