@@ -7,7 +7,7 @@ import util
 
 
 class client_xunma:
-    def __init__(self, serial, username, password):
+    def __init__(self, serial, username, password, im_type_list):
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                         "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
         self.domain = "api.xunma.net"
@@ -17,12 +17,7 @@ class client_xunma:
 
         self.username = username
         self.password = password
-        self.im_type_list = {
-            'wechat_register': '2251',
-            'qq_contact_bind': '2113',
-            'qq_register': '2111',
-            'alipay_register': '3189',
-        }
+        self.im_type_list = im_type_list
 
     def GetToken(self, useCache=True):
         key = 'XunMa_Token_%s' % (hash(self.serial) % 10)  # 根据手机串码的hash值尾号共用token, 每10个手机共用一个token

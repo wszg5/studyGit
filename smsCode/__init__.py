@@ -31,18 +31,25 @@ class smsCode:
                 dbapi.log_error("", "没有设置接码帐号密码","没有设置接码帐号密码")
                 return
 
-        if self.platform == 'xunma':
-            self.client = client_xunma(serial, self.username, self.password)
-        elif self.platform == 'hellotrue':  #爱乐赞
-            self.client = client_hellotrue(serial , self.username, self.password)
-        else:
-            self.client = client_jyzszp(serial, self.username, self.password) #玉米
-
-
         self.WECHAT_REGISTER = "wechat_register";
         self.QQ_CONTACT_BIND = "qq_contact_bind";
         self.QQ_REGISTER = "qq_register";
+        self.QQ_TOKEN_BIND = "qq_token_bind";
         self.ALIPAY_REGISTER = "alipay_register";
+
+        self.im_type_list[self.WECHAT_REGISTER] = dbapi.GetSetting("%s_%s" % (self.platform,self.WECHAT_REGISTER));
+        self.im_type_list[self.QQ_CONTACT_BIND] = dbapi.GetSetting("%s_%s" % (self.platform,self.QQ_CONTACT_BIND));
+        self.im_type_list[self.QQ_REGISTER] = dbapi.GetSetting("%s_%s" % (self.platform,self.QQ_REGISTER));
+        self.im_type_list[self.QQ_TOKEN_BIND] = dbapi.GetSetting("%s_%s" % (self.platform,self.QQ_TOKEN_BIND));
+        self.im_type_list[self.ALIPAY_REGISTER] = dbapi.GetSetting("%s_%s" % (self.platform,self.ALIPAY_REGISTER));
+
+
+        if self.platform == 'xunma':
+            self.client = client_xunma(serial, self.username, self.password,self.im_type_list)
+        elif self.platform == 'hellotrue':  #爱乐赞
+            self.client = client_hellotrue(serial , self.username, self.password,self.im_type_list)
+        else:
+            self.client = client_jyzszp(serial, self.username, self.password,self.im_type_list) #玉米
 
 
 
