@@ -9,7 +9,7 @@ class _const:
 const = _const()
 
 const.WAIT_START_TIME=200
-const.SERVER_IP = '127.0.0.1'
+const.SERVER_IP = '192.168.1.11'
 const.RETHINKDB_NAME = 'stf'
 const.REPO_API_IP = '192.168.1.11'
 const.REDIS_SERVER = '192.168.1.11'
