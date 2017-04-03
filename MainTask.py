@@ -98,6 +98,8 @@ def finddevices():
         return []
         # needcount:需要安装的apk数量，默认为0，既安所有
 
+
+from zservice import ZDevice
 def CommandListen():
     import redis
     pool = redis.ConnectionPool(host=const.REDIS_SERVER, port=6379, db=0)
@@ -121,6 +123,11 @@ def CommandListen():
                         if processDict.has_key(serial):
                             processDict[deviceid].terminate()
                             del processDict[deviceid]
+                elif data["COMMAND"] == "ADB":
+                    serial = data["serial"]
+                    cmd = data["cmd"]
+                    z = ZDevice(serial, 0)
+                    z.server.adb.cmd("shell", cmd).communicate()
         finally:
             h=1
 
@@ -140,7 +147,6 @@ def startProcess(deviceid):
 def installApk(deviceid):
     device_port = portDict[deviceid]
     zport = device_port["zport"]
-    from zservice import ZDevice
     z = ZDevice(deviceid, zport)
     z.server.adb.cmd("shell", "su -c 'rm -f /sdcard/NanoHTTPD-*'").communicate()
     z.server.adb.cmd("shell", "su -c 'rm -f /sdcard/share_*'").communicate()
