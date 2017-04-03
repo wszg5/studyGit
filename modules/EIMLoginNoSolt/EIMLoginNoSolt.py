@@ -142,8 +142,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("9ddbd665")
-    z = ZDevice("9ddbd665")
+    d = Device("8HVSMZKBEQFIBQUW")
+    z = ZDevice("8HVSMZKBEQFIBQUW")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
 
