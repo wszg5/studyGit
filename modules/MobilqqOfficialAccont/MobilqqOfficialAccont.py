@@ -36,6 +36,7 @@ class MobilqqOfficialAccont:
                 continue
             d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=1).child(
                 className='android.widget.RelativeLayout', index=1).click()      #点击众多公众号排在第一行的那个
+            z.sleep(3)
             if d(text='进入公众号').exists:
                 d(textContains='返回').click()
                 d(descriptionContains='搜索聊天或者联系人').child(description='清空').click()
@@ -61,11 +62,11 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT52ESK00321")
+    z = ZDevice("HT52ESK00321")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
 
-    args = {"repo_material_id":"39","add_count":"1","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_material_id":"116","add_count":"3","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

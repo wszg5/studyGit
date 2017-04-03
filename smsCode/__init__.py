@@ -37,6 +37,7 @@ class smsCode:
         self.QQ_TOKEN_BIND = "qq_token_bind";
         self.ALIPAY_REGISTER = "alipay_register";
 
+        self.im_type_list={}
         self.im_type_list[self.WECHAT_REGISTER] = dbapi.GetSetting("%s_%s" % (self.platform,self.WECHAT_REGISTER));
         self.im_type_list[self.QQ_CONTACT_BIND] = dbapi.GetSetting("%s_%s" % (self.platform,self.QQ_CONTACT_BIND));
         self.im_type_list[self.QQ_REGISTER] = dbapi.GetSetting("%s_%s" % (self.platform,self.QQ_REGISTER));
@@ -58,7 +59,7 @@ class smsCode:
 
 
     def GetVertifyCode(self, number, itemId, length=6):
-        return self.client.GetVertifyCode(number, itemId, length)
+        return self.client.GetVertifyCode(number, itemId, int(length))
 
     def ReleasePhone(self, phoneNumber, itemId):
         return self.client.releasePhone(phoneNumber, itemId)

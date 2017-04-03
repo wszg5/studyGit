@@ -1,0 +1,34 @@
+{
+"id": "MobilqqTheory",
+"name":"普通QQ空间留痕（说说点赞+评论）",
+"cate":"QQ模块",
+"font": "qq",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"QQ31",
+"icon":"vcard-o",
+"remark":"普通QQ空间留痕（说说点赞+评论）",
+"setting":[
+	{
+	"id": "repo_material_id",
+	"name":"发送消息内容仓库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "count",
+	"name":"总人数",
+	"type":"textbox",
+	"defaultValue":"4",
+	"remark":"单位：个"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

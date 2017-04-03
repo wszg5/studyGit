@@ -120,7 +120,7 @@ class client_jyzszp:
                 if len(dataObj) >=3 :
                     targetNumber = re.findall(r'1\d{10}', data)
                     targetNumber = targetNumber[0]
-                    if len(dataObj[1]) == length:
+                    if len(dataObj[1]) == int(length):
                         code = dataObj[1]
                         sms_number_key = 'verify_code_%s_%s' % (itemId, targetNumber)
                         cache.set(sms_number_key, code)

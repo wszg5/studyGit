@@ -1,12 +1,12 @@
 {
 "id": "EIMMass",
 "cate":"EIM模块",
-"name":"EIM版QQ群发消息",
+"name":"EIM群发消息(我的好友)",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"EIM07",
+"version": "1.1",
+"code":"EIM10",
 "icon": "vcard-o",
-"remark":"EIM版QQ群发消息",
+"remark":"EIM群发消息(我的好友)",
 "setting":[
 	{
     "id": "repo_material_id",

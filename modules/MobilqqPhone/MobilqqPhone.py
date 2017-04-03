@@ -271,6 +271,10 @@ class MobilqqPhone:
 
             d(text='QQ电话').click()
             d(text='QQ电话').click()
+            if d(text='确定').exists:
+                d(text='确定').click()
+            if d(text='继续').exists:
+                d(text='继续').click()
             z.sleep(6)
             d(description='结束QQ电话').click()
             z.sleep(2)

@@ -59,7 +59,7 @@ class MobilqqAddFriends:
         z.sleep(3)
 
         z.heartbeat()
-        for i in range(1,add_count,+1):                   #给多少人发消息
+        for i in range(0,add_count,+1):                   #给多少人发消息
             z.heartbeat()
             numbers = list[i]['number']
             print(numbers)
@@ -154,6 +154,8 @@ class MobilqqAddFriends:
                 if d(text='添加失败，请勿频繁操作',resourceId='com.tencent.mobileqq:id/name').exists:
                     return
                 d(text='返回').click()
+                if add_count ==i+1:
+                    return
                 d(description='清空').click()
                 obj = d(className='android.widget.EditText',index=0)
                 if obj.exists:
@@ -164,7 +166,9 @@ class MobilqqAddFriends:
                 d(textContains='找人').click()
                 while d(text='正在搜索…', index=1).exists:
                     z.sleep(1)
+
                 continue
+
 
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
@@ -196,11 +200,13 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT4BLSK00255")
+    z = ZDevice("HT4BLSK00255")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
+
     # print(d.dump(compressed=False))
-    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","add_count":"15","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","add_count":"2","time_delay":"3"};    #cate_id是仓库号，length是数量
+
     util.doInThread(runwatch, d, 0, t_setDaemon=True)
     o.action(d,z, args)

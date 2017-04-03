@@ -1,7 +1,7 @@
 {
 "id": "WXSaveId",
 "cate":"微信模块",
-"name":"微信保存微信id",
+"name":"微信保存微信id(附近的人)",
 "url": "http://www.bejson.com",
 "version": "1.0",
 "code":"WX27",

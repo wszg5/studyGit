@@ -10,11 +10,32 @@
 "remark":"普通QQ附近的人(点赞+关注+打招呼)",
 "setting":[
 	{
-	"id": "add_count",
-	"name":"点赞的人数",
+	"id": "prisenum",
+	"name":"点赞的次数",
 	"type":"textbox",
 	"defaultValue":"4",
 	"remark":"单位：个"
+	},
+	{
+	"id": "concernnum",
+	"name":"关注的次数",
+	"type":"textbox",
+	"defaultValue":"4",
+	"remark":"单位：个"
+	},
+	{
+	"id": "textnum",
+	"name":"发消息的次数",
+	"type":"textbox",
+	"defaultValue":"4",
+	"remark":"单位：个"
+	},
+	{
+	"id": "repo_material_id",
+	"name":"发送消息内容仓库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
 	},
 	{
 	"id": "gender",

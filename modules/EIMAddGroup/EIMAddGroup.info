@@ -1,12 +1,12 @@
 {
 "id": "EIMAddGroup",
 "cate":"EIM模块",
-"name":"EIM版QQ加群",
+"name":"EIM加群(名片分享)",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"EIM06",
+"code":"EIM07",
 "icon": "vcard-o",
-"remark":"EIM版QQ加群",
+"remark":"EIM加群(名片分享)",
 "setting":[
 	{
 	"id": "repo_number_id",

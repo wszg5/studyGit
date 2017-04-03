@@ -24,7 +24,9 @@ class MobilqqPicWall:
         z.heartbeat()
 
         d(textContains='确定').click()
-
+        while d(textContains='上传中').exists:
+            z.sleep(2)
+        z.sleep(5)
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
 

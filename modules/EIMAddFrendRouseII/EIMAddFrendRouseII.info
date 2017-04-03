@@ -1,12 +1,12 @@
 {
 "id": "EIMAddFrendRouseII",
 "cate":"EIM模块",
-"name":"EIM版QQ唤醒加好友（QQ咨询）",
+"name":"EIM添加好友（QQ咨询）",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"EIM04",
+"code":"EIM05",
 "icon": "vcard-o",
-"remark":"EIM版QQ唤醒加2",
+"remark":"EIM添加好友（QQ咨询）",
 "setting":[
 	{
 	"id": "repo_number_id",

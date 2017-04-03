@@ -55,6 +55,7 @@ class Repo:
 
     def Getserial(self, cateId,cardslot):    #根据卡槽号和设备号得到串号
         path = "/repo_api/account/IMEIInfo?status=normal&cate_id=%s&cardslot=%s" % (cateId,cardslot)
+        print('地址是%s'%path)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         response = conn.getresponse()

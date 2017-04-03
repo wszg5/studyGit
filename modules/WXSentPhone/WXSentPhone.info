@@ -1,7 +1,7 @@
 {
 "id": "WXSentPhone",
 "cate":"微信模块",
-"name":"微信搜索检存(验证讯码手机是否可用)",
+"name":"微信搜索检存(验证注册)",
 "url": "http://www.bejson.com",
 "version": "1.0",
 "code":"WX14",

@@ -17,6 +17,13 @@
 	"top_cate_id":"12"
 	},
 	{
+	"id": "repo_cate_id",
+	"name":"保存已发送消息的号码库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"21"
+	},
+	{
 	"id": "gender",
 	"name":"性别",
 	"type":"select",

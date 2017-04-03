@@ -21,8 +21,7 @@ class MobilqqRouseAdd:
         d(descriptionContains='等级：').click()
         d(text='编辑').click()
         d(text='详细资料').click()
-        while not d(text='生日').exists:
-            z.sleep(2)
+        z.sleep(2)
         d(text='编辑').click()
         d(descriptionContains='昵称').child(className='android.widget.EditText', index=1).long_click()
         message = d(descriptionContains='昵称').child(className='android.widget.EditText', index=1).info['text']
@@ -71,7 +70,7 @@ if __name__ == "__main__":
     z = ZDevice("HT4BLSK00255")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_material_id":"39","gender":"男","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_material_id":"39","gender":"女","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d, z,args)
 

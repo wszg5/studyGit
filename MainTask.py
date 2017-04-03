@@ -232,7 +232,7 @@ if __name__ == "__main__":
             #检查运行中的进程是否有手机被拔出电脑
             for device in processDict:
                 if device not in devicelist:
-                    dbapi.log_warn(device , "设备被拔出，运行中任务被强制停止")
+                    # dbapi.log_warn(device , "设备被拔出，运行中任务被强制停止")
                     processDict[device].terminate()
                     del processDict[deviceid]
 

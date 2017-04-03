@@ -39,15 +39,19 @@ class EIMCutQQ:
             time_limit1 = args['time_limit1']
             cate_id = args["repo_cate_id"]
             numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
-            if len(numbers) == 0:
+            while len(numbers) == 0:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"EIM%s号帐号库为空，等待中\"" % cate_id).communicate()
                 z.sleep(10)
-                return
+                numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
+
             QQNumber = numbers[0]['number']  # 即将登陆的QQ号
             QQPassword = numbers[0]['password']
             print('QQ号是：%s,QQ密码是：%s'%(QQNumber,QQPassword))
             d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
             d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+            z.sleep(3)
+            while d(textContains='正在更新').exists:
+                z.sleep(2)
             z.sleep(5)
             z.heartbeat()
             d(className='android.widget.Button', index=1, clickable='true').click()
@@ -58,8 +62,8 @@ class EIMCutQQ:
             z.sleep(4)
             if d(text='企业QQ').exists:
                 d(text='企业QQ').click()
-                if d(text='仅此一次').exists:
-                    d(text='仅此一次').click()
+            if d(text='仅此一次').exists:
+                d(text='仅此一次').click()
             z.heartbeat()
 
             if d(text='搜索').exists:  # 直接登陆成功的情况
@@ -157,12 +161,19 @@ class EIMCutQQ:
 
             d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
             d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
-            z.sleep(8)
+            z.heartbeat()
+            while True:
+                ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
+                print(ping)
+                if 'icmp_seq'and 'bytes from'and'time' in ping[0]:
+                    break
+                z.sleep(2)
             d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 先将eim拉起来
             z.heartbeat()
             z.sleep(2)
             while d(textContains='正在更新数据').exists:
                 z.sleep(2)
+            z.sleep(4)
             z.toast('卡槽成功切换为%s号'%slotnum)
             z.sleep(10)
             if d(text='下线通知').exists:
@@ -274,10 +285,17 @@ class EIMCutQQ:
         else:  # 有空卡槽的情况
             d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
             d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-            z.sleep(5)
+            z.sleep(6)
             d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
             d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
-            z.sleep(8)
+            z.heartbeat()
+            while True:
+                ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
+                print(ping)
+                if 'icmp_seq'and 'bytes from'and'time' in ping[0]:
+                    break
+                z.sleep(2)
+
             z.heartbeat()
             serialinfo = z.generateSerial("788")  # 修改串号等信息
             print('登陆时的serial%s' % serialinfo)
@@ -322,10 +340,9 @@ if __name__ == "__main__":
     reload(sys)
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
-    d = Device("8HVSMZKBEQFIBQUW")
-    z = ZDevice("8HVSMZKBEQFIBQUW")
+    d = Device("HT4AVSK00981")
+    z = ZDevice("HT4AVSK00981")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-
 
     args = {"repo_cate_id":"34","time_limit":"30","time_limit1":"10","kind":"普通QQ","time_delay":"3"};    #cate_id是仓库号，length是数量
     o = clazz()

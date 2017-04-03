@@ -1,13 +1,41 @@
 {
 "id": "MobilqqMFrePicWall",
 "cate":"QQ模块",
-"name":"普通QQ交友资料修改(照片墙)",
+"name":"普通QQ交友资料修改(照片墙+完整)",
 "url": "http://www.bejson.com",
 "version": "1.1",
-"code":"QQ29.1",
+"code":"QQ30",
 "icon":"vcard-o",
-"remark":"普通QQ资料修改(照片墙)",
+"remark":"普通QQ交友资料修改(照片墙+完整)",
 "setting":[
+{
+"id": "repo_name_id",
+"name":"交友昵称库",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
+{
+"id": "repo_declaration_id",
+"name":"交友宣言库",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
+{
+"id": "repo_company_id",
+"name":"公司名称库",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
+{
+"id": "repo_school_id",
+"name":"学校名称库",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
 {
 "id": "time_delay",
 "name":"延时",

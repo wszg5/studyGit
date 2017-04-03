@@ -1,12 +1,12 @@
 {
 "id": "EIMTemporarySession",
 "cate":"EIM模块",
-"name":"EIM版QQ临时会话",
+"name":"EIM临时会话(CRM来路)",
 "url": "http://www.bejson.com",
-"version": "1.0",
+"version": "1.1",
 "code":"EIM08",
 "icon": "vcard-o",
-"remark":"EIM发临时会话",
+"remark":"EIM临时会话(CRM来路)",
 "setting":[
 	{
 	"id": "repo_number_cate_id",
