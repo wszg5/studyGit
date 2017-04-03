@@ -127,7 +127,8 @@ def CommandListen():
                     serial = data["serial"]
                     cmd = data["cmd"]
                     z = ZDevice(serial, 0)
-                    z.server.adb.cmd("shell", cmd).communicate()
+                    xx = z.server.adb.cmd("shell", cmd).communicate()
+                    print xx;
         finally:
             h=1
 
