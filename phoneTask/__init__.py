@@ -33,6 +33,12 @@ class phoneTask:
     def handler(self, signum, frame):
   #      if self.task["show_task_info"]:
         self.z.cmd("shell", "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"running\" --es task_name \"%s\"" % self.task["name"]);
+
+
+        self.z.cmd("shell",
+           "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"show_window\" --es task_name \"%s\"" %
+           self.task["name"]);
+
 #        else:
  #           self.z.cmd("shell", "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"stop\"");
 
@@ -59,9 +65,16 @@ class phoneTask:
         if self.taskid:
             self.task = dbapi.GetTask(self.taskid)
             if (self.task and self.task.get("status") and self.task["status"] == "running"):
-                self.d = Device(deviceid, port)
-                # d.server.adb.cmd("uninstall", "jp.co.cyberagent.stf")
                 self.z = ZDevice(deviceid, zport)
+                self.z.cmd("shell",
+                           "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"running\" --es task_name \"%s\"" %
+                           self.task["name"]);
+
+                self.z.cmd("shell",
+                           "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"show_window\" --es task_name \"%s\"" %
+                           self.task["name"]);
+                self.d = Device(deviceid, port)
+
                 while True:
                     steps = dbapi.GetTaskSteps(self.taskid)
                     # 设置zime输入法
