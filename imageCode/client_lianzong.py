@@ -27,7 +27,8 @@ class client_lianzong(object):
             'User-Agent': 'ben',
         }
         self.im_type_list = {
-            '4_number_char': 1001
+            '4_number_char': 1001,
+            '5_char':1013
         }
 
     def getCode(self, im, im_type, timeout=60):
@@ -122,6 +123,6 @@ class MultipartPostHandler(urllib2.BaseHandler):
 
 if __name__ == "__main__":
     lz = client_lianzong("power001", "13141314")
-    im = open("/home/zunyun/yzm.jpg", 'rb')
-    print lz.getCode(im, "4_number_char")
+    im = open("/Users/liujieyang/2222.png", 'rb')
+    print lz.getCode(im, "5_char")
     print lz.reportError("5104838994")
