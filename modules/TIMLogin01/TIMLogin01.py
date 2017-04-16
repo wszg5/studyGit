@@ -69,8 +69,8 @@ class TIMLogin01:
             time.sleep(2)
             d(text='QQ号登录',resourceId='com.tencent.tim:id/btn_login').click()
 
-            d(className='android.widget.EditText',text='QQ号/手机号/邮箱').set_text(QQNumber)    #3001313499    3030327691   QQNumber
-            d(resourceId='com.tencent.tim:id/password',description='密码 安全').set_text(QQPassword)    #Bn2kJq5l
+            d(className='android.widget.EditText',text='QQ号/手机号/邮箱').set_text(177751879)    #3001313499    3030327691   QQNumber
+            d(resourceId='com.tencent.tim:id/password',description='密码 安全').set_text('13141314Abc')    #Bn2kJq5l
             d(text='登 录',resourceId='com.tencent.tim:id/login').click()
             while d(className='android.widget.LinearLayout').child(text='登录中',resourceId='com.tencent.tim:id/name').exists:
                 time.sleep(1)

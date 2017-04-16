@@ -14,7 +14,7 @@ from uiautomator import Device
 from zservice import ZDevice
 
 
-class MobilqqLogin:
+class MobilqqLogin2:
     def __init__(self):
         self.type = 'mobileqq'
         self.repo = Repo()
@@ -167,10 +167,6 @@ class MobilqqLogin:
             z.heartbeat()
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
 
-            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
-            d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-            z.sleep(6)
-
             getSerial = self.repo.Getserial(cate_id,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, slotnum))     #得到之前的串号
             time.sleep(1)
             if len(getSerial)==0:      #之前的信息保存失败的话
@@ -186,8 +182,6 @@ class MobilqqLogin:
                     z.generateSerial(getSerial)  # 将串号保存
             z.heartbeat()
             self.slot.restore(d, slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
-            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
             z.heartbeat()
             while True:
                 ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
@@ -276,11 +270,6 @@ class MobilqqLogin:
         else:  # 有空卡槽的情况
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
 
-            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
-            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-            z.sleep(6)
-            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
-            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
             z.heartbeat()
             while True:
                 ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
@@ -315,7 +304,7 @@ def runwatch(d, data):                                  #watcher除了点击还�
             z.sleep(0.5)
 
 def getPluginClass():
-    return MobilqqLogin
+    return MobilqqLogin2
 
 if __name__ == "__main__":
     import sys

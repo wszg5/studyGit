@@ -1,12 +1,12 @@
 {
-"id": "MobilqqSentNews",
-"cate":"QQ模块",
-"name":"普通QQ新鲜事(发布新鲜事)",
+"id": "EIMDiscussion",
+"cate":"EIM模块",
+"name":"EIM讨论组群发（文字）",
 "url": "http://www.bejson.com",
 "version": "1.1",
-"code":"QQ26",
+"code":"EIM14",
 "icon": "vcard-o",
-"remark":"普通QQ新鲜事(发布新鲜事)",
+"remark":"EIM讨论组群发（文字）",
 "setting":[
 	{
     "id": "repo_material_id",
@@ -16,11 +16,11 @@
     "top_cate_id":"12"
     },
     {
-	"id": "number",
-	"name":"图片数",
+	"id": "count",
+	"name":"个数",
 	"type":"textbox",
-	"defaultValue":"3",
-	"remark":"单位：个"
+	"defaultValue":"5",
+	"remark":"不能超过50个"
 	},
     {
     "id": "time_delay",

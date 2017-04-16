@@ -4,7 +4,7 @@ from Repo import *
 import time, datetime, random
 from zservice import ZDevice
 
-class MobilqqPraiseII:
+class MobilqqNewsPrise:
     def __init__(self):
         self.repo = Repo()
 
@@ -23,22 +23,32 @@ class MobilqqPraiseII:
         d(text='新鲜事').click()
         count = int(args['count'])
         i = 0
-        while i<count:
-            forclick = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=i).child(className='android.widget.RelativeLayout',index=3)\
-                .child(className='android.widget.LinearLayout',index=1)
-            if forclick.exists:
-                forclick.child(description='点赞').click()
-                forclick.child(description='评论').click()
-                cate_id = args["repo_material_id"]
-                Material = self.repo.GetMaterial(cate_id, 0, 1)
-                if len(Material) == 0:
-                    d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-                    z.sleep(10)
-                    return
-                message = Material[0]['content']  # 取出验证消息的内容
-                z.input(message)
-                d(text='发送').click()
-                i = i+1
+        t = 0
+        while t<count:
+            forexist = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=i)
+            if forexist.exists:
+                    forclick = forexist.child(className='android.widget.RelativeLayout',index=3).child(className='android.widget.LinearLayout',index=1)
+                    time.sleep(0.5)
+
+                    if forclick.exists:
+                        if forclick.child(description='点赞').exists:
+                            forclick.child(description='点赞').click()
+                        else:
+                            i = i + 1
+                        forclick.child(description='评论').click()
+                        cate_id = args["repo_material_id"]
+                        Material = self.repo.GetMaterial(cate_id, 0, 1)
+                        if len(Material) == 0:
+                            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                            z.sleep(10)
+                            return
+                        message = Material[0]['content']  # 取出验证消息的内容
+                        z.input(message)
+                        d(text='发送').click()
+                        i = i+1
+                        t = t+1
+                    else:
+                        i = i+1
 
             else:
                 str = d.info  # 获取屏幕大小等信息
@@ -50,16 +60,14 @@ class MobilqqPraiseII:
                 bottom = int(obj['bottom'])
                 y = bottom - top
                 d.swipe(width / 2, y, width / 2, 0)
-                z.sleep(3)
+                z.sleep(6)
                 i = 0
-
 
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
 
-
 def getPluginClass():
-    return MobilqqPraiseII
+    return MobilqqNewsPrise
 
 if __name__ == "__main__":
     import sys
@@ -67,9 +75,9 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4BLSK00255")
-    z = ZDevice("HT4BLSK00255")
+    d = Device("HT4AYSK00084")
+    z = ZDevice("HT4AYSK00084")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"prisenum":"20","concernnum":"20","textnum":"20","repo_material_id":"39","count":"5",'gender':"男","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_material_id":"145","count":"115","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

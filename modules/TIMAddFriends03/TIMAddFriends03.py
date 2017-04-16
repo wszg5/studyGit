@@ -20,11 +20,7 @@ class TIMAddFriends03:
         return uniqueNum
 
     def action(self, d, z,args):
-        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
-        if not os.path.isdir(base_dir):
-            os.mkdir(base_dir)
-        sourcePng = os.path.join(base_dir, "%s_s.png" % (self.GetUnique()))
-        genderPng = os.path.join(base_dir, "%s_c.png" % (self.GetUnique()))
+
         repo_material_cate_id = args["repo_material_cate_id"]
         Material = self.repo.GetMaterial(repo_material_cate_id, 0, 1)
         wait = 1  # 判断素材仓库里是否由素材
