@@ -6,25 +6,29 @@ import urllib
 import urllib2
 
 import requests
+import time
 
+from dbapi import dbapi
+from zcache import cache
 
 class client_lianzong(object):
     def __init__(self, username, password):
 
         self.username = username
         self.password = password
-        self.soft_id = '72358'
-        self.soft_key = 'a6b010fff6d247669c4b4bde98673709'
+        self.soft_id = '6303'
+        self.soft_name = 'xxxx'
+        self.soft_secret = 'ofn9oLOIyNDRQjzI3mSbeYc1O3iviTZycrqY7ctb'
         self.base_params = {
             'username': self.username,
             'password': self.password,
             'softid': self.soft_id,
-            'softkey': self.soft_key,
         }
         self.headers = {
             'Connection': 'Keep-Alive',
             'Expect': '100-continue',
             'User-Agent': 'ben',
+            'Content-Type': 'application/json',
         }
         self.im_type_list = {
             '4_number_char': 1001,
@@ -32,97 +36,102 @@ class client_lianzong(object):
         }
 
     def getCode(self, im, im_type, timeout=60):
-        opener = urllib2.build_opener(MultipartPostHandler)
-        #temp = tempfile.mkstemp(suffix=".png")
-        #os.write(temp[0],im)
-        params = { "user_name"      : '%s' % self.username,
-                   "user_pw"        : "%s" % self.password ,
-                   "yzmtype_mark"   : "%s" % self.im_type_list[im_type] ,
-                   "upload"          : im
-                 }
+        import base64
+        #f = open(r'c:\jb51.gif', 'rb')  # 二进制方式打开图文件
+        ls_f = base64.b64encode(im.read())  # 读取文件内容，转换为base64编码
+        im.close()
+        #f.close()
+        params = {
+                    "ts":int(time.time()),
+                    "softwareId": self.soft_id,
+                    "software": self.soft_name,
+                    "sdk":"PYTHON/1.0",
+                    "username": self.username,
+                    "userPassword": self.password,
+                    "captchaData":ls_f,
+                    "captchaType":1,
+                    "captchaMinLength":4,
+                    "captchaMaxLength":8
+                  }
+        params = json.dumps(params)
+        sign =  params + "|" + self.soft_secret
+        import hashlib
+        m2 = hashlib.md5()
+        m2.update(sign)
+        sign = m2.hexdigest()
 
-        result = opener.open("http://v1-http-api.jsdama.com/api.php?mod=php&act=upload", params).read()
-        result = json.loads(result)
-        return {"Result": result["data"]["val"], "Id": result["data"]["id"]}
 
+        headers = {'L-Request-Signature': sign}
+        headers.update(self.headers)
+        requests.adapters.DEFAULT_RETRIES = 5
+        request = urllib2.Request(url='https://api.jsdama.com/upload', headers=headers, data=params)
+        response = urllib2.urlopen(request)
+
+        r = response.read()
+        #r = requests.post('https://api.jsdama.com/upload', data=params, headers=self.headers)
+        result = json.loads(r)
+        if result["errorCode"] == 0:
+            params = {
+                "ts": int(time.time()),
+                "softwareId": self.soft_id,
+                "software": self.soft_name,
+                "sdk": "PYTHON/1.0",
+                "username": self.username,
+                "userPassword": self.password,
+                "captchaId": result["data"]["captchaId"]
+            }
+            params = json.dumps(params)
+            sign = params + "|" + self.soft_secret
+            import hashlib
+            m2 = hashlib.md5()
+            m2.update(sign)
+            sign = m2.hexdigest()
+
+            headers = {'L-Request-Signature': sign}
+            headers.update(self.headers)
+            requests.adapters.DEFAULT_RETRIES = 5
+            request = urllib2.Request(url='https://api.jsdama.com/recognition', headers=headers, data=params)
+            response = urllib2.urlopen(request)
+
+            r = response.read()
+            result = json.loads(r)
+            if result["errorCode"] == 0:
+                return {"Result": result["data"]["recognition"], "Id": result["data"]["captchaId"]}
+        else:
+            if not cache.get("LIANZONG_CODE_ERROR"):
+                cache.set("LIANZONG_CODE_ERROR", True)
+                dbapi.log_error("", "联众打码异常", result["errorMessage"])
+                return
 
     def reportError(self, im_id):
-        """
-        im_id:报错题目的ID
-        """
         params = {
-            'user_name': self.username,
-            'user_pw': self.password,
-            'yzm_id': im_id,
-        }
-        params.update(self.base_params)
-        r = requests.post('http://v1-http-api.jsdama.com/api.php?mod=php&act=error', data=params, headers=self.headers)
-        return r.json()
+                    "ts":int(time.time()),
+                    "softwareId": self.soft_id,
+                    "software": self.soft_name,
+                    "sdk":"PYTHON/1.0",
+                    "username": self.username,
+                    "userPassword": self.password,
+                    "captchaId":im_id
+                  }
 
+        params = json.dumps(params)
+        sign =  params + "|" + self.soft_secret
+        import hashlib
+        m2 = hashlib.md5()
+        m2.update(sign)
+        sign = m2.hexdigest()
 
-class Callable:
-    def __init__(self, anycallable):
-        self.__call__ = anycallable
+        headers = {'L-Request-Signature': sign}
+        headers.update(self.headers)
+        requests.adapters.DEFAULT_RETRIES = 5
+        request = urllib2.Request(url='https://api.jsdama.com/report-error', headers=headers, data=params)
+        response = urllib2.urlopen(request)
 
-doseq = 1
+        return response.read()
 
-
-class MultipartPostHandler(urllib2.BaseHandler):
-    handler_order = urllib2.HTTPHandler.handler_order - 10 # needs to run first
-
-    def http_request(self, request):
-        data = request.get_data()
-        if data is not None and type(data) != str:
-            v_files = []
-            v_vars = []
-            try:
-                 for(key, value) in data.items():
-                     if type(value) == file:
-                         v_files.append((key, value))
-                     else:
-                         v_vars.append((key, value))
-            except TypeError:
-                systype, value, traceback = sys.exc_info()
-                raise TypeError, "not a valid non-string sequence or mapping object", traceback
-
-            if len(v_files) == 0:
-                data = urllib.urlencode(v_vars, doseq)
-            else:
-                boundary, data = self.multipart_encode(v_vars, v_files)
-                contenttype = 'multipart/form-data; boundary=%s' % boundary
-                if(request.has_header('Content-Type')
-                   and request.get_header('Content-Type').find('multipart/form-data') != 0):
-                    print "Replacing %s with %s" % (request.get_header('content-type'), 'multipart/form-data')
-                request.add_unredirected_header('Content-Type', contenttype)
-
-            request.add_data(data)
-        return request
-
-    def multipart_encode(vars, files, boundary = None, buffer = None):
-        if boundary is None:
-            boundary = "--1234567890"
-        if buffer is None:
-            buffer = ''
-        for(key, value) in vars:
-            buffer += '--%s\r\n' % boundary
-            buffer += 'Content-Disposition: form-data; name="%s"' % key
-            buffer += '\r\n\r\n' + value + '\r\n'
-        for(key, fd) in files:
-            file_size = os.fstat(fd.fileno())[stat.ST_SIZE]
-            filename = fd.name.split('/')[-1]
-            contenttype = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
-            buffer += '--%s\r\n' % boundary
-            buffer += 'Content-Disposition: form-data; name="%s"; filename="%s"\r\n' % (key, filename)
-            buffer += 'Content-Type: %s\r\n' % contenttype
-            fd.seek(0)
-            buffer += '\r\n' + fd.read() + '\r\n'
-        buffer += '--%s--\r\n\r\n' % boundary
-        return boundary, buffer
-    multipart_encode = Callable(multipart_encode)
-    https_request = http_request
 
 if __name__ == "__main__":
-    lz = client_lianzong("power001", "13141314")
-    im = open("/Users/liujieyang/2222.png", 'rb')
+    lz = client_lianzong("power001", "13141314Abcd")
+    im = open("/home/zunyun/2222.png", 'rb')
     print lz.getCode(im, "5_char")
-    print lz.reportError("5104838994")
+    print lz.reportError("20170416:000000000005912504973")
