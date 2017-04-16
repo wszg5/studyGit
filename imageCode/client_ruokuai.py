@@ -3,7 +3,6 @@
 
 import requests
 from hashlib import md5
-
 from dbapi import dbapi
 from zcache import cache
 
@@ -28,7 +27,8 @@ class client_ruokuai(object):
             'User-Agent': 'ben',
         }
         self.im_type_list = {
-            '4_number_char': 3040
+            '4_number_char': 3040,
+            '5_hybrid_char':3050
         }
 
     def getCode(self, im, im_type, timeout=60):
@@ -42,7 +42,7 @@ class client_ruokuai(object):
         }
         params.update(self.base_params)
         files = {'image': ('a.jpg', im.read())}
-        requests.adapters.DEFAULT_RETRIES = 5
+        requests.adapters.DEFAULT_RETRIES = 10
         r = requests.post('http://api.ruokuai.com/create.json', data=params, files=files, headers=self.headers)
 
         #{"Result":"答题结果","Id":"题目Id(报错使用)"}
@@ -68,7 +68,7 @@ class client_ruokuai(object):
 
 
 if __name__ == "__main__":
-    lz = client_ruokuai("power0021", "13141314")
-    im = open("/home/zunyun/yzm.jpg", 'rb')
-    print lz.getCode(im, "4_number_char")
+    lz = client_ruokuai("power002", "13141314")
+    im = open("/Users/liujieyang/2222.png", 'rb')
+    print lz.getCode(im, "5_hybrid_char")
     print lz.reportError("f91bfe4d-eb8e-4bd7-b6d5-1ca002b69d95")

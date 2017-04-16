@@ -354,11 +354,12 @@ class AutomatorServer(object):
         if self.need_install():
             self.adb.cmd("shell", "su -c 'rm /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'chmod - R 777 /data/data/de.robv.android.xposed.installer/'").communicate()
-            self.adb.cmd("shell", "su -c 'rm /data/local/tmp/zime.apk'").communicate()
+            self.adb.cmd("shell", "su -c 'rm /data/local/tmp/zime.apk'").communicate()   #删除
             #self.adb.cmd("shell", "pm uninstall com.zunyun.zime").communicate()
             filename = os.path.join(base_dir, 'libs/install.sh')
             self.adb.cmd("push", filename, "/data/local/tmp/").wait()
             filename = os.path.join(base_dir, 'libs/zime.apk')
+
             self.adb.cmd("push", filename, "/data/local/tmp/").wait()
 
             self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
@@ -631,6 +632,7 @@ class ZRemoteDevice(object):
                 print '【错误】当前图片无法下载'
                 continue
             string = '/tmp/%s.jpg' %  uuid.uuid1()
+            print(string)
             fp = open(string, 'wb')
             fp.write(pic.content)
             fp.close()

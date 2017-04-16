@@ -82,8 +82,8 @@ if __name__ == "__main__":
     o = clazz()
 
 
-    d = Device("HT52ESK00321")
-    z = ZDevice("HT52ESK00321")
+    d = Device("HT4BLSK00255")
+    z = ZDevice("HT4BLSK00255")
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
 
 
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     # d.dump(compressed=False)
 
 
-    args = {"repo_cate_id":"104",'number_count':'200',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"104",'number_count':'20',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
 
 
     o.action(d,z, args)

@@ -253,7 +253,7 @@ class MobilqqAddressList:
             cate_id = args["repo_material_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
             if len(Material) == 0:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es ac \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                 z.sleep(10)
                 return
             message = Material[0]['content']  # 取出验证消息的内容

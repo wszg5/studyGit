@@ -1,4 +1,5 @@
 # coding:utf-8
+<<<<<<< HEAD
 import datetime
 import os
 import random
@@ -15,6 +16,19 @@ from zservice import ZDevice
 
 
 class MobilqqLogin2:
+=======
+from PIL import Image
+from imageCode import imageCode
+from uiautomator import Device
+import util
+from Repo import *
+import time, datetime, random
+from zservice import ZDevice
+from slot import slot
+import os
+
+class MobilqqLogin:
+>>>>>>> f8c2cd60f51ec1db059ae35773e14ac6179429d4
     def __init__(self):
         self.type = 'mobileqq'
         self.repo = Repo()
@@ -167,6 +181,13 @@ class MobilqqLogin2:
             z.heartbeat()
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
 
+<<<<<<< HEAD
+=======
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+            z.sleep(6)
+
+>>>>>>> f8c2cd60f51ec1db059ae35773e14ac6179429d4
             getSerial = self.repo.Getserial(cate_id,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, slotnum))     #得到之前的串号
             time.sleep(1)
             if len(getSerial)==0:      #之前的信息保存失败的话
@@ -182,6 +203,11 @@ class MobilqqLogin2:
                     z.generateSerial(getSerial)  # 将串号保存
             z.heartbeat()
             self.slot.restore(d, slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
+<<<<<<< HEAD
+=======
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+>>>>>>> f8c2cd60f51ec1db059ae35773e14ac6179429d4
             z.heartbeat()
             while True:
                 ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
@@ -270,6 +296,14 @@ class MobilqqLogin2:
         else:  # 有空卡槽的情况
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
 
+<<<<<<< HEAD
+=======
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+            z.sleep(6)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+>>>>>>> f8c2cd60f51ec1db059ae35773e14ac6179429d4
             z.heartbeat()
             while True:
                 ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
@@ -304,7 +338,11 @@ def runwatch(d, data):                                  #watcher除了点击还�
             z.sleep(0.5)
 
 def getPluginClass():
+<<<<<<< HEAD
     return MobilqqLogin2
+=======
+    return MobilqqLogin
+>>>>>>> f8c2cd60f51ec1db059ae35773e14ac6179429d4
 
 if __name__ == "__main__":
     import sys
@@ -313,8 +351,13 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
+<<<<<<< HEAD
     d = Device("HT4AYSK00084")
     z = ZDevice("HT4AYSK00084")
+=======
+    d = Device("HT52ESK00321")
+    z = ZDevice("HT52ESK00321")
+>>>>>>> f8c2cd60f51ec1db059ae35773e14ac6179429d4
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id":"143","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)

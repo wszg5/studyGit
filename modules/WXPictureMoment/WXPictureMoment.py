@@ -54,11 +54,11 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT4BLSK00255")
+    z = ZDevice("HT4BLSK00255")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_material_id": "43","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "146","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
 
