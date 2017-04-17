@@ -4,7 +4,7 @@
 "type":"framework",
 "name":"调度后台",
 "url": "http://www.bejson.com",
-"version": "1.4",
+"version": "1.85",
 "code":"ztask-8",
 "icon": "vcard-o",
 "remark":"调度后台框架"
