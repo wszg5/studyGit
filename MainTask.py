@@ -181,9 +181,6 @@ if __name__ == "__main__":
     t.setDaemon(True)
     t.start()
 
-    #启动虚拟任务子进程
-    import virtualTask
-    multiprocessing.Process(target=virtualTask.virtualTask.run)
 
     logger = util.logger
     port = 30000

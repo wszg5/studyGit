@@ -311,7 +311,7 @@ class AutomatorServer(object):
 
     __apk_files = ["libs/zime.apk"]
     # Used for check if installed
-    __apk_vercode = '1.8.1'
+    __apk_vercode = '1.8.2'
     __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
@@ -518,7 +518,6 @@ class ZRemoteDevice(object):
 
     def log_warn(self, message, level="warn"):
         from dbapi import dbapi
-        dbapi = dbapi()
         dbapi.log_warn(self.server.adb.device_serial(), message, level)
 
     def log_error(self, message):
