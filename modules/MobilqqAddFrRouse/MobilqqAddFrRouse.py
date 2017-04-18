@@ -38,7 +38,7 @@ class MobilqqAddFrRouse:
             QQnumber = list[i]['number']
             print(QQnumber)
             z.sleep(1)
-            d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"'%QQnumber)  # qq名片页面
+            z.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"'%QQnumber)  # qq名片页面
             z.sleep(2)
             if d(text='QQ').exists:
                 d(text='QQ').click()
