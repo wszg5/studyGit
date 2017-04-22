@@ -10,7 +10,7 @@ from zservice import ZDevice
 
 class WXPictureMoment:
 
-    def sendpciture(self, images):    #微信发图片
+    def sendpicture(self, images):    #微信发图片
         imgs = ""
         for k, v in enumerate(images):
 
@@ -64,7 +64,7 @@ class WXPictureMoment:
                 imgs.append(t['ext%s'%i])
         z.heartbeat()
         print(imgs)
-        self.sendpciture(imgs)
+        self.sendpicture(imgs)
 
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))

@@ -17,6 +17,7 @@ class dbapi:
                            db=const.RETHINKDB_NAME)
         with pool.get_resource() as res:
             devices = r.table('devices').filter({'present': True, 'ready': True}).order_by('statusChangedAt').run(res.conn)
+            res.release()
             return devices
 
 
@@ -31,6 +32,7 @@ class dbapi:
             uid = time.time() + random.randint(10000, 20000)
             log = {"id": uid,"serial":serial, "summary":summary, "message": message, "level": level, "UpdatedAt": r.now().run(res.conn, time_format="raw")}
             r.table("warn_msg").insert(log).run(res.conn)
+            res.release()
 
     def GetDeviceTask(self, serial):
         pool = RethinkPool(max_conns=120, initial_conns=10, host=const.SERVER_IP,
@@ -38,6 +40,7 @@ class dbapi:
                            db=const.RETHINKDB_NAME)
         with pool.get_resource() as res:
                 device = r.table('devices').get(serial).run(res.conn)
+                res.release()
                 if device and device.get("task_id"):
                     return device["task_id"]
         return None
@@ -48,6 +51,7 @@ class dbapi:
                            db=const.RETHINKDB_NAME)
         with pool.get_resource() as res:
                 devices = r.table('devices').filter({"task_id",taskId}).run(res.conn)
+                res.release()
                 return devices
         return None
 
@@ -58,6 +62,7 @@ class dbapi:
                            db=const.RETHINKDB_NAME)
         with pool.get_resource() as res:
             steps = r.table('v_devices').order_by('serial').run(res.conn)
+            res.release()
             return steps
 
 
@@ -67,6 +72,7 @@ class dbapi:
                            db=const.RETHINKDB_NAME)
         with pool.get_resource() as res:
             task = r.table('tasks').get(taskid).run(res.conn)
+            res.release()
             return task
 
     def GetTaskSteps(self, taskid):
@@ -75,6 +81,7 @@ class dbapi:
                            db=const.RETHINKDB_NAME)
         with pool.get_resource() as res:
             steps = r.table('taskSteps').get_all(taskid, index='task_id').order_by('sort').run(res.conn)
+            res.release()
             return steps
 
     def GetSlotInfo(self, serial, appType, slotNum):
@@ -84,6 +91,7 @@ class dbapi:
                            db=const.RETHINKDB_NAME)
         with pool.get_resource() as res:
             info = r.table("slots").get(id).run(res.conn)
+            res.release()
             return info
 
 
@@ -99,6 +107,7 @@ class dbapi:
                 slot["createdAt"] = r.now().run(res.conn, time_format="raw")
                 slot["last_pick"] = r.now().run(res.conn, time_format="raw")
                 r.table("slots").insert(slot).run(res.conn)
+            res.release()
 
     def PickSlot(self, serial, type, name):
         id = '%s_%s_%s'%(serial,type,name)
@@ -108,7 +117,7 @@ class dbapi:
         with pool.get_resource() as res:
             now = r.now().run(res.conn, time_format="raw")
             r.table("slots").get(id).update({"last_pick": now}).run(res.conn)
-
+            res.release()
 
 
     def ListSlots(self, serial, type):
@@ -117,6 +126,7 @@ class dbapi:
                            db=const.RETHINKDB_NAME)
         with pool.get_resource() as res:
             list = r.table("slots").get_all(serial, index='serial').filter({'type': type}).order_by('name').run(res.conn)
+            res.release()
             return list;
 
 
@@ -126,6 +136,7 @@ class dbapi:
                            db=const.RETHINKDB_NAME)
         with pool.get_resource() as res:
             list = r.table("slots").get_all(serial, index='serial').filter((r.row["type"] == type) & (r.row["empty"] == 'false') & ( r.row["last_pick"] + int(interval) < r.now()  ) ).order_by('name').run(res.conn)
+            res.release()
             return list;
 
     def GetSetting(self, key):
@@ -134,6 +145,7 @@ class dbapi:
                            db=const.RETHINKDB_NAME)
         with pool.get_resource() as res:
             setting = r.table('setting').get(key).run(res.conn)
+            res.release()
             if setting:
                 return setting["value"]
 
@@ -145,6 +157,7 @@ class dbapi:
 
         with pool.get_resource() as res:
             list = r.table("setting").get_all(key).filter(r.row["UpdatedAt"] + int(interval) < r.now()).order_by('name').run(res.conn)
+            res.release()
             if (len(list) > 0):
                 return list[0]
 
@@ -156,10 +169,11 @@ class dbapi:
                            db=const.RETHINKDB_NAME)
         with pool.get_resource() as res:
             cache = {"key": key, "value": value, "UpdatedAt": r.now().run(res.conn, time_format="raw")}
-
             stats = r.table("setting").get(key).update(cache).run(res.conn)
             if stats["skipped"]:
                 r.table("setting").insert(cache).run(res.conn)
+            res.release()
+
 
     def DelCache(self,key):
         pool = RethinkPool(max_conns=120, initial_conns=10, host=const.SERVER_IP,
@@ -167,5 +181,6 @@ class dbapi:
                            db=const.RETHINKDB_NAME)
         with pool.get_resource() as res:
             r.table("setting").get(key).delete().run(res.conn)
+            res.release()
 
 dbapi = dbapi()
