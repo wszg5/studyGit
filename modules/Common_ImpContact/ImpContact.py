@@ -86,9 +86,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-
-    d = Device("2781f667")
-    z = ZDevice("2781f667")
+    d = Device("9ddbd665")
+    z = ZDevice("9ddbd665")
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
 
 
@@ -103,6 +102,5 @@ if __name__ == "__main__":
 
 
     args = {"repo_cate_id":"123",'number_count':'50',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
-
 
     o.action(d,z, args)

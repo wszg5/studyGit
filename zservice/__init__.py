@@ -355,6 +355,7 @@ class AutomatorServer(object):
             self.adb.cmd("shell", "am force-stop com.zunyun.zime").communicate()  # 强制停止
             self.adb.cmd("shell", "su -c 'rm /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'chmod - R 777 /data/data/de.robv.android.xposed.installer/'").communicate()
+
             self.adb.cmd("shell", "su -c 'rm /data/local/tmp/zime.apk'").communicate()
             #self.adb.cmd("shell", " ").communicate()
             self.adb.cmd("shell", "pm uninstall com.zunyun.zime").communicate()
@@ -362,7 +363,6 @@ class AutomatorServer(object):
             self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
             filename = os.path.join(base_dir, 'libs/zime.apk')
             self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
-
             self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'sh /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "reboot").communicate()
@@ -599,13 +599,11 @@ class ZRemoteDevice(object):
             ppoints.append(p[1])
         return self.server.jsonrpc.swipePoints(ppoints, steps)
 
-
     '''
     执行微信SQL
     '''
     def wx_execute_sql(self, sql):
-        self.server.adb.cmd("shell",
-                            "am broadcast -a MyAction --es act \"sqlhelper\" --es sql \"%s\"" % sql).communicate()
+        self.server.adb.cmd("shell",   "am broadcast -a MyAction --es act \"sqlhelper\" --es sql \"%s\"" % sql).communicate()
         return self.server.jsonrpc.wx_sql(sql)
 
     '''
@@ -633,6 +631,7 @@ class ZRemoteDevice(object):
                 print '【错误】当前图片无法下载'
                 continue
             string = '/tmp/%s.jpg' %  uuid.uuid1()
+            print(string)
             fp = open(string, 'wb')
             fp.write(pic.content)
             fp.close()
@@ -642,6 +641,40 @@ class ZRemoteDevice(object):
             imgs = "%s,%s"%(imgs,imgTarget)
         self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"sendsnsline\" --es description \"%s\" --es images \"%s\""%(description,imgs)).communicate()
         return True
+
+    def sendpicture(self, images):    #微信发图片
+        self.server.adb.cmd("shell", "rm -r /sdcard/DCIM/picture/").communicate()
+        imgs = ""
+        for k, v in enumerate(images):
+            form = v[-3:]
+            print(form)
+            '''
+                try:
+                    pic = requests.get(each, timeout=10)
+                except requests.exceptions.ConnectionError:
+                    print '【错误】当前图片无法下载'
+                    continue
+                string = 'pictures\\' + str(i) + '.jpg'
+                fp = open(string, 'wb')
+                fp.write(pic.content)
+                fp.close()
+            '''
+            try:
+                pic = requests.get(v, timeout=10)
+            except requests.exceptions.ConnectionError:
+                print '【错误】当前图片无法下载'
+                continue
+            string = '/tmp/%s.%s' %  (uuid.uuid1(),form)
+            fp = open(string, 'wb')
+            fp.write(pic.content)
+            fp.close()
+            #print '%s -- %s' %(k,v)
+            imgTarget = "/sdcard/DCIM/picture/%s.%s"%(k,form)
+            self.server.adb.cmd("push", string,  imgTarget).wait()
+            self.server.adb.cmd("shell", "am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file://%s"%imgTarget ).communicate()
+
+           # adb push / home / zunyun / 11.jpg / sdcard / DCIM　将本地图片推到手机的一个目录
+            #adb shell am broadcast - a android.intent.action.MEDIA_SCANNER_SCAN_FILE - d file: // / sdcard / DCIM / 11.jpg　　　＃让这张图片显示在相册里
 
     def wx_openurl(self, url):
         self.server.adb.cmd("shell", "am broadcast -a MyAction --es act \"openurl\" --es url \"%s\""%url).communicate()

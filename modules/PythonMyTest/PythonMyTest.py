@@ -1,105 +1,123 @@
 # coding:utf-8
+import urlparse
+import datetime
+import os
+from multiprocessing import Process, Queue, Array, RLock
 
-from multiprocessing import Process, Queue
-
-from uiautomator import Device
-import  time,threading,os
-from zservice import ZDevice
-import random
-import re
-from Repo import *
-
-class MobilqqPicWall:
-    def __init__(self):
-        self.repo = Repo()
-
-    def reviceyear(self):
-        setyear = random.randint(1990, 2000)
-        nowyear = d(textContains='年', index='3').info['text']
-        nowyear = int(re.findall(r"\d+\.?\d*", nowyear)[0])
-        if setyear < nowyear:
-            num = nowyear - setyear
-            for i in range(0, num):
-                d(textContains='年', index=2).click()
-        else:
-            num = setyear - nowyear
-            for i in range(0, num):
-                d(textContains='年', index=4).click()
-
-    def revicemonth(self):
-        setmonth = random.randint(1, 12)  # 设置月份
-        nowmonth = d(textContains='月', index='3').info['text']
-        nowmonth = int(re.findall(r"\d+\.?\d*", nowmonth)[0])
-        if setmonth < nowmonth:
-            num = nowmonth - setmonth
-            for i in range(0, num):
-                d(textContains='月', index=2).click()
-        else:
-            num = setmonth - nowmonth
-            for i in range(0, num):
-                if d(textContains='月', index=4).exists:
-                    d(textContains='月', index=4).click()
-                else:
-                    d(textContains='月', index=3).click()
-
-    def reviceday(self):
-        setday = random.randint(1, 30)  # 设置月份
-        nowday = d(textContains='日', index='3').info['text']
-        nowday = int(re.findall(r"\d+\.?\d*", nowday)[0])
-        if setday < nowday:
-            num = nowday - setday
-            for i in range(0, num):
-                d(textContains='日', index=2).click()
-        else:
-            num = setday - nowday
-            for i in range(0, num):
-                if d(textContains='日', index=4).exists:
-                    d(textContains='日', index=4).click()
-                else:
-                    d(textContains='月', index=3).click()
+WORKERS = 4
+BLOCKSIZE = 100000000
+FILE_SIZE = 0
 
 
-    def action(self, d,z, args):
+def getFilesize(file):
+    """
+        获取要读取文件的大小
+    """
+    global FILE_SIZE
+    fstream = open(file, 'r')
+    fstream.seek(0, os.SEEK_END)
+    FILE_SIZE = fstream.tell()
+    fstream.close()
+
+def process_found(pid, array, file, rlock):
+    global FILE_SIZE
+    global JOB
+    global PREFIX
+    """
+        进程处理
+        Args:
+            pid:进程编号
+            array:进程间共享队列，用于标记各进程所读的文件块结束位置
+            file:所读文件名称
+        各个进程先从array中获取当前最大的值为起始位置startpossition
+
+        结束的位置
+        endpossition (startpossition+BLOCKSIZE) if (startpossition+BLOCKSIZE)
+        <FILE_SIZE else FILE_SIZE
+
+        if startpossition==FILE_SIZE则进程结束
+        if startpossition==0则从0开始读取
+
+        if startpossition!=0
+        为防止行被block截断的情况，先读一行不处理，从下一行开始正式处理
+
+        if 当前位置 <=endpossition 就readline
+        否则越过边界，就从新查找array中的最大值
+    """
+    fstream = open(file, 'r')
+    number = 0
+    while True:
+        rlock.acquire()     #获得锁
+        print 'pid%s' % pid, ','.join([str(v) for v in array])
+        startpossition = max(array)
+        endpossition = array[pid] = (startpossition + BLOCKSIZE) if (startpossition + BLOCKSIZE) < FILE_SIZE else FILE_SIZE
+        rlock.release()
+
+        if startpossition == FILE_SIZE:  # end of the file
+            print 'pid%s end' % (pid)
+            break
+        elif startpossition != 0:
+            fstream.seek(startpossition)
+            fstream.readline()
+        pos = ss = fstream.tell()
+
+        ostream = open('/home/zunyun/data2' + str(pid) + '_jobs' + str(endpossition), 'w')
+
+        while pos < endpossition:
+            # 处理line www.iplaypy.com
+            line = fstream.readline()
+            a = line.decode("gb2312", 'ignore')
+            print(a)
+            b = a.split()
+            print(b)
+            print(len(b))     #将读出来的内容按照空格分割，分割之后得到的是数组
+            if len(b)<5:
+                print()
+            try:
+                if b[1] !='':
+                     print(b[1])
+            except Exception:
+                print('--------------------------')
+
+            number = number+1
+            ostream.write(line)
+            pos = fstream.tell()
+
+        print 'pid:%s,startposition:%s,endposition:%s,pos:%s' % (pid, ss, pos, pos)
+        ostream.flush()
+        ostream.close()
+        ee = fstream.tell()
+    print("总数为%s"%number)
+    fstream.close()
 
 
-        # 父进程创建Queue，并传给各个子进程：
-        q = Queue()
-        t = Process(target=self.reviceyear)
-        t1 = Process(target=self.revicemonth)
-        t2 = Process(target=self.reviceday)
-        t.start()
-        t1.start()
-        t2.start()
-        t.join()
-        t1.join()
-        t2.join()
-        print()
+def main():
+    global FILE_SIZE
+    print datetime.datetime.now().strftime("%Y/%d/%m %H:%M:%S")
+
+    file = "/home/zunyun/data2.txt"
+    getFilesize(file)
+    print FILE_SIZE
+
+    rlock = RLock()
+    array = Array('l', WORKERS, lock=rlock)
+    threads = []
+
+    for i in range(WORKERS):
+        p = Process(target=process_found, args=[i, array, file, rlock])
+        threads.append(p)
+
+    for i in range(WORKERS):
+        threads[i].start()
+
+    for i in range(WORKERS):
+        threads[i].join()
+
+    print datetime.datetime.now().strftime("%Y/%d/%m %H:%M:%S")
 
 
-
-
-
-        d(text='完成').click()
-
-
-
-
-        if (args["time_delay"]):
-            z.sleep(int(args["time_delay"]))
-
-def getPluginClass():
-    return MobilqqPicWall
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     import sys
     reload(sys)
     sys.setdefaultencoding('utf8')
-    clazz = getPluginClass()
-    o = clazz()
-    d = Device("HT4BLSK00255")
-    z = ZDevice("HT4BLSK00255")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-
-    args = {"repo_name_id":"139","repo_declaration_id":"140","repo_company_id":"141","repo_school_id":"142","time_delay":"3"};    #cate_id是仓库号，length是数量
-    o.action(d, z,args)
-
+    main()

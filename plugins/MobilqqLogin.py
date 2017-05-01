@@ -239,7 +239,6 @@ class MobilqqLogin:
     def action(self, d,z, args):
         z.heartbeat()
         time_limit = args['time_limit']
-        time_limit1 = args['time_limit1']
         cate_id = args["repo_cate_id"]
         slotnum = self.slot.getEmpty(d)  # 取空卡槽
         if slotnum == 0:    #没有空卡槽的话
@@ -354,6 +353,19 @@ class MobilqqLogin:
 
 
 
+def runwatch(d, data):                                  #watcher除了点击还可以做什么，watcher到可以结束方法吗，可以改变参数吗
+    times = 120
+    while True:
+        if data == 1:
+            return True
+        # d.watchers.reset()
+        d.watchers.run()                      #强制运行所有watchers
+        times -= 1
+        if times == 0:
+            break
+        else:
+            z.sleep(0.5)
+
 def getPluginClass():
     return MobilqqLogin
 
@@ -368,5 +380,6 @@ if __name__ == "__main__":
     z = ZDevice("HT4AYSK00084")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id":"143","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)

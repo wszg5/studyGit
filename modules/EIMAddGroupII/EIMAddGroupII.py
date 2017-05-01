@@ -8,7 +8,7 @@ from Repo import *
 from zservice import ZDevice
 import time, datetime, random
 
-class EIMAddFriends:
+class EIMAddGroupII:
     def __init__(self):
         self.repo = Repo()
 
@@ -20,7 +20,7 @@ class EIMAddFriends:
         z.sleep(6)
         add_count = int(args['add_count'])  # 要添加多少人
 
-        cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
+        cate_id = int(args["repo_number_id"])  # 得到取号码的仓库号
         numbers = self.repo.GetNumber(cate_id, 120, add_count)  # 取出add_count条两小时内没有用过的号码
         if len(numbers) == 0:
             d.server.adb.cmd("shell",
@@ -38,7 +38,7 @@ class EIMAddFriends:
         z.heartbeat()
         d(text='查找群').click()
         for i in range(0,add_count,+1):
-            cate_id = args["repo_material_cate_id"]
+            cate_id = args["repo_material_id"]
             Material = self.repo.GetMaterial(cate_id, 0, 1)
             if len(Material) == 0:
                 d.server.adb.cmd("shell",
@@ -97,7 +97,7 @@ class EIMAddFriends:
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
 def getPluginClass():
-    return EIMAddFriends
+    return EIMAddGroupII
 
 if __name__ == "__main__":
     import sys
@@ -111,5 +111,5 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell","ime set com.zunyun.qk/.ZImeService").communicate()
 
     # d.dump(compressed=False)
-    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","add_count":"13","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_id":"119","repo_material_id":"39","add_count":"13","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

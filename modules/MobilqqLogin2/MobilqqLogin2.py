@@ -1,20 +1,25 @@
 # coding:utf-8
+import datetime
+import os
+import random
+import time
+
 from PIL import Image
-from imageCode import imageCode
-from uiautomator import Device
+
 import util
 from Repo import *
-import time, datetime, random
-from zservice import ZDevice
+from imageCode import imageCode
 from slot import slot
-import os
+from uiautomator import Device
+from zservice import ZDevice
 
-class MobilqqLogin:
+
+class MobilqqLogin2:
     def __init__(self):
         self.type = 'mobileqq'
         self.repo = Repo()
         self.slot = slot(self.type)
-
+        self.logger = util.logger
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
@@ -47,20 +52,30 @@ class MobilqqLogin:
             QQPassword = numbers[0]['password']
             z.sleep(1)
             z.heartbeat()
-            d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
-            d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+            z.cmd("shell", "pm clear com.tencent.mobileqq")  # 清除缓存
+            z.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity")  # 拉起来
             while d(textContains='正在更新数据').exists:
+                z.sleep(3)
+
+            z.heartbeat()
+            t = 1
+            while not d(resourceId='com.tencent.mobileqq:id/btn_login').exists:
+                z.toast("等待 登录 按钮出现")
+                dumpStr = d.dump(compressed=False)
                 z.sleep(2)
-            z.sleep(4)
-            d(text='登 录').click()
+                if t == 10:
+                    self.logger.war(dumpStr)
+                t = t + 1
+            d(resourceId='com.tencent.mobileqq:id/btn_login').click()
+
             z.sleep(1)
+            d(className='android.widget.EditText', index=0).click()
             d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
             z.sleep(1)
             d(resourceId='com.tencent.mobileqq:id/password', index=2).set_text(QQPassword)  # Bn2kJq5l     QQPassword
             z.heartbeat()
-            logger = util.logger
             print('QQ号:%s,QQ密码：%s'%(QQNumber,QQPassword))
-            d(text='登 录', resourceId='com.tencent.mobileqq:id/login').click()
+            d(resourceId='com.tencent.mobileqq:id/login').click()
             if d(text='QQ').exists:
                 d(text='QQ').click()
                 if d(text='仅此一次').exists:
@@ -136,7 +151,7 @@ class MobilqqLogin:
             if d(text='寻找好友').exists:
                 return QQNumber
             if d(textContains='密码错误').exists:
-                logger.info('===========密码错误==============帐号:%s,密码:%s' % (QQNumber, QQPassword))
+                self.logger.info('===========密码错误==============帐号:%s,密码:%s' % (QQNumber, QQPassword))
             z.heartbeat()
             self.repo.BackupInfo(cate_id, 'frozen',QQNumber, '','')  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
             z.sleep(1)
@@ -146,6 +161,7 @@ class MobilqqLogin:
 
     def action(self, d,z, args):
         z.heartbeat()
+        d.dump(compressed=False)
         time_limit = args['time_limit']
         cate_id = args["repo_cate_id"]
         slotnum = self.slot.getEmpty(d)  # 取空卡槽
@@ -162,10 +178,6 @@ class MobilqqLogin:
             z.heartbeat()
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
 
-            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
-            d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-            z.sleep(6)
-
             getSerial = self.repo.Getserial(cate_id,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, slotnum))     #得到之前的串号
             time.sleep(1)
             if len(getSerial)==0:      #之前的信息保存失败的话
@@ -181,8 +193,6 @@ class MobilqqLogin:
                     z.generateSerial(getSerial)  # 将串号保存
             z.heartbeat()
             self.slot.restore(d, slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
-            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
             z.heartbeat()
             while True:
                 ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
@@ -206,58 +216,29 @@ class MobilqqLogin:
             if d(textContains='主题装扮').exists:
                 d(text='关闭').click()
                 z.sleep(1)
-            d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=10000\&card_type=person\&source=qrcode"')  # qq名片页面
-            z.sleep(3)
-            if d(text='QQ').exists:
-                d(text='QQ').click()
-                if d(text='仅此一次').exists:
-                    d(text='仅此一次').click()
-            z.sleep(15)
-            if d(text='系统消息').exists:
-                d(text='返回').click()
+
+
+
+            loginedFlag = True
+
+            seconds = 15
+            while seconds > 0:
+                z.toast('检查是否出现登录界面%s' % seconds)
+                seconds = seconds - 1
+                z.sleep(1)
+                out = d.server.adb.cmd("shell",
+                                       "dumpsys activity top  | grep ACTIVITY").communicate()[0].decode('utf-8')
+                if out.find("com.tencent.mobileqq/.activity.LoginActivity") > -1:
+                    loginedFlag = False
+                    break
+
+
+            if loginedFlag:
                 z.heartbeat()
                 obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                 QQnumber = obj['info']  # info为QQ号
                 self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo(cate_id, 'using', QQnumber,getSerial,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
-
-            # if d(resourceId='com.tencent.mobileqq:id/name', index=1).child(className='android.widget.ImageView',index=0).exists:  # 不停的加载的情况,登录失败的情况，其它都是成功的情况
-            #     z.heartbeat()
-            #     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"该帐号失效，将重新登录\"").communicate()
-            #     serial = z.generateSerial("788")  # 修改信息
-            #     QQnumber = self.login(d, args,z)  # 帐号无法登陆则登陆,重新登陆
-            #     self.slot.backup(d, slotnum, QQnumber)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
-            #     self.repo.BackupInfo(cate_id, 'using', QQnumber,serial,'%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
-            # elif d(text='搜索',resourceId='com.tencent.mobileqq:id/name').exists:
-            #     z.heartbeat()
-            #     obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
-            #     QQnumber = obj['info']  # info为QQ号
-            #     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
-            #     self.repo.BackupInfo(cate_id, 'using', QQnumber,getSerial,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
-            # elif d(text='消息').exists:
-            #     z.heartbeat()
-            #     obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
-            #     QQnumber = obj['info']  # info为QQ号
-            #     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
-            #     self.repo.BackupInfo(cate_id, 'using', QQnumber,getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
-            # elif d(text='主题装扮').exists:
-            #     z.heartbeat()
-            #     obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
-            #     QQnumber = obj['info']  # info为QQ号
-            #     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
-            #     self.repo.BackupInfo(cate_id, 'using', QQnumber,getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
-            # elif d(text ='马上绑定').exists:
-            #     z.heartbeat()
-            #     obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
-            #     QQnumber = obj['info']  # info为QQ号
-            #     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
-            #     self.repo.BackupInfo(cate_id, 'using', QQnumber,getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
-            # elif d(text='寻找好友').exists:
-            #     z.heartbeat()
-            #     obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
-            #     QQnumber = obj['info']  # info为QQ号
-            #     self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
-            #     self.repo.BackupInfo(cate_id, 'using', QQnumber,getSerial, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
             else:        #切换不成功的情况
                 d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
                 serialinfo = z.generateSerial("788")  # 修改信息
@@ -271,11 +252,6 @@ class MobilqqLogin:
         else:  # 有空卡槽的情况
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
 
-            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
-            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-            z.sleep(6)
-            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
-            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
             z.heartbeat()
             while True:
                 ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
@@ -297,7 +273,7 @@ class MobilqqLogin:
 
 
 def getPluginClass():
-    return MobilqqLogin
+    return MobilqqLogin2
 
 if __name__ == "__main__":
     import sys
@@ -306,9 +282,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT52ESK00321")
-    z = ZDevice("HT52ESK00321")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+    d = Device("3018768")
+    z = ZDevice("3018768")
     args = {"repo_cate_id":"143","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

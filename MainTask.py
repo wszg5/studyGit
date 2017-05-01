@@ -258,6 +258,7 @@ if __name__ == "__main__":
                             z = ZDevice(deviceid, 1000)
                             z.cmd("shell", "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"stop\"");
             #检查运行中的进程是否有手机被拔出电脑
+            '''
             for device in processDict:
                 if device not in devicelist:
                     # dbapi.log_warn(device , "设备被拔出，运行中任务被强制停止")
@@ -265,7 +266,7 @@ if __name__ == "__main__":
                         logger.war("%s设备被拔出，移除进程" % deviceid)
                         processDict[device].terminate()
                         del processDict[deviceid]
-
+            '''
         except Exception:
             logger.error(traceback.format_exc())
         time.sleep(10)

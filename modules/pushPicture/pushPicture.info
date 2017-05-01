@@ -1,0 +1,40 @@
+{
+"id": "pushPicture",
+"cate":"基础模块",
+"name":"上传图片到手机相册",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"base03",
+"icon": "vcard-o",
+"remark":"上传图片到手机相册",
+"setting":[
+	{
+    "id": "repo_material_id",
+    "name":"照片库",
+    "type":"repo",
+    "source":"material",
+    "top_cate_id":"11"
+    },
+    {
+	"id": "num",
+	"name":"添加数",
+	"type":"textbox",
+	"defaultValue":"9",
+	"remark":"单位：个"
+	},
+	{
+	"id": "time",
+	"name":"取多长时间未用的图片",
+	"type":"textbox",
+	"defaultValue":"9",
+	"remark":"单位：分钟"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

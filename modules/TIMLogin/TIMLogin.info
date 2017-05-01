@@ -1,0 +1,34 @@
+{
+"id": "TIMQQLogin",
+"cate":"TIMQQ登录模块",
+"name":"TIM登录QQ",
+"url": "http://www.bejson.com",
+"verison": "1.0",
+"icon":"vcard-o",
+"remark":"TIM登录QQ",
+"setting":[
+{
+"id": "repo_cate_id",
+"name":"QQ昵称",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
+
+{
+"id": "time_limit",
+"name":"卡槽切换间隔（单位分钟）",
+"type":"textbox",
+"defaultValue":"120",
+"remark":"注：如果没有符合条件账号，调度将一直等待至有可用账号"
+},
+
+{
+"id": "time_delay",
+"name":"延时",
+"type":"textbox",
+"defaultValue":"3",
+"remark":"单位：秒"
+}
+]
+}

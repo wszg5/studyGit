@@ -27,10 +27,15 @@ class MobilqqConcern:
                 z.sleep(2)
         d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout', index=2).child(
             className='android.widget.LinearLayout', index=0).click()  # 点击进入自己的主页
+        z.sleep(5)
+        if d(text='知道了').exists:
+            d(text='知道了').click()
+            z.sleep(1)
         d(descriptionContains='赞').child(className='android.view.View').click()
         # d(descriptionContains='帐户及设置').click()
         # d(descriptionContains='等级').click()
         # d(descriptionContains='赞').click()
+        z.sleep(3)
         d(text='我赞过谁').click()
         z.heartbeat()
         z.sleep(3)
@@ -44,6 +49,7 @@ class MobilqqConcern:
         set1 = set()
         i = 1
         t = 1
+        mmm = 0
         add_count = int(args['add_count'])  # 要添加多少人
         while t < add_count + 1:
             obj = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout',index=i)\
@@ -64,23 +70,26 @@ class MobilqqConcern:
                 while d(textContains='正在加载').exists:
                     z.sleep(2)
                 z.heartbeat()
+
                 if d(text='关注').exists:
                     d(text='关注').click()
                     z.sleep(1.5)
                 if d(textContains='取消').exists:
                     d(text='取消').click()
-                if d(text='关注').exists:     #因为第一次会有个提醒页面，需要再点一次才能关注成功
-                    d(text='关注').click()
-                    z.sleep(1)
+                if mmm==0:
+                    if d(text='关注').exists:     #因为第一次会有个提醒页面，需要再点一次才能关注成功
+                        d(text='关注').click()
+                        z.sleep(1)
+                        mmm = 1
                     # if d(text='关注').exists:
                     #     return
 
-                    d(text='返回').click()
+                    d.press.back()
                     i = i+1
                     t = t+1
                 else:
                     z.heartbeat()
-                    d(text='返回').click()  #该好友已被关注的情况
+                    d.press.back()
                     i = i+1
                     continue
             else:
@@ -105,10 +114,9 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT52ESK00321")
-    z = ZDevice("HT52ESK00321")
+    d = Device("HT4BLSK00255")
+    z = ZDevice("HT4BLSK00255")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-
     args = {"add_count":"1000","time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

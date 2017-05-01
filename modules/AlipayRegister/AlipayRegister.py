@@ -68,6 +68,7 @@ class AlipayRegister:
 
 
             if d(textContains='您的操作频率过快').exists or d(textContains='请将球滑向篮球框中').exists:
+                self.scode.ReleasePhone(GetBindNumber, self.scode.ALIPAY_REGISTER)
                 seconds = 5 * 60
                 while seconds > 0:
                     z.heartbeat()
@@ -83,6 +84,7 @@ class AlipayRegister:
 
 
             code = self.scode.GetVertifyCode(GetBindNumber, self.scode.ALIPAY_REGISTER, 4)
+            self.scode.ReleasePhone(GetBindNumber, self.scode.ALIPAY_REGISTER)
 
             if code == "":
                 continue

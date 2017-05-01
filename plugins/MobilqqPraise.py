@@ -3,7 +3,7 @@ from uiautomator import Device
 from Repo import *
 import time, datetime, random
 from zservice import ZDevice
-import re
+
 class MobilqqPraise:
     def __init__(self):
         self.repo = Repo()
@@ -19,7 +19,6 @@ class MobilqqPraise:
 
         z.heartbeat()
         t = 0
-        tect = 0
         while True:            #总人数
             if t<add_count:
                 numbers = self.repo.GetNumber(repo_number_cate_id, 120,1)  # 取出add_count条两小时内没有用过的号码
@@ -42,23 +41,7 @@ class MobilqqPraise:
                     if d(descriptionContains='赞').exists:
                         z.heartbeat()
                         for k in range(0,10,+1):
-                            allnum = d(descriptionContains='赞').info['contentDescription']
-                            allnum = re.findall(r'\d',allnum)
-                            # print(allnum)
                             d(descriptionContains='赞').click()
-                            z.sleep(1)
-                            allnum1 = d(descriptionContains='赞').info['contentDescription']
-                            allnum1 = re.findall(r'\d', allnum1)
-
-                            # print(allnum1)
-                            if allnum==allnum1 and k==0:
-                                if tect==1:
-                                    z.sleep(2)
-                                    z.toast('点赞人数已满')
-                                    return
-                                tect = 1
-                            else:
-                                tect = 0
                         t = t+1
                         break
                     else:
