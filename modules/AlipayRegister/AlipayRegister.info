@@ -3,25 +3,26 @@
 "cate":"其他模块",
 "name":"支付宝注册",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"ALi01",
+"version": "1.5",
+"code":"ALi02",
 "icon": "vcard-o",
 "remark":"支付宝注册",
 "setting":[
 	{
-	"id": "repo_number_id",
-	"name":"保存成功号库",
-	"type":"repo",
-	"source":"number",
-	"top_cate_id":"2"
+	"id": "checkLogin",
+	"name":"已登录不执行",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"是",
+	"remark":"已经登录自动跳过模块"
 	},
 	{
-    "id": "repo_name_id",
-    "name":"微信名库",
-    "type":"repo",
-    "source":"material",
-    "top_cate_id":"12"
-    },
+	"id": "repo_cate_id",
+	"name":"账号入库",
+	"type":"repo",
+	"source":"account",
+	"top_cate_id":"5"
+	},
     {
     "id": "time_delay",
     "name":"延时",

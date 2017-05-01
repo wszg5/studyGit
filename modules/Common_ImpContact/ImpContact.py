@@ -19,6 +19,7 @@ class ImpContact:
         return uniqueNum
 
 
+
     def action(self, d,z, args):
         z.heartbeat()
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir, "tmp"))
@@ -26,12 +27,16 @@ class ImpContact:
             os.mkdir(base_dir)
         filename = os.path.join(base_dir, "%s.txt"%(self.GetUnique()) )
 
-        number_count = args['number_count']
+        number_count = int(args['number_count'])
         cate_id = args["repo_cate_id"]
         while True:
-            numbers = self.repo.GetNumber(cate_id, 0, number_count)
+            exist_numbers = self.repo.GetNumber(cate_id, 0, number_count, 'exist')
+            remain = number_count - len(exist_numbers)
+            normal_numbers = self.repo.GetNumber(cate_id, 0, remain, 'normal')
+            numbers = exist_numbers + normal_numbers
             if len(numbers)> 0:
-                break;
+                break
+
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"电话号码%s号仓库为空，等待中\""%cate_id).communicate()
             z.sleep(30)
 
@@ -82,8 +87,8 @@ if __name__ == "__main__":
     o = clazz()
 
 
-    d = Device("HT52ESK00321")
-    z = ZDevice("HT52ESK00321")
+    d = Device("2781f667")
+    z = ZDevice("2781f667")
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
 
 
@@ -97,7 +102,7 @@ if __name__ == "__main__":
     # d.dump(compressed=False)
 
 
-    args = {"repo_cate_id":"104",'number_count':'200',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"123",'number_count':'50',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
 
 
     o.action(d,z, args)

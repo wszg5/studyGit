@@ -311,7 +311,7 @@ class AutomatorServer(object):
 
     __apk_files = ["libs/zime.apk"]
     # Used for check if installed
-    __apk_vercode = '1.8.2'
+    __apk_vercode = '1.8.6'
     __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
@@ -352,15 +352,16 @@ class AutomatorServer(object):
     def install(self):
         base_dir = os.path.dirname(__file__)
         if self.need_install():
+            self.adb.cmd("shell", "am force-stop com.zunyun.zime").communicate()  # 强制停止
             self.adb.cmd("shell", "su -c 'rm /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'chmod - R 777 /data/data/de.robv.android.xposed.installer/'").communicate()
             self.adb.cmd("shell", "su -c 'rm /data/local/tmp/zime.apk'").communicate()
             #self.adb.cmd("shell", " ").communicate()
             self.adb.cmd("shell", "pm uninstall com.zunyun.zime").communicate()
             filename = os.path.join(base_dir, 'libs/install.sh')
-            self.adb.cmd("push", filename, "/data/local/tmp/").wait()
+            self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
             filename = os.path.join(base_dir, 'libs/zime.apk')
-            self.adb.cmd("push", filename, "/data/local/tmp/").wait()
+            self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
 
             self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'sh /data/local/tmp/install.sh'").communicate()
@@ -514,6 +515,7 @@ class ZRemoteDevice(object):
         self.server.adb.cmd(*args, **kwargs).communicate()
 
     def toast(self, message):
+        message = '%s:%s' %( datetime.datetime.now().strftime('%H:%M:%S') , message)
         self.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \\\"%s\\\"" % message)
 
     def log_warn(self, message, level="warn"):

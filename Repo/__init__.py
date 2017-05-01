@@ -1,5 +1,8 @@
 # coding:utf-8
 import httplib, json
+import urllib
+import urllib2
+
 from const import const
 
 
@@ -12,6 +15,31 @@ class Repo:
         self.domain = const.REPO_API_IP
         self.port = 8888
 
+
+    def PostInformation(self, cateId, data):
+        data["cateId"] = cateId
+        path = "/repo_api/checkDeposit/checkDepositInfo"
+        headers = {"Content-Type": "application/x-www-form-urlencoded",
+                   "Connection": "Keep-Alive"};
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        params = urllib.urlencode(data)
+        conn.request(method="POST", url=path, body=params, headers=headers);
+        # 返回处理后的数据
+        response = conn.getresponse();
+        # 判断是否提交成功
+        if response.status == 302:
+            print "发布成功!^_^!";
+        else:
+            print "发布失败\^0^/";
+            # 关闭连接
+        conn.close();
+
+
+
+    def PostStatus(self,cateId,status,Number):           #仓库号，状态，QQ号，备注设备id_卡槽id
+        path = "/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s" % (cateId,status,Number)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET",path)
 
     def GetAccount(self, cateId, interval, limit):
         path = "/repo_api/account/pick?status=normal&cate_id=%s&interval=%s&limit=%s" % (cateId,interval,limit)
@@ -41,8 +69,8 @@ class Repo:
 
 
 
-    def GetNumber(self, cateId, interval, limit):
-        path = "/repo_api/number/pick?status=normal&cate_id=%s&interval=%s&limit=%s" % (cateId,interval,limit)
+    def GetNumber(self, cateId, interval, limit,status='normal'):
+        path = "/repo_api/number/pick?status=%s&cate_id=%s&interval=%s&limit=%s" % (status,cateId,interval,limit)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         response = conn.getresponse()
@@ -95,7 +123,7 @@ class Repo:
 
 if __name__ == '__main__':
     repo = Repo()
-    result = repo.GetAccount("6", 120, 1)
+    result = repo.PostInformation({"aaa":"aa"})
     # result = repo.SetAccount("6", "ddkf", "1918697054")
 
     # result = repo.GetMaterial("8",120,1)

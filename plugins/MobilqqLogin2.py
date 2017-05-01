@@ -296,19 +296,6 @@ class MobilqqLogin:
 
 
 
-def runwatch(d, data):                                  #watcher除了点击还可以做什么，watcher到可以结束方法吗，可以改变参数吗
-    times = 120
-    while True:
-        if data == 1:
-            return True
-        # d.watchers.reset()
-        d.watchers.run()                      #强制运行所有watchers
-        times -= 1
-        if times == 0:
-            break
-        else:
-            z.sleep(0.5)
-
 def getPluginClass():
     return MobilqqLogin
 
@@ -323,6 +310,5 @@ if __name__ == "__main__":
     z = ZDevice("HT52ESK00321")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id":"143","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
-    util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)

@@ -162,23 +162,6 @@ class MobilqqLoginNoSolt:
 
 
 
-
-
-
-
-def runwatch(d, data):                                  #watcher除了点击还可以做什么，watcher到可以结束方法吗，可以改变参数吗
-    times = 120
-    while True:
-        if data == 1:
-            return True
-        # d.watchers.reset()
-        d.watchers.run()                      #强制运行所有watchers
-        times -= 1
-        if times == 0:
-            break
-        else:
-            time.sleep(0.5)
-
 def getPluginClass():
     return MobilqqLoginNoSolt
 
@@ -195,6 +178,5 @@ if __name__ == "__main__":
 
     # d.dump(compressed=False)
     args = {"repo_cate_id":"143","time_limit":"1","time_delay":"3"};    #cate_id是仓库号，length是数量
-    util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)

@@ -154,18 +154,6 @@ class TIMAddFriends03:
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
-def runwatch(d, data):
-    times = 120
-    while True:
-        if data == 1:
-            return True
-        # d.watchers.reset()
-        d.watchers.run()
-        times -= 1
-        if times == 0:
-            break
-        else:
-            time.sleep(0.5)
 
 def getPluginClass():
     return TIMAddFriends03
@@ -182,5 +170,4 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     # print(d.dump(compressed=False))
     args = {"repo_number_cate_id":"37","repo_material_cate_id":"33","add_count":"9","time_delay":"3"};    #cate_id是仓库号，length是数量
-    util.doInThread(runwatch, d, 0, t_setDaemon=True)
     o.action(d, z,args)

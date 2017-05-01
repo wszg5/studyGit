@@ -74,7 +74,7 @@ class phoneTask:
                            "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"show_window\" --es task_name \"%s\"" %
                            self.task["name"]);
                 self.d = Device(deviceid, port)
-
+                self.d.dump(compressed=False)
                 while True:
                     steps = dbapi.GetTaskSteps(self.taskid)
                     # 设置zime输入法

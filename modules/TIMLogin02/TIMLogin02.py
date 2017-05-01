@@ -75,7 +75,6 @@ class TIMLogin02:
             while d(className='android.widget.LinearLayout').child(text='登录中',resourceId='com.tencent.tim:id/name').exists:
                 time.sleep(1)
             # time.sleep(6)
-            d.watcher('pop').when(text= u'马上绑定').click(text=u'消息')
 
 
             # d.watcher('success').when(text='搜索').when(resourceId='com.tencent.tim:id/name')
@@ -139,7 +138,6 @@ class TIMLogin02:
                     if d(text='搜索',resourceId='com.tencent.tim:id/name').exists:
                         return  # 放到方法里改为return
 
-            d.watcher('pop').when(text= u'马上绑定').click(text=u'消息')
 
             if d(text='搜索', resourceId='com.tencent.tim:id/name').exists:       #不需要验证码的情况
                 # t=2
