@@ -19,7 +19,6 @@ def getFilesize(file):
     FILE_SIZE = fstream.tell()
     fstream.close()
 
-
 def process_found(pid, array, file, rlock):
     global FILE_SIZE
     global JOB
@@ -74,8 +73,11 @@ def process_found(pid, array, file, rlock):
             print(len(b))     #将读出来的内容按照空格分割，分割之后得到的是数组
             if len(b)<5:
                 print()
-            # if b[1] !='':
-            #     print(b[1])
+            try:
+                if b[1] !='':
+                     print(b[1])
+            except Exception:
+                print('--------------------------')
 
             number = number+1
             ostream.write(line)

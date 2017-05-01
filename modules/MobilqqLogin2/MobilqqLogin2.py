@@ -59,6 +59,7 @@ class MobilqqLogin2:
             z.sleep(4)
             d(text='登 录').click()
             z.sleep(1)
+            d(className='android.widget.EditText', index=0).click()
             d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
             z.sleep(1)
             d(resourceId='com.tencent.mobileqq:id/password', index=2).set_text(QQPassword)  # Bn2kJq5l     QQPassword
@@ -313,8 +314,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4AYSK00084")
-    z = ZDevice("HT4AYSK00084")
+    d = Device("9ddbd665")
+    z = ZDevice("9ddbd665")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id":"143","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     util.doInThread(runwatch, d, 0, t_setDaemon=True)

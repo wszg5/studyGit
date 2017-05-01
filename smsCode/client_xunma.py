@@ -64,6 +64,7 @@ class client_xunma:
         try:
             itemcode = self.im_type_list[itemId]
             path = "/getPhone?ItemId=%s&token=%s&Count=1" % (itemcode, token)
+            self.logger.info("===XUNMA URL:%s" % path)
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
             response = conn.getresponse()
@@ -86,6 +87,8 @@ class client_xunma:
                     cache.addSet(key, number)
             return self.GetPhoneNumber(itemId, round)
         else:
+            data = response.read().decode('GBK')
+            self.logger.info("===Failed XUNMA RESTURN:%s" % data)
             return self.GetPhoneNumber(itemId, round)
 
     def ReleasePhone(self, phoneNumber, itemId):
@@ -188,6 +191,6 @@ if __name__ == '__main__':
 
     reload(sys)
     sys.setdefaultencoding('utf8')
-
-    xunma = client_xunma("asdfasdfasdf", "powerman","12341234abc")
+    im_type_list = {"qq_register":"2113"}
+    xunma = client_xunma("asdfasdfasdf", "powerman","12341234abc", im_type_list)
     print xunma.GetPhoneNumber("qq_register")

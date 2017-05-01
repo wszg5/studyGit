@@ -65,7 +65,7 @@ class EIMLogin:
                 return  QQNumber   # 放到方法里改为return
 
             if d(text='帐号无法登录', resourceId='com.tencent.eim:id/dialogTitle').exists:  # 帐号被冻结
-                self.repo.BackupInfo(cate_id, 'frozen', QQNumber, '','')
+                self.repo.BackupInfo(cate_id, 'frozen',QQNumber,'','')
                 break
 
             icode = imageCode()
@@ -111,7 +111,7 @@ class EIMLogin:
                 if d(text='输入验证码').exists:           #验证码输入错误的情况
                     continue
                 else:
-                    self.repo.BackupInfo(cate_id, 'frozen', QQNumber,'')  # 仓库号,使用中,QQ号,设备号_卡槽号
+                    self.repo.BackupInfo(cate_id, 'frozen', QQNumber,'','')  # 仓库号,使用中,QQ号,设备号_卡槽号
                     break
 
     def action(self, d,z, args):
@@ -218,8 +218,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4AYSK00084")
-    z = ZDevice("HT4AYSK00084")
+    d = Device("HT4BLSK00255")
+    z = ZDevice("HT4BLSK00255")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.dump(compressed=False)
     # slot = slot('eim')
@@ -227,5 +227,5 @@ if __name__ == "__main__":
     # slot.restore(d, 2)  # 有２小时没用过的卡槽情况，切换卡槽
 
     # z.input('gfdc')
-    args = {"repo_cate_id":"34","time_limit":"3","time_limit1":"10","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"148","time_limit":"3","time_limit1":"10","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)
