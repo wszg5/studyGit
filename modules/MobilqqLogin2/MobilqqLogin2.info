@@ -3,7 +3,7 @@
 "cate":"QQ模块",
 "name":"登录普通QQ(有卡槽,无飞行模式)",
 "url": "http://www.bejson.com",
-"version": "1.2",
+"version": "1.8",
 "code":"QQ01-1",
 "icon":"vcard-o",
 "remark":"登录普通QQ(有卡槽,无飞行模式)",

@@ -529,6 +529,19 @@ class ZRemoteDevice(object):
         key = 'timeout_%s' % self.server.adb.device_serial()
         cache.set(key, (datetime.datetime.now()  - datetime.datetime(2017, 1 ,1)).seconds)
 
+    def checkTopActivity(self, activityName):
+        out = self.cmd("shell",
+                               "dumpsys activity top  | grep ACTIVITY")[0].decode('utf-8')
+        if out.find(activityName) > -1:
+            return  True
+        return False
+
+    def getTopActivity(self, activityName):
+        out = self.cmd("shell",
+                               "dumpsys activity top  | grep ACTIVITY")[0].decode('utf-8')
+        return out
+
+
     def sleep(self, second):
         while(second > 0):
             time.sleep(1)

@@ -2,6 +2,8 @@
 import httplib, json
 import time
 import re
+import traceback
+
 from zcache import cache
 import util
 
@@ -61,15 +63,15 @@ class client_xunma:
         if phone:
             return phone
 
+        itemcode = self.im_type_list[itemId]
+        path = "/getPhone?ItemId=%s&token=%s&Count=1" % (itemcode, token)
         try:
-            itemcode = self.im_type_list[itemId]
-            path = "/getPhone?ItemId=%s&token=%s&Count=1" % (itemcode, token)
             #self.logger.info("===XUNMA URL:%s" % path)
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
             response = conn.getresponse()
         except Exception as e:
-            self.logger.info(e.message)
+            self.logger.error(traceback.format_exc())
             return self.GetPhoneNumber(itemId, round)
         if response.status == 200:
             data = response.read().decode('GBK')
