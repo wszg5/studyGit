@@ -36,8 +36,11 @@ class client_xunma:
         conn.request("GET", path)
         time.sleep(1)
         response = conn.getresponse()
+
         if response.status == 200:
             data = response.read()
+            if data.startswith("False"):  #Token以False开头，嵌套调用
+                return self.GetToken()
             token = data.split('&')[0];
             cache.set(key, token, None)
             return token

@@ -519,7 +519,7 @@ class ZRemoteDevice(object):
         return self.server.adb.cmd(*args, **kwargs).communicate()
 
     def toast(self, message):
-        message = '%s:%s' %( datetime.datetime.now().strftime('%H:%M:%S') , message)
+        message = '%s %s' %( datetime.datetime.now().strftime('%H:%M:%S') , message)
         self.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \\\"%s\\\"" % message)
 
     def log_warn(self, message, level="warn"):

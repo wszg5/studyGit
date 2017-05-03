@@ -146,7 +146,7 @@ if __name__ == "__main__":
     print z.getTopActivity()
     z.generateSerial()
 
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").wait()
     args = {"checkLogin": "否","repo_number_id": "136","time_delay": "3"};    #cate_id是仓库号，length是数量
 
     o.action(d, z,args)
