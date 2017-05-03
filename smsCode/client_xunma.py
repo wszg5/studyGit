@@ -64,6 +64,8 @@ class client_xunma:
             return phone
 
         itemcode = self.im_type_list[itemId]
+        self.logger("itemcode_%s", itemcode)
+        self.logger("token_%s", token)
         path = "/getPhone?ItemId=%s&token=%s&Count=1" % (itemcode, token)
         try:
             #self.logger.info("===XUNMA URL:%s" % path)
