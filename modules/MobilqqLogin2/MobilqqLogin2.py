@@ -42,12 +42,16 @@ class MobilqqLogin2:
         while True:
             time_limit1 = args['time_limit1']
             numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
+            t = 30
             while len(numbers) == 0:
                 z.heartbeat()
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库无%s分钟未用，直接跳出\"" % (cate_id,time_limit1)).communicate()
-                return None
-                #z.sleep(10)
-                #numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
+                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库无%s分钟未用，即将跳出 %s\"" % (cate_id,time_limit1, t )).communicate()
+                numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
+                z.sleep(2)
+                t = t - 2
+                if t <=0 :
+                    return None
+
 
             QQNumber = numbers[0]['number']  # 即将登陆的QQ号
             QQPassword = numbers[0]['password']
@@ -62,7 +66,7 @@ class MobilqqLogin2:
             t = 1
             z.toast("等待 登录 按钮出现")
             while not d(resourceId='com.tencent.mobileqq:id/btn_login').exists:
-                z.toast("等待 登录 按钮出现")
+                z.toast("等待 登录 按钮出现 %s" % t*2)
                 dumpStr = d.dump(compressed=False)
                 z.sleep(2)
                 if t == 10:
