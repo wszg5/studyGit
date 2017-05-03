@@ -516,7 +516,7 @@ class ZRemoteDevice(object):
         return (u_s[start:(start + length)] if length else u_s[start:]).encode(encoding)
 
     def cmd(self, *args, **kwargs):
-        self.server.adb.cmd(*args, **kwargs).communicate()
+        return self.server.adb.cmd(*args, **kwargs).communicate()
 
     def toast(self, message):
         message = '%s:%s' %( datetime.datetime.now().strftime('%H:%M:%S') , message)
@@ -539,9 +539,10 @@ class ZRemoteDevice(object):
             return  True
         return False
 
-    def getTopActivity(self, activityName):
-        out = self.cmd("shell",
-                               "dumpsys activity top  | grep ACTIVITY")[0].decode('utf-8')
+    def getTopActivity(self):
+        out = self.cmd("shell", "dumpsys activity top  | grep ACTIVITY")[0].decode('utf-8')
+        #out = self.server.adb.cmd("shell",
+                     #          "dumpsys activity top  | grep ACTIVITY").communicate()
         return out
 
 
