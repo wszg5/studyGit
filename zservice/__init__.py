@@ -223,9 +223,13 @@ class Adb(object):
             raise EnvironmentError("adb is not working.")
         return dict([s.split("\t") for s in out[index + len(match):].strip().splitlines() if s.strip()])
 
-    def forward(self, local_port, device_port):
+    def forward(self, local_port, device_port, rebind=True):
         '''adb port forward. return 0 if success, else non-zero.'''
-        return self.cmd("forward", "tcp:%d" % local_port, "tcp:%d" % device_port).wait()
+        cmd = ["forward"]
+        if not rebind:
+            cmd.append("--no-rebind")
+        cmd += ["tcp:%d" % local_port, "tcp:%d" % device_port]
+        return self.cmd(*cmd).wait()
 
     def forward_list(self):
         '''adb forward --list'''
