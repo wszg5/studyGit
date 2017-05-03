@@ -60,6 +60,7 @@ class MobilqqLogin2:
 
             z.heartbeat()
             t = 1
+            z.toast("等待 登录 按钮出现")
             while not d(resourceId='com.tencent.mobileqq:id/btn_login').exists:
                 z.toast("等待 登录 按钮出现")
                 dumpStr = d.dump(compressed=False)
@@ -237,10 +238,12 @@ class MobilqqLogin2:
             obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
             QQnumber = obj['info']  # info为QQ号
             if loginedFlag:
+                z.toast(u'卡槽恢复成功')
                 z.heartbeat()
                 self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo(cate_id, 'using', QQnumber,getSerial,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
             else:        #切换不成功的情况
+                z.toast(u'卡槽恢复失败，开始补登')
                 self.repo.BackupInfo(cate_id, 'frozen', QQnumber, '','')  # 标记卡槽号码为冻结，仓库号，状态，QQ号，备注设备id_卡槽id
                 d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
                 serialinfo = z.generateSerial("788")  # 修改信息
