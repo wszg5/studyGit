@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """Python wrapper for Zunyun Service."""
-
+import base64
 import sys
 import os
 import subprocess
@@ -315,7 +315,7 @@ class AutomatorServer(object):
 
     __apk_files = ["libs/zime.apk"]
     # Used for check if installed
-    __apk_vercode = '1.8.6'
+    __apk_vercode = '1.8.8'
     __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
@@ -560,15 +560,8 @@ class ZRemoteDevice(object):
         return self.server.jsonrpc.getMobileDataState()
 
     def input(self, text):
-        startPos = 0
-        length = 20
-        while len(text) > startPos :
-            t = self.mb_substr(text, startPos, length)
-            t = t.replace('"', ' ')
-            self.server.adb.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \\\"%s\\\"" % t).communicate()
-            startPos = startPos + length
-        '''click at arbitrary coordinates.'''
-        #return self.server.jsonrpc.Input(text)
+        t = base64.b64encode(text)
+        self.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \\\"%s\\\"" % t)
         return True
 
     def generateSerial(self, serial=None):
