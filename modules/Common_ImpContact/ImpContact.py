@@ -94,16 +94,17 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HC36KW901959")
-    z = ZDevice("HC36KW901959")
+    d = Device("HT4AVSK01106")
+    z = ZDevice("HT4AVSK01106")
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
-    #z.server.install()
+    z.server.install()
     t = u"凤飞飞啥；离开的房间；打傻了会计法；都说了卡积分；德里克撒酒疯；都说了卡积分；打算离开建安费；德里克睡觉奥；发了多少康； https://jq.qq.com/?_wv=1027&k=48KHKLm".encode("utf-8");
     text = u'1111111111里克睡觉奥；发了多少康； https://jq.qq.com/?_wv=1027&k=48KHKLm打傻了会计法；都说了卡积分；德里克撒酒疯；都说了卡积分；打算离开建安费；德里克睡觉奥；发了多少康；ht；发了多少康； https://jq.qq.com/?_wv=1027&k=48KHKLm打傻了会计法；都说了卡积分；德里克撒酒疯；都说了卡积分；打算离开建安费；德里克睡觉奥；发了多少康；ht；发了多少康； https://jq.qq.com/?_wv=1027&k=48KHKLm打傻了会计法；都说了卡积分；德里克撒酒疯；都说了卡积分；打算离开建安费；德里克睡觉奥；发了多少康；https://jq.qq.com/?_wv=1027&k=48KHKLm会计法；都说了卡积分；德里克撒酒疯；都说了卡积分；打算离开建安费；德里克睡觉奥；发了多少康；https://jq.qq.com/?_wv=1027&k=48KHKLm3333333333';
 
 
     z.input(text)
     #z.input("6565wv=1027&k=48KHKLm")
+
     z.server.install()
     #d.server.adb.cmd("shell", "am", "start", "-a", "zime.clear.contacts").communicate()
     d.server.adb.cmd("shell", "pm clear com.android.providers.contacts").communicate()
