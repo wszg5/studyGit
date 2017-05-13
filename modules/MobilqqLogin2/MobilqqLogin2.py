@@ -78,7 +78,7 @@ class MobilqqLogin2:
             d(className='android.widget.EditText', index=0).click()
             d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
             z.sleep(1)
-            d(resourceId='com.tencent.mobileqq:id/password', index=2).set_text(QQPassword)  # Bn2kJq5l     QQPassword
+            d(resourceId='com.tencent.mobileqq:id/password').set_text(QQPassword)  # Bn2kJq5l     QQPassword
             z.heartbeat()
             print('QQ号:%s,QQ密码：%s'%(QQNumber,QQPassword))
             d(resourceId='com.tencent.mobileqq:id/login').click()
