@@ -62,7 +62,7 @@ class WeiXinRegister:
                 if PhoneNumber.startswith('17'):
                     break
                 else:
-                    self.xm.defriendPhoneNumber(PhoneNumber, '2251')
+                    self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER)
             # backNumber = 0
             # while True:
             #     if backNumber==0:
@@ -96,12 +96,13 @@ class WeiXinRegister:
                 z.sleep(2)
             z.heartbeat()
             code = self.scode.GetVertifyCode(PhoneNumber, self.scode.WECHAT_REGISTER)
-            self.xm.defriendPhoneNumber(PhoneNumber, '2251')
+            self.scode.defriendPhoneNumber(PhoneNumber,self.scode.WECHAT_REGISTER)
             z.heartbeat()
             if '失败'==code:
                 continue
             print(code)
-            d(text='请输入验证码', className='android.widget.EditText').set_text(code)
+            d(text='请输入验证码').click()
+            z.input(code)
             d(text='下一步', className='android.widget.Button').click()
 
             time.sleep(1.5)
@@ -112,7 +113,7 @@ class WeiXinRegister:
                 continue
             else:
                 z.heartbeat()
-                d(text='好').click()
+                d(textContains='是我的').click()
                 d(text='确定', className='android.widget.Button').click()
                 cate_id = args['repo_number_id']
                 self.repo.RegisterAccount('',password,PhoneNumber,cate_id)
@@ -130,14 +131,14 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT4BLSK00255")
+    z = ZDevice("HT4BLSK00255")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     'dingdingdingdingdindigdingdingdingdingdingdingdingdingdingdingdingdignin'
     # repo = Repo()
     # repo.RegisterAccount('', 'gemb1225', '13045537833', '109')
-    args = {"repo_name_id": "102","repo_number_id": "109","add_count": "9","time_delay": "3"}  # cate_id是仓库号，发中文问题
+    args = {"repo_name_id": "167","repo_number_id": "109","add_count": "9","time_delay": "3"}  # cate_id是仓库号，发中文问题
     o.action(d,z, args)
 
 
