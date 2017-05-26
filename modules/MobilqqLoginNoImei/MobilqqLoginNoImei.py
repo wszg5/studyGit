@@ -223,22 +223,6 @@ class MobilqqLoginNoImei:
 
 
 
-
-
-
-def runwatch(d, data):                                  #watcher除了点击还可以做什么，watcher到可以结束方法吗，可以改变参数吗
-    times = 120
-    while True:
-        if data == 1:
-            return True
-        # d.watchers.reset()
-        d.watchers.run()                      #强制运行所有watchers
-        times -= 1
-        if times == 0:
-            break
-        else:
-            time.sleep(0.5)
-
 def getPluginClass():
     return MobilqqLoginNoImei
 
@@ -269,7 +253,6 @@ if __name__ == "__main__":
     # if judge==False:
     #     print(222)
     args = {"repo_cate_id":"134","time_limit":"0","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
-    util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)
     # serial = z.generateSerial("788")登录进去之前修改串号，将串号保存到仓库，所有登录之前都这么做，卡槽恢复之前根据设备号和卡槽号取到串号，调z.generateSerial(serial)将串号恢复

@@ -15,28 +15,28 @@ class MobilqqRouseAdd:
         d.server.adb.cmd("shell",  "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
 
-        cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
-        numbers = self.repo.GetNumber(cate_id, 0, totalNumber)  # 取出totalNumber条两小时内没有用过的号码
-        if len(numbers)==0:
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空\""%cate_id).communicate()
-            z.sleep(10)
-            return
-        z.heartbeat()
-        list = numbers  # 将取出的号码保存到一个新的集合
-        print(list)
+
 
 
         for i in range (0,totalNumber,+1):
-            cate_id = args["repo_material_cate_id"]
-            Material = self.repo.GetMaterial(cate_id, 0, 1)
+            cate_id1 = args["repo_material_cate_id"]
+            Material = self.repo.GetMaterial(cate_id1, 0, 1)
             if len(Material) == 0:
                 d.server.adb.cmd("shell",
-                                 "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
+                                 "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id1).communicate()
                 z.sleep(10)
                 return
             message = Material[0]['content']  # 取出验证消息的内容
 
-            QQnumber = list[i]['number']
+            cate_id = int( args["repo_number_cate_id"] )  # 得到取号码的仓库号
+            numbers = self.repo.GetNumber( cate_id, 0, 1 )  # 取出totalNumber条两小时内没有用过的号码
+            if len( numbers ) == 0:
+                d.server.adb.cmd( "shell",
+                                  "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空\"" % cate_id ).communicate( )
+                z.sleep( 10 )
+                return
+            z.heartbeat( )
+            QQnumber = numbers[0]['number']
             z.sleep(1)
             z.heartbeat()
             d.server.adb.cmd("shell",
@@ -82,11 +82,11 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT4BLSK00255")
+    z = ZDevice("HT4BLSK00255")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","totalNumber":"20","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","totalNumber":"4","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d, z,args)
 

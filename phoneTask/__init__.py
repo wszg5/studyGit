@@ -31,17 +31,6 @@ class phoneTask:
             o.action(d, self.z, json.loads(step["arg"]))
 
     def handler(self, signum, frame):
-  #      if self.task["show_task_info"]:
-        self.z.cmd("shell", "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"running\" --es task_name \"%s\"" % self.task["name"]);
-
-
-        self.z.cmd("shell",
-           "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"show_window\" --es task_name \"%s\"" %
-           self.task["name"]);
-
-#        else:
- #           self.z.cmd("shell", "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"stop\"");
-
         key = 'timeout_%s' % self.serial
         activeTime = cache.get(key)
         if (activeTime is None):
@@ -66,14 +55,12 @@ class phoneTask:
             self.task = dbapi.GetTask(self.taskid)
             if (self.task and self.task.get("status") and self.task["status"] == "running"):
                 self.z = ZDevice(deviceid, zport)
-                self.z.cmd("shell",
-                           "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"running\" --es task_name \"%s\"" %
-                           self.task["name"]);
 
-                self.z.cmd("shell",
-                           "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"show_window\" --es task_name \"%s\"" %
-                           self.task["name"]);
                 self.d = Device(deviceid, port)
+                try:
+                    self.d.dump(compressed=False)
+                except Exception:
+                    logger.error(traceback.format_exc())
 
                 while True:
                     steps = dbapi.GetTaskSteps(self.taskid)

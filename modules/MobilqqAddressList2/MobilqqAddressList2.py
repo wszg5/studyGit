@@ -335,7 +335,7 @@ class MobilqqAddressList2:
 
             z.heartbeat()
             z.sleep(1)
-            d(textContains='发送').click()
+            d(resourceId='com.tencent.mobileqq:id/send_btn').click()
             while d(textContains='正在处理').exists:
                 z.sleep(2)
             z.sleep(2)
@@ -363,9 +363,9 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4AYSK00084")
-    z = ZDevice("HT4AYSK00084")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+    d = Device("3018768")
+    z = ZDevice("3018768")
+    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
 
     args = {"picnum":"2","repo_cate_id":"144",'gender':"不限",'EndIndex':'20',"time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d,z, args)

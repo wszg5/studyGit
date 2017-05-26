@@ -1,7 +1,9 @@
-# coding:utf-8
+# -*- coding:utf-8 -*-
 import httplib, json
 import time
 import re
+import traceback
+
 from zcache import cache
 import util
 
@@ -34,8 +36,11 @@ class client_xunma:
         conn.request("GET", path)
         time.sleep(1)
         response = conn.getresponse()
+
         if response.status == 200:
             data = response.read()
+            if data.startswith("False"):  #Token以False开头，嵌套调用
+                return self.GetToken()
             token = data.split('&')[0];
             cache.set(key, token, None)
             return token
@@ -61,15 +66,17 @@ class client_xunma:
         if phone:
             return phone
 
+        itemcode = self.im_type_list[itemId]
+        self.logger.info("itemcode_%s"%itemcode)
+        self.logger.info("token_%s"%token)
+        path = "/getPhone?ItemId=%s&token=%s&Count=1" % (itemcode, token)
         try:
-            itemcode = self.im_type_list[itemId]
-            path = "/getPhone?ItemId=%s&token=%s&Count=1" % (itemcode, token)
-            self.logger.info("===XUNMA URL:%s" % path)
+            #self.logger.info("===XUNMA URL:%s" % path)
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
             response = conn.getresponse()
         except Exception as e:
-            self.logger.info(e.message)
+            self.logger.error(traceback.format_exc())
             return self.GetPhoneNumber(itemId, round)
         if response.status == 200:
             data = response.read().decode('GBK')

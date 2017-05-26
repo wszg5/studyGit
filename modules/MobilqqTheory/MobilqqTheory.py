@@ -19,6 +19,9 @@ class MobilqqTheory:
         z.sleep(8)
         z.heartbeat()
         d(className='android.widget.TabWidget').child(className='android.widget.FrameLayout',index=2).click()
+        z.sleep(1)
+        if not d(text='好友动态').exists:
+            d( className='android.widget.TabWidget' ).child( className='android.widget.FrameLayout', index=2 ).click()
         d(text='好友动态').click()
         while not d(textContains='说说').exists:
             z.sleep(2)
@@ -36,11 +39,15 @@ class MobilqqTheory:
         while True:
             if t<count:
                 z.sleep(1)
-                forclick = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=i).child(className='android.widget.RelativeLayout',index=5)
+                forclick = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=i).child(className='android.widget.RelativeLayout',index=6)
                 forclick1 = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=i).child(className='android.widget.RelativeLayout', index=8) #遇到公共频道的情况
                 if forclick.exists:
                     z.sleep(1)
-                    forclick.child(className='android.widget.ImageView',index=1).click()
+                    d( className='android.widget.AbsListView' ).child( className='android.widget.LinearLayout',
+                                                                       index=i ).child(
+                        className='android.widget.RelativeLayout', index=6 ).child(
+                        className='android.widget.ImageView', index=1 ).click( )
+                    # forclick.child(className='android.widget.ImageView',index=1).click()
                     time.sleep(0.5)
                     forclick.child(className='android.widget.ImageView',index=2).click()
                     cate_id = args["repo_material_id"]
@@ -51,13 +58,18 @@ class MobilqqTheory:
                         return
                     message = Material[0]['content']  # 取出验证消息的内容
                     z.input(message)
-                    if d(text='发送').exists:
-                        d(text='发送').click()
-                    if i ==0:
-                        i = i+2
-                    else:
-                        i = i+1
+                    d.press.back()
+                    i = i+1
+                    # if d(text='发送').exists:
+                        # d(text='发送').click()
+                    # if i ==0:
+                    #     i = i+2
+                    # else:
+                    #     i = i+1
                     t = t+1
+                elif i==0:
+                    i = i+1
+                    continue
 
                 elif forclick1.exists:
                     forclick1.child(className='android.widget.ImageView', index=1).click()
@@ -76,10 +88,10 @@ class MobilqqTheory:
                     i = i + 1
                     t = t + 1
 
-                elif i==1 and d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout', index=0)\
-                        .child(className='android.widget.RelativeLayout',index=5).child(className='android.widget.ImageView',index=1,clickable='true').exists:
-                    i = 0
-                    continue
+                # elif i==1 and d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout', index=0)\
+                #         .child(className='android.widget.RelativeLayout',index=5).child(className='android.widget.ImageView',index=1,clickable='true').exists:
+                #     i = 0
+                #     continue
                 else:
                     str = d.info  # 获取屏幕大小等信息
                     width = str["displayWidth"]
@@ -92,7 +104,7 @@ class MobilqqTheory:
                     y = y - y1
                     d.swipe(width / 2, y, width / 2, 0)
                     z.sleep(3)
-                    i = 1
+                    i = 0
             else:
                 break
 

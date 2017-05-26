@@ -21,7 +21,7 @@ class WXAddresslistDepost:
         z.sleep(7)
         d(description='更多功能按钮').click()
         d(textContains='添加朋友').click()
-        d(text='手机联系人').click()
+        d(textContains='手机联系人').click()
         d(text='添加手机联系人').click()
         while d(textContains='正在获取').exists:
             z.sleep(3)
@@ -80,6 +80,7 @@ class WXAddresslistDepost:
                     sign = '空'
                 z.heartbeat()
                 para = {"phone":phonenumber,'qq_nickname':nickname,'sex':Gender,"city":area,"x_01":sign}
+
                 # print('--%s--%s--%s--%s--%s'%(phonenumber,nickname,Gender,area,sign))
 
                 inventory = Inventory()
@@ -146,11 +147,10 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("8HVSMZKBEQFIBQUW")
+    z = ZDevice("8HVSMZKBEQFIBQUW")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-
 
     args = {"time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

@@ -18,30 +18,21 @@ class MobilqqAddFriends:
         height = str["displayHeight"]
         width = str["displayWidth"]
 
-        cate_id = args["repo_material_cate_id"]
-        Material = self.repo.GetMaterial(cate_id, 0, 1)
-        if len(Material) == 0:
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
-            z.sleep(10)
-            return
-        message = Material[0]['content']  # 取出验证消息的内容
+        cate_id1 = args["repo_material_cate_id"]
+
 
         add_count = int(args['add_count'])  # 要添加多少人
 
-        cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
-        numbers = self.repo.GetNumber(cate_id, 120, add_count)  # 取出add_count条两小时内没有用过的号码
-        if len(numbers)==0:
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\""%cate_id).communicate()
-            z.sleep(10)
-            return
-        list = numbers  # 将取出的号码保存到一个新的集合
-        print(list)
+
         z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        z.sleep(1)
-        d(resourceId='com.tencent.mobileqq:id/name',description='快捷入口').click()
-        z.sleep(1)
+        z.sleep(5)
+        d(description='快捷入口').click()
+        z.sleep(2)
+        if not d(text='扫一扫').exists:
+            d( description='快捷入口' ).click( )
+            z.sleep(1)
         z.heartbeat()
         if d(textContains='加好友').exists:
             d(textContains='加好友').click()
@@ -53,15 +44,38 @@ class MobilqqAddFriends:
         z.sleep(1)
         # d(className='android.widget.EditText',index=0).click()   #QQ号/手机号/群/公众号
         # d(className='android.widget.EditText').set_text(list[0]['number'])  # 第一次添加的帐号 list[0]
-        z.input(list[0]['number'])
+        cate_id = int( args["repo_number_cate_id"] )  # 得到取号码的仓库号
+        numbers = self.repo.GetNumber( cate_id, 120, 1 )  # 取出add_count条两小时内没有用过的号码
+        if len( numbers ) == 0:
+            d.server.adb.cmd( "shell",
+                              "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\"" % cate_id ).communicate( )
+            z.sleep( 10 )
+            return
+        z.heartbeat( )
+        numbers = numbers[0]['number']
+        z.input(numbers)
         time.sleep(0.5)
         d(text='找人:', resourceId='com.tencent.mobileqq:id/name').click()
         z.sleep(3)
 
         z.heartbeat()
-        for i in range(0,add_count,+1):                   #给多少人发消息
+        for i in range(1,add_count+1,+1):                   #给多少人发消息
+            Material = self.repo.GetMaterial( cate_id1, 0, 1 )
+            if len( Material ) == 0:
+                d.server.adb.cmd( "shell",
+                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id1 ).communicate( )
+                z.sleep( 10 )
+                return
+            message = Material[0]['content']  # 取出验证消息的内容
+
+            cate_id = int( args["repo_number_cate_id"] )  # 得到取号码的仓库号
+            numbers = self.repo.GetNumber( cate_id, 120,1)  # 取出add_count条两小时内没有用过的号码
+            if len( numbers ) == 0:
+                d.server.adb.cmd( "shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\"" % cate_id ).communicate( )
+                z.sleep( 10 )
+                return
             z.heartbeat()
-            numbers = list[i]['number']
+            numbers = numbers[0]['number']
             print(numbers)
             z.sleep(1)
             if d(text='没有找到相关结果',className='android.widget.TextView').exists:                            #没有这个人的情况
@@ -129,7 +143,8 @@ class MobilqqAddFriends:
                     obj.set_text(numbers)  # 下次要添加的号码-
                 obj = d(text='网络查找人', resourceId='com.tencent.mobileqq:id/et_search_keyword')
                 if obj.exists:
-                    obj.set_text(numbers)
+                    obj.click()
+                    z.input(numbers)
                 z.sleep(1)
                 d(textContains='找人').click()
                 while d(text='正在搜索…', index=1).exists:
@@ -176,21 +191,6 @@ class MobilqqAddFriends:
 
 
 
-
-
-def runwatch(d, data):
-    times = 120
-    while True:
-        if data == 1:
-            return True
-        # d.watchers.reset()
-        d.watchers.run()
-        times -= 1
-        if times == 0:
-            break
-        else:
-            time.sleep(0.5)
-
 def getPluginClass():
     return MobilqqAddFriends
 
@@ -206,7 +206,6 @@ if __name__ == "__main__":
 
 
     # print(d.dump(compressed=False))
-    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","add_count":"2","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","add_count":"4","time_delay":"3"};    #cate_id是仓库号，length是数量
 
-    util.doInThread(runwatch, d, 0, t_setDaemon=True)
     o.action(d,z, args)

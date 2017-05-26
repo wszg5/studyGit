@@ -121,8 +121,9 @@ def CommandListen():
                     for device in devices:
                         serial= device["serial"]
                         if processDict.has_key(serial):
-                            processDict[deviceid].terminate()
-                            del processDict[deviceid]
+                            logger.war("%s收到任务停止指令，移除进程" % deviceid)
+                            processDict[serial].terminate()
+                            del processDict[serial]
                 elif data["COMMAND"] == "ADB":
                     serial = data["serial"]
                     cmd = data["cmd"]
@@ -132,6 +133,28 @@ def CommandListen():
         finally:
             h=1
 
+
+
+logger = util.logger
+
+
+def kill_crawler():
+    cmd = 'ps -ef | grep sub_ztask'
+    f = os.popen(cmd)
+    txt = f.readlines()
+    for line in txt:
+        colum = line.split()
+        pid = colum[1]
+    name = colum[-1]
+    if name.startswith('sub_ztask_'):
+        cmd = "kill -9 %d" % int(pid)
+        rc = os.system(cmd)
+        if rc == 0 :
+            logger.war("stop \"%s\" success!!" % name)
+        else:
+            logger.war("stop \"%s\" failed!!" % name)
+
+
 def startProcess(deviceid):
     from phoneTask import phoneTask
 
@@ -140,7 +163,7 @@ def startProcess(deviceid):
     zport = device_port["zport"]
     t = phoneTask(deviceid)
     processDict[deviceid] = multiprocessing.Process(target=t.deviceThread, args=(deviceid, port, zport))
-    processDict[deviceid].name = deviceid
+    processDict[deviceid].name = 'sub_ztask_%s'%deviceid
     processDict[deviceid].daemon = True
     processDict[deviceid].start()
 
@@ -168,6 +191,7 @@ installDict = {}
 
 if __name__ == "__main__":
     cleanEnv()
+    kill_crawler()
     try:
         file_object = open('ztask.info')
         zinfo = file_object.read()
@@ -182,7 +206,7 @@ if __name__ == "__main__":
     t.start()
 
 
-    logger = util.logger
+
     port = 30000
     zport = 32000
     while True:
@@ -207,10 +231,12 @@ if __name__ == "__main__":
                     task = dbapi.GetTask(taskid)
                     if task and task.get("status") and task["status"] == "running":
                         if deviceid not in processDict:  #进程从未启动
+                            logger.war("启动手机执行进程%s" % deviceid)
                             startProcess(deviceid)
                         else:
                             p = processDict[deviceid]
                             if not p.is_alive():      #进程已退出，从新启动进程
+                                logger.war("发现手机执行进程退出，重新拉起%s" % deviceid)
                                 startProcess(deviceid)
                             else:                     #检查进程心跳是否超过3分钟
                                 key = 'timeout_%s' % deviceid
@@ -218,22 +244,29 @@ if __name__ == "__main__":
                                 if activeTime:
                                    checkTime = (datetime.datetime.now() - datetime.datetime(2017, 1, 1)).seconds
                                    if (checkTime - int(activeTime)) > 180:  #进程心跳时间超过3分种，重启进程
+                                       pid = processDict[deviceid].pid
+                                       logger.war("%s进程无心跳，准备结束重新拉起" % pid)
                                        processDict[deviceid].terminate()
+                                       os.subprocess.call(["kill -9 %s" % pid], shell=True)
                                        startProcess(deviceid)
                     else:
                         if processDict.has_key(deviceid):# and processDict.get(deviceid).is_alive():
+                            logger.war("%s任务已经停止，移除进程" % deviceid)
                             processDict[deviceid].terminate()
                             del processDict[deviceid]
                             from zservice import ZDevice
                             z = ZDevice(deviceid, 1000)
                             z.cmd("shell", "am broadcast -a com.zunyun.zime.action --es ac \"Task\" --es sac \"stop\"");
             #检查运行中的进程是否有手机被拔出电脑
+            '''
             for device in processDict:
                 if device not in devicelist:
                     # dbapi.log_warn(device , "设备被拔出，运行中任务被强制停止")
-                    processDict[device].terminate()
-                    del processDict[deviceid]
-
+                    if processDict.has_key(deviceid):
+                        logger.war("%s设备被拔出，移除进程" % deviceid)
+                        processDict[device].terminate()
+                        del processDict[deviceid]
+            '''
         except Exception:
             logger.error(traceback.format_exc())
         time.sleep(10)

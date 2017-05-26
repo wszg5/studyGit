@@ -1,0 +1,42 @@
+{
+"id": "WXSaveIdII",
+"cate":"微信模块",
+"name":"微信附近的人加单向(唤醒ID)并保存id",
+"url": "http://www.bejson.com",
+"version": "1.2",
+"code":"WX29-1",
+"icon": "vcard-o",
+"remark":"微信版本6.5.4",
+"setting":[
+	{
+	"id": "repo_wxcade_id",
+	"name":"取微信id库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"23"
+	},
+
+	{
+	"id": "repo_wxcade_id1",
+	"name":"保存微信id库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"23"
+	},
+
+    {
+	"id": "add_count",
+	"name":"添加好友个数",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：个"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

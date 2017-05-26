@@ -27,9 +27,18 @@ class MobilqqConcern:
                 z.sleep(2)
         d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout', index=2).child(
             className='android.widget.LinearLayout', index=0).click()  # 点击进入自己的主页
-        z.sleep(5)
-        if d(text='知道了').exists:
-            d(text='知道了').click()
+
+        forwait = 0
+        while True:
+            if d( text='知道了' ).exists:
+                d( text='知道了' ).click( )
+                break
+            else:
+                z.sleep( 2 )
+                if forwait == 5:
+                    break
+                else:
+                    forwait = forwait + 1
             z.sleep(1)
         d(descriptionContains='赞').child(className='android.view.View').click()
         # d(descriptionContains='帐户及设置').click()
@@ -73,7 +82,7 @@ class MobilqqConcern:
 
                 if d(text='关注').exists:
                     d(text='关注').click()
-                    z.sleep(1.5)
+                    z.sleep(3)
                 if d(textContains='取消').exists:
                     d(text='取消').click()
                 if mmm==0:
@@ -89,6 +98,9 @@ class MobilqqConcern:
                     t = t+1
                 else:
                     z.heartbeat()
+                    if d(text='关注').exists:
+                        z.toast('关注频繁，结束程序')
+                        return
                     d.press.back()
                     i = i+1
                     continue

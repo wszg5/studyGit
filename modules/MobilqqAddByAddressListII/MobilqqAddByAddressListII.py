@@ -11,35 +11,48 @@ class MobilqqAddByAddressListII:
         self.repo = Repo()
         self.xuma = None
     def Bind(self, d,z):
-        self.scode = smsCode(d.server.adb.device_serial())
-        z.heartbeat()
+        circle = 0
+        self.scode = smsCode( d.server.adb.device_serial( ) )
         newStart = 1
         while newStart == 1:
-            GetBindNumber = self.scode.GetPhoneNumber(self.scode.QQ_CONTACT_BIND)
-            print(GetBindNumber)
-            z.sleep(2)
-            d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(
-                GetBindNumber)  # GetBindNumber
-            z.heartbeat()
-            z.sleep(1)
-            d(text='下一步').click()
-            z.sleep(3)
-            if d(text='下一步', resourceId='com.tencent.mobileqq:id/name', index=2).exists:  # 操作过于频繁的情况
+            GetBindNumber = self.scode.GetPhoneNumber( self.scode.QQ_CONTACT_BIND )
+            print( GetBindNumber )
+            z.sleep( 2 )
+            d( resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText' ).set_text(
+                GetBindNumber )  # GetBindNumber
+            z.heartbeat( )
+            z.sleep( 1 )
+            d( text='下一步' ).click( )
+            z.sleep( 3 )
+            if d( text='下一步' ).exists:  # 操作过于频繁的情况
                 return 'false'
 
-            if d(text='确定', resourceId='com.tencent.mobileqq:id/name',
-                 index='2').exists:  # 提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
-                d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').click()
-
-            code = self.scode.GetVertifyCode(GetBindNumber, self.scode.QQ_CONTACT_BIND, '4')
-            z.heartbeat()
+            if d( text='确定' ).exists:  # 提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
+                d( text='确定', ).click( )
+            z.heartbeat( )
+            code = self.scode.GetVertifyCode( GetBindNumber, self.scode.QQ_CONTACT_BIND, '4' )
+            d( resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText' ).set_text( code )
+            print( code )
             newStart = 0
-
-            d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText').set_text(code)
-            d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
-            z.sleep(8)
-            z.heartbeat()
-            if d(textContains='没有可匹配的').exists:
+            if d( text='请输入短信验证码' ).exists:
+                if circle < 4:
+                    z.toast( '没有接收到验证码' )
+                    d( textContains='返回' ).click( )
+                    if d( text='确定' ).exists:
+                        d( text='返回' ).click( )
+                        z.sleep( 1 )
+                    d( description='删除 按钮' ).click( )
+                    circle = circle + 1
+                    newStart = 1
+                    continue
+                else:
+                    z.toast( '程序结束' )
+                    print( circle )
+                    return 'false'
+            z.heartbeat( )
+            d( text='完成', resourceId='com.tencent.mobileqq:id/name' ).click( )
+            z.sleep( 10 )
+            if d( textContains='没有可匹配的' ).exists:
                 return 'false'
 
         return 'true'
@@ -213,8 +226,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("9ddbd665")
-    z = ZDevice("9ddbd665")
+    d = Device("HT4BLSK00255")
+    z = ZDevice("HT4BLSK00255")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_material_id": "39",'EndIndex':'100',"time_delay": "3"}    #cate_id是仓库号，length是数量

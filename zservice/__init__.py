@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """Python wrapper for Zunyun Service."""
-
+import base64
 import sys
 import os
 import subprocess
@@ -223,9 +223,13 @@ class Adb(object):
             raise EnvironmentError("adb is not working.")
         return dict([s.split("\t") for s in out[index + len(match):].strip().splitlines() if s.strip()])
 
-    def forward(self, local_port, device_port):
+    def forward(self, local_port, device_port, rebind=True):
         '''adb port forward. return 0 if success, else non-zero.'''
-        return self.cmd("forward", "tcp:%d" % local_port, "tcp:%d" % device_port).wait()
+        cmd = ["forward"]
+        if not rebind:
+            cmd.append("--no-rebind")
+        cmd += ["tcp:%d" % local_port, "tcp:%d" % device_port]
+        return self.cmd(*cmd).wait()
 
     def forward_list(self):
         '''adb forward --list'''
@@ -311,7 +315,7 @@ class AutomatorServer(object):
 
     __apk_files = ["libs/zime.apk"]
     # Used for check if installed
-    __apk_vercode = '1.8.2'
+    __apk_vercode = '1.9.1'
     __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
@@ -352,6 +356,7 @@ class AutomatorServer(object):
     def install(self):
         base_dir = os.path.dirname(__file__)
         if self.need_install():
+            self.adb.cmd("shell", "am force-stop com.zunyun.zime").communicate()  # 强制停止
             self.adb.cmd("shell", "su -c 'rm /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'chmod - R 777 /data/data/de.robv.android.xposed.installer/'").communicate()
 
@@ -359,11 +364,9 @@ class AutomatorServer(object):
             #self.adb.cmd("shell", " ").communicate()
             self.adb.cmd("shell", "pm uninstall com.zunyun.zime").communicate()
             filename = os.path.join(base_dir, 'libs/install.sh')
-            self.adb.cmd("push", filename, "/data/local/tmp/").wait()
+            self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
             filename = os.path.join(base_dir, 'libs/zime.apk')
-
-            self.adb.cmd("push", filename, "/data/local/tmp/").wait()
-
+            self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
             self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'sh /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "reboot").communicate()
@@ -513,9 +516,10 @@ class ZRemoteDevice(object):
         return (u_s[start:(start + length)] if length else u_s[start:]).encode(encoding)
 
     def cmd(self, *args, **kwargs):
-        self.server.adb.cmd(*args, **kwargs).communicate()
+        return self.server.adb.cmd(*args, **kwargs).communicate()
 
     def toast(self, message):
+        message = '%s %s' %( datetime.datetime.now().strftime('%H:%M:%S') , message)
         self.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \\\"%s\\\"" % message)
 
     def log_warn(self, message, level="warn"):
@@ -528,6 +532,19 @@ class ZRemoteDevice(object):
     def heartbeat(self):
         key = 'timeout_%s' % self.server.adb.device_serial()
         cache.set(key, (datetime.datetime.now()  - datetime.datetime(2017, 1 ,1)).seconds)
+
+    def checkTopActivity(self, activityName):
+        out = self.cmd("shell", "dumpsys activity top  | grep ACTIVITY")[0].decode('utf-8')
+        if out.find(activityName) > -1:
+            return  True
+        return False
+
+    def getTopActivity(self):
+        out = self.cmd("shell", "dumpsys activity top  | grep ACTIVITY")[0].decode('utf-8')
+        #out = self.server.adb.cmd("shell",
+                     #          "dumpsys activity top  | grep ACTIVITY").communicate()
+        return out
+
 
     def sleep(self, second):
         while(second > 0):
@@ -543,15 +560,8 @@ class ZRemoteDevice(object):
         return self.server.jsonrpc.getMobileDataState()
 
     def input(self, text):
-        startPos = 0
-        length = 20
-        while len(text) > startPos :
-            t = self.mb_substr(text, startPos, length)
-            t = t.replace('"', ' ')
-            self.server.adb.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \\\"%s\\\"" % t).communicate()
-            startPos = startPos + length
-        '''click at arbitrary coordinates.'''
-        #return self.server.jsonrpc.Input(text)
+        t = base64.b64encode(text)
+        self.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \\\"%s\\\"" % t)
         return True
 
     def generateSerial(self, serial=None):
