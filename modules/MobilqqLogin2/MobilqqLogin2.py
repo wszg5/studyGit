@@ -45,8 +45,8 @@ class MobilqqLogin2:
             while len(numbers) == 0:
                 z.heartbeat()
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库无%s分钟未用，等待中\"" % (cate_id,time_limit1)).communicate()
-                z.sleep(10)
-                numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
+                return None
+                #numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
 
             QQNumber = numbers[0]['number']  # 即将登陆的QQ号
             QQPassword = numbers[0]['password']
@@ -228,7 +228,7 @@ class MobilqqLogin2:
                 z.sleep(1)
                 out = d.server.adb.cmd("shell",
                                        "dumpsys activity top  | grep ACTIVITY").communicate()[0].decode('utf-8')
-                if out.find("com.tencent.mobileqq/.activity.LoginActivity") > -1:
+                if out.find("com.tencent.mobileqq/.activity.LoginActivity") > -1 or d(textContains='身份过期').exists:
                     loginedFlag = False
                     break
 
@@ -244,9 +244,9 @@ class MobilqqLogin2:
                 serialinfo = z.generateSerial("788")  # 修改信息
                 z.heartbeat()
                 QQnumber = self.login(d, args,z)  # 帐号无法登陆则登陆,重新登陆
-                z.heartbeat()
-                self.slot.backup(d, slotnum, QQnumber)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
-                self.repo.BackupInfo(cate_id, 'using', QQnumber,serialinfo,'%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
+                if QQnumber:
+                    self.slot.backup(d, slotnum, QQnumber)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
+                    self.repo.BackupInfo(cate_id, 'using', QQnumber,serialinfo,'%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
 
 
         else:  # 有空卡槽的情况
@@ -282,8 +282,20 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("3018768")
-    z = ZDevice("3018768")
+    d = Device("HT523SK01492")
+    z = ZDevice("HT523SK01492")
+
+    seconds = 15
+    while seconds > 0:
+        z.toast('检查是否出现登录界面%s' % seconds)
+        seconds = seconds - 1
+        z.sleep(1)
+        out = d.server.adb.cmd("shell",
+                               "dumpsys activity top  | grep ACTIVITY").communicate()[0].decode('utf-8')
+        if out.find("com.tencent.mobileqq/.activity.LoginActivity") > -1 or d(textContains='身份过期').exists:
+            loginedFlag = False
+            break
+
     args = {"repo_cate_id":"143","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

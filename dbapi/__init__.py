@@ -32,7 +32,7 @@ class dbapi:
                          port=28015,
                          db=const.RETHINKDB_NAME)
         uid = time.time() + random.randint(10000, 20000)
-        log = {"id": uid, "serial": serial, "summary": summary, "message": message, "level": level,
+        log = {"id": uid, "serial": serial, "summary": summary, "message": message, "level": level, "status": "wait",
                "UpdatedAt": r.now().run(conn, time_format="raw")}
         r.table("warn_msg").insert(log).run(conn)
 
