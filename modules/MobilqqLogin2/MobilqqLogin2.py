@@ -232,15 +232,10 @@ class MobilqqLogin2:
                 z.toast('检查是否出现登录界面%s' % seconds)
                 seconds = seconds - 1
                 z.sleep(1)
-<<<<<<< HEAD
-                out = d.server.adb.cmd("shell",
-                                       "dumpsys activity top  | grep ACTIVITY").communicate()[0].decode('utf-8')
-                if out.find("com.tencent.mobileqq/.activity.LoginActivity") > -1 or d(textContains='身份过期').exists:
-=======
+
                 if z.checkTopActivity("com.tencent.mobileqq/.activity.RegisterGuideActivity") \
                     or z.checkTopActivity("com.tencent.mobileqq/.activity.LoginActivity") \
                     or d(textContains='身份过期').exists:
->>>>>>> 21ef5e5b40ef4ac6591b5b3c9f444b61e5141c5e
                     loginedFlag = False
                     break
 
@@ -263,12 +258,9 @@ class MobilqqLogin2:
                 if QQnumber:
                     self.slot.backup(d, slotnum, QQnumber)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
                     self.repo.BackupInfo(cate_id, 'using', QQnumber,serialinfo,'%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
-<<<<<<< HEAD
 
-=======
                 else:
                     z.toast(u'补登失败了 :(')
->>>>>>> 21ef5e5b40ef4ac6591b5b3c9f444b61e5141c5e
 
         else:  # 有空卡槽的情况
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
@@ -303,26 +295,9 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-<<<<<<< HEAD
-    d = Device("HT523SK01492")
-    z = ZDevice("HT523SK01492")
 
-    seconds = 15
-    while seconds > 0:
-        z.toast('检查是否出现登录界面%s' % seconds)
-        seconds = seconds - 1
-        z.sleep(1)
-        out = d.server.adb.cmd("shell",
-                               "dumpsys activity top  | grep ACTIVITY").communicate()[0].decode('utf-8')
-        if out.find("com.tencent.mobileqq/.activity.LoginActivity") > -1 or d(textContains='身份过期').exists:
-            loginedFlag = False
-            break
-
-    args = {"repo_cate_id":"143","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
-=======
     d = Device("HT4BLSK00255")
     z = ZDevice("HT4BLSK00255")
     args = {"repo_cate_id":"133","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
->>>>>>> 21ef5e5b40ef4ac6591b5b3c9f444b61e5141c5e
 
     o.action(d,z, args)
