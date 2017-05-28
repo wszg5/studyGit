@@ -1,4 +1,6 @@
 # coding:utf-8
+import base64
+
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
@@ -31,6 +33,7 @@ class ImpContact:
         cate_id = args["repo_cate_id"]
         while True:
             exist_numbers = self.repo.GetNumber(cate_id, 0, number_count, 'exist')
+            print(exist_numbers)
             remain = number_count - len(exist_numbers)
             normal_numbers = self.repo.GetNumber(cate_id, 0, remain, 'normal')
             numbers = exist_numbers + normal_numbers
@@ -83,15 +86,22 @@ def getPluginClass():
 
 if __name__ == "__main__":
     # global args
+
+    import sys
+
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
+
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("9ddbd665")
-    z = ZDevice("9ddbd665")
-    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
-
-
+    d = Device("8HVSMZKBEQFIBQUW")
+    z = ZDevice("8HVSMZKBEQFIBQUW")
+#    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
     z.server.install()
+    #z.input("6565wv=1027&k=48KHKLm")
+
+
     #d.server.adb.cmd("shell", "am", "start", "-a", "zime.clear.contacts").communicate()
     d.server.adb.cmd("shell", "pm clear com.android.providers.contacts").communicate()
     #d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").communicate()
@@ -101,6 +111,6 @@ if __name__ == "__main__":
     # d.dump(compressed=False)
 
 
-    args = {"repo_cate_id":"123",'number_count':'50',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"44",'number_count':'50',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

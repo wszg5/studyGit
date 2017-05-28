@@ -5,6 +5,8 @@ from __future__ import absolute_import
 
 import os
 import re
+import six
+from collections import namedtuple
 import subprocess
 
 
@@ -59,7 +61,28 @@ class Adb(object):
         cmd_line = [self.adb()] + self.adb_host_port_options + list(args)
         if not _is_windows():
             cmd_line = [" ".join(cmd_line)]
-        return subprocess.Popen(cmd_line, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        devnull = subprocess.DEVNULL if six.PY3 else open(os.devnull, 'wb')
+        return subprocess.Popen(cmd_line, shell=True,
+                stdin=devnull, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    def run_cmd(self, *args, **kwargs):
+        '''Run command and wait exit
+        Args:
+            - args: command args
+
+        Returns:
+            (stdout, exit_code)
+        
+        Raises:
+            IOError
+        '''
+        p = self.cmd(*args)
+        try:
+            exit_code = p.wait()
+            output = p.stdout.read()
+            return namedtuple('CmdReturn', ['output', 'exit_code'])(output, exit_code)
+        finally:
+            p.stdout.close()
 
     def shell(self, *args):
         '''adb command, return adb shell <args> output.'''
@@ -112,9 +135,13 @@ class Adb(object):
             raise EnvironmentError("adb is not working.")
         return dict([s.split("\t") for s in out[index + len(match):].strip().splitlines() if s.strip()])
 
-    def forward(self, local_port, device_port):
+    def forward(self, local_port, device_port, rebind=True):
+        cmd = ['forward']
+        if not rebind:
+            cmd.append("--no-rebind")
+        cmd += ["tcp:%d" % local_port, "tcp:%d" % device_port]
         '''adb port forward. return 0 if success, else non-zero.'''
-        return self.cmd("forward", "tcp:%d" % local_port, "tcp:%d" % device_port).wait()
+        return self.run_cmd(*cmd).exit_code
 
     def forward_list(self):
         '''adb forward --list'''

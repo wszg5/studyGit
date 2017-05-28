@@ -29,14 +29,24 @@ class MobilqqPicWall:
         while not d(textContains='等级').exists:
             z.sleep(2)
         d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=2).click()
-        z.sleep(3)
-        if d(text='知道了').exists:
-            d(text='知道了').click()
+        forwait = 0
+        while True:
+            if d(text='附近点赞升级啦').exists:
+                d( text='知道了' ).click( )
+                break
+            else:
+                z.sleep(2)
+                if forwait == 4:
+                    break
+                else:
+                    forwait = forwait+1
+
         while not d(text='编辑交友资料').exists:
             time.sleep(2)
         d(text='编辑交友资料').click()
         if d(text='立即编辑').exists:
             d(text='立即编辑').click()
+            z.sleep(2)
 
         if d(className='android.widget.FrameLayout', index=3).child(className='android.widget.ImageView', index=1).exists:
             d(className='android.widget.FrameLayout', index=3).child(className='android.widget.ImageView', index=1).click()
@@ -86,6 +96,48 @@ class MobilqqPicWall:
                 return
             name = Material[0]['content']  # 取出验证消息的内容
             z.input(name)
+
+        else:
+
+            # for aa in range(2):
+            #     for a in range(0,12):
+            #         if d(className='android.widget.HorizontalScrollView').child(className='android.widget.FrameLayout',index=a).exists:
+            #             if d(className='android.widget.HorizontalScrollView').child(index=a,descriptionContains='图片').exists:
+            #                 d( className='android.widget.HorizontalScrollView' ).child( index=7,descriptionStartsWith='图片' ).click()
+            #                 continue
+            #             else:
+            #                 d(className='android.widget.FrameLayout',index=a).click()
+            #                 d(text='删除照片').click()
+            #         else:
+            #             continue
+            #     clickCondition = d( description='添加图片' )
+            #     str = d.info  # 获取屏幕大小等信息
+            #     height = str["displayHeight"]
+            #     width = str["displayWidth"]
+            #     obj = clickCondition.info
+            #     print( obj )
+            #     obj = obj['visibleBounds']
+            #     top = int( obj['top'] )
+            #     bottom = int( obj['bottom'] )
+            #     y = bottom - top
+            #     y = bottom - y / 2
+            #     print( y )
+            #     d.swipe( 30, y, width, y )
+
+            picnum = d( textContains='上传真实照片' ).right( className='android.widget.TextView', index=1 ).info['text']
+            picnum = re.findall( r"\d+\.?\d*", picnum )
+            if int(picnum[0])<12:
+                d( description='添加图片' ).click( )
+                d( textContains='从手机相册选择' ).click( )
+            capic = int(picnum[0])
+            for a in (12,capic,-1):
+                if d( className='com.tencent.widget.GridView' ).child( className='android.widget.RelativeLayout',index=a ).exists:
+                    d( className='com.tencent.widget.GridView' ).child( className='android.widget.RelativeLayout',index=a ).click()
+                else:
+                    z.toast( '手机不足12张图片' )
+                    break
+
+
         d.swipe(width / 2, height * 7 / 8, width / 2, height / 8)
         z.sleep(2)
         gender = '女'
@@ -290,12 +342,44 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("3018768")
-    z = ZDevice("3018768")
+    d = Device("HT4BLSK00255")
+    z = ZDevice("HT4BLSK00255")
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
-    str = d.info  # 获取屏幕大小等信息
-    height = str["displayHeight"]
-    width = str["displayWidth"]
+
+    # for a in range( 6, 12 ):
+    #     if d( className='android.widget.HorizontalScrollView' ).child( className='android.widget.FrameLayout',index=a ).exists:
+    #         if d(className='android.widget.HorizontalScrollView' ).child( className='android.widget.FrameLayout',index=a+1,descriptionContains='图片' ).exists:
+    #             continue
+    #         else:
+    #             d( className='android.widget.FrameLayout', index=a ).click( )
+    #             d( text='删除照片' ).click( )
+    #     else:
+    #         continue
     args = {"repo_name_id":"139","repo_declaration_id":"140","repo_company_id":"141","repo_school_id":"142","time_delay":"3"};    #cate_id是仓库号，length是数量
     o.action(d, z,args)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

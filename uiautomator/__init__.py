@@ -3,7 +3,7 @@
 
 """Python wrapper for Android uiautomator tool."""
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 import sys
 import os
@@ -24,6 +24,7 @@ from uiautomator.adb import Adb
 
 DEVICE_PORT = int(os.environ.get('UIAUTOMATOR_DEVICE_PORT', '9008'))
 LOCAL_PORT = int(os.environ.get('UIAUTOMATOR_LOCAL_PORT', '9008'))
+DEBUG = os.getenv('UIAUTOMATOR_DEBUG') == 'true'
 
 if 'localhost' not in os.environ.get('no_proxy', ''):
     os.environ['no_proxy'] = "localhost,%s" % os.environ.get('no_proxy', '')
@@ -40,6 +41,11 @@ except:
 
 __author__ = "Xiaocong He, Codeskyblue"
 __all__ = ["Device", "rect", "point", "Selector", "JsonRPCError"]
+
+
+def debug_print(*args):
+    if DEBUG:
+        print(args)
 
 
 def _is_windows():
@@ -188,6 +194,7 @@ class JsonRPCMethod(object):
     def __call__(self, *args, **kwargs):
         if args and kwargs:
             raise SyntaxError("Could not accept both *args and **kwargs as JSONRPC parameters.")
+        debug_print('jsonrpc method:', self.method)
         data = {"jsonrpc": "2.0", "method": self.method, "id": self.id()}
         if args:
             data["params"] = args
@@ -351,24 +358,33 @@ class AutomatorServer(object):
         self.uiautomator_process = None
         self.adb = Adb(serial=serial, adb_server_host=adb_server_host, adb_server_port=adb_server_port)
         self.device_port = int(device_port) if device_port else DEVICE_PORT
-        if local_port:
-            self.local_port = local_port
-        else:
-            try:  # first we will try to use the local port already adb forwarded
-                for s, lp, rp in self.adb.forward_list():
-                    if s == self.adb.device_serial() and rp == 'tcp:%d' % self.device_port:
-                        self.local_port = int(lp[4:])
-                        break
-                else:
-                    self.local_port = next_local_port(adb_server_host)
-            except:
-                self.local_port = next_local_port(adb_server_host)
+        self.__local_port = local_port
+
+    def get_forwarded_port(self):
+        for s, lp, rp in self.adb.forward_list():
+            if s == self.adb.device_serial() and rp == 'tcp:%d' % self.device_port:
+                return int(lp[4:])
+        return None
+
+    @property
+    def local_port(self):
+        if self.__local_port:
+            return self.__local_port
+        for i in range(10): # Max retry 10 times
+            forwarded_port = self.get_forwarded_port()
+            if forwarded_port:
+                self.__local_port = forwarded_port
+                return self.__local_port
+
+            port = next_local_port(self.adb.adb_server_host)
+            self.adb.forward(port, self.device_port, rebind=False)
+        raise RuntimeError("Error run: adb forward tcp:<any> tcp:%d" % self.device_port)
 
     def push(self):
         base_dir = os.path.dirname(__file__)
         for jar, url in self.__jar_files.items():
             filename = os.path.join(base_dir, url)
-            self.adb.cmd("push", filename, "/data/local/tmp/").wait()
+            self.adb.run_cmd("push", filename, "/data/local/tmp/")
         return list(self.__jar_files.keys())
 
     def need_install(self):
@@ -404,15 +420,17 @@ class AutomatorServer(object):
                     return _method_obj(*args, **kwargs)
                 except (_URLError, socket.error, HTTPException) as e:
                     if restart:
+                        debug_print('restart')
                         server.stop()
                         server.start(timeout=30)
                         return _JsonRPCMethod(url, method, timeout, False)(*args, **kwargs)
                     else:
                         raise
                 except JsonRPCError as e:
+                    debug_print('rpc error', e.code, e.message)
                     if e.code >= error_code_base - 1:
                         server.stop()
-                        server.start()
+                        server.start(timeout=10)
                         return _method_obj(*args, **kwargs)
                     elif e.code == error_code_base - 2 and self.handlers['on']:  # Not Found
                         try:
@@ -441,35 +459,50 @@ class AutomatorServer(object):
                 pass
         return self.__sdk
 
+    def ro_product(self):
+        return self.adb.shell("getprop", "ro.build.product").strip()
+
     def start(self, timeout=5):
-        # always use uiautomator runtest
-        # This is because use am instrument can not found a way to stop it
-        # this will stuck when Automator not started error occurs
-        if True or self.sdk_version() < 18: # FIXME(ssx): hot fix here
+        # 对应关系列表
+        # http://www.cnblogs.com/lipeineng/archive/2017/01/06/6257859.html
+        # Android 4.3 (sdk=18)
+        debug_print('sdk version(instrument>=18)', self.sdk_version())
+        debug_print('product', self.ro_product())
+        # FIXME(ssx): hot fix here
+        # instrument cannot run on Xiaomi
+        if self.sdk_version() >= 18 and \
+                self.ro_product() in [
+                    'iToolsVM', # iTools
+                    'Che1-CL20']:# 荣耀畅玩4X 
+            self.install()
+            cmd = ["shell", "am", "instrument", "-w",
+                   "com.github.uiautomator.test/android.support.test.runner.AndroidJUnitRunner"]
+        else:
             files = self.push()
             cmd = list(itertools.chain(
                 ["shell", "uiautomator", "runtest"],
                 files,
                 ["-c", "com.github.uiautomatorstub.Stub"]
             ))
-        else:
-            self.install()
-            cmd = ["shell", "am", "instrument", "-w",
-                   "com.github.uiautomator.test/android.support.test.runner.AndroidJUnitRunner"]
 
+        debug_print('$ ' + subprocess.list2cmdline(list(cmd)))
         self.uiautomator_process = self.adb.cmd(*cmd)
         self.adb.forward(self.local_port, self.device_port)
 
         while not self.alive and timeout > 0:
-            time.sleep(0.1)
-            timeout -= 0.1
+            time.sleep(0.2)
+            timeout -= 0.2
+            debug_print('poll', self.uiautomator_process.poll())
+            if self.uiautomator_process.poll() is not None:
+                stdout = self.uiautomator_process.stdout.read()
+                raise IOError("uiautomator start failed: " + stdout)
         if not self.alive:
             #尝试port+4000
             if self.local_port < 60000 :
                 self.local_port = self.local_port + 4000
             else :
                 self.local_port = self.local_port - 4000
-            raise IOError("RPC server not started! zport : %s" % self.local_port)
+            raise IOError("RPC server not started! dport : %s" % self.local_port)
 
     def ping(self):
         try:
@@ -477,17 +510,24 @@ class AutomatorServer(object):
         except:
             return None
 
+    def info(self):
+        try:
+            return self.__jsonrpc().deviceInfo()
+        except:
+            return False
+
     @property
     def alive(self):
         '''Check if the rpc server is alive.'''
-        return self.ping() == "pong"
+        return self.ping() == "pong" and self.info()
+        # return self.ping() == "pong"
 
     def stop(self):
         '''Stop the rpc server.'''
         if self.uiautomator_process and self.uiautomator_process.poll() is None:
             res = None
             try:
-                res = urllib2.urlopen(self.stop_uri)
+                res = requests.get(self.stop_uri)
                 self.uiautomator_process.wait()
             except:
                 self.uiautomator_process.kill()
@@ -559,15 +599,21 @@ class AutomatorDevice(object):
     def __call__(self, **kwargs):
         return AutomatorDeviceObject(self, Selector(**kwargs))
 
-    def __getattr__(self, attr):
-        '''alias of fields in info property.'''
-        info = self.info
-        if attr in info:
-            return info[attr]
-        elif attr in self.__alias:
-            return info[self.__alias[attr]]
-        else:
-            raise AttributeError("%s attribute not found!" % attr)
+    # SeriousWarning: When info() method raise AttributeError,
+    # the method __getattr__ will call info again
+    # which will make code into dead loop
+    #
+    # I keep it commentted in order to remember
+    #
+    # def __getattr__(self, attr):
+    #     '''alias of fields in info property.'''
+    #     info = self.info
+    #     if attr in info:
+    #         return info[attr]
+    #     elif attr in self.__alias:
+    #         return info[self.__alias[attr]]
+    #     else:
+    #         raise AttributeError("%s attribute not found!" % attr)
 
     @property
     def info(self):
@@ -613,14 +659,13 @@ class AutomatorDevice(object):
         if result:
             return result
 
-        device_file = self.server.jsonrpc.takeScreenshot("screenshot.png",
+        device_file = self.server.jsonrpc.takeScreenshot("uiautomator-screenshot.png",
                                                          scale, quality)
         if not device_file:
             return None
-        p = self.server.adb.cmd("pull", device_file, filename)
-        p.wait()
-        self.server.adb.cmd("shell", "rm", device_file).wait()
-        return filename if p.returncode is 0 else None
+        self.server.adb.run_cmd('pull', device_file, filename)
+        self.server.adb.run_cmd('shell', 'rm', device_file)
+        return filename
 
     def freeze_rotation(self, freeze=True):
         '''freeze or unfreeze the device rotation in current status.'''

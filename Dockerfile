@@ -7,6 +7,7 @@ RUN pip install -i https://pypi.douban.com/simple/ rethinkdb
 RUN pip install -i https://pypi.douban.com/simple/ requests 
 RUN pip install -i https://pypi.douban.com/simple/ redis
 RUN pip install -i https://pypi.douban.com/simple/ pillow
+RUN pip install -i https://pypi.douban.com/simple/ six
 
 
 

@@ -97,6 +97,18 @@ class MobilqqTextMyPraise:
             else:
                 z.sleep(2)
         d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=2).child(className='android.widget.LinearLayout',index=0).click()     #点击进入自己的主页
+        forwait = 0
+        while True:
+            if d( text='附近点赞升级啦' ).exists:
+                d( text='知道了' ).click( )
+                break
+            else:
+                z.sleep( 2 )
+                if forwait == 4:
+                    break
+                else:
+                    forwait = forwait + 1
+
         d(descriptionContains='赞').child(className='android.view.View').click()
         z.sleep(3)
         d(text='我赞过谁').click()
@@ -201,8 +213,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT4BLSK00255")
+    z = ZDevice("HT4BLSK00255")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_material_id":"40",'gender':"不限",'EndIndex':'40',"time_delay":"3"};    #cate_id是仓库号，length是数量
 

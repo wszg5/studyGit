@@ -130,12 +130,21 @@ class AlipayDepost:
                 if d(textContains='该手机号对应多个支付宝账户，请核实后选择').exists:
                     d(resourceId='com.alipay.mobile.contactsapp:id/head_icon').click()
 
-                if d(textContains='今天操作太频繁了').exists:  #操作频繁，清空账号信息，重启手机
+                '''
+                if d(textContains='今天操作太频繁了').exists or d(textContains='该功能暂未对您开放').exists:  #操作频繁 / 该功能暂未对您开放 ，清空账号信息，重启手机
                     z.cmd("shell", "pm clear com.eg.android.AlipayGphone")  # 清除缓存
                     z.generateSerial()
                     z.sleep(2)
                     z.toast("串号已重新生成，重启手机")
                     z.cmd("shell", "reboot")
+                    return
+                '''
+
+                if d(textContains='今天操作太频繁了').exists or d(textContains='该功能暂未对您开放').exists:  #操作频繁 / 该功能暂未对您开放 ，清空账号信息，重启手机
+                    z.toast("开始重装支付宝APP")
+                    z.cmd("shell", "pm uninstall com.eg.android.AlipayGphone")
+                    z.cmd("shell", "su -c 'rm -rf /data/data/com.eg.android.AlipayGphone'")
+                    z.cmd("install", "/apps/alipay.apk")
                     return
 
 
