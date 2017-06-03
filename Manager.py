@@ -1,4 +1,6 @@
 #!flask/bin/python
+# coding:utf-8
+
 import re
 
 from flask import Flask, jsonify
