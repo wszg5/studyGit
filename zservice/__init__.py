@@ -315,7 +315,7 @@ class AutomatorServer(object):
 
     __apk_files = ["libs/zime.apk"]
     # Used for check if installed
-    __apk_vercode = '1.9.1'
+    __apk_vercode = '1.9.2'
     __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
@@ -608,6 +608,10 @@ class ZRemoteDevice(object):
             ppoints.append(p[0])
             ppoints.append(p[1])
         return self.server.jsonrpc.swipePoints(ppoints, steps)
+
+    def wx_userList(self):
+        return self.server.jsonrpc.wx_result()
+
 
     '''
     执行微信SQL

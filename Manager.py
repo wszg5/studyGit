@@ -1,7 +1,11 @@
 #!flask/bin/python
-from flask import Flask
+import re
+
+from flask import Flask, jsonify
 from flask import request
 import os
+import subprocess
+
 app = Flask(__name__)
 
 @app.route('/dsfkjwe/console')
@@ -50,7 +54,6 @@ def s599hut():
 @app.route('/a2342d3h/s21s', methods=['POST'])
 def reset():
     info_filename = '/data/zy/s.info'
-    import subprocess
     ip = request.form['ip']
     gateway = request.form['gateway']
     domain = request.form['domain']
@@ -69,5 +72,28 @@ def reset():
     else:
         return "F"
 
+
+
+@app.route('/w338878/k888s')
+def s528hut():
+    if NetCheck("www.baidu.com"):
+        return jsonify({'success': True, 'msg': u'Baidu可以正常访问'})
+
+    return jsonify({'success': False, 'msg': u'服务器网络可能存在故障，Baidu无法正常访问'})
+
+
+def NetCheck(ip):
+   try:
+    p = subprocess.Popen(["ping -c 1 "+ ip],stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
+    out=p.stdout.read()
+    if 'icmp_seq' and 'bytes from' and 'time' in out:
+        return True
+    else:
+        return False
+   except:
+    print 'NetCheck work error!'
+    return False
+
 if __name__ == '__main__':
+    print NetCheck('www.baidu.com')
     app.run(debug=False)
