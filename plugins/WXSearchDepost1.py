@@ -51,12 +51,14 @@ class WXSearchDepost1:
                     z.sleep(2)
                 z.heartbeat()
                 if d(textContains='操作过于频繁').exists:
-                    self.repo.uploadPhoneNumber( WXnumber, saveCate )
+                    saveCate = args['repo_save_id']
+                    self.repo.uploadPhoneNumber(WXnumber,saveCate)
                     d( descriptionContains='清除' ).click( )
                     account = account + 1
                     continue
 
                 z.sleep(1)
+                
                 if d(textContains='用户不存在').exists:
                     d(descriptionContains='清除',index=2).click()
                     z.sleep(1)
@@ -90,7 +92,7 @@ if __name__ == "__main__":
     z = ZDevice("8HVSMZKBEQFIBQUW")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_number_id": "44", "add_count": "35",'repo_save_id':'169',"time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_number_id": "44", "add_count": "35",'repo_save_id':'172',"time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
 

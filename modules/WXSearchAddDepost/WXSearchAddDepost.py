@@ -10,7 +10,6 @@ class WXSearchAddDepost:
     def __init__(self):
         self.repo = Repo()
 
-
     def action(self, d,z, args):
         z.heartbeat()
         add_count = int(args['add_count'])
@@ -120,7 +119,8 @@ class WXSearchAddDepost:
                     if Gender!=gender:     #看性别是否满足条件
                         d(description='返回').click()
                         d(descriptionContains='清除').click()
-                        para = {"phone": WXnumber, 'qq_nickname': nickname, 'sex': Gender, "city": area, "x_01": sign}
+                        seltype = '未知'
+                        para = {"phoneNumber": WXnumber, 'x_01': nickname, 'x_02': Gender, "x_03": area, "x_04": sign,"x_05":seltype}
                         print( '--%s--%s--%s--%s--%s' % (WXnumber, nickname, Gender, area, sign) )
                         self.repo.PostInformation( args["repo_cate_id"], para )
                         z.toast( "%s入库完成" % WXnumber )
@@ -135,7 +135,7 @@ class WXSearchAddDepost:
                         seltype = '单向'
                     else:
                         seltype = '混合'
-                    para = {"phone": WXnumber, 'qq_nickname': nickname, 'sex': Gender, "city": area, "x_01": sign,"x_02":seltype}
+                    para = {"phoneNumber": WXnumber, 'x_01': nickname, 'x_02': Gender, "x_03": area, "x_04": sign,"x_05": seltype}
                     print( '--%s--%s--%s--%s--%s' % (WXnumber, nickname, Gender, area, sign) )
                     self.repo.PostInformation( args["repo_cate_id"], para )
                     z.toast( "%s入库完成" % WXnumber )

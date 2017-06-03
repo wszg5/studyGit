@@ -15,10 +15,10 @@ class WXSaveId:
     def timeinterval(self,d,z,args):
         now = datetime.datetime.now( )
         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' ) # 将日期转化为字符串 datetime => string
-        d1 = datetime.datetime.strptime( nowtime, '%Y-%m-%d %H:%M:%S' )
         logging.info('现在的时间%s'%nowtime)
-        gettime = cache.get( '%s_WXSaveId_time'%d.server.adb.device_serial() )
+        gettime = cache.get( '%s_time'%d.server.adb.device_serial() )
         logging.info('以前的时间%s'%gettime)
+        d1 = datetime.datetime.strptime( nowtime, '%Y-%m-%d %H:%M:%S' )
         if gettime != None:
             d2 = datetime.datetime.strptime( gettime, '%Y-%m-%d %H:%M:%S' )
             delta1 = (d1 - d2)
@@ -40,10 +40,11 @@ class WXSaveId:
             if allminutes < set_time:  # 由外界设定
                 z.toast( '该模块未满足指定时间间隔,程序结束' )
                 return 'end'
+            else:
+                cache.set( '%s_time'%d.server.adb.device_serial(), nowtime )
 
         else:
-            z.toast( '尚未保存时间' )
-
+            cache.set( '%s_time'%d.server.adb.device_serial(), nowtime )
 
     def action(self, d, z, args):
         condition = self.timeinterval(d,z,args)
@@ -98,12 +99,6 @@ class WXSaveId:
             if 'v1_' not in wxid:
                 continue
             self.repo.uploadPhoneNumber(wxid, cate_id)
-
-        now = datetime.datetime.now( )
-        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-        cache.set( '%s_WXSaveId_time' % d.server.adb.device_serial( ), nowtime )
-        z.toast('模块结束，保存的时间是%s'%nowtime)
-
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
 

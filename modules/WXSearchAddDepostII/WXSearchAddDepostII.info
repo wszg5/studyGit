@@ -1,10 +1,10 @@
 {
 "id": "WXSearchAddDepostII",
 "cate":"微信模块",
-"name":"微信搜索加好友加检存(只计数混合)",
+"name":"微信搜索加好友和取V1值等资料",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"WX31-1",
+"code":"WX-T-05",
 "icon": "vcard-o",
 "remark":"微信版本，6.5.4",
 "setting":[
@@ -13,7 +13,7 @@
 	"name":"号码库分类",
 	"type":"repo",
 	"source":"number",
-	"top_cate_id":"21"
+	"top_cate_id":"23"
 	},
 	{
     "id": "repo_material_id",
@@ -22,6 +22,13 @@
     "source":"material",
     "top_cate_id":"12"
     },
+    {
+	"id": "set_time",
+	"name":"运行该模块的时间间隔",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：分钟"
+	},
     {
 	"id": "repo_cate_id",
 	"name":"回写资料库",

@@ -13,13 +13,13 @@ class WXAddAddressList:
     def __init__(self):
         self.repo = Repo()
 
-    def timeinterval(self, d,z, args):
+    def timeinterval(self, z, args):
         now = datetime.datetime.now( )
         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-        d1 = datetime.datetime.strptime( nowtime, '%Y-%m-%d %H:%M:%S' )
         logging.info( '现在的时间%s' % nowtime )
-        gettime = cache.get( '%s_WXAddAddressList_time'%d.server.adb.device_serial() )
+        gettime = cache.get( 'WXAddAddressList_time' )
         logging.info( '以前的时间%s' % gettime )
+        d1 = datetime.datetime.strptime( nowtime, '%Y-%m-%d %H:%M:%S' )
         if gettime != None:
             d2 = datetime.datetime.strptime( gettime, '%Y-%m-%d %H:%M:%S' )
             delta1 = (d1 - d2)
@@ -40,10 +40,14 @@ class WXAddAddressList:
             if allminutes < set_time:  # 由外界设定
                 z.toast( '该模块未满足指定时间间隔,程序结束' )
                 return 'end'
+            else:
+                cache.set( 'WXAddAddressList_time', nowtime )
+
         else:
-            z.toast( '尚未保存时间' )
+            cache.set( 'WXAddAddressList_time', nowtime )
+
     def action(self, d,z, args):
-        condition = self.timeinterval(d, z, args )
+        condition = self.timeinterval( z, args )
         if condition == 'end':
             z.sleep( 2 )
             return
@@ -66,7 +70,6 @@ class WXAddAddressList:
         change = 0
         i = 0
         t = 0
-        endcon = 0
         EndIndex = int(args['EndIndex'])         #------------------
         while True :
             cate_id = args["repo_material_id"]   #------------------
@@ -111,7 +114,6 @@ class WXAddAddressList:
                 else:
                     set1.add(name)
                 print(name)
-                endcon = 1
                 d(className='android.widget.ListView',index=0).child(className='android.widget.LinearLayout',index=i).\
                     child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).click()      #点击第i个人
                 '''
@@ -227,8 +229,8 @@ class WXAddAddressList:
                     t = t+1
                     continue
                 else:
-                    d( description='返回' ).click()
-                    d( description='返回' ).click()
+                    d( description='返回' ).click( )
+                    d( description='返回' ).click( )
                     i = i + 1
                     continue
 
@@ -240,21 +242,18 @@ class WXAddAddressList:
                     i = 1
                     continue
                 else:
-                    if endcon==0:
-                        z.toast('全部发送完成')
-
-                        now = datetime.datetime.now( )
-                        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                        cache.set( '%s_WXAddAddressList_time' % d.server.adb.device_serial( ), nowtime )
-                        z.toast('模块结束，保存的时间是%s'%nowtime)
-
-                        if (args["time_delay"]):
-                            z.sleep( int( args["time_delay"] ) )
-                        return
                     d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
+                    endterm = d(className='android.widget.LinearLayout', index=i-1).child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).child(textContains='微信:')
+                    time.sleep(0.5)
+                    if endterm.exists:
+                        endterm = endterm.info
+                        name1 = endterm['text']      #判断是否已经到底
+                        if name1 in set1:
+                            if (args["time_delay"]):
+                                z.sleep( int( args["time_delay"] ) )
+                            return
                     i = 1
-                    endcon = 0
-
+                    continue
 
 
 def getPluginClass():

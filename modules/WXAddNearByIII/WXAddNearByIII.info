@@ -1,16 +1,16 @@
 {
-"id": "WXAddNearByII",
+"id": "WXAddNearByIII",
 "cate":"微信模块",
-"name":"微信V1值单双配比跑数据(混合V库)",
+"name":"微信V1值单双配比跑数据(有序)",
 "url": "http://www.bejson.com",
 "version": "1.2",
-"code":"WX-T-07",
+"code":"WX33",
 "icon": "vcard-o",
 "remark":"微信版本6.5.4",
 "setting":[
 	{
 	"id": "repo_wxcade_id",
-	"name":"号码库分类",
+	"name":"单向号码库",
 	"type":"repo",
 	"source":"number",
 	"top_cate_id":"23"
@@ -22,23 +22,15 @@
     "source":"material",
     "top_cate_id":"12"
     },
-    {
-	"id": "gender",
-	"name":"性别",
-	"type":"select",
-	"list":{"男":"男","女":"女","不限":"不限"},
-	"defaultValue":"女",
-	"remark":"性别要求"
-	},
 	{
-	"id": "repo_cate_id",
-	"name":"回写资料库",
+	"id": "repo_wxcade_id1",
+	"name":"混合号码库分类",
 	"type":"repo",
-	"source":"information",
-	"top_cate_id":"4"
+	"source":"number",
+	"top_cate_id":"23"
 	},
 	{
-	"id": "proportion",
+	"id": "Proportion",
 	"name":"单双比例",
 	"type":"select",
 	"list":{"1:1":"1:1","1:2":"1:2","2:1":"2:1"},

@@ -4,7 +4,7 @@
 "name":"微信发朋友圈(图文)",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"WX09",
+"code":"WX-T-10",
 "icon": "vcard-o",
 "remark":"微信版本，6.5.4",
 "setting":[
@@ -15,6 +15,13 @@
     "source":"material",
     "top_cate_id":"14"
     },
+    {
+	"id": "set_time",
+	"name":"运行该模块的时间间隔",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：分钟"
+	},
     {
     "id": "time_delay",
     "name":"延时",

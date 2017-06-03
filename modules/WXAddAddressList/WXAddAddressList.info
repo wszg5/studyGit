@@ -1,13 +1,13 @@
 {
 "id": "WXAddAddressList",
-"name":"微信通讯录添加好友和检存",
+"name":"微信通讯录加好友和取V1值等资料",
 "cate":"微信模块",
 "font": "WeiXin",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"WX28-1",
+"code":"WX-T-04",
 "icon":"vcard-o",
-"remark":"微信通讯录添加好友和检存，6.5.4版",
+"remark":"微信版本，6.5.4版",
 "setting":[
 	{
 	"id": "repo_material_id",
@@ -22,6 +22,13 @@
 	"type":"repo",
 	"source":"information",
 	"top_cate_id":"4"
+	},
+	{
+	"id": "set_time",
+	"name":"运行该模块的时间间隔",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：分钟"
 	},
 	{
 	"id": "gender",

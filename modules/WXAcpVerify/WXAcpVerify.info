@@ -5,7 +5,7 @@
 "font": "WeiXin",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"WX02",
+"code":"WX-T-11",
 "icon":"vcard-o",
 "remark":"微信同意验证请求，6.5.4版",
 "setting":[
@@ -16,6 +16,13 @@
 	"list":{"男":"男","女":"女","不限":"不限"},
 	"defaultValue":"女",
 	"remark":"性别要求"
+	},
+	{
+	"id": "set_time",
+	"name":"运行该模块的时间间隔",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：分钟"
 	},
    {
     "id": "time_delay",

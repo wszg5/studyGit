@@ -92,6 +92,8 @@ class WXYaoYiYao:
             z.sleep(2)
         EndIndex = int(args['EndIndex'])         #------------------
         z.wx_action("openyaoyiyao")
+        if d(text='我知道了').exists:
+            d(text='我知道了').click()
         z.heartbeat()
         t = 0
         while True:
@@ -147,10 +149,10 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("8HVSMZKBEQFIBQUW")
+    z = ZDevice("8HVSMZKBEQFIBQUW")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_material_id": "122",'EndIndex':'1000','gender':"不限","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "39",'EndIndex':'1000','gender':"不限","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
