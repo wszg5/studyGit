@@ -33,6 +33,7 @@ class ImpContact:
         cate_id = args["repo_cate_id"]
         while True:
             exist_numbers = self.repo.GetNumber(cate_id, 0, number_count, 'exist')
+            print(exist_numbers)
             remain = number_count - len(exist_numbers)
             normal_numbers = self.repo.GetNumber(cate_id, 0, remain, 'normal')
             numbers = exist_numbers + normal_numbers
@@ -94,8 +95,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4AVSK01106")
-    z = ZDevice("HT4AVSK01106")
+    d = Device("8HVSMZKBEQFIBQUW")
+    z = ZDevice("8HVSMZKBEQFIBQUW")
 #    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
     z.server.install()
     #z.input("6565wv=1027&k=48KHKLm")
@@ -110,6 +111,6 @@ if __name__ == "__main__":
     # d.dump(compressed=False)
 
 
-    args = {"repo_cate_id":"123",'number_count':'50',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"44",'number_count':'50',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

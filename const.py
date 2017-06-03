@@ -9,10 +9,10 @@ class _const:
 const = _const()
 
 const.WAIT_START_TIME=200
-const.SERVER_IP = '192.168.1.11'
+const.SERVER_IP = '192.168.1.51'
 const.RETHINKDB_NAME = 'stf'
-const.REPO_API_IP = '127.0.0.1'
-const.REDIS_SERVER = '192.168.0.66'
+const.REPO_API_IP = '192.168.1.51'
+const.REDIS_SERVER = '192.168.1.11'
 const.MAX_SLOTS_TIM=50
 const.MAX_SLOTS_WECHAT=20
 const.MAX_SLOTS_MOBILEQQ=20

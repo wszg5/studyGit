@@ -40,26 +40,21 @@ class WXAddNearBy:
             nickname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=1).child(className='android.widget.LinearLayout',index=0).child(className='android.widget.TextView')
             nickname = nickname.info['text']
 
-            para = {'phone':'13332098767','qq_nickname': nickname, 'sex': Gender,"x_99":id}
-            self.repo.PostInformation( args["repo_cate_id"], para )
-            z.toast( "%s入库完成" % nickname )
 
-            gender = args['gender']
-            if gender!='不限':
-                if not d(description=gender).exists:
-                    continue
 
             if  d(text='添加到通讯录').exists:
                 d(text='添加到通讯录').click()
+                if d(textContains='正在添加').exists:
+                    z.sleep(1)
             else:
                 continue
             z.sleep(2)
-            forselect = args['forselect']
-            if forselect=='单向':
-                z.sleep(1)
-                continue
-            time.sleep(1)
             if d(text='发消息').exists:
+                danxiang = '单向'
+                para = {'phone': '13333333333', 'qq_nickname': nickname, 'sex': Gender, "x_99": id,"x_01":danxiang}
+                self.repo.PostInformation( args["repo_cate_id"], para )
+                z.toast( "%s入库完成" % nickname )
+
                 continue
             z.heartbeat()
             obj = d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=0)\
@@ -104,5 +99,5 @@ if __name__ == "__main__":
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_wxcade_id": "131","repo_cate_id":171,"add_count": "10",'forselect':'单向','gender':'不限',"repo_material_id": "39",'time_delay':"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_wxcade_id": "131","repo_cate_id":164,"add_count": "10",'forselect':'单向','gender':'不限',"repo_material_id": "39",'time_delay':"3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

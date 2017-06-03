@@ -1,27 +1,28 @@
 {
-"id": "MobilqqAddFriends",
-"cate":"QQ模块",
-"name":"普通QQ加好友(搜索查找)",
+"id": "WXSaveIdII",
+"cate":"微信模块",
+"name":"微信附近的人加单向(唤醒ID)并保存id",
 "url": "http://www.bejson.com",
 "version": "1.2",
-"code":"QQ09",
+"code":"WX29-1",
 "icon": "vcard-o",
-"remark":"普通QQ加好友(搜索查找)",
+"remark":"微信版本6.5.4",
 "setting":[
 	{
-	"id": "repo_number_cate_id",
-	"name":"号码库分类",
+	"id": "repo_wxcade_id",
+	"name":"取微信id库",
 	"type":"repo",
 	"source":"number",
-	"top_cate_id":"22"
+	"top_cate_id":"23"
 	},
+
 	{
-    "id": "repo_material_cate_id",
-    "name":"验证信息素材库",
-    "type":"repo",
-    "source":"material",
-    "top_cate_id":"12"
-    },
+	"id": "repo_wxcade_id1",
+	"name":"保存微信id库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"23"
+	},
 
     {
 	"id": "add_count",

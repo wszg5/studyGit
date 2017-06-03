@@ -45,13 +45,13 @@ class MobilqqLogin2:
             t = 30
             while len(numbers) == 0:
                 z.heartbeat()
+
                 z.toast('QQ帐号库%s号仓库无%s分钟未用，即将跳出 %s' % (cate_id,time_limit1, t ))
                 numbers = self.repo.GetAccount(cate_id, time_limit1, 1)
                 z.sleep(2)
                 t = t - 2
                 if t <=0 :
                     return None
-
 
             QQNumber = numbers[0]['number']  # 即将登陆的QQ号
             QQPassword = numbers[0]['password']
@@ -232,6 +232,7 @@ class MobilqqLogin2:
                 z.toast('检查是否出现登录界面%s' % seconds)
                 seconds = seconds - 1
                 z.sleep(1)
+
                 if z.checkTopActivity("com.tencent.mobileqq/.activity.RegisterGuideActivity") \
                     or z.checkTopActivity("com.tencent.mobileqq/.activity.LoginActivity") \
                     or d(textContains='身份过期').exists:
@@ -257,6 +258,7 @@ class MobilqqLogin2:
                 if QQnumber:
                     self.slot.backup(d, slotnum, QQnumber)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
                     self.repo.BackupInfo(cate_id, 'using', QQnumber,serialinfo,'%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
+
                 else:
                     z.toast(u'补登失败了 :(')
 
@@ -293,8 +295,9 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("3018768")
-    z = ZDevice("3018768")
-    args = {"repo_cate_id":"143","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+
+    d = Device("HT4BLSK00255")
+    z = ZDevice("HT4BLSK00255")
+    args = {"repo_cate_id":"133","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
