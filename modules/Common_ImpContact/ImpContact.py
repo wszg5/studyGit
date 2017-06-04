@@ -97,8 +97,10 @@ if __name__ == "__main__":
 
     d = Device("8HVSMZKBEQFIBQUW")
     z = ZDevice("8HVSMZKBEQFIBQUW")
+
 #    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
     z.server.install()
+    z.generateSerial();
     #z.input("6565wv=1027&k=48KHKLm")
 
 
