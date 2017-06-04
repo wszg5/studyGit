@@ -40,7 +40,7 @@ class WXAddNearBy:
             nickname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=1).child(className='android.widget.LinearLayout',index=0).child(className='android.widget.TextView')
             nickname = nickname.info['text']
 
-            para = {'x_01': nickname, 'x_02': Gender,"x_20":id}
+            para = {'x_01': nickname, 'x_02': Gender,"x_":id}
             self.repo.PostInformation( args["repo_cate_id"], para )
             z.toast( "%s入库完成" % nickname )
 

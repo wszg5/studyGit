@@ -236,7 +236,36 @@ if __name__ == "__main__":
     d = Device("8HVSMZKBEQFIBQUW")
     z = ZDevice("8HVSMZKBEQFIBQUW")
     z.server.install()
-
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+    z.wx_openuserchat('v1_92cffebadb790b16aed8a02b39d343aac8b1104d4d8152aace88b9a54ae6cd2be1f4693839caaa1e565115df34a30257@stranger')
+    #z.input('juneng1688')
+
+    serial = z.wx_userList()
+    print(serial)
+    logging.info('==============================================================')
+    ids = json.loads( serial )  # 将字符串改为list样式
+    print(type(ids))
+    list1 = (list(ids))
+    print(list1)
+    logging.info('=============================================================')
+    for i in range(len(list1)):
+        print(list1[i])
+        dd = ids["%s"%list1[i]]
+        print(dd)
+
+
+    print(list(ids.values()))
+    print( ids )
+    lenth = len( ids )
+    z.heartbeat( )
+
+    for i in range( lenth ):
+        z.heartbeat( )
+        wxid = ids[i].values()
+        print( wxid )
+        if 'v1_' not in wxid:
+
+            continue
+
     args = {"repo_number_id": "44", "repo_cate_id":'171','set_time':'3',"repo_material_id": "39","add_count": "3", 'gender':"不限","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
