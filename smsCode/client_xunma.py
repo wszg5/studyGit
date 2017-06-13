@@ -12,8 +12,8 @@ class client_xunma:
     def __init__(self, serial, username, password, im_type_list):
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                         "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
-        self.domain = "api.xunma.net"
-        self.port = 8888
+        self.domain = "xapi.xunma.net"
+        self.port = 80
         self.serial = serial
         self.logger = util.logger
 
