@@ -62,7 +62,10 @@ class WeiXinRegister:
                 className='android.widget.EditText', index=1).click.bottomright()
             z.heartbeat()
 
-            PhoneNumber = '18458196589'
+            # PhoneNumber = '18458194478'
+            PhoneNumber = self.scode.GetPhoneNumber( self.scode.WECHAT_REGISTER )
+            z.heartbeat()
+            print(PhoneNumber)
             z.input(PhoneNumber)
             d(className='android.widget.LinearLayout',index=3).child(className='android.widget.EditText').click()
             d(textContains='密码').click()
@@ -78,34 +81,41 @@ class WeiXinRegister:
             if d(textContains='正在验证').exists:
                 z.sleep(30)
             z.heartbeat()
-            code = '854569'
-            # code = self.scode.GetVertifyCode(PhoneNumber, self.scode.WECHAT_REGISTER)
-            # self.scode.defriendPhoneNumber(PhoneNumber,self.scode.WECHAT_REGISTER)
+            # code = '854569'
+            code = self.scode.GetVertifyCode(PhoneNumber, self.scode.WECHAT_REGISTER)
+            self.scode.defriendPhoneNumber(PhoneNumber,self.scode.WECHAT_REGISTER)
             z.heartbeat()
             if '失败'==code:
-                continue
+                code = self.scode.GetVertifyCode( PhoneNumber, self.scode.WECHAT_REGISTER)
+                self.scode.defriendPhoneNumber( PhoneNumber, self.scode.WECHAT_REGISTER)
             print(code)
             d(text='请输入验证码').click()
             z.input(code)
             d(text='下一步', className='android.widget.Button').click()
 
-            while d(text='验证码不正确，请重新输入'):
-                # if d(text='收不到验证码'):
-                #     continue
+            while d(text='验证码不正确，请重新输入').exists:
                 d(text='确定').click()
+                if d(text='收不到验证码？').exists:
+                    continue
                 d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=0).child(className='android.widget.LinearLayout',index=2).child(
                     className='android.widget.LinearLayout',index=0).child(className='android.widget.EditText', index=1).click.bottomright()
-                code = '854569'
-                # code = self.scode.GetVertifyCode(PhoneNumber, self.scode.WECHAT_REGISTER)
-                # self.scode.defriendPhoneNumber(PhoneNumber,self.scode.WECHAT_REGISTER)
+                # code = '854569'
+                code = self.scode.GetVertifyCode(PhoneNumber, self.scode.WECHAT_REGISTER)
+                self.scode.defriendPhoneNumber(PhoneNumber,self.scode.WECHAT_REGISTER)
                 z.sleep(8)
-                z.heartbeat( )
+                z.heartbeat()
                 if '失败' == code:
                     continue
                 print(code)
                 d(text='请输入验证码').click()
                 z.input(code)
                 d(text='下一步', className='android.widget.Button').click()
+                if d(text='你操作频率过快，请重新输入').exists:
+                    d(text='确定').click
+                    continue
+
+            if d( text='收不到验证码？' ).exists:
+                break
 
             time.sleep(1.5)
             if d(text='不是我的，继续注册').exists:
