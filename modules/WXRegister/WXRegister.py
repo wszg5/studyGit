@@ -29,14 +29,14 @@ class WeiXinRegister:
         self.scode = smsCode(d.server.adb.device_serial())
         while True:
             d.press.home()
-            d.server.adb.cmd( "shell", "pm clear com.tencent.mm" ).communicate( )  # 清除缓存，返回home页面
+            d.server.adb.cmd("shell", "pm clear com.tencent.mm").communicate()  # 清除缓存，返回home页面
             if d(text='微信').exists:
-                d(text='微信').click( )
+                d(text='微信').click()
             else:
                 d.swipe(width - 20, height / 2, 0, height / 2,5)
                 if d(text='微信').exists:
                     d(text='微信').click()
-            z.sleep(8)
+            z.sleep(5)
             if d(text='注册').exists:
                 d(text='注册').click()
             cate_id = args['repo_name_id']  # 得到昵称库的id
@@ -61,32 +61,8 @@ class WeiXinRegister:
             d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout', index=2).child(
                 className='android.widget.EditText', index=1).click.bottomright()
             z.heartbeat()
-            # while True:
-            #     PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER)
-            #     z.heartbeat()
-            #     print(PhoneNumber)
-            #     if PhoneNumber.startswith('17'):
-            #         break
-            #     else:
-            #         self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER)
-            # backNumber = 0
-            # while True:
-            #     if backNumber==0:
-            #         PhoneNumber = self.xuma.GetPhoneNumber('2251')
-            #         PhoneNumber = cache.popSet(self.cache_phone_key)
-            #         if PhoneNumber is None:
-            #             d.server.adb.cmd("shell",
-            #                              "am broadcast -a com.zunyun.zime.toast --es msg \"缓存中没有号码\"" ).communicate()
-            #             z.sleep(10)
-            #             return
-            #         print(PhoneNumber)
-            #         print('-------------------------------上面是仓库里的号码')
-            #         backNumber = self.xm.MatchPhoneNumber(PhoneNumber, '2251')  # 判断从库里取出的是否可用，当backNumber为０时不可用
-            #         print(backNumber)
-            #         print('-------------------------------------上面是backNumber')
-            #     else:
-            #         break
-            PhoneNumber = ''
+
+            PhoneNumber = '18458196589'
             z.input(PhoneNumber)
             d(className='android.widget.LinearLayout',index=3).child(className='android.widget.EditText').click()
             d(textContains='密码').click()
@@ -99,11 +75,12 @@ class WeiXinRegister:
             d(text='注册').click()
             d(text='确定').click()
             z.sleep(2)
-            while d(textContains='正在验证').exists:
-                z.sleep(2)
+            if d(textContains='正在验证').exists:
+                z.sleep(30)
             z.heartbeat()
-            code = self.scode.GetVertifyCode(PhoneNumber, self.scode.WECHAT_REGISTER)
-            self.scode.defriendPhoneNumber(PhoneNumber,self.scode.WECHAT_REGISTER)
+            code = '854569'
+            # code = self.scode.GetVertifyCode(PhoneNumber, self.scode.WECHAT_REGISTER)
+            # self.scode.defriendPhoneNumber(PhoneNumber,self.scode.WECHAT_REGISTER)
             z.heartbeat()
             if '失败'==code:
                 continue
@@ -111,6 +88,24 @@ class WeiXinRegister:
             d(text='请输入验证码').click()
             z.input(code)
             d(text='下一步', className='android.widget.Button').click()
+
+            while d(text='验证码不正确，请重新输入'):
+                # if d(text='收不到验证码'):
+                #     continue
+                d(text='确定').click()
+                d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=0).child(className='android.widget.LinearLayout',index=2).child(
+                    className='android.widget.LinearLayout',index=0).child(className='android.widget.EditText', index=1).click.bottomright()
+                code = '854569'
+                # code = self.scode.GetVertifyCode(PhoneNumber, self.scode.WECHAT_REGISTER)
+                # self.scode.defriendPhoneNumber(PhoneNumber,self.scode.WECHAT_REGISTER)
+                z.sleep(8)
+                z.heartbeat( )
+                if '失败' == code:
+                    continue
+                print(code)
+                d(text='请输入验证码').click()
+                z.input(code)
+                d(text='下一步', className='android.widget.Button').click()
 
             time.sleep(1.5)
             if d(text='不是我的，继续注册').exists:
@@ -124,7 +119,7 @@ class WeiXinRegister:
                 d(text='确定', className='android.widget.Button').click()
                 cate_id = args['repo_number_id']
                 self.repo.RegisterAccount('',password,PhoneNumber,cate_id)
-                print ('成功')
+                print('成功')
                 z.sleep(20)
 
 
