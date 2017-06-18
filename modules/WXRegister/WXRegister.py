@@ -63,7 +63,7 @@ class WeiXinRegister:
             z.heartbeat()
 
             # PhoneNumber = '18458194478'
-            PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER,13941940790)
+            PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER,'13941940790')
             z.heartbeat()
             print(PhoneNumber)
             z.input(PhoneNumber)
