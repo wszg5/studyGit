@@ -1,15 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import base64
+import json
 
-from dbapi import dbapi
+from adb import Adb
+
 from const import const
 import  os
 
-import util
 
 """Python wrapper for Zunyun Service."""
-class slot:
-    def __init__(self, type):
+class Slot:
+    def __init__(self, serial,  type):
+        self.serial = serial
+        self.adb = Adb(serial=serial)
         self.type = type
         if (self.type == "tim"):
             self.package = "com.tencent.tim"
@@ -52,107 +56,124 @@ class slot:
 
         self.maxSlot = int(self.maxSlot)
 
-    def backup(self, d, name, info):
-        d.server.adb.cmd("shell", "su -c 'chmod -R 777 /data/data/%s/'"%self.package).communicate()
-        d.server.adb.cmd("shell", "su -c 'mkdir /data/data/com.zy.bak/'").communicate()
-        d.server.adb.cmd("shell", "su -c 'chmod -R 777 /data/data/com.zy.bak/'").communicate()
-        d.server.adb.cmd("shell", "su -c 'mkdir /data/data/com.zy.bak/%s'"%self.type).communicate()
-        d.server.adb.cmd("shell", "su -c 'rm -r -f /data/data/com.zy.bak/%s/%s/'"%(self.type,name)).communicate()
-        d.server.adb.cmd("shell", "su -c 'mkdir /data/data/com.zy.bak/%s/%s'"%(self.type,name)).communicate()
-        d.server.adb.cmd("shell", "su -c 'chmod -R 777 /data/data/com.zy.bak/'").communicate()
+    def backup(self, id, info):
+        self.adb.run_cmd("shell", "su -c 'chmod -R 777 /data/data/%s/'"%self.package)
+        self.adb.run_cmd("shell", "su -c 'mkdir /data/data/com.zy.bak/'")
+        self.adb.run_cmd("shell", "su -c 'chmod -R 777 /data/data/com.zy.bak/'")
+        self.adb.run_cmd("shell", "su -c 'mkdir /data/data/com.zy.bak/%s'"%self.type)
+        self.adb.run_cmd("shell", "su -c 'rm -r -f /data/data/com.zy.bak/%s/%s/'" % (self.type, id))
+        self.adb.run_cmd("shell", "su -c 'mkdir /data/data/com.zy.bak/%s/%s'" % (self.type, id))
+        self.adb.run_cmd("shell", "su -c 'chmod -R 777 /data/data/com.zy.bak/'")
 
         for folder in self.folders:
-            targetPath = '/data/data/com.zy.bak/%s/%s/%s' % (self.type, name, folder)
+            targetPath = '/data/data/com.zy.bak/%s/%s/%s' % (self.type, id, folder)
             targetPath = os.path.dirname(targetPath)
-            d.server.adb.cmd("shell", "su -c 'mkdir -p %s'" % targetPath).communicate()
+            self.adb.run_cmd("shell", "su -c 'mkdir -p %s'" % targetPath)
             cmd = "cp -f -r -p /data/data/%s/%s/  %s" % (self.package, folder, targetPath)
-            d.server.adb.cmd("shell", "su -c '%s'"%cmd).communicate()
+            self.adb.run_cmd("shell", "su -c '%s'"%cmd)
 
-            #d.server.adb.cmd("shell", "su -c 'cp -r -f -p /data/data/%s/%s/  /data/data/com.zy.bak/%s/%s/%s'" % (self.package, folder, self.type, name, folder)).communicate()
+            #self.adb.run_cmd("shell", "su -c 'cp -r -f -p /data/data/%s/%s/  /data/data/com.zy.bak/%s/%s/%s'" % (self.package, folder, self.type, name, folder))
         for file in self.files:
-            targetFile = '/data/data/com.zy.bak/%s/%s/%s'%(self.type, name, file)
+            targetFile = '/data/data/com.zy.bak/%s/%s/%s'%(self.type, id, file)
             targetPath = os.path.dirname(targetFile)
-            d.server.adb.cmd("shell", "su -c 'mkdir -p %s'" % targetPath).communicate()
+            self.adb.run_cmd("shell", "su -c 'mkdir -p %s'" % targetPath)
             cmd = "cp -f  /data/data/%s/%s  %s" % (self.package, file, targetFile)
-            d.server.adb.cmd("shell", "su -c '%s'" %cmd ).communicate()
+            self.adb.run_cmd("shell", "su -c '%s'" %cmd )
 
-        #d.server.adb.cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
+        #self.adb.run_cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
+        t = base64.b64encode(info)
 
-        dbapi.SaveSlotInfo(d.server.adb.device_serial(), self.type, name, "false", "true", info)
+        self.adb.run_cmd("shell",
+                         "am broadcast -a com.zunyun.zime.action --es ac save_slot --es id %s --es type %s --es remark %s" % (id, self.type, t))
 
-    def restore(self, d, name, target=None):
+        #dbapi.SaveSlotInfo(d.server.adb.device_serial(), self.type, name, "false", "true", info)
+
+    def restore(self, id, target=None):
         if target is None:
             target = self.package
 
-        d.server.adb.cmd("shell", "pm clear %s"%target).communicate()
-        d.server.adb.cmd("shell", "su -c 'chmod -R 777 /data/data/%s/'" % target).communicate()
-        d.server.adb.cmd("shell", "su -c 'chmod -R 777 /data/data/com.zy.bak/'").communicate()
-        #d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()
-        #d.server.adb.cmd("shell", "rm -r -f  /data/data/com.zy.bak/%s/zy_name_*"%type).wait()
+        self.adb.run_cmd("shell", "pm clear %s"%target)
+        self.adb.run_cmd("shell", "su -c 'chmod -R 777 /data/data/%s/'" % target)
+        self.adb.run_cmd("shell", "su -c 'chmod -R 777 /data/data/com.zy.bak/'")
+        #self.adb.run_cmd("shell", "pm clear com.tencent.tim").wait()
+        #self.adb.run_cmd("shell", "rm -r -f  /data/data/com.zy.bak/%s/zy_name_*"%type).wait()
         for folder in self.folders:
             targetPath = '/data/data/%s/%s' % (target, folder)
             targetPath = os.path.dirname(targetPath)
-            d.server.adb.cmd("shell", "su -c 'mkdir -p %s'" % targetPath).communicate()
-            cmd = "cp -f -r -p /data/data/com.zy.bak/%s/%s/%s/  %s" % (self.type, name, folder, targetPath)
-            d.server.adb.cmd("shell", "su -c '%s'" % cmd).communicate()
-            d.server.adb.cmd("shell", "su -c 'chmod -R 777 %s'" % targetPath).communicate()
+            self.adb.run_cmd("shell", "su -c 'mkdir -p %s'" % targetPath)
+            cmd = "cp -f -r -p /data/data/com.zy.bak/%s/%s/%s/  %s" % (self.type, id, folder, targetPath)
+            self.adb.run_cmd("shell", "su -c '%s'" % cmd)
+            self.adb.run_cmd("shell", "su -c 'chmod -R 777 %s'" % targetPath)
         #for folder in self.folders:
-           # d.server.adb.cmd("shell", "cp -r -f -p /data/data/com.zy.bak/%s/%s/%s/ /data/data/%s/"%(self.type, name, folder, self.package)).communicate()
+           # self.adb.run_cmd("shell", "cp -r -f -p /data/data/com.zy.bak/%s/%s/%s/ /data/data/%s/"%(self.type, name, folder, self.package))
 
         for file in self.files:
             targetFile = '/data/data/%s/%s'%(target, file)
             targetPath = os.path.dirname(targetFile)
-            d.server.adb.cmd("shell", "su -c 'mkdir -p %s'" % targetPath).communicate()
-            d.server.adb.cmd("shell", "su -c 'cp -f /data/data/com.zy.bak/%s/%s/%s %s'"%(self.type, name, file, targetFile)).communicate()
-            d.server.adb.cmd("shell", "su -c 'chmod -R 777 %s'" % targetFile).communicate()
+            self.adb.run_cmd("shell", "su -c 'mkdir -p %s'" % targetPath)
+            self.adb.run_cmd("shell", "su -c 'cp -f /data/data/com.zy.bak/%s/%s/%s %s'" % (self.type, id, file, targetFile))
+            self.adb.run_cmd("shell", "su -c 'chmod -R 777 %s'" % targetFile)
 
-        #d.server.adb.cmd("shell", "cp -r -f -p /data/data/com.zy.bak/tim/%s/databases/ /data/data/com.tencent.tim/"%name).wait()
+        #self.adb.run_cmd("shell", "cp -r -f -p /data/data/com.zy.bak/tim/%s/databases/ /data/data/com.tencent.tim/"%name).wait()
 
-        #d.server.adb.cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
-        dbapi.PickSlot(d.server.adb.device_serial(), self.type, name)
+        #self.adb.run_cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
+        #dbapi.PickSlot(d.server.adb.device_serial(), self.type, name)
+        self.adb.run_cmd("shell",
+                         "am broadcast -a com.zunyun.zime.action --es ac restore_slot --es id %s --es type %s " % (id, self.type))
+
+    def clear(self, id):
+        self.adb.run_cmd("shell", "su -c 'rm -r -f /data/data/com.zy.bak/%s/%s/'" % (self.type, id))
+        self.adb.run_cmd("shell",
+                         "am broadcast -a com.zunyun.zime.action --es ac clear_slot --es id %s --es type %s " % (
+                         id, self.type))
 
 
-    def getEmpty(self, d):
-        slots = dbapi.ListSlots(d.server.adb.device_serial(), self.type)
-        if (len(slots)  == 0):
-            return 1
-        logger = util.logger
-        if (len(slots) < self.maxSlot ):
-            maxSlot = slots[-1]
-            maxName = maxSlot["name"]
-            return int(maxName) + 1
-        for slot in slots:
-            if (slot["empty"] == "true"):
-                return int(slot["name"])
+    def getEmpty(self):
+        slots = self.getSlots()
+        if not slots:
+            return 1;
+        for index in range(1, self.maxSlot + 1):
+            if not slots.has_key(str(index)) :
+                return index
         return 0
 
-    def getSlot(self, d, interval):
-        slots = dbapi.ListSlotsInterval(d.server.adb.device_serial(), self.type, int(interval) * 60)
+    def getAvailableSlot(self, interval):
+        slots = self.getSlots()
         if (len(slots) > 0):
             return int(slots[0]["name"])
         return 0
 
-    def getSlotInfo(self, d, name):
-        return dbapi.GetSlotInfo(d.server.adb.device_serial(), self.type, name)
+    def getSlotInfo(self, id):
+        slots = self.getSlots()
+        return slots[id]
+
+    def getSlots(self):
+        path = "/sdcard/.zime/slot_%s" % self.type
+        adb = Adb(serial=self.serial)
+        out = adb.run_cmd("shell", "\"su -c 'cat %s'\"" % path).output
+        if self.check_json_format(out):
+            return json.loads(out)
 
 
-
-def getPluginClass():
-    return slot
+    def check_json_format(self, raw_msg):
+        """
+        用于判断一个字符串是否符合Json格式
+        :param self:
+        :return:check_json_format
+        """
+        if isinstance(raw_msg, str):       # 首先判断变量是否为字符串
+            try:
+                json.loads(raw_msg, encoding='utf-8')
+            except ValueError:
+                return False
+            return True
+        else:
+            return False
 
 if __name__ == "__main__":
-
-    clazz = getPluginClass()
-    o = clazz("mobileqq")
-    from uiautomator import Device
-
-    d = Device("FA48VSR03651")
-    #d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").wait()
-    #slots = o.getSlot(d, 23)
-    #o.backup(d,1,"asdfasfd")
-    #o.getEmptySlot(d)
-
-    o.restore(d, 1)
-    #d.dump(compressed=False)
-    #args = {"repo_cate_id":"131","length":"50","time_delay":"3"};    #cate_id是仓库号，length是数量
-    #o.action(d, args)
+    slot = slot("HT523SK00876", "mobileqq")
+    slot.restore("2")
+    #id = slot.getEmpty()
+    #slot.backup(id, "XXXX%s" % str(id))
+    #print(slot.getSlots())
+    print(slot.getSlotInfo("2"))

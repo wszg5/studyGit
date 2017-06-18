@@ -1,0 +1,32 @@
+[Unit]
+Description=task service
+After=redis.service
+BindsTo=redis.service
+
+[Service]
+EnvironmentFile=/etc/license.info
+EnvironmentFile=/data/zy/s.info
+TimeoutStartSec=20
+Restart=always
+
+ExecStartPre=-/usr/bin/docker kill %p
+ExecStartPre=-/usr/bin/docker rm %p
+ExecStart=/usr/bin/docker run --rm \
+  --privileged \
+  --name %p \
+  --net host \
+  -v /dev/bus/usb:/dev/bus/usb \
+  -v /home/ztask:/app \
+  -v /home/apps:/apps \
+  -p 3344:3344 \
+  ztask:v1 \
+  --tim_slots=${tim_slots} \
+  --wechat_slots=${wechat_slots} \
+  --mobile_slots=${mobile_slots} \
+  --qqlite_slots=${qqlite_slots} \
+  --eim_slots=${eim_slots} \
+  --server_ip=127.0.0.1 \
+  --repo_ip=${REPO_DATABASE_IP} \
+  --redis_ip=127.0.0.1
+ExecStop=-/usr/bin/docker stop -t 10 %p
+
