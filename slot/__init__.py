@@ -84,7 +84,7 @@ class Slot:
         t = base64.b64encode(info)
 
         self.adb.run_cmd("shell",
-                         "am broadcast -a com.zunyun.zime.action --es ac save_slot --es id %s --es type %s --es remark %s" % (id, self.type, t))
+                         'am broadcast -a com.zunyun.zime.action --es ac save_slot --es id %s --es type %s --es remark "%s"' % (id, self.type, t))
 
         #dbapi.SaveSlotInfo(d.server.adb.device_serial(), self.type, name, "false", "true", info)
 
@@ -112,20 +112,20 @@ class Slot:
             targetPath = os.path.dirname(targetFile)
             self.adb.run_cmd("shell", "su -c 'mkdir -p %s'" % targetPath)
             self.adb.run_cmd("shell", "su -c 'cp -f /data/data/com.zy.bak/%s/%s/%s %s'" % (self.type, id, file, targetFile))
-            self.adb.run_cmd("shell", "su -c 'chmod -R 777 %s'" % targetFile)
+            self.adb.run_cmd("shell", "su -c 'chmod -R 777 %s'" % targetPath)
 
         #self.adb.run_cmd("shell", "cp -r -f -p /data/data/com.zy.bak/tim/%s/databases/ /data/data/com.tencent.tim/"%name).wait()
 
         #self.adb.run_cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
         #dbapi.PickSlot(d.server.adb.device_serial(), self.type, name)
+        self.adb.run_cmd("shell", "su -c 'chmod -R 777 /data/data/%s/'" % target)
         self.adb.run_cmd("shell",
                          "am broadcast -a com.zunyun.zime.action --es ac restore_slot --es id %s --es type %s " % (id, self.type))
 
     def clear(self, id):
         self.adb.run_cmd("shell", "su -c 'rm -r -f /data/data/com.zy.bak/%s/%s/'" % (self.type, id))
         self.adb.run_cmd("shell",
-                         "am broadcast -a com.zunyun.zime.action --es ac clear_slot --es id %s --es type %s " % (
-                         id, self.type))
+                         "am broadcast -a com.zunyun.zime.action --es ac clear_slot --es id %s --es type %s " % (id, self.type))
 
 
     def getEmpty(self):
@@ -171,9 +171,10 @@ class Slot:
             return False
 
 if __name__ == "__main__":
-    slot = slot("HT523SK00876", "mobileqq")
-    slot.restore("2")
+    slot = Slot("HT4AVSK01106", "mobileqq")
+    slot.backup("2", "2")
+
     #id = slot.getEmpty()
     #slot.backup(id, "XXXX%s" % str(id))
-    #print(slot.getSlots())
-    print(slot.getSlotInfo("2"))
+    print(slot.getSlots())
+    #print(slot.getSlotInfo("2"))

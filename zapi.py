@@ -49,6 +49,8 @@ def slotService():
 
     slot = Slot(serial, type)
     if action == "save":
+        if remark == "":
+            remark = "BackUp"
         slot.backup(id, remark)
         return jsonify({'success': True, 'msg': u'Save slot success'})
 
@@ -65,7 +67,7 @@ def slotService():
         slots = slot.getSlots()
         if not slots:
             slots = {};
-        for index in range(1, 21):
+        for index in range(1, 22):
             if slots.has_key(str(index)) :
                 obj = slots[str(index)]
                 obj['empty'] = False;
