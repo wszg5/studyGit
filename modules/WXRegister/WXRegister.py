@@ -28,11 +28,15 @@ class WeiXinRegister:
         width = str["displayWidth"]
         self.scode = smsCode(d.server.adb.device_serial())
         while True:
-            d.server.adb.cmd("shell", "pm clear com.tencent.mm").communicate()  # 清除缓存，返回home页面
-            d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate() #使用命令唤起微信
+            d.press.home()
+            d.server.adb.cmd( "shell", "pm clear com.tencent.mm" ).communicate( )  # 清除缓存，返回home页面
+            if d(text='微信').exists:
+                d(text='微信').click( )
+            else:
+                d.swipe(width - 20, height / 2, 0, height / 2,5)
+                if d(text='微信').exists:
+                    d(text='微信').click()
             z.sleep(8)
-            d(text='注册').click()
-            z.sleep(1)
             if d(text='注册').exists:
                 d(text='注册').click()
             cate_id = args['repo_name_id']  # 得到昵称库的id
@@ -44,25 +48,27 @@ class WeiXinRegister:
             z.heartbeat()
             name = Material[0]['content']  # 从素材库取出的要发的材料
             z.input(name)       #name
+
+
             if not d(text='中国').exists:
                 d(textContains='国家').click()
                 d(className='android.support.v7.widget.LinearLayoutCompat',index=1).click()
                 z.input('中')
                 d(text='中国').click()
-            if d(textContains='手机号码').exists:
-                d(textContains='手机号码').click()
-            else:
-                d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=2).child(className='android.widget.EditText',index=1).click()
-                d.swipe(474,327,500,329)
+
+            d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout', index=2).child(
+                className='android.widget.EditText', index=1).click()
+            d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout', index=2).child(
+                className='android.widget.EditText', index=1).click.bottomright()
             z.heartbeat()
-            while True:
-                PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER)
-                z.heartbeat()
-                print(PhoneNumber)
-                if PhoneNumber.startswith('17'):
-                    break
-                else:
-                    self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER)
+            # while True:
+            #     PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER)
+            #     z.heartbeat()
+            #     print(PhoneNumber)
+            #     if PhoneNumber.startswith('17'):
+            #         break
+            #     else:
+            #         self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER)
             # backNumber = 0
             # while True:
             #     if backNumber==0:
@@ -80,6 +86,7 @@ class WeiXinRegister:
             #         print('-------------------------------------上面是backNumber')
             #     else:
             #         break
+            PhoneNumber = ''
             z.input(PhoneNumber)
             d(className='android.widget.LinearLayout',index=3).child(className='android.widget.EditText').click()
             d(textContains='密码').click()
@@ -125,14 +132,10 @@ def getPluginClass():
     return WeiXinRegister
 
 if __name__ == "__main__":
-    import sys
-    reload(sys)
-    sys.setdefaultencoding('utf8')
-
     clazz = getPluginClass()
     o = clazz()
-    d = Device("9ddbd665")
-    z = ZDevice("9ddbd665")
+    d = Device("8HVSMZKBEQFIBQUW")
+    z = ZDevice("8HVSMZKBEQFIBQUW")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     'dingdingdingdingdindigdingdingdingdingdingdingdingdingdingdingdingdignin'

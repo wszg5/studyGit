@@ -1,0 +1,19 @@
+{
+"id": "WXDelAllFriends",
+"cate":"微信模块",
+"name":"微信删除所有好友",
+"url": "http://www.bejson.com",
+"version": "1.2",
+"code":"WX34",
+"icon": "vcard-o",
+"remark":"微信版本6.5.4",
+"setting":[
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

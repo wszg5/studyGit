@@ -8,7 +8,7 @@ from zcache import cache
 import logging
 logging.basicConfig(level=logging.INFO)
 
-class WXSaveId:
+class WXSaveIdPP:
     def __init__(self):
         self.repo = Repo()
 
@@ -52,9 +52,21 @@ class WXSaveId:
             z.sleep(2)
             return
         z.heartbeat()
-        d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
-        d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        z.sleep(7)
+
+        d.press.home( )
+        if d( text='微信' ).exists:
+            d( text='微信' ).click( )
+        else:
+            # d.swipe( width - 20, height / 2, 0, height / 2, 5 )
+            z.toast( '该页面没有微信' )
+            z.sleep( 2 )
+            return
+        z.sleep(5)
+        while True:
+            if d( text='发现' ) and d( text='我' ) and d( text='通讯录' ).exists:
+                break
+            else:
+                d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
         cate_id = args['repo_wxcade_id']
         d(text='发现').click()
         d(textContains='附近的人').click()
@@ -110,7 +122,7 @@ class WXSaveId:
 
 
 def getPluginClass():
-    return WXSaveId
+    return WXSaveIdPP
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ from zcache import cache
 import re
 import logging
 logging.basicConfig(level=logging.INFO)
-class WXSearchAddDepostII:
+class WXSearchAddDepostIIPP:
 
     def __init__(self):
         self.repo = Repo()
@@ -61,9 +61,20 @@ class WXSearchAddDepostII:
             return
         message = Material[0]['content']  # 取出验证消息的内容
 
-        d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
-        d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        z.sleep(5)
+        d.press.home( )
+        if d( text='微信' ).exists:
+            d( text='微信' ).click( )
+        else:
+            # d.swipe( width - 20, height / 2, 0, height / 2, 5 )
+            z.toast( '该页面没有微信' )
+            z.sleep( 2 )
+            return
+        z.sleep( 5 )
+        while True:
+            if d( text='发现' ) and d( text='我' ) and d( text='通讯录' ).exists:
+                break
+            else:
+                d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
 
         d(description='更多功能按钮',className='android.widget.RelativeLayout').click()
         z.sleep(1)
@@ -117,12 +128,10 @@ class WXSearchAddDepostII:
                                                                      index=1 )  # 看性别是否有显示
                 if Gender.exists:
                     Gender = Gender.info
-                    print(Gender)
                     Gender = Gender['contentDescription']
                 else:
                     Gender = '空'
                 z.heartbeat( )
-
                 nickname = d( className='android.widget.ListView' ).child( className='android.widget.LinearLayout',
                                                                            index=1 ) \
                     .child( className='android.widget.LinearLayout', index=1 ).child(
@@ -239,7 +248,7 @@ class WXSearchAddDepostII:
             z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
-    return WXSearchAddDepostII
+    return WXSearchAddDepostIIPP
 
 if __name__ == "__main__":
     import sys
@@ -252,5 +261,5 @@ if __name__ == "__main__":
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     #z.wx_openuserchat('v1_fdf20d0551660ab7f940af3e87f2d73ba5efccebfabd7e9adec3b5ca0439d025906825f5cf09d7598af10cd78927fcf1@stranger')
-    args = {"repo_number_id": "44", "repo_cate_id":'171',"onlyInfo":"否",'set_time':'3',"repo_material_id": "39","add_count": "3", 'gender':"不限","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_number_id": "44", "repo_cate_id":'171',"onlyInfo":"是",'set_time':'3',"repo_material_id": "39","add_count": "3", 'gender':"不限","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

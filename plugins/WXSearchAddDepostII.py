@@ -99,7 +99,7 @@ class WXSearchAddDepostII:
                 if d(textContains='操作过于频繁').exists:
                     now = datetime.datetime.now( )
                     nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => stringk
-                    cache.set( '%s_WXSearchAddDepostII_time' % d.server.adb.device_serial( ), nowtime )
+                    cache.set( '%s_WXSearchAddDepostII_time' % d.server.adb.device_serial( ), nowtime,None )
                     z.toast('模块结束，保存的时间是%s'%nowtime)
                     return
                 z.sleep(2)
@@ -158,8 +158,20 @@ class WXSearchAddDepostII:
                 else:
                     sign = '空'
                 z.heartbeat()
-
-
+                '''
+                得到搜索人的v1值
+                '''
+                serial = z.wx_userList( )
+                ids = list( json.loads( serial ) )[0]  # 将字符串改为list样式
+                print(ids)
+                onlyInfo = args['onlyInfo']
+                if onlyInfo=='是':
+                    para = {"phoneNumber": WXnumber,'x_20': ids}
+                    self.repo.PostInformation( args["repo_cate_id"], para )
+                    z.toast( "%s入库完成" % WXnumber )
+                    d( descriptionContains='返回' ).click( )
+                    d( descriptionContains='清除' ).click( )
+                    continue
 
 
                 z.heartbeat()
@@ -172,7 +184,7 @@ class WXSearchAddDepostII:
                         seltype = '单向'
                     else:
                         seltype = '混合'
-                    para = {"phoneNumber": WXnumber, 'x_01': nickname, 'x_02': Gender, "x_03": area, "x_04": sign,'x_05': seltype}
+                    para = {"phoneNumber": WXnumber, 'x_01': nickname, 'x_02': Gender, "x_03": area, "x_04": sign,'x_05': seltype,'x_20':ids}
                     print( '--%s--%s--%s--%s--%s' % (WXnumber, nickname, Gender, area, sign) )
                     self.repo.PostInformation( args["repo_cate_id"], para )
                     z.toast( "%s入库完成" % WXnumber )
@@ -183,7 +195,7 @@ class WXSearchAddDepostII:
                             d( description='返回' ).click( )
                             d( description='返回' ).click( )
                             d( descriptionContains='清除' ).click()
-                            para = {"phoneNumber": WXnumber, 'x_01': nickname, 'x_02': Gender, "x_03": area,"x_04": sign, 'x_05': seltype}
+                            para = {"phoneNumber": WXnumber, 'x_01': nickname, 'x_02': Gender, "x_03": area,"x_04": sign, 'x_05': seltype,'x_20':ids}
                             print( '--%s--%s--%s--%s--%s' % (WXnumber, nickname, Gender, area, sign) )
                             self.repo.PostInformation( args["repo_cate_id"], para )
                             z.toast( "%s入库完成" % WXnumber )
@@ -219,7 +231,7 @@ class WXSearchAddDepostII:
 
         now = datetime.datetime.now( )
         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => stringk
-        cache.set( '%s_WXSearchAddDepostII_time' % d.server.adb.device_serial( ), nowtime )
+        cache.set( '%s_WXSearchAddDepostII_time' % d.server.adb.device_serial( ), nowtime,None )
         #z.toast('模块结束，保存的时间是%s'%nowtime)
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
@@ -237,35 +249,6 @@ if __name__ == "__main__":
     z = ZDevice("8HVSMZKBEQFIBQUW")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    z.wx_openuserchat('v1_92cffebadb790b16aed8a02b39d343aac8b1104d4d8152aace88b9a54ae6cd2be1f4693839caaa1e565115df34a30257@stranger')
-    #z.input('juneng1688')
-
-    serial = z.wx_userList()
-    print(serial)
-    logging.info('==============================================================')
-    ids = json.loads( serial )  # 将字符串改为list样式
-    print(type(ids))
-    list1 = (list(ids))
-    print(list1)
-    logging.info('=============================================================')
-    for i in range(len(list1)):
-        print(list1[i])
-        dd = ids["%s"%list1[i]]
-        print(dd)
-
-
-    print(list(ids.values()))
-    print( ids )
-    lenth = len( ids )
-    z.heartbeat( )
-
-    for i in range( lenth ):
-        z.heartbeat( )
-        wxid = ids[i].values()
-        print( wxid )
-        if 'v1_' not in wxid:
-
-            continue
-
-    args = {"repo_number_id": "44", "repo_cate_id":'171','set_time':'3',"repo_material_id": "39","add_count": "3", 'gender':"不限","time_delay": "3"}    #cate_id是仓库号，length是数量
+    #z.wx_openuserchat('v1_fdf20d0551660ab7f940af3e87f2d73ba5efccebfabd7e9adec3b5ca0439d025906825f5cf09d7598af10cd78927fcf1@stranger')
+    args = {"repo_number_id": "44", "repo_cate_id":'171',"onlyInfo":"是",'set_time':'3',"repo_material_id": "39","add_count": "3", 'gender':"不限","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

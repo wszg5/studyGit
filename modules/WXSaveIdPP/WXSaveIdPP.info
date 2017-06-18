@@ -1,0 +1,41 @@
+{
+"id": "WXSaveIdPP",
+"cate":"微信模块",
+"name":"微信取附近的人V1值(点击图标)",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"WX-P-03",
+"icon": "vcard-o",
+"remark":"微信版本，6.5.4",
+"setting":[
+	{
+	"id": "repo_wxcade_id",
+	"name":"号码库分类",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"23"
+	},
+	{
+	"id": "set_time",
+	"name":"运行该模块的时间间隔",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：分钟"
+	},
+	{
+	"id": "gender",
+	"name":"性别",
+	"type":"select",
+	"list":{"男":"男","女":"女","不限":"不限"},
+	"defaultValue":"女",
+	"remark":"性别要求"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

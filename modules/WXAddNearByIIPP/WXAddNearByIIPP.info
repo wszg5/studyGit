@@ -1,15 +1,15 @@
 {
-"id": "WXSearchAddDepostII",
+"id": "WXAddNearByIIPP",
 "cate":"微信模块",
-"name":"微信搜索加好友和取V1值等资料",
+"name":"微信V1值单双配比跑数据(混合V库)(点击图标)",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"WX-T-05",
+"version": "1.2",
+"code":"WX-P-07",
 "icon": "vcard-o",
-"remark":"微信版本，6.5.4",
+"remark":"微信版本6.5.4",
 "setting":[
 	{
-	"id": "repo_number_id",
+	"id": "repo_wxcade_id",
 	"name":"号码库分类",
 	"type":"repo",
 	"source":"number",
@@ -23,28 +23,6 @@
     "top_cate_id":"12"
     },
     {
-	"id": "onlyInfo",
-	"name":"是否仅扫资料不加好友",
-	"type":"select",
-	"list":{"是":"是","否":"否"},
-	"defaultValue":"否",
-	"remark":"是否仅扫资料不加好友"
-	},
-    {
-	"id": "set_time",
-	"name":"运行该模块的时间间隔",
-	"type":"textbox",
-	"defaultValue":"3",
-	"remark":"单位：分钟"
-	},
-    {
-	"id": "repo_cate_id",
-	"name":"回写资料库",
-	"type":"repo",
-	"source":"information",
-	"top_cate_id":"4"
-	},
-    {
 	"id": "gender",
 	"name":"性别",
 	"type":"select",
@@ -52,9 +30,24 @@
 	"defaultValue":"女",
 	"remark":"性别要求"
 	},
+	{
+	"id": "repo_cate_id",
+	"name":"回写资料库",
+	"type":"repo",
+	"source":"information",
+	"top_cate_id":"4"
+	},
+	{
+	"id": "proportion",
+	"name":"单双比例",
+	"type":"select",
+	"list":{"1:1":"1:1","1:2":"1:2","2:1":"2:1"},
+	"defaultValue":"1:1",
+	"remark":"单双比例"
+	},
     {
 	"id": "add_count",
-	"name":"添加好友个数",
+	"name":"添加混合好友个数",
 	"type":"textbox",
 	"defaultValue":"3",
 	"remark":"单位：个"
