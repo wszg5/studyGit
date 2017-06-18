@@ -73,5 +73,5 @@ class smsCode:
 
 if __name__ == "__main__":
     ic = smsCode( )
-    print ic.getCode(im, ic.CODE_TYPE_4_NUMBER_CHAR)
-    print ic.reportError("5104838994")
+    #print ic.getCode(im, ic.CODE_TYPE_4_NUMBER_CHAR)
+    #print ic.reportError("5104838994")
