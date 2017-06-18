@@ -127,7 +127,7 @@ class client_xunma:
             if response.status == 200:
                 data = response.read().decode('GBK')
                 print(data)
-                if 'Session 过期' in data or 'Session过期' in data:
+                if u'Session 过期' in data or u'Session过期' in data:
                     self.GetToken(False)
                     return None
         except Exception:
@@ -226,10 +226,7 @@ class client_xunma:
 
 if __name__ == '__main__':
     import sys
-
     reload(sys)
-
-
     sys.setdefaultencoding('utf8')
 
     im_type_list = {"qq_register": "2251"}
