@@ -133,13 +133,12 @@ class client_xunma:
         except Exception:
             return None
 
-        if 'MSG' in data:
-            smsList = self.ExtractSMS(data, length)
-            for sms in smsList:
-                if 'phone' in sms and 'code' in sms:
-                    sms_number_key = 'verify_code_%s_%s' % (sms['itemid'], sms['phone'])
-                    print ("KEY: %s, Code: %s" % (sms_number_key, sms['code']))
-                    cache.set(sms_number_key, sms['code'])
+        smsList = self.ExtractSMS(data, length)
+        for sms in smsList:
+            if 'phone' in sms and 'code' in sms:
+                sms_number_key = 'verify_code_%s_%s' % (sms['itemid'], sms['phone'])
+                print ("KEY: %s, Code: %s" % (sms_number_key, sms['code']))
+                cache.set(sms_number_key, sms['code'])
                     #cache.set(sms['phone'], sms['code'])
                 '''
             targetNumber = re.findall(r'1\d{10}', data)
@@ -204,9 +203,11 @@ class client_xunma:
         else:
             return "Error Getting Account, Please check your repo"
 
-    def ExtractSMS(self, sms, length):
+    def ExtractSMS(self, content, length):
+        if content is None:
+            return []
         result = []
-        smsList = sms.split('[End]')
+        smsList = content.split('[End]')
         for sms in smsList:
             if 'MSG' not in sms:
                 continue
@@ -218,6 +219,7 @@ class client_xunma:
                 res = re.findall("\d{%s}" % length, sms)
                 code = res[0]
                 result.append({'phone': phone, 'code' : code, 'itemid': itemid});
+        print(result)
         return result;
 
 
@@ -234,6 +236,7 @@ if __name__ == '__main__':
     xunma = client_xunma("asdfasdfasdf", "powerman", "12341234abc", im_type_list)
 
     sms = u'MSG&2251&13941940790&【腾讯科技】你正在注册微信帐号，验证码303615。请勿转发。[End]RES&2251&13941940790[End]'
+    sms = None
     print(xunma.ExtractSMS(sms, 6))
     phone =  xunma.GetPhoneNumber("qq_register")
 
