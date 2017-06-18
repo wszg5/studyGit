@@ -63,7 +63,7 @@ class WeiXinRegister:
             z.heartbeat()
 
             # PhoneNumber = '18458194478'
-            PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER,15141919784)
+            PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER,13941940790)
             z.heartbeat()
             print(PhoneNumber)
             z.input(PhoneNumber)
@@ -79,9 +79,9 @@ class WeiXinRegister:
             d(text='确定').click()
             z.sleep(2)
             if d(textContains='正在验证').exists:
-                z.sleep(30)
+                z.sleep(40)
             z.heartbeat()
-            # code = '854569'
+            # code = '769679'
             code = self.scode.GetVertifyCode(PhoneNumber, self.scode.WECHAT_REGISTER)
             self.scode.defriendPhoneNumber(PhoneNumber,self.scode.WECHAT_REGISTER)
             z.heartbeat()
@@ -99,7 +99,7 @@ class WeiXinRegister:
                     continue
                 d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=0).child(className='android.widget.LinearLayout',index=2).child(
                     className='android.widget.LinearLayout',index=0).child(className='android.widget.EditText', index=1).click.bottomright()
-                # code = '854569'
+                # code = '596028'
                 code = self.scode.GetVertifyCode(PhoneNumber, self.scode.WECHAT_REGISTER)
                 self.scode.defriendPhoneNumber(PhoneNumber,self.scode.WECHAT_REGISTER)
                 z.sleep(8)
