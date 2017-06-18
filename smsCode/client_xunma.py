@@ -138,6 +138,7 @@ class client_xunma:
             for sms in smsList:
                 if 'phone' in sms and 'code' in sms:
                     sms_number_key = 'verify_code_%s_%s' % (sms['itemid'], sms['phone'])
+                    print ("KEY: %s, Code: %s" % (sms_number_key, sms['code']))
                     cache.set(sms_number_key, sms['code'])
                     #cache.set(sms['phone'], sms['code'])
                 '''
@@ -232,8 +233,10 @@ if __name__ == '__main__':
     im_type_list = {"qq_register": "2251"}
     xunma = client_xunma("asdfasdfasdf", "powerman", "12341234abc", im_type_list)
 
-    sms = u'USER&108.706&1000&2000&1000&0.85&18.929[End]NOTION&单笔充值满 50元送 5%单笔充值满100元送10%自动赠送！上不封顶！[End]MSG&2251&15141919784&【腾讯科技】你正在注册微信帐号，验证码383277。请勿转发。[End]MSG&2251&15992289275&【腾讯科技】你正在注册微信帐号，验证码769679。请勿转发。[End]MSG&2251&17092201951&你正在注册微信帐号，验证码596028。请勿转发。【腾讯科技】[End]RES&2251&15141919784[End]RES&2251&15992289275[End]RES&2251&17092201951[End]USER&108.196&1000&2000&1000&0.85&18.929[End]'
+    sms = u'MSG&2251&13941940790&【腾讯科技】你正在注册微信帐号，验证码303615。请勿转发。[End]RES&2251&13941940790[End]'
     print(xunma.ExtractSMS(sms, 6))
     phone =  xunma.GetPhoneNumber("qq_register")
+
+    phone =  xunma.GetPhoneNumber("qq_register", phone)
     print phone
     print xunma.GetVertifyCode(phone, "qq_register", 6)
