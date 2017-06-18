@@ -39,7 +39,7 @@ class client_xunma:
 
         if response.status == 200:
             data = response.read()
-            if data.startswith("False"):  #Token以False开头，嵌套调用
+            if data.startswith("False"):  # Token以False开头，嵌套调用
                 return self.GetToken()
             token = data.split('&')[0];
             cache.set(key, token, None)
@@ -56,7 +56,7 @@ class client_xunma:
         except Exception:
             ok = 'ok'
 
-    def GetPhoneNumber(self, itemId, times=0):
+    def GetPhoneNumber(self, itemId, phoneNum=None, times=0):
         round = times + 1
         if round > 30:
             raise 'XunMa has tried 3 minutes'
@@ -67,11 +67,13 @@ class client_xunma:
             return phone
 
         itemcode = self.im_type_list[itemId]
-        self.logger.info("itemcode_%s"%itemcode)
-        self.logger.info("token_%s"%token)
+        self.logger.info("itemcode_%s" % itemcode)
+        self.logger.info("token_%s" % token)
         path = "/getPhone?ItemId=%s&token=%s&Count=1" % (itemcode, token)
+        if phoneNum is not None:
+            path = "%s&Phone=%s" % (path, phoneNum)
         try:
-            #self.logger.info("===XUNMA URL:%s" % path)
+            # self.logger.info("===XUNMA URL:%s" % path)
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
             response = conn.getresponse()
@@ -82,9 +84,9 @@ class client_xunma:
             data = response.read().decode('GBK')
             self.logger.info("===XUNMA RESTURN:%s" % data)
             import string
-            if string.find(data, '单个用户获取数量不足') != -1:
+            if string.find(data, u'单个用户获取数量不足') != -1:
                 self.ReleaseAllPhone()
-            if 'Session 过期' in data or 'Session过期' in data :
+            if u'Session 过期' in data or u'Session过期' in data:
                 self.GetToken(False)
             if data.startswith('False'):
                 time.sleep(3)
@@ -198,6 +200,6 @@ if __name__ == '__main__':
 
     reload(sys)
     sys.setdefaultencoding('utf8')
-    im_type_list = {"qq_register":"2113"}
-    xunma = client_xunma("asdfasdfasdf", "powerman","12341234abc", im_type_list)
+    im_type_list = {"qq_register": "2251"}
+    xunma = client_xunma("asdfasdfasdf", "powerman", "12341234abc", im_type_list)
     print xunma.GetPhoneNumber("qq_register")

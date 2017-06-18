@@ -7,7 +7,7 @@ from dbapi import dbapi
 from zcache import cache
 import util
 
-
+#http://update.hellotrue.com/api.htm
 class client_hellotrue:
     def __init__(self, serial, username, password, im_type_list):
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
@@ -42,10 +42,10 @@ class client_hellotrue:
                 token = data.split('|')[1];
                 cache.set(key, token, None)
                 return token
-            elif "密码" in data:
+            elif u"密码" in data:
                 if not cache.get("HELLOTRUE_ERROR_PASS"):
                     cache.set("HELLOTRUE_ERROR_PASS", True)
-                    dbapi.log_error("", "开放云登录失败了", "开放云用户密码错误，请修改")
+                    dbapi.log_error("", u"开放云登录失败了", u"开放云用户密码错误，请修改")
 
         return self.GetToken()
 
@@ -58,7 +58,7 @@ class client_hellotrue:
         except Exception:
             ok = 'ok'
 
-    def GetPhoneNumber(self, itemId, times=0):
+    def GetPhoneNumber(self, itemId, phoneNum=None, times=0):
         round = times + 1
         if round > 30:
             raise 'Hellotrue has tried 3 minutes'
@@ -70,6 +70,8 @@ class client_hellotrue:
         try:
             itemcode = self.im_type_list[itemId]
             path = "/api/do.php?action=getPhone&sid=%s&token=%s" % (itemcode, token)
+            if phoneNum is not None:
+                path = "%s&phone=%s" %(path, phoneNum)
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
             response = conn.getresponse()
