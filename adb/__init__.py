@@ -28,16 +28,6 @@ class Adb(object):
         if self.adb_server_port != '5037':
             self.adb_host_port_options += ["-P", self.adb_server_port]
 
-    # 获取脚本文件的当前路径
-    def cur_file_dir(self):
-        # 获取脚本路径
-        path = sys.path[0]
-        # 判断为脚本文件还是py2exe编译后的文件，如果是脚本文件，则返回的是脚本的目录，如果是py2exe编译后的文件，则返回的是编译后的文件路径
-        if os.path.isdir(path):
-            return path
-        elif os.path.isfile(path):
-            return os.path.dirname(path)
-
 
     def adb(self):
         if self.__adb_cmd is None:
@@ -48,7 +38,8 @@ class Adb(object):
                     raise EnvironmentError(
                         "Adb not found in $ANDROID_HOME path: %s." % os.environ["ANDROID_HOME"])
             else:
-                adb_cmd = os.path.join(self.cur_file_dir(), "platform-tools/adb")
+                adbPath = os.path.dirname(os.path.realpath(__file__))
+                adb_cmd = os.path.join(adbPath, "platform-tools/adb")
             self.__adb_cmd = adb_cmd
         return self.__adb_cmd
 
