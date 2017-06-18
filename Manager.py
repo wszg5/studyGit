@@ -84,6 +84,8 @@ def s528hut():
     return jsonify({'success': False, 'msg': u'服务器网络可能存在故障，Baidu无法正常访问'})
 
 
+
+
 def NetCheck(ip):
    try:
     p = subprocess.Popen(["ping -c 1 "+ ip],stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
