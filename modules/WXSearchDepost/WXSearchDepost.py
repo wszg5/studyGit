@@ -5,11 +5,10 @@ import time, datetime, random
 from zservice import ZDevice
 from Inventory import *
 
-class WeiXinAddFriends:
 
+class WeiXinAddFriends:
     def __init__(self):
         self.repo = Repo()
-
 
     def action(self, d,z, args):
         z.heartbeat()

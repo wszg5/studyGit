@@ -1,11 +1,10 @@
-WXAddNearByII
 {
-"id": "WXAddNearBy",
+"id": "WXAddNearByII",
 "cate":"微信模块",
-"name":"微信附近的人加好友(唤醒ID)和检存",
+"name":"微信V1值单双配比跑数据(混合V库)",
 "url": "http://www.bejson.com",
 "version": "1.2",
-"code":"WX29",
+"code":"WX-T-07",
 "icon": "vcard-o",
 "remark":"微信版本6.5.4",
 "setting":[
@@ -24,12 +23,12 @@ WXAddNearByII
     "top_cate_id":"12"
     },
     {
-	"id": "forselect",
-	"name":"添加类型",
+	"id": "gender",
+	"name":"性别",
 	"type":"select",
-	"list":{"单向":"单向","混合":"混合"},
-	"defaultValue":"混合",
-	"remark":"添加类型"
+	"list":{"男":"男","女":"女","不限":"不限"},
+	"defaultValue":"女",
+	"remark":"性别要求"
 	},
 	{
 	"id": "repo_cate_id",
@@ -39,16 +38,16 @@ WXAddNearByII
 	"top_cate_id":"4"
 	},
 	{
-	"id": "gender",
-	"name":"性别",
+	"id": "proportion",
+	"name":"单双比例",
 	"type":"select",
-	"list":{"男":"男","女":"女","不限":"不限"},
-	"defaultValue":"女",
-	"remark":"性别要求"
+	"list":{"1:1":"1:1","1:2":"1:2","2:1":"2:1"},
+	"defaultValue":"1:1",
+	"remark":"单双比例"
 	},
     {
 	"id": "add_count",
-	"name":"添加好友个数",
+	"name":"添加混合好友个数",
 	"type":"textbox",
 	"defaultValue":"3",
 	"remark":"单位：个"

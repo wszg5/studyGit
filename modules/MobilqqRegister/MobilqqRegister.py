@@ -145,9 +145,9 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
+    d = Device("9ddbd665")
     from zservice import ZDevice
-    z = ZDevice("HT4A4SK00901")
+    z = ZDevice("9ddbd665")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").communicate()    #打开android设置页面
 

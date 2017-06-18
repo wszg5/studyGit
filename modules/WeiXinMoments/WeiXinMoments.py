@@ -3,14 +3,54 @@ from uiautomator import Device
 from Repo import *
 import time, datetime, random
 from zservice import ZDevice
+from zcache import cache
+import re
+import logging
+logging.basicConfig(level=logging.INFO)
 
 class WeiXinMoments:
 
     def __init__(self):
         self.repo = Repo()
 
+    def timeinterval(self, z, args):
+        now = datetime.datetime.now( )
+        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+        logging.info( '现在的时间%s' % nowtime )
+        gettime = cache.get( 'WeiXinMoments_time' )
+        logging.info( '以前的时间%s' % gettime )
+        d1 = datetime.datetime.strptime( nowtime, '%Y-%m-%d %H:%M:%S' )
+        if gettime != None:
+            d2 = datetime.datetime.strptime( gettime, '%Y-%m-%d %H:%M:%S' )
+            delta1 = (d1 - d2)
+            # print( delta1 )
+            delta = re.findall( r"\d+\.?\d*", str( delta1 ) )  # 将天小时等数字拆开
+            day1 = int( delta[0] )
+            hours1 = int( delta[1] )
+            minutes1 = 0
+            if 'days' in str( delta1 ):
+                minutes1 = int( delta[2] )
+                allminutes = day1 * 24 * 60 + hours1 * 60 + minutes1
+            else:
+                allminutes = day1 * 60 + hours1  # 当时间不超过天时此时天数变量成为小时变量
+            logging.info( "day=%s,hours=%s,minutes=%s" % (day1, hours1, minutes1) )
+
+            logging.info( '两个时间的时间差%s' % allminutes )
+            set_time = int( args['set_time'] )  # 得到设定的时间
+            if allminutes < set_time:  # 由外界设定
+                z.toast( '该模块未满足指定时间间隔,程序结束' )
+                return 'end'
+            else:
+                cache.set( 'WeiXinMoments_time', nowtime )
+
+        else:
+            cache.set( 'WeiXinMoments_time', nowtime )
 
     def action(self, d,z, args):
+        condition = self.timeinterval( z, args )
+        if condition == 'end':
+            z.sleep( 2 )
+            return
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
@@ -128,7 +168,7 @@ if __name__ == "__main__":
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_material_id": "39",'EndIndex':'100',"time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "39",'set_time':'3','EndIndex':'100',"time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
 

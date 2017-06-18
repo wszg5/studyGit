@@ -87,8 +87,9 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK01875")
-    z = ZDevice("HT4A4SK01875")
+    d = Device("HT4AVSK01106")
+    z = ZDevice("HT4AVSK01106")
+    z.server.install();
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").wait()
 
     while not d(resourceId='com.ali.user.mobile.security.ui:id/loginButton').exists:

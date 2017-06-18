@@ -3,14 +3,50 @@ from uiautomator import Device
 from Repo import *
 import time, datetime, random
 from zservice import ZDevice
+from zcache import cache
+import re
+import logging
+logging.basicConfig(level=logging.INFO)
 
 class WXAddAddressList:
 
     def __init__(self):
         self.repo = Repo()
 
+    def timeinterval(self, d,z, args):
+        now = datetime.datetime.now( )
+        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+        d1 = datetime.datetime.strptime( nowtime, '%Y-%m-%d %H:%M:%S' )
+        logging.info( '现在的时间%s' % nowtime )
+        gettime = cache.get( '%s_WXAddAddressList_time'%d.server.adb.device_serial() )
+        logging.info( '以前的时间%s' % gettime )
+        if gettime != None:
+            d2 = datetime.datetime.strptime( gettime, '%Y-%m-%d %H:%M:%S' )
+            delta1 = (d1 - d2)
+            # print( delta1 )
+            delta = re.findall( r"\d+\.?\d*", str( delta1 ) )  # 将天小时等数字拆开
+            day1 = int( delta[0] )
+            hours1 = int( delta[1] )
+            minutes1 = 0
+            if 'days' in str( delta1 ):
+                minutes1 = int( delta[2] )
+                allminutes = day1 * 24 * 60 + hours1 * 60 + minutes1
+            else:
+                allminutes = day1 * 60 + hours1  # 当时间不超过天时此时天数变量成为小时变量
+            logging.info( "day=%s,hours=%s,minutes=%s" % (day1, hours1, minutes1) )
 
+            logging.info( '两个时间的时间差%s' % allminutes )
+            set_time = int( args['set_time'] )  # 得到设定的时间
+            if allminutes < set_time:  # 由外界设定
+                z.toast( '该模块未满足指定时间间隔,程序结束' )
+                return 'end'
+        else:
+            z.toast( '尚未保存时间' )
     def action(self, d,z, args):
+        condition = self.timeinterval(d, z, args )
+        if condition == 'end':
+            z.sleep( 2 )
+            return
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
@@ -30,6 +66,7 @@ class WXAddAddressList:
         change = 0
         i = 0
         t = 0
+        endcon = 0
         EndIndex = int(args['EndIndex'])         #------------------
         while True :
             cate_id = args["repo_material_id"]   #------------------
@@ -39,7 +76,6 @@ class WXAddAddressList:
                 z.sleep(10)
                 return
             message = Material[0]['content']  # 从素材库取出的要发的材料
-
             z.sleep(1)
             wxname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=i)\
                 .child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).child(textContains='微信:')     #得到微信名
@@ -75,6 +111,7 @@ class WXAddAddressList:
                 else:
                     set1.add(name)
                 print(name)
+                endcon = 1
                 d(className='android.widget.ListView',index=0).child(className='android.widget.LinearLayout',index=i).\
                     child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).click()      #点击第i个人
                 '''
@@ -119,26 +156,17 @@ class WXAddAddressList:
                     sign = '空'
 
                 print('%s--%s--%s--%s--%s'%(phonenumber,name,Gender,sign,area))
-                GenderFrom = args['gender']     #-------------------------------外界设定的性别
-                if GenderFrom !='不限':
-                    if Gender != GenderFrom:  #如果性别不符号的情况
-                        danxiang = '性别不符'
-                        para = {"phone": phonenumber, 'qq_nickname': name, 'sex': Gender, "city": area, "x_01": sign,"x_02":danxiang}
-                        self.repo.PostInformation( args["repo_cate_id"], para )
-                        z.toast( "%s入库完成" % phonenumber )
-                        d(description='返回').click()
-                        i = i+1
-                        continue
+
 
                 z.heartbeat()
                 if d(text='添加到通讯录').exists:
                     d(text='添加到通讯录').click()
                     if d( textContains='正在添加' ).exists:
-                        z.sleep( 1 )
+                        z.sleep(1)
                     time.sleep(1)
                     if d(text='发消息').exists:
                         danxiang = '单向'
-                        para = {"phone": phonenumber, 'qq_nickname': name, 'sex': Gender, "city": area, "x_01": sign,"x_02":danxiang}
+                        para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,"x_05": danxiang}
                         self.repo.PostInformation( args["repo_cate_id"], para )
                         z.toast( "%s入库完成" % phonenumber )
                         d(description='返回').click()
@@ -149,7 +177,7 @@ class WXAddAddressList:
                     d(text='通过验证').click()
                     d(description='返回').click()
                     danxiang = '未知'
-                    para = {"phone": phonenumber, 'qq_nickname': name, 'sex': Gender, "city": area, "x_01": sign,"x_02": danxiang}
+                    para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,"x_05": danxiang}
                     self.repo.PostInformation( args["repo_cate_id"], para )
                     z.toast( "%s入库完成" % phonenumber )
                     d( description='返回' ).click( )
@@ -158,7 +186,7 @@ class WXAddAddressList:
 
                 else:
                     danxiang = '未知'
-                    para = {"phone": phonenumber, 'qq_nickname': name, 'sex': Gender, "city": area, "x_01": sign,"x_02": danxiang}
+                    para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,"x_05": danxiang}
                     self.repo.PostInformation( args["repo_cate_id"], para )
                     z.toast( "%s入库完成" % phonenumber )
                     d(description='返回').click()
@@ -166,7 +194,18 @@ class WXAddAddressList:
                     continue
 
                 danxiang = '非单项'       #有添加到通讯录且非单项的情况
-                para = {"phone": phonenumber, 'qq_nickname': name, 'sex': Gender, "city": area, "x_01": sign,"x_02": danxiang}
+                GenderFrom = args['gender']  # -------------------------------外界设定的性别
+                if GenderFrom !='不限':
+                    if Gender != GenderFrom:  #如果性别不符号的情况
+                        para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,"x_05":danxiang}
+                        self.repo.PostInformation( args["repo_cate_id"], para )
+                        z.toast( "%s入库完成" % phonenumber )
+                        d(description='返回').click()
+                        d( description='返回' ).click( )
+                        i = i+1
+                        continue
+
+                para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,"x_05": danxiang}
                 self.repo.PostInformation( args["repo_cate_id"], para )
                 z.toast( "%s入库完成" % phonenumber )
                 z.sleep(1)
@@ -188,29 +227,39 @@ class WXAddAddressList:
                     t = t+1
                     continue
                 else:
-
+                    d( description='返回' ).click()
+                    d( description='返回' ).click()
+                    i = i + 1
                     continue
 
             else:
                 if change==0:   #一次还没有点击到人
                     if i==1:    #通讯录没有人的情况
+                        now = datetime.datetime.now( )
+                        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+                        cache.set( '%s_WXAddAddressList_time' % d.server.adb.device_serial( ), nowtime, None )
+                        z.toast( '模块结束，保存的时间是%s' % nowtime )
+
                         return
                     d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
                     i = 1
                     continue
                 else:
+                    if endcon==0:
+                        z.toast('全部发送完成')
+
+                        now = datetime.datetime.now( )
+                        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+                        cache.set( '%s_WXAddAddressList_time' % d.server.adb.device_serial( ), nowtime,None )
+                        z.toast('模块结束，保存的时间是%s'%nowtime)
+
+                        if (args["time_delay"]):
+                            z.sleep( int( args["time_delay"] ) )
+                        return
                     d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
-                    endterm = d(className='android.widget.LinearLayout', index=i-1).child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout',index=1).child(textContains='微信:')
-                    time.sleep(0.5)
-                    if endterm.exists:
-                        endterm = endterm.info
-                        name1 = endterm['text']      #判断是否已经到底
-                        if name1 in set1:
-                            if (args["time_delay"]):
-                                z.sleep( int( args["time_delay"] ) )
-                            return
                     i = 1
-                    continue
+                    endcon = 0
+
 
 
 def getPluginClass():
@@ -227,7 +276,7 @@ if __name__ == "__main__":
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_material_id": "39",'EndIndex':'100','repo_cate_id':'171','gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "39",'EndIndex':'3','set_time':'0','repo_cate_id':'171','gender':"不限","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
 

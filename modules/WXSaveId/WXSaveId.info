@@ -1,10 +1,10 @@
 {
 "id": "WXSaveId",
 "cate":"微信模块",
-"name":"微信保存微信id(附近的人)",
+"name":"微信取附近的人V1值",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"WX27",
+"code":"WX-T-03",
 "icon": "vcard-o",
 "remark":"微信版本，6.5.4",
 "setting":[
@@ -14,6 +14,13 @@
 	"type":"repo",
 	"source":"number",
 	"top_cate_id":"23"
+	},
+	{
+	"id": "set_time",
+	"name":"运行该模块的时间间隔",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：分钟"
 	},
 	{
 	"id": "gender",

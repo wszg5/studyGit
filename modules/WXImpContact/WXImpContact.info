@@ -1,0 +1,48 @@
+{
+    "id": "WXImpContact",
+    "cate":"微信模块",
+    "name": "导入系统通讯录(微信专用)",
+    "url": "http://www.bejson.com",
+    "version": "1.1",
+    "code": "WX-T-02",
+    "icon":"vcard-o",
+    "remark": "导入系统通讯录(微信专用)",
+    "setting": [
+	{
+	"id": "repo_cate_id",
+	"name":"号码库分类",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"23"
+	},
+	{
+	"id": "set_time",
+	"name":"运行该模块的时间间隔",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：分钟"
+	},
+	{
+	"id": "clear",
+	"name":"是否清空通讯录",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"是",
+	"remark":"是否清空通讯录"
+	},
+	{
+	"id": "number_count",
+	"name":"导入号码个数",
+	"type":"textbox",
+	"defaultValue":"20",
+	"remark":""
+	},
+	{
+	"id": "time_delay",
+	"name":"延时",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：秒"
+	}
+    ]
+}

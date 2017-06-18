@@ -28,8 +28,8 @@ class WeiXinRegister:
         width = str["displayWidth"]
         self.scode = smsCode(d.server.adb.device_serial())
         while True:
-            d.server.adb.cmd("shell", "pm clear com.tencent.mm").communicate()  # 清除缓存
-            d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()
+            d.server.adb.cmd("shell", "pm clear com.tencent.mm").communicate()  # 清除缓存，返回home页面
+            d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate() #使用命令唤起微信
             z.sleep(8)
             d(text='注册').click()
             z.sleep(1)
@@ -131,8 +131,8 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4BLSK00255")
-    z = ZDevice("HT4BLSK00255")
+    d = Device("9ddbd665")
+    z = ZDevice("9ddbd665")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     'dingdingdingdingdindigdingdingdingdingdingdingdingdingdingdingdingdignin'

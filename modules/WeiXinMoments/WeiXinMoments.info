@@ -5,7 +5,7 @@
 "font": "WinXin",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"WX23",
+"code":"WX-T-13",
 "icon":"vcard-o",
 "remark":"微信朋友圈点赞，评论，6.5.3版",
 "setting":[
@@ -15,6 +15,13 @@
 	"type":"repo",
 	"source":"material",
 	"top_cate_id":"12"
+	},
+	{
+	"id": "set_time",
+	"name":"运行该模块的时间间隔",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：分钟"
 	},
 	{
 	"id": "EndIndex",
