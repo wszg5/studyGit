@@ -1,13 +1,11 @@
 #!flask/bin/python
 # coding:utf-8
 
-import re
 
 from flask import Flask, jsonify
 from flask import request
-from slot.adb_slot import adb_slot
-from uiautomator import Adb
-
+from adb import Adb
+from slot import Slot
 
 app = Flask(__name__)
 
@@ -27,18 +25,17 @@ def readFile():
 
 
 @app.route('/zapi/slot', methods=['POST'])
-def slot():
-    print(request.args)
-    print(request.values)
-    action = request.form['action']
-    if 'id' in request.form:
-        id = request.form['id']
+def slotService():
+    reqJson = request.json
+    action = request.json['action']
+    if 'id' in request.json:
+        id = request.json['id']
 
-    serial = request.form['serial']
-    type = request.form['type']
+    serial = request.json['serial']
+    type = request.json['type']
 
-    if 'remark' in request.form:
-        remark = request.form['remark']
+    if 'remark' in request.json:
+        remark = request.json['remark']
     else:
         remark = "Backed";
 
@@ -50,7 +47,7 @@ def slot():
     if not serial:
         return jsonify({'success': False, 'msg': u'paramter serial is missed'})
 
-    slot = adb_slot(serial, type)
+    slot = Slot(serial, type)
     if action == "save":
         slot.backup(id, remark)
         return jsonify({'success': True, 'msg': u'Save slot success'})
@@ -77,7 +74,7 @@ def slot():
                 obj = {'id':index, 'empty': True}
             result.append(obj)
 
-        return jsonify(result)
+        return jsonify({'slots': result })
 
     return "-"
 
