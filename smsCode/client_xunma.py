@@ -134,6 +134,13 @@ class client_xunma:
             return None
 
         if 'MSG' in data:
+            smsList = self.ExtractSMS(data, length)
+            for sms in smsList:
+                if 'phone' in sms and 'code' in sms:
+                    sms_number_key = 'verify_code_%s_%s' % (sms['itemid'], sms['phone'])
+                    cache.set(sms_number_key, sms['code'])
+                    #cache.set(sms['phone'], sms['code'])
+                '''
             targetNumber = re.findall(r'1\d{10}', data)
             targetNumber = targetNumber[0]
 
@@ -146,6 +153,8 @@ class client_xunma:
                 code = res[0]
                 sms_number_key = 'verify_code_%s_%s' % (targetItemId, targetNumber)
                 cache.set(sms_number_key, code)
+
+                '''
 
     def GetVertifyCode(self, number, itemId, length=6):
         for i in range(1, 22):
@@ -194,12 +203,37 @@ class client_xunma:
         else:
             return "Error Getting Account, Please check your repo"
 
+    def ExtractSMS(self, sms, length):
+        result = []
+        smsList = sms.split('[End]')
+        for sms in smsList:
+            if 'MSG' not in sms:
+                continue
+            data = sms.split('&');
+            if len(data) >=4:
+                itemid = data[1]
+                phone = data[2]
+                sms = data[3]
+                res = re.findall("\d{%s}" % length, sms)
+                code = res[0]
+                result.append({'phone': phone, 'code' : code, 'itemid': itemid});
+        return result;
+
+
 
 if __name__ == '__main__':
     import sys
 
     reload(sys)
+
+
     sys.setdefaultencoding('utf8')
+
     im_type_list = {"qq_register": "2251"}
     xunma = client_xunma("asdfasdfasdf", "powerman", "12341234abc", im_type_list)
-    print xunma.GetPhoneNumber("qq_register")
+
+    sms = u'USER&108.706&1000&2000&1000&0.85&18.929[End]NOTION&单笔充值满 50元送 5%单笔充值满100元送10%自动赠送！上不封顶！[End]MSG&2251&15141919784&【腾讯科技】你正在注册微信帐号，验证码383277。请勿转发。[End]MSG&2251&15992289275&【腾讯科技】你正在注册微信帐号，验证码769679。请勿转发。[End]MSG&2251&17092201951&你正在注册微信帐号，验证码596028。请勿转发。【腾讯科技】[End]RES&2251&15141919784[End]RES&2251&15992289275[End]RES&2251&17092201951[End]USER&108.196&1000&2000&1000&0.85&18.929[End]'
+    print(xunma.ExtractSMS(sms, 6))
+    phone =  xunma.GetPhoneNumber("qq_register")
+    print phone
+    print xunma.GetVertifyCode(phone, "qq_register", 6)
