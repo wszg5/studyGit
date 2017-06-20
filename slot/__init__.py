@@ -80,6 +80,7 @@ class Slot:
             cmd = "cp -f  /data/data/%s/%s  %s" % (self.package, file, targetFile)
             self.adb.run_cmd("shell", "su -c '%s'" %cmd )
 
+        self.adb.run_cmd("shell", "ime set com.zunyun.zime/.ZImeService")
         #self.adb.run_cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
         t = base64.b64encode(info)
 
@@ -119,11 +120,17 @@ class Slot:
         #self.adb.run_cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
         #dbapi.PickSlot(d.server.adb.device_serial(), self.type, name)
         self.adb.run_cmd("shell", "su -c 'chmod -R 777 /data/data/%s/'" % target)
+
+
+        self.adb.run_cmd("shell", "ime set com.zunyun.zime/.ZImeService")
         self.adb.run_cmd("shell",
                          "am broadcast -a com.zunyun.zime.action --es ac restore_slot --es id %s --es type %s " % (id, self.type))
 
     def clear(self, id):
         self.adb.run_cmd("shell", "su -c 'rm -r -f /data/data/com.zy.bak/%s/%s/'" % (self.type, id))
+
+
+        self.adb.run_cmd("shell", "ime set com.zunyun.zime/.ZImeService")
         self.adb.run_cmd("shell",
                          "am broadcast -a com.zunyun.zime.action --es ac clear_slot --es id %s --es type %s " % (id, self.type))
 

@@ -219,6 +219,12 @@ class AutomatorServer(object):
             except:
                 self.local_port = next_local_port(adb_server_host)
 
+    def getPackageVersion(self):
+        pkginfo = self.adb.package_info(self.__apk_pkgname)
+        if pkginfo is None:
+            return None
+        return pkginfo['version_name']
+
 
     def need_install(self):
         pkginfo = self.adb.package_info(self.__apk_pkgname)
@@ -249,6 +255,10 @@ class AutomatorServer(object):
             self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
             self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'sh /data/local/tmp/install.sh'").communicate()
+            if self.getPackageVersion() != self.__apk_vercode:
+                filename = os.path.join(base_dir, 'libs/zime.apk')
+                self.adb.run_cmd("install -r %s" % filename)
+
             self.adb.cmd("shell", "reboot").communicate()
 
 

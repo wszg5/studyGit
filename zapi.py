@@ -43,7 +43,7 @@ def slotService():
     if 'page' in reqs:
         page = reqs['page']
     else:
-        page = "page";
+        page = 1;
 
     if not action:
         return jsonify({'success': False, 'msg': u'paramter action is missed'})
