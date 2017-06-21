@@ -3,6 +3,8 @@
 import base64
 import json
 
+import time
+
 from adb import Adb
 
 from const import const
@@ -144,11 +146,21 @@ class Slot:
                 return index
         return 0
 
+    ##获得符合间隔时间的，并且最长时间未用的卡槽，单位分钟
     def getAvailableSlot(self, interval):
+        result = []
         slots = self.getSlots()
-        if (len(slots) > 0):
-            return int(slots[0]["name"])
-        return 0
+        #换行成JSONArray
+        for key in slots.keys():
+            if key.isdigit():
+                slot = slots[key]
+                slot['id'] = key
+                result.append(slot)
+
+        result.sort(key=lambda x: x["UpdatedAt"], reverse=False)
+        slot = result[0]
+        if (int(time.time()) - slot["UpdatedAt"]/1000)/60 > interval:
+            return slot
 
     def getSlotInfo(self, id):
         slots = self.getSlots()
@@ -178,10 +190,10 @@ class Slot:
             return False
 
 if __name__ == "__main__":
-    slot = Slot("HT4AVSK01106", "mobileqq")
-    slot.backup("2", "2")
+    slot = Slot("FA53CSR02947", "mobileqq")
 
+    print slot.getAvailableSlot(25)
     #id = slot.getEmpty()
     #slot.backup(id, "XXXX%s" % str(id))
-    print(slot.getSlots())
+    #print(slot.getSlots())
     #print(slot.getSlotInfo("2"))
