@@ -1,0 +1,19 @@
+{
+"id": "XMGetPhone",
+"cate":"其他模块",
+"name":"取讯码手机号，拉黑入库",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"XM-01",
+"icon": "vcard-o",
+"remark":"微信版本，6.5.4",
+"setting":[
+	{
+	"id": "repo_number_id",
+	"name":"讯码手机号存入的号码库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"181"
+	}
+]
+}

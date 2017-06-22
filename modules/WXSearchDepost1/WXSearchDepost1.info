@@ -1,7 +1,7 @@
 {
 "id": "WXSearchDepost1",
 "cate":"微信模块",
-"name":"微信号检存",
+"name":"微信检存(正常微信号)",
 "url": "http://www.bejson.com",
 "version": "1.0",
 "code":"WX-T-01",
