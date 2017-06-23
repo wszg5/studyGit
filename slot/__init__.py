@@ -3,6 +3,8 @@
 import base64
 import json
 
+import time
+
 from adb import Adb
 
 from const import const
@@ -80,6 +82,7 @@ class Slot:
             cmd = "cp -f  /data/data/%s/%s  %s" % (self.package, file, targetFile)
             self.adb.run_cmd("shell", "su -c '%s'" %cmd )
 
+        self.adb.run_cmd("shell", "ime set com.zunyun.zime/.ZImeService")
         #self.adb.run_cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
         t = base64.b64encode(info)
 
@@ -119,11 +122,17 @@ class Slot:
         #self.adb.run_cmd("shell", "mkdir /data/data/com.zy.bak/%s/zy_name_%s_name/"%(self.type,name) ).wait()
         #dbapi.PickSlot(d.server.adb.device_serial(), self.type, name)
         self.adb.run_cmd("shell", "su -c 'chmod -R 777 /data/data/%s/'" % target)
+
+
+        self.adb.run_cmd("shell", "ime set com.zunyun.zime/.ZImeService")
         self.adb.run_cmd("shell",
                          "am broadcast -a com.zunyun.zime.action --es ac restore_slot --es id %s --es type %s " % (id, self.type))
 
     def clear(self, id):
         self.adb.run_cmd("shell", "su -c 'rm -r -f /data/data/com.zy.bak/%s/%s/'" % (self.type, id))
+
+
+        self.adb.run_cmd("shell", "ime set com.zunyun.zime/.ZImeService")
         self.adb.run_cmd("shell",
                          "am broadcast -a com.zunyun.zime.action --es ac clear_slot --es id %s --es type %s " % (id, self.type))
 
@@ -137,11 +146,21 @@ class Slot:
                 return index
         return 0
 
+    ##获得符合间隔时间的，并且最长时间未用的卡槽，单位分钟
     def getAvailableSlot(self, interval):
+        result = []
         slots = self.getSlots()
-        if (len(slots) > 0):
-            return int(slots[0]["name"])
-        return 0
+        #换行成JSONArray
+        for key in slots.keys():
+            if key.isdigit():
+                slot = slots[key]
+                slot['id'] = key
+                result.append(slot)
+
+        result.sort(key=lambda x: x["UpdatedAt"], reverse=False)
+        slot = result[0]
+        if (int(time.time()) - slot["UpdatedAt"]/1000)/60 > interval:
+            return slot
 
     def getSlotInfo(self, id):
         slots = self.getSlots()
@@ -171,10 +190,10 @@ class Slot:
             return False
 
 if __name__ == "__main__":
-    slot = Slot("HT4AVSK01106", "mobileqq")
-    slot.backup("2", "2")
+    slot = Slot("FA53CSR02947", "mobileqq")
 
+    print slot.getAvailableSlot(25)
     #id = slot.getEmpty()
     #slot.backup(id, "XXXX%s" % str(id))
-    print(slot.getSlots())
+    #print(slot.getSlots())
     #print(slot.getSlotInfo("2"))

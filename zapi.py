@@ -26,7 +26,8 @@ def readFile():
 
 @app.route('/zapi/slot', methods=['POST'])
 def slotService():
-    reqJson = request.json
+    reqs = request.json
+
     action = request.json['action']
     if 'id' in request.json:
         id = request.json['id']
@@ -39,10 +40,13 @@ def slotService():
     else:
         remark = "Backed";
 
+    if 'page' in reqs:
+        page = reqs['page']
+    else:
+        page = 1;
+
     if not action:
         return jsonify({'success': False, 'msg': u'paramter action is missed'})
-
-
 
     if not serial:
         return jsonify({'success': False, 'msg': u'paramter serial is missed'})
@@ -67,7 +71,9 @@ def slotService():
         slots = slot.getSlots()
         if not slots:
             slots = {};
-        for index in range(1, 22):
+        idFrom = (page - 1)*20 + 1
+        idTo = (page-1) * 20 + 20
+        for index in range(idFrom, idTo + 1):
             if slots.has_key(str(index)) :
                 obj = slots[str(index)]
                 obj['empty'] = False;

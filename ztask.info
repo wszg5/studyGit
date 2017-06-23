@@ -4,7 +4,11 @@
 "type":"framework",
 "name":"调度后台",
 "url": "http://www.bejson.com",
+<<<<<<< HEAD
 "version": "2.00",
+=======
+"version": "2.01",
+>>>>>>> 25eddf02abfe8a674cdc48c2de55232b34a74b50
 "code":"ztask-8",
 "icon": "vcard-o",
 "remark":"调度后台框架"

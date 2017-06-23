@@ -1,6 +1,7 @@
 # coding:utf-8
 import base64
 
+from slot import Slot
 from uiautomator import Device
 from Repo import *
 import os, time, datetime, random
@@ -95,11 +96,19 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("8HVSMZKBEQFIBQUW")
-    z = ZDevice("8HVSMZKBEQFIBQUW")
-
+    d = Device("FA53CSR02947")
+    z = ZDevice("FA53CSR02947")
+    z.input("xxx")
 #    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
     z.server.install()
+
+    slot = Slot('FA53CSR02947', 'mobileqq')
+    print slot.getSlots()
+    slot.backup('21', '22221111')
+
+    print slot.getSlots()
+    slot.clear('21')
+
     z.generateSerial();
     #z.input("6565wv=1027&k=48KHKLm")
 
