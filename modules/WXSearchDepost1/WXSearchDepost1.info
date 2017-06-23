@@ -3,8 +3,8 @@
 "cate":"微信模块",
 "name":"微信检存(正常微信号)",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"WX-T-01",
+"version": "1.1",
+"code":"WX-S-01",
 "icon": "vcard-o",
 "remark":"微信版本，6.5.4",
 "setting":[
@@ -13,18 +13,18 @@
 	"name":"被检存的号码库",
 	"type":"repo",
 	"source":"number",
-	"top_cate_id":"21"
+	"top_cate_id":"23"
 	},
 	{
 	"id": "repo_save_id",
-	"name":"保存号码的库",
+	"name":"保存正常好的资料库",
 	"type":"repo",
-	"source":"number",
-	"top_cate_id":"23"
+	"source":"information",
+	"top_cate_id":"4"
 	},
     {
 	"id": "add_count",
-	"name":"保存号码个数",
+	"name":"搜索检存次数",
 	"type":"textbox",
 	"defaultValue":"3",
 	"remark":"单位：个"

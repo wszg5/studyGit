@@ -17,7 +17,6 @@ class WXSearchDepost1:
         height = str["displayHeight"]
         width = str["displayWidth"]
         d.press.home()
-        d.server.adb.cmd( "shell", "pm clear com.tencent.mm" ).communicate( )  # 清除缓存，返回home页面
 
         while True:
             if d( text='微信' ).exists:
@@ -43,8 +42,8 @@ class WXSearchDepost1:
         add_count = int( args['add_count'] )
         account = 0
         while True:
-            if account < add_count:
-                cate_id = int( args["repo_number_id"] )  # 得到取号码的仓库号
+            if account <= add_count:
+                cate_id = int(args["repo_number_id"])  # 得到取号码的仓库号
                 number_count = 1  # 每次取一个号码
                 while True:
                     exist_numbers = self.repo.GetNumber( cate_id, 0, number_count, 'exist' )
@@ -65,10 +64,7 @@ class WXSearchDepost1:
                     z.sleep( 2 )
                 z.heartbeat( )
                 if d( textContains='操作过于频繁' ).exists:
-                    self.repo.PostInformation( saveCate, para )
-                    d( descriptionContains='清除' ).click( )
-                    account = account + 1
-                    continue
+                   break
 
                 z.sleep( 1 )
 
@@ -80,14 +76,15 @@ class WXSearchDepost1:
                     d( descriptionContains='清除', index=2 ).click( )
                     continue
                 z.heartbeat( )
-                saveCate = args['repo_wxnumber_id']
-                para = {"phoneNumber": WXnumber, 'x_01': "WX_exist"}
-                self.repo.PostInformation( saveCate, para )
-                d( descriptionContains='返回' ).click( )
-                d( descriptionContains='清除' ).click( )
-                z.sleep( 1 )
-                accsount = account + 1
-                continue
+                if d(text='详细资料').exists:
+                    saveCate = args['repo_save_id']
+                    para = {"phoneNumber": WXnumber, 'x_01': "exist",'x_02':'0','x_03':'2000-01-01 00:00:00','x_04':'0','x_05':'空','x_06':'NO','x_19':'CheckXunMa'}
+                    self.repo.PostInformation( saveCate, para )
+                    d( descriptionContains='返回' ).click( )
+                    d( descriptionContains='清除' ).click( )
+                    z.sleep( 1 )
+                    account = account + 1
+                    continue
             else:
                 break
         if (args["time_delay"]):
@@ -102,11 +99,11 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("INNZL7YDLFPBNFN7")
-    z = ZDevice("INNZL7YDLFPBNFN7")
+    d = Device("HT53ASK00088")
+    z = ZDevice("HT53ASK00088")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_number_id": "44", "add_count": "35",'repo_save_id':'172',"time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_number_id": "175", "add_count": "25",'repo_save_id':'182',"time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
 

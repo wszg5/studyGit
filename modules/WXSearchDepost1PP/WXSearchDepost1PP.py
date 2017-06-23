@@ -104,8 +104,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz( )
-    d = Device( "INNZL7YDLFPBNFN7" )
-    z = ZDevice( "INNZL7YDLFPBNFN7" )
+    d = Device( "HT53ASK00088" )
+    z = ZDevice( "HT53ASK00088" )
     z.server.install( )
     d.server.adb.cmd( "shell", "ime set com.zunyun.qk/.ZImeService" ).communicate( )
     args = {"repo_number_id": "181",'repo_save_exist_id': '175',"repo_save_not_exist_id": "183",

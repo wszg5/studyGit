@@ -28,9 +28,9 @@ class Repo:
         response = conn.getresponse();
         # 判断是否提交成功
         if response.status == 302:
-            print("发布成功!^_^!");
+            print ("发布成功!^_^!");
         else:
-            print("发布失败\^0^/");
+            print ("发布失败\^0^/");
             # 关闭连接
         conn.close();
 
@@ -121,7 +121,7 @@ class Repo:
         conn.request("GET",path)
 
 
-    def uploadPhoneNumber(self, phoneNumber, numberCateId, guolv='N'):
+    def uploadPhoneNumber(self, phoneNumber, numberCateId,guolv='N'):
         path = "/repo_api/screen/numberInfo?PhoneNumber=%s&cate_id=%s&guolv=%s" % (phoneNumber, numberCateId,guolv)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
@@ -132,6 +132,17 @@ class Repo:
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
 
+    def GetInformation(self, cateId):
+        path = "/repo_api/WXInformation/getPhoneNumber?cate_id=%s" % (cateId)
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        conn.request("GET", path);
+        response = conn.getresponse( )
+        if response.status == 200:
+            data = response.read( )
+            numbers = json.loads( data )
+            return numbers
+        else:
+            return []
 
 
 if __name__ == '__main__':

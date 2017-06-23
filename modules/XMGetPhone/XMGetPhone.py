@@ -19,11 +19,9 @@ class XMGetPhone:
         self.scode = smsCode( d.server.adb.device_serial( ) )
         while True:
             PhoneNumber = self.scode.GetPhoneNumber( self.scode.WECHAT_REGISTER )  # 获取接码平台手机号码
+            self.scode.defriendPhoneNumber( PhoneNumber, self.scode.WECHAT_REGISTER )
             cateId = args['repo_number_id']
             self.repo.uploadPhoneNumber(PhoneNumber, cateId)
-
-
-
 
 
 

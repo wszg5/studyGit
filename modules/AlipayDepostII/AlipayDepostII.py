@@ -128,10 +128,16 @@ class AlipayDepostII:
             z.input(phoneNumber)
             d(text='下一步').click()
 
-            if d(textContains='账号不存在').exists:
-                z.sleep(3)
+            if d(text='账号不存在，或对方关闭了“通过手机号找到我”隐私开关').exists:
+                z.sleep(1.5)
                 d(text='确定').click()
                 d(description='清空',resourceId='com.alipay.mobile.ui:id/clearButton',className='android.widget.ImageButton',index=0).click()
+                continue
+
+            if d( text='操作太频繁了，请稍后再试' ).exists:
+                d( text='确定' ).click( )
+                d( description='清空', resourceId='com.alipay.mobile.ui:id/clearButton',
+                   className='android.widget.ImageButton', index=0 ).click( )
                 continue
 
             if d( textContains='该手机号对应多个支付宝账户，请核实后选择' ).exists:
@@ -424,7 +430,7 @@ if __name__ == "__main__":
         z.generateSerial()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
-    args = {"repo_number_id":44,"repo_cate_id":184,"time_delay": "3", "contact_wait": "12"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_id":44,"repo_cate_id":184};    #cate_id是仓库号，length是数量
 
     o.action(d, z,args)
 
