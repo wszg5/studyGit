@@ -54,8 +54,8 @@ class smsCode:
 
 
 
-    def GetPhoneNumber(self, itemId, phone=None, count=1,  times=0):
-        return self.client.GetPhoneNumber(itemId, phone, count, times)
+    def GetPhoneNumber(self, itemId, phone=None, times=0):
+        return self.client.GetPhoneNumber(itemId, phone, times)
 
 
     def GetVertifyCode(self, number, itemId, length=6):
