@@ -3,8 +3,8 @@
 
 from dbapi import dbapi
 from smsCode.client_hellotrue import client_hellotrue
-from smsCode.client_jyzszp import client_jyzszp
 from smsCode.client_xunma import client_xunma
+from smsCode.client_jyzszp import client_jyzszp
 from zcache import cache
 
 

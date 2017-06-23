@@ -4,14 +4,11 @@ from Repo import *
 from smsCode import smsCode
 import time, string, datetime, random
 from zservice import ZDevice
-from slot import Slot
 
 
 class WeiXinRegister:
     def __init__(self):
-        self.type = 'wechat'
-        self.repo = Repo()
-        # self.slot = Slot(self.type)
+        self.repo = Repo( )
         self.xm = None
         self.cache_phone_key = 'cache_phone_key'
 
