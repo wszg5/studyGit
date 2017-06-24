@@ -132,10 +132,10 @@ class Repo:
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
 
-    def GetInformation(self, cateId):
-        path = "/repo_api/WXInformation/getPhoneNumber?cate_id=%s" % (cateId)
+    def GetInformation(self, cateId,phoneNumber=''):
+        path = "/repo_api/WXInformation/getPhoneNumber?cate_id=%s&phoneNumber=%s" % (cateId, phoneNumber)
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
-        conn.request("GET", path);
+        conn.request("GET", path)
         response = conn.getresponse( )
         if response.status == 200:
             data = response.read( )
@@ -145,9 +145,14 @@ class Repo:
             return []
 
 
+
 if __name__ == '__main__':
     repo = Repo()
     result = repo.PostInformation({"aaa":"aa"})
+
+    # saveCate = '182'
+    # para = {"phoneNumber": '13094702352', 'x_01': "not_exist", 'x_19': 'WXRegister'}
+    # repo.PostInformation( saveCate, para )
     # result = repo.SetAccount("6", "ddkf", "1918697054")
 
     # result = repo.GetMaterial("8",120,1)

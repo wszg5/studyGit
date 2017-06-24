@@ -96,17 +96,17 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("FA53CSR02947")
-    z = ZDevice("FA53CSR02947")
+    d = Device("INNZL7YDLFPBNFN7")
+    z = ZDevice("INNZL7YDLFPBNFN7")
     z.input("xxx")
 #    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
     z.server.install()
 
     slot = Slot('FA53CSR02947', 'mobileqq')
-    print slot.getSlots()
+    print (slot.getSlots())
     slot.backup('21', '22221111')
 
-    print slot.getSlots()
+    print (slot.getSlots())
     slot.clear('21')
 
     z.generateSerial();
@@ -122,6 +122,6 @@ if __name__ == "__main__":
     # d.dump(compressed=False)
 
 
-    args = {"repo_cate_id":"44",'number_count':'50',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"113",'number_count':'50',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

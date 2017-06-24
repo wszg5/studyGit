@@ -1,0 +1,34 @@
+{
+"id": "MobilqqAddByAddressListII",
+"name":"普通qq通讯录加好友(多选)",
+"cate":"QQ模块",
+"font": "QQ",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"QQ04",
+"icon":"vcard-o",
+"remark":"普通qq通讯录加好友(多选)",
+"setting":[
+	{
+	"id": "repo_material_id",
+	"name":"发送消息内容仓库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "EndIndex",
+	"name":"总人数",
+	"type":"textbox",
+	"defaultValue":"4",
+	"remark":"单位：个"
+	},
+   {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

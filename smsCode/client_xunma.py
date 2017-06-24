@@ -59,13 +59,15 @@ class client_xunma:
     def GetPhoneNumber(self, itemId, phoneNum=None, times=0):
         round = times + 1
         if round > 30:
-            raise 'XunMa has tried 3 minutes'
+            return None
+            # raise 'XunMa has tried 3 minutes'
         token = self.GetToken()
         key = 'phone_%s_%s' % (token, itemId)
         phone = cache.popSet(key)
         if phone:
             return phone
 
+        count = 1;
         itemcode = self.im_type_list[itemId]
         self.logger.info("itemcode_%s" % itemcode)
         self.logger.info("token_%s" % token)
@@ -79,7 +81,7 @@ class client_xunma:
             response = conn.getresponse()
         except Exception as e:
             self.logger.error(traceback.format_exc())
-            return self.GetPhoneNumber(itemId, round)
+            return self.GetPhoneNumber(itemId, phoneNum,round)
         if response.status == 200:
             data = response.read().decode('GBK')
             self.logger.info("===XUNMA RESTURN:%s" % data)
@@ -88,17 +90,20 @@ class client_xunma:
                 self.ReleaseAllPhone()
             if u'Session 过期' in data or u'Session过期' in data:
                 self.GetToken(False)
+            if u'暂时没有此项目号码，请等会试试'  in data:
+                return None
+
             if data.startswith('False'):
                 time.sleep(3)
             numbers = data.split(";");
             for number in numbers:
                 if re.search("\d{11}", str(number)):
                     cache.addSet(key, number)
-            return self.GetPhoneNumber(itemId, round)
+            return self.GetPhoneNumber(itemId, phoneNum,round)
         else:
             data = response.read().decode('GBK')
             self.logger.info("===Failed XUNMA RESTURN:%s" % data)
-            return self.GetPhoneNumber(itemId, round)
+            return self.GetPhoneNumber(itemId, phoneNum,round)
 
     def ReleasePhone(self, phoneNumber, itemId):
         token = self.GetToken()
