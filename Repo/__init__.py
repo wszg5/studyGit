@@ -36,6 +36,7 @@ class Repo:
 
 
 
+
     def PostStatus(self,cateId,status,Number):           #仓库号，状态，QQ号，备注设备id_卡槽id
         path = "/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s" % (cateId,status,Number)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
@@ -144,6 +145,22 @@ class Repo:
         else:
             return []
 
+    def GetInformationByDevice(self, cateId,deviceId=''):
+        path = "/repo_api/WXInformation/getDeviceInfo?cate_id=%s&device_id=%s" % (cateId, deviceId)
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        conn.request("GET", path)
+        response = conn.getresponse( )
+        if response.status == 200:
+            data = response.read( )
+            numbers = json.loads( data )
+            return numbers
+        else:
+            return []
+
+    def DeleteInformation(self, cateId, phoneNumber):
+        path = "/repo_api/WXInformation/DelInformation?cate_id=%s&phoneNumber=%s" % (cateId, phoneNumber)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
 
 
 if __name__ == '__main__':
@@ -151,6 +168,10 @@ if __name__ == '__main__':
     result = repo.PostInformation({"aaa":"aa"})
 
     # saveCate = '182'
+    # phoneNumber = '13064513596'
+    # repo.DeleteInformation(saveCate, phoneNumber)
+
+    #
     # para = {"phoneNumber": '13094702352', 'x_01': "not_exist", 'x_19': 'WXRegister'}
     # repo.PostInformation( saveCate, para )
     # result = repo.SetAccount("6", "ddkf", "1918697054")

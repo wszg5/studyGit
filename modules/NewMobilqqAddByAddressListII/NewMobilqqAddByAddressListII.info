@@ -1,13 +1,13 @@
 {
-"id": "MobilqqAddByAddressListII",
-"name":"普通qq通讯录加好友(多选)",
+"id": "NewMobilqqAddByAddressListII",
+"name":"普通QQ通讯录加好友(单选)",
 "cate":"QQ模块",
-"font": "QQ",
+"font": "qq",
 "url": "http://www.bejson.com",
-"version": "1.1",
-"code":"QQ04",
+"version": "1.1.1",
+"code":"QQ03.1",
 "icon":"vcard-o",
-"remark":"普通qq通讯录加好友(多选)",
+"remark":"普通QQ通讯录加好友(单选)",
 "setting":[
 	{
 	"id": "repo_material_id",
@@ -17,8 +17,16 @@
 	"top_cate_id":"12"
 	},
 	{
+	"id": "gender",
+	"name":"性别",
+	"type":"select",
+	"list":{"男":"男","女":"女","不限":"不限"},
+	"defaultValue":"女",
+	"remark":"性别要求"
+	},
+	{
 	"id": "EndIndex",
-	"name":"总人数",
+	"name":"设置加好友人数",
 	"type":"textbox",
 	"defaultValue":"4",
 	"remark":"单位：个"
@@ -32,3 +40,4 @@
     }
 ]
 }
+
