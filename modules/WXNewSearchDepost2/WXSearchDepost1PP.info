@@ -1,0 +1,40 @@
+{
+"id": "WXSearchDepost1PP",
+"cate":"微信模块",
+"name":"微信号检存(存不存在)",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"WX-P-02",
+"icon": "vcard-o",
+"remark":"微信版本，6.5.4",
+"setting":[
+	{
+	"id": "repo_number_id",
+	"name":"被检存的号码库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"21"
+	},
+	{
+	"id": "repo_save_exist_id",
+	"name":"保存存在号码的库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"23"
+	},
+	{
+	"id": "repo_save_not_exist_id",
+	"name":"保存不存在号码的库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"23"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

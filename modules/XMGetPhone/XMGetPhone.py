@@ -18,8 +18,10 @@ class XMGetPhone:
         d.press.home()
         self.scode = smsCode( d.server.adb.device_serial( ) )
         while True:
+            z.sleep(10)
             PhoneNumber = self.scode.GetPhoneNumber( self.scode.WECHAT_REGISTER )  # 获取接码平台手机号码
             self.scode.defriendPhoneNumber( PhoneNumber, self.scode.WECHAT_REGISTER )
+            z.sleep(5)
             cateId = args['repo_number_id']
             self.repo.uploadPhoneNumber(PhoneNumber, cateId)
 
@@ -41,7 +43,7 @@ if __name__ == "__main__":
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     'dingdingdingdingdindigdingdingdingdingdingdingdingdingdingdingdingdignin'
-    args = {"repo_number_id": "181"}  # cate_id是仓库号，发中文问题
+    args = {"repo_number_id": "181",}  # cate_id是仓库号，发中文问题
     o.action(d,z, args)
 
 

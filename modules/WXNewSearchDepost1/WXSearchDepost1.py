@@ -78,7 +78,7 @@ class WXSearchDepost1:
                 z.heartbeat( )
                 if d(text='详细资料').exists:
                     saveCate = args['repo_save_id']
-                    para = {"phoneNumber": WXnumber, 'x_01': "exist",'x_02':'0','x_03':'2000-01-01 00:00:00','x_04':'0','x_05':'空','x_06':'2000-01-01 00:00:00','x_19':'CheckXunMa','x_27': '0','x_28':'0'}
+                    para = {"phoneNumber": WXnumber, 'x_01': "exist",'x_02':'0','x_03':'2000-01-01 00:00:00','x_04':'0','x_05':'空','x_06':'NO','x_19':'CheckXunMa','x_27': '0','x_28':'0'}
                     self.repo.PostInformation( saveCate, para )
                     d( descriptionContains='返回' ).click( )
                     d( descriptionContains='清除' ).click( )
