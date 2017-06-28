@@ -47,7 +47,6 @@ class WeiXinRegister:
                 d.swipe( width - 20, height / 2, 0, height / 2, 5 )
 
             z.sleep(8)
-            z.heartbeat()
             if d(text='注册').exists:
                 d(text='注册').click()
             cate_id = args['repo_material_id']  # 得到昵称库的id
@@ -56,7 +55,6 @@ class WeiXinRegister:
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate()
                 z.sleep(10)
                 return
-            z.heartbeat()
             name = Material[0]['content']  # 从素材库取出的要发的材料
             z.input(name)       #name
 
@@ -79,7 +77,7 @@ class WeiXinRegister:
             number = numbers[0]['phonenumber']
 
             PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER,number)#获取接码平台手机号码
-            # PhoneNumber = '13923977280'
+            # PhoneNumber = '13642744049'
 
             if PhoneNumber is None:
                 x_28 = int(numbers[0]['x28']) - 1
@@ -145,7 +143,6 @@ class WeiXinRegister:
                     z.toast(PhoneNumber+'手机号,获取不到验证码')
                     break
                 z.sleep(8)
-                z.heartbeat()
                 print(code)
                 d(text='请输入验证码').click()
                 z.input(code)
@@ -179,7 +176,7 @@ class WeiXinRegister:
                 d( text='确定' ).click( )
                 break
 
-            time.sleep(1.5)
+            z.sleep(2)
             n = 1
             while True:
                 z.sleep(5)
@@ -277,8 +274,6 @@ class WeiXinRegister:
                     self.repo.PostInformation( saveCate, para )
                     break
 
-
-
                 d.dump( compressed=False )
                 if d(text='设置密码').exists:
                     d(className='android.widget.LinearLayout', index=2).child(className='android.widget.EditText', index=1).click()
@@ -325,217 +320,144 @@ class WeiXinRegister:
 
 
                 if d(text='验证身份').exists:
-                    x_04_number = self.repo.GetInformation( information_cate_id, number )
-                    x_04 = int( x_04_number[0]['x04'] ) + 1
-                    para = {"phoneNumber": PhoneNumber,'x_04': x_04, 'x_19': 'WXRegister'}
-                    self.repo.PostInformation( saveCate, para )
-                    logger.info(para)
-                    logger.info( '－－－－－－－－－－－－－－－－－－－－－－－－－－－－－验证身份，答题次数' )
                     z.sleep(3)
-                    x_value = ''
+                    yibushiObj_HTC = d( className='android.widget.RadioButton', descriptionContains='以上都不是',
+                                        index=6 )
+                    if yibushiObj_HTC.exists:
+                        x_value = ''
+                        x_04_number = self.repo.GetInformation( information_cate_id, number )
+                        x_04 = int( x_04_number[0]['x04'] ) + 1
+                        para = {"phoneNumber": PhoneNumber, 'x_04': x_04, 'x_19': 'WXRegister'}
+                        self.repo.PostInformation( saveCate, para )
+                        logger.info( para )
+                        logger.info( '－－－－－－－－－－－－－－－－－－－－－－－－－－－－－验证身份，答题次数' )
+                        for i in range( 1, 6 ):
+                            yibushiObj_HTC = d( className='android.widget.RadioButton', descriptionContains='以上都不是',
+                                                index=6 )
 
-                    for i in range(1, 6):
-                        yibushiObj_LTV = d( resourceId='x5', className='android.widget.RadioButton',
-                                            descriptionContains='以上都不是' )
-                        yibushiObj_HTC = d( className='android.widget.RadioButton', descriptionContains='以上都不是',
-                                            index=6 )
+                            if i != 1:
+                                if not yibushiObj_HTC.exists:
+                                    break
 
-                        if i != 1:
-                            if not yibushiObj_HTC or yibushiObj_LTV.exists:
-                                break
+                            if d( description='请选择你最近一次登录设备的名称' ).exists:
+                                if d( className='android.widget.RadioButton', index=1 ).exists:
+                                    numberInfo = self.repo.GetInformation( information_cate_id, number )
+                                    if numberInfo[0]['x07'] is not None:
+                                        x0_val = d( className='android.widget.RadioButton', index=1 ).info[
+                                            'contentDescription']
+                                        x1_val = d( className='android.widget.RadioButton', index=2 ).info[
+                                            'contentDescription']
+                                        x2_val = d( className='android.widget.RadioButton', index=3 ).info[
+                                            'contentDescription']
+                                        x3_val = d( className='android.widget.RadioButton', index=4 ).info[
+                                            'contentDescription']
+                                        x4_val = d( className='android.widget.RadioButton', index=5 ).info[
+                                            'contentDescription']
 
-                        if d(description='请选择你最近一次登录设备的名称').exists:
-                            if d( resourceId='x0', className='android.widget.RadioButton' ).exists:
-                                numberInfo = self.repo.GetInformation(information_cate_id, number)
-                                if numberInfo[0]['x07'] is not None:
-                                    x0_val = d( resourceId='x0', className='android.widget.RadioButton' ).info[
-                                        'contentDescription']
-                                    x1_val = d( resourceId='x1', className='android.widget.RadioButton' ).info[
-                                        'contentDescription']
-                                    x2_val = d( resourceId='x2', className='android.widget.RadioButton' ).info[
-                                        'contentDescription']
-                                    x3_val = d( resourceId='x3', className='android.widget.RadioButton' ).info[
-                                        'contentDescription']
-                                    x4_val = d( resourceId='x4', className='android.widget.RadioButton' ).info[
-                                        'contentDescription']
+                                        trues = repo.GetTrueAnswer( saveCate, number, x0_val, x1_val, x2_val, x3_val,
+                                                                    x4_val )
+                                        true = trues[0]['x07']
 
-                                    trues = repo.GetTrueAnswer( saveCate, number, x0_val, x1_val, x2_val, x3_val, x4_val)
-                                    true = trues[0]['x07']
+                                        if true == x0_val:
+                                            d( className='android.widget.RadioButton', index=1 ).click( )
+                                            d( className='android.view.View',
+                                               descriptionContains='下一步' ).click( )  # 下一步
+                                            z.sleep( 2 )
+                                        if true == x1_val:
+                                            d( className='android.widget.RadioButton', index=2 ).click( )
+                                            d( className='android.view.View',
+                                               descriptionContains='下一步' ).click( )  # 下一步
+                                            z.sleep( 2 )
+                                        if true == x2_val:
+                                            d( className='android.widget.RadioButton', index=3 ).click( )
+                                            d( className='android.view.View',
+                                               descriptionContains='下一步' ).click( )  # 下一步
+                                            z.sleep( 2 )
+                                        if true == x3_val:
+                                            d( className='android.widget.RadioButton', index=4 ).click( )
+                                            d( className='android.view.View',
+                                               descriptionContains='下一步' ).click( )  # 下一步
+                                            z.sleep( 2 )
+                                        if true == x4_val:
+                                            d( className='android.widget.RadioButton', index=5 ).click( )
+                                            d( className='android.view.View',
+                                               descriptionContains='下一步' ).click( )  # 下一步
+                                            z.sleep( 2 )
 
-                                    if true == x0_val:
-                                        d( resourceId='x0', className='android.widget.RadioButton' ).click( )
-                                        d( resourceId='submitBtn', className='android.view.View',
-                                           descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                                    if true == x1_val:
-                                        d( resourceId='x1', className='android.widget.RadioButton' ).click( )
-                                        d( resourceId='submitBtn', className='android.view.View',
-                                           descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                                    if true == x2_val:
-                                        d( resourceId='x2', className='android.widget.RadioButton' ).click( )
-                                        d( resourceId='submitBtn', className='android.view.View',
-                                           descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                                    if true == x3_val:
-                                        d( resourceId='x3', className='android.widget.RadioButton' ).click( )
-                                        d( resourceId='submitBtn', className='android.view.View',
-                                           descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                                    if true == x4_val:
-                                        d( resourceId='x4', className='android.widget.RadioButton' ).click( )
-                                        d( resourceId='submitBtn', className='android.view.View',
-                                           descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
+                                    else:
+                                        number = random.randint( 1, 5 )
+                                        if number == 1:
+                                            x_value = d( className='android.widget.RadioButton', index=1 ).info[
+                                                'contentDescription']
+                                            d( className='android.widget.RadioButton', index=1 ).click( )
+                                            d( className='android.view.View',
+                                               descriptionContains='下一步' ).click( )  # 下一步
+                                            z.sleep( 2 )
+                                        if number == 2:
+                                            x_value = d( className='android.widget.RadioButton', index=2 ).info[
+                                                'contentDescription']
+                                            d( className='android.widget.RadioButton', index=2 ).click( )
+                                            d( className='android.view.View',
+                                               descriptionContains='下一步' ).click( )  # 下一步
+                                            z.sleep( 2 )
+                                        if number == 3:
+                                            x_value = d( className='android.widget.RadioButton', index=3 ).info[
+                                                'contentDescription']
+                                            d( className='android.widget.RadioButton', index=3 ).click( )
+                                            d( className='android.view.View',
+                                               descriptionContains='下一步' ).click( )  # 下一步
+                                            z.sleep( 2 )
+                                        if number == 4:
+                                            x_value = d( className='android.widget.RadioButton', index=4 ).info[
+                                                'contentDescription']
+                                            d( className='android.widget.RadioButton', index=4 ).click( )
+                                            d( className='android.view.View',
+                                               descriptionContains='下一步' ).click( )  # 下一步
+                                            z.sleep( 2 )
+                                        if number == 5:
+                                            x_value = d( className='android.widget.RadioButton', index=5 ).info[
+                                                'contentDescription']
+                                            d( className='android.widget.RadioButton', index=5 ).click( )
+                                            d( className='android.view.View',
+                                               descriptionContains='下一步' ).click( )  # 下一步
+                                            z.sleep( 2 )
                                 else:
-                                    number = random.randint( 1, 5 )
-                                    if number == 1:
-                                        x_value = d( resourceId='x0', className='android.widget.RadioButton' ).info[
-                                            'contentDescription']
-                                        d( resourceId='x0', className='android.widget.RadioButton' ).click( )
-                                        d( resourceId='submitBtn', className='android.view.View',
-                                           descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                                    if number == 2:
-                                        x_value = d( resourceId='x1', className='android.widget.RadioButton' ).info[
-                                            'contentDescription']
-                                        d( resourceId='x1', className='android.widget.RadioButton' ).click( )
-                                        d( resourceId='submitBtn', className='android.view.View',
-                                           descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                                    if number == 3:
-                                        x_value = d( resourceId='x2', className='android.widget.RadioButton' ).info[
-                                            'contentDescription']
-                                        d( resourceId='x2', className='android.widget.RadioButton' ).click( )
-                                        d( resourceId='submitBtn', className='android.view.View',
-                                           descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                                    if number == 4:
-                                        x_value = d( resourceId='x3', className='android.widget.RadioButton' ).info[
-                                            'contentDescription']
-                                        d( resourceId='x3', className='android.widget.RadioButton' ).click( )
-                                        d( resourceId='submitBtn', className='android.view.View',
-                                           descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                                    if number == 5:
-                                        x_value = d( resourceId='x4', className='android.widget.RadioButton' ).info[
-                                            'contentDescription']
-                                        d( resourceId='x4', className='android.widget.RadioButton', ).click( )
-                                        d( resourceId='submitBtn', className='android.view.View',
-                                           descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                            elif d(className='android.widget.RadioButton', index=1).exists:
-                                numberInfo = self.repo.GetInformation( information_cate_id, number )
-                                if numberInfo[0]['x07'] is not None:
-                                    x0_val = d(className='android.widget.RadioButton', index=1).info[
-                                        'contentDescription']
-                                    x1_val = d(className='android.widget.RadioButton', index=2).info[
-                                        'contentDescription']
-                                    x2_val = d(className='android.widget.RadioButton', index=3).info[
-                                        'contentDescription']
-                                    x3_val = d(className='android.widget.RadioButton', index=4).info[
-                                        'contentDescription']
-                                    x4_val = d(className='android.widget.RadioButton', index=5).info[
-                                        'contentDescription']
-
-                                    trues = repo.GetTrueAnswer( saveCate, number, x0_val, x1_val, x2_val, x3_val,
-                                                                x4_val )
-                                    true = trues[0]['x07']
-
-                                    if true == x0_val:
-                                        d( className='android.widget.RadioButton', index=1 ).click( )
-                                        d( className='android.view.View', descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep(2)
-                                    if true == x1_val:
-                                        d( className='android.widget.RadioButton', index=2 ).click( )
-                                        d( className='android.view.View', descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                                    if true == x2_val:
-                                        d( className='android.widget.RadioButton', index=3 ).click( )
-                                        d( className='android.view.View', descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                                    if true == x3_val:
-                                        d( className='android.widget.RadioButton', index=4 ).click( )
-                                        d( className='android.view.View', descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                                    if true == x4_val:
-                                        d( className='android.widget.RadioButton', index=5 ).click( )
-                                        d( className='android.view.View', descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-
-                                else:
-                                    number = random.randint( 1, 5 )
-                                    if number == 1:
-                                        x_value = d( className='android.widget.RadioButton', index=1).info[
-                                            'contentDescription']
-                                        d(className='android.widget.RadioButton', index=1).click( )
-                                        d(className='android.view.View',descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                                    if number == 2:
-                                        x_value = d( className='android.widget.RadioButton', index=2 ).info[
-                                            'contentDescription']
-                                        d( className='android.widget.RadioButton', index=2 ).click( )
-                                        d( className='android.view.View', descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                                    if number == 3:
-                                        x_value = d( className='android.widget.RadioButton', index=3 ).info[
-                                            'contentDescription']
-                                        d( className='android.widget.RadioButton', index=3 ).click( )
-                                        d( className='android.view.View', descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                                    if number == 4:
-                                        x_value = d( className='android.widget.RadioButton', index=4 ).info[
-                                            'contentDescription']
-                                        d( className='android.widget.RadioButton', index=4 ).click( )
-                                        d( className='android.view.View', descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep( 2 )
-                                    if number == 5:
-                                        x_value = d( className='android.widget.RadioButton', index=5 ).info[
-                                            'contentDescription']
-                                        d( className='android.widget.RadioButton', index=5 ).click( )
-                                        d( className='android.view.View', descriptionContains='下一步' ).click( )  # 下一步
-                                        z.sleep(2)
-                            else:
-                                d.swipe(440, 540, 450, 540, 5)
-                                d.swipe(260, 630, 270, 630, 5)
-                                z.sleep(2)
-
-
-                        elif d(description='请从下面头像中选出两位你的好友').exists:
-                            logger.info( '－－－－－－－－－－－－－－－－－－－－－－－－－－－－－请从下面头像中选出两位你的好友' )
-                            d(className='android.widget.ImageView',description='返回').click()
-                            break
-                        elif d( description='通过扫码验证身份', className='android.view.View', index=1 ).exists:
-                            logger.info( '－－－－－－－－－－－－－－－－－－－－－－－－－－－－－通过扫码验证身份' )
-                            x_27_number = self.repo.GetInformation( information_cate_id, number )
-                            x_27 = int( x_27_number[0]['x27'] ) + 1
-                            para = {"phoneNumber": PhoneNumber, 'x_01': "exist", 'x_03': nowTime, 'x_19': 'WXRegister',
-                                    'x_27': x_27}
-                            self.repo.PostInformation( saveCate, para )
-                            logger.info( para )
-                            break
-                        else:
-
-                            if yibushiObj_LTV.exists:
-                                logger.info( '－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－乐视非设备号按钮点击' )
-                                d( resourceId='x5', className='android.widget.RadioButton',
-                                   descriptionContains='以上都不是' ).click( )  # 以上都不是
-                                d( resourceId='submitBtn', className='android.view.View',
-                                   descriptionContains='下一步' ).click( )  # 下一步
-                            elif yibushiObj_HTC.exists:
-                                logger.info( '－－－－－－－－－－－－－－－－－－－－－－－－－－－－－ＨＴＣ非设备号按钮点击' )
-                                d( className='android.widget.RadioButton',descriptionContains='以上都不是',index=6).click()  # 以上都不是
-                                d( className='android.view.View',descriptionContains='下一步' ).click( )  # 下一步
-                            else:
-                                logger.info('－－－－－－－－－－－－－－－－－－－－－－－－－－－－－非设备号滑动答题准备点击')
-                                YZSB = d( descriptionContains='验证失败', className='android.view.View', index=1 )
-                                YZTG = d( descriptionContains='验证通过', className='android.view.View', index=1 )
-                                if not YZSB and YZTG.exists:
                                     d.swipe( 440, 540, 450, 540, 5 )
-                                    d.swipe( 270, 630, 280, 630, 5 )
-                                    logger.info( '－－－－－－－－－－－－－－－－－－－－－－－－－－－－－非设备号滑动答题已点击' )
-                                logger.info( '－－－－－－－－－－－－－－－－－－－－－－－－－－－－－非设备号滑动答题点击结束' )
-                            z.sleep(2)
+                                    d.swipe( 260, 630, 270, 630, 5 )
+                                    z.sleep( 2 )
+
+
+                            elif d( description='请从下面头像中选出两位你的好友' ).exists:
+                                logger.info( '－－－－－－－－－－－－－－－－－－－－－－－－－－－－－请从下面头像中选出两位你的好友' )
+                                d( className='android.widget.ImageView', description='返回' ).click( )
+                                break
+                            else:
+                                if yibushiObj_HTC.exists:
+                                    logger.info( '－－－－－－－－－－－－－－－－－－－－－－－－－－－－－ＨＴＣ非设备号按钮点击' )
+                                    d( className='android.widget.RadioButton', descriptionContains='以上都不是',
+                                       index=6 ).click( )  # 以上都不是
+                                    d( className='android.view.View', descriptionContains='下一步' ).click( )  # 下一步
+                                else:
+                                    logger.info( '－－－－－－－－－－－－－－－－－－－－－－－－－－－－－非设备号滑动答题准备点击' )
+                                    YZSB = d( descriptionContains='验证失败', className='android.view.View', index=1 )
+                                    YZTG = d( descriptionContains='验证通过', className='android.view.View', index=1 )
+                                    if not YZSB.exists and YZTG.exists:
+                                        d.swipe( 440, 540, 450, 540, 5 )
+                                        d.swipe( 270, 630, 280, 630, 5 )
+                                        logger.info( '－－－－－－－－－－－－－－－－－－－－－－－－－－－－－非设备号滑动答题已点击' )
+                                    logger.info( '－－－－－－－－－－－－－－－－－－－－－－－－－－－－－非设备号滑动答题点击结束' )
+                                z.sleep( 2 )
+
+                    if d( description='通过扫码验证身份', className='android.view.View', index=1 ).exists:
+                        logger.info( '－－－－－－－－－－－－－－－－－－－－－－－－－－－－－通过扫码验证身份' )
+                        x_27_number = self.repo.GetInformation( information_cate_id, number )
+                        x_27 = int( x_27_number[0]['x27'] ) + 1
+                        para = {"phoneNumber": PhoneNumber, 'x_01': "exist", 'x_03': nowTime,
+                                'x_19': 'WXRegister',
+                                'x_27': x_27}
+                        self.repo.PostInformation( saveCate, para )
+                        logger.info( para )
+                        break
 
                 z.sleep(5)
 
@@ -565,8 +487,6 @@ class WeiXinRegister:
                     para = {"phoneNumber": PhoneNumber, 'x_01': "exist", 'x_05':x_value , 'x_19': 'WXRegister'}
                     self.repo.PostInformation( saveCate, para )
                     logger.info(para)
-
-
             continue
 
 
@@ -583,8 +503,8 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT544SK00366")#INNZL7YDLFPBNFN7
-    z = ZDevice("HT544SK00366")
+    d = Device("HT54VSK01061")#INNZL7YDLFPBNFN7
+    z = ZDevice("HT54VSK01061")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     'dingdingdingdingdindigdingdingdingdingdingdingdingdingdingdingdingdignin'
