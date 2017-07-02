@@ -594,6 +594,11 @@ class ZRemoteDevice(object):
 
         return True
 
+    def wx_openuser_v1(self, v1, contactScene):
+        self.server.adb.cmd("shell", "am start -n com.tencent.mm/.plugin.profile.ui.ContactInfoUI --es Contact_User %s --ei Contact_Scene %s" % (v1, contactScene)).communicate()
+
+        return True
+
     def wx_yaoyiyao(self):
         base_dir = os.path.dirname(__file__)
         filename = os.path.join(base_dir, 'libs/isyaoyiyao')
