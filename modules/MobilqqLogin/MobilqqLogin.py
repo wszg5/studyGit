@@ -9,7 +9,7 @@ from PIL import Image
 import util
 from Repo import *
 from imageCode import imageCode
-from slot import slot
+from slot import Slot
 from uiautomator import Device
 from zservice import ZDevice
 
@@ -18,7 +18,7 @@ class MobilqqLogin:
     def __init__(self):
         self.type = 'mobileqq'
         self.repo = Repo()
-        self.slot = slot(self.type)
+        self.slot = Slot(self.type)
 
 
     def GetUnique(self):
@@ -245,7 +245,7 @@ class MobilqqLogin:
         if slotnum == 0:    #没有空卡槽的话
             slotnum = self.slot.getSlot(d, time_limit)  # 没有空卡槽，取２小时没用过的卡槽
             print(slotnum)
-            while slotnum == 0:  # 2小时没有用过的卡槽也为空的情况
+            while slotnum == 0:  # 2小时没用过的卡槽也为没有的情况
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ卡槽全满，无间隔时间段未用\"").communicate()
                 z.heartbeat()
                 z.sleep(30)

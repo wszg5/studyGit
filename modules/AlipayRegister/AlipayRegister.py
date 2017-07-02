@@ -143,7 +143,7 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("emulator-5554")
     z = ZDevice("emulator-5554")
-    print z.getTopActivity()
+    print (z.getTopActivity())
     z.generateSerial()
 
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").wait()

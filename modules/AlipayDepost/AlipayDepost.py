@@ -100,10 +100,10 @@ class AlipayDepost:
             d(text='添加手机联系人').click()
             times = times - 1
             if times < 0:
-                z.toast("开始重装支付宝APP")
-                z.cmd("shell", "pm uninstall com.eg.android.AlipayGphone")
-                z.cmd("shell", "su -c 'rm -rf /data/data/com.eg.android.AlipayGphone'")
-                z.cmd("install", "/apps/alipay.apk")
+                # z.toast("开始重装支付宝APP")
+                # z.cmd("shell", "pm uninstall com.eg.android.AlipayGphone")
+                # z.cmd("shell", "su -c 'rm -rf /data/data/com.eg.android.AlipayGphone'")
+                # z.cmd("install", "/apps/alipay.apk")
                 return
 
 
@@ -129,23 +129,23 @@ class AlipayDepost:
 
                 if d(textContains='该手机号对应多个支付宝账户，请核实后选择').exists:
                     d(resourceId='com.alipay.mobile.contactsapp:id/head_icon').click()
+                #
+                # '''
+                # if d(textContains='今天操作太频繁了').exists or d(textContains='该功能暂未对您开放').exists:  #操作频繁 / 该功能暂未对您开放 ，清空账号信息，重启手机
+                #     z.cmd("shell", "pm clear com.eg.android.AlipayGphone")  # 清除缓存
+                #     z.generateSerial()
+                #     z.sleep(2)
+                #     z.toast("串号已重新生成，重启手机")
+                #     z.cmd("shell", "reboot")
+                #     return
+                # '''
 
-                '''
-                if d(textContains='今天操作太频繁了').exists or d(textContains='该功能暂未对您开放').exists:  #操作频繁 / 该功能暂未对您开放 ，清空账号信息，重启手机
-                    z.cmd("shell", "pm clear com.eg.android.AlipayGphone")  # 清除缓存
-                    z.generateSerial()
-                    z.sleep(2)
-                    z.toast("串号已重新生成，重启手机")
-                    z.cmd("shell", "reboot")
-                    return
-                '''
-
-                if d(textContains='今天操作太频繁了').exists or d(textContains='该功能暂未对您开放').exists:  #操作频繁 / 该功能暂未对您开放 ，清空账号信息，重启手机
-                    z.toast("开始重装支付宝APP")
-                    z.cmd("shell", "pm uninstall com.eg.android.AlipayGphone")
-                    z.cmd("shell", "su -c 'rm -rf /data/data/com.eg.android.AlipayGphone'")
-                    z.cmd("install", "/apps/alipay.apk")
-                    return
+                # if d(textContains='今天操作太频繁了').exists or d(textContains='该功能暂未对您开放').exists:  #操作频繁 / 该功能暂未对您开放 ，清空账号信息，重启手机
+                #     z.toast("开始重装支付宝APP")
+                #     z.cmd("shell", "pm uninstall com.eg.android.AlipayGphone")
+                #     z.cmd("shell", "su -c 'rm -rf /data/data/com.eg.android.AlipayGphone'")
+                #     z.cmd("install", "/apps/alipay.apk")
+                #     return
 
 
                 path = d(className='android.widget.ListView').child(className='android.widget.FrameLayout',index=0).child(className='android.widget.ImageView',index=2)
@@ -200,7 +200,16 @@ class AlipayDepost:
                         accountStatus = "异常"
                         d(text='确定').click()
                     else:
-                        realname = d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=0).child(className='android.widget.RelativeLayout',index=1).child(className='android.widget.TextView').info['text']
+                        realnameStr = \
+                            d( className='android.widget.ScrollView' ).child( className='android.widget.LinearLayout',
+                                                                              index=0 ).child(
+                                className='android.widget.RelativeLayout', index=1 ).child(
+                                className='android.widget.TextView' ).info['text']
+
+                        a = realnameStr.find( '（' )
+                        b = realnameStr.find( '）' )
+                        realname = realnameStr[a + 2:b]
+                        # realname = d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=0).child(className='android.widget.RelativeLayout',index=1).child(className='android.widget.TextView').info['text']
                         if d(textContains='对方长时间未使用支付宝').exists:
                             accountStatus = "非常用"
                         else:
@@ -373,20 +382,20 @@ if __name__ == "__main__":
     d = Device("HT4A9SK01222")
     z = ZDevice("HT4A9SK01222")
 
-    z.toast("开始重装支付宝APP")
-    z.cmd("shell", "pm uninstall com.eg.android.AlipayGphone")
-    z.cmd("shell", "su -c 'rm -rf /data/data/com.eg.android.AlipayGphone'")
-    z.cmd("install", "/home/zunyun/alipay.apk")
+    # z.toast("开始重装支付宝APP")
+    # z.cmd("shell", "pm uninstall com.eg.android.AlipayGphone")
+    # z.cmd("shell", "su -c 'rm -rf /data/data/com.eg.android.AlipayGphone'")
+    # z.cmd("install", "/home/zunyun/alipay.apk")
 
 
 
     #z.server.install();
     z.generateSerial()
-    d.server.adb.cmd("shell", "pm clear com.eg.android.AlipayGphone").communicate()  # 清除缓存
-    if d(textContains='今天操作太频繁了').exists:  # 操作频繁，清空账号信息，重新注册
-        # z.cmd("shell", "pm clear com.eg.android.AlipayGphone")  # 清除缓存
-        z.generateSerial()
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    # d.server.adb.cmd("shell", "pm clear com.eg.android.AlipayGphone").communicate()  # 清除缓存
+    # if d(textContains='今天操作太频繁了').exists:  # 操作频繁，清空账号信息，重新注册
+    #     # z.cmd("shell", "pm clear com.eg.android.AlipayGphone")  # 清除缓存
+    #     z.generateSerial()
+    # d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
     args = {"repo_cate_id":164,"time_delay": "3", "contact_wait": "12"};    #cate_id是仓库号，length是数量
 

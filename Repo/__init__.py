@@ -28,11 +28,12 @@ class Repo:
         response = conn.getresponse();
         # 判断是否提交成功
         if response.status == 302:
-            print "发布成功!^_^!";
+            print ("发布成功!^_^!");
         else:
-            print "发布失败\^0^/";
+            print ("发布失败\^0^/");
             # 关闭连接
         conn.close();
+
 
 
 
@@ -94,6 +95,18 @@ class Repo:
         else:
             return []
 
+    def GetWXRegisterPhoneNumber(self, cateId):    #微信注册从治疗库获取手机号码
+        path = "/repo_api/WXInformation/getPhoneNumber?cate_id=%s" % (cateId)
+        print('地址是%s'%path)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
+        response = conn.getresponse()
+        if response.status == 200:
+            data = response.read()
+            numbers = json.loads(data)
+            return  numbers
+        else:
+            return []
 
 
     def BackupInfo(self,cateId,status,Number,IMEI,remark):           #仓库号，状态，QQ号，备注设备id_卡槽id
@@ -120,14 +133,66 @@ class Repo:
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
 
+    def GetInformation(self, cateId,phoneNumber=''):
+        path = "/repo_api/WXInformation/getPhoneNumber?cate_id=%s&phoneNumber=%s" % (cateId, phoneNumber)
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        conn.request("GET", path)
+        response = conn.getresponse( )
+        if response.status == 200:
+            data = response.read( )
+            numbers = json.loads( data )
+            return numbers
+        else:
+            return []
+
+    def GetInformationByDevice(self, cateId,deviceId=''):
+        path = "/repo_api/WXInformation/getDeviceInfo?cate_id=%s&device_id=%s" % (cateId, deviceId)
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        conn.request("GET", path)
+        response = conn.getresponse( )
+        if response.status == 200:
+            data = response.read( )
+            numbers = json.loads( data )
+            return numbers
+        else:
+            return []
+
+    def GetTrueAnswer(self, cateId,phonenumber,answer_1,answer_2,answer_3,answer_4,answer_5):
+        path = "/repo_api/WXInformation/getTrueAnswer?cate_id=%s&phoneNumber=%s&x_07=%s&x_08=%s&x_09=%s&x_10=%s&x_11=%s" % (cateId,phonenumber,answer_1,answer_2,answer_3,answer_4,answer_5 )
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        conn.request("GET", path)
+        response = conn.getresponse( )
+        if response.status == 200:
+            data = response.read( )
+            numbers = json.loads( data )
+            return numbers
+        else:
+            return []
+
+    def DeleteInformation(self, cateId, phoneNumber):
+        path = "/repo_api/WXInformation/DelInformation?cate_id=%s&phoneNumber=%s" % (cateId, phoneNumber)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
+
 
 if __name__ == '__main__':
     repo = Repo()
-    result = repo.PostInformation({"aaa":"aa"})
+    # result = repo.PostInformation({"aaa":"aa"})
+
+
+
+    # saveCate = '189'
+    # phoneNumber = '13642744049'
+    # trues = repo.GetTrueAnswer(saveCate,phoneNumber,'132','456','147','','365')
+    # true = trues[0]['x07']
+
+    #
+    # para = {"phoneNumber": '13094702352', 'x_01': "not_exist", 'x_19': 'WXRegister'}
+    # repo.PostInformation( saveCate, para )
     # result = repo.SetAccount("6", "ddkf", "1918697054")
 
     # result = repo.GetMaterial("8",120,1)
-    print(result)
+    print('')
     # print(result[0]["content"])
     # result1 = repo.GetNumber("13",0,10)              #意思是取13号仓库2小时内没有用过的号码，一次取16个
     # print(result1[0])

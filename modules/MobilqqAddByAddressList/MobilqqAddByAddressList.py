@@ -146,8 +146,8 @@ class MobilqqAddByAddressList:
             d(text='关闭').click()
         if d(text='马上绑定').exists:
             d(text='关闭').click()
-        if d(text='通讯录').exists:
-            d(text='关闭').click()
+        # if d(text='通讯录').exists:
+        #     d(text='关闭').click()
 
 
 
@@ -346,8 +346,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("9ddbd665")
-    z = ZDevice("9ddbd665")
+    d = Device("INNZL7YDLFPBNFN7")
+    z = ZDevice("INNZL7YDLFPBNFN7")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # z.input('13094731693')
     args = {"repo_material_id":"100",'gender':"不限",'EndIndex':'50',"time_delay":"3"};    #cate_id是仓库号，length是数量
