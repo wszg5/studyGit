@@ -253,12 +253,12 @@ class AutomatorServer(object):
             self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
             filename = os.path.join(base_dir, 'libs/zime.apk')
             self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
+            #if self.getPackageVersion() != self.__apk_vercode:
+             #   filename = os.path.join(base_dir, 'libs/zime.apk')
+              #  self.adb.run_cmd("install -r %s" % filename)
+
             self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'sh /data/local/tmp/install.sh'").communicate()
-            if self.getPackageVersion() != self.__apk_vercode:
-                filename = os.path.join(base_dir, 'libs/zime.apk')
-                self.adb.run_cmd("install -r %s" % filename)
-
             self.adb.cmd("shell", "reboot").communicate()
 
 
