@@ -95,9 +95,12 @@ class client_hellotrue:
         token = self.GetToken()
         itemcode = self.im_type_list[itemId]
         path = "/api/do.php?action=cancelRecv&token=%s&phone=%s&sid=%s" % (token, phoneNumber, itemcode)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET", path)
-        response = conn.getresponse()
+        try:
+            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+            conn.request("GET", path)
+            response = conn.getresponse()
+        except Exception:
+            return 'ok'
         if response.status == 200:
             data = response.read()
         else:
@@ -143,9 +146,12 @@ class client_hellotrue:
         token = self.GetToken()
         itemcode = self.im_type_list[itemId]
         path = "/api/do.php?action=addBlacklist&token=%s&sid=%s&phone=%s" % (token, itemcode, phoneNumber)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET", path)
-        response = conn.getresponse()
+        try:
+            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+            conn.request("GET", path)
+            response = conn.getresponse()
+        except Exception:
+            return 'ok'
         if response.status == 200:
             data = response.read()
         else:

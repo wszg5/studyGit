@@ -109,9 +109,12 @@ class client_xunma:
         token = self.GetToken()
         itemcode = self.im_type_list[itemId]
         path = "/releasePhone?token=%s&phoneList=%s-%s" % (token, phoneNumber, itemcode)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET", path)
-        response = conn.getresponse()
+        try:
+            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+            conn.request("GET", path)
+            response = conn.getresponse()
+        except Exception:
+            return 'ok'
         if response.status == 200:
             data = response.read()
         else:
@@ -172,14 +175,14 @@ class client_xunma:
     def defriendPhoneNumber(self, phoneNumber, itemId):
         token = self.GetToken()
         itemcode = self.im_type_list[itemId]
-        path = "/addBlack?token=%s&phoneList=%s-%s" % (token, itemcode, phoneNumber)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET", path)
+        try:
+            path = "/addBlack?token=%s&phoneList=%s-%s" % (token, itemcode, phoneNumber)
+            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+            conn.request("GET", path)
 
-        response = conn.getresponse()
-        # except Exception:
-        #     print('拉黑失败')
-        #     return 'ok'
+            response = conn.getresponse()
+        except Exception:
+            return 'ok'
 
 
         if response.status == 200:
