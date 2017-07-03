@@ -60,7 +60,12 @@ class smsCode:
 
     def GetVertifyCode(self, number, itemId, length=6):
         code = self.client.GetVertifyCode(number, itemId, int(length))
-        self.ReleasePhone(number, itemId)
+<<<<<<< HEAD
+        if code == '':
+            self.ReleasePhone(number, itemId)
+=======
+        #self.ReleasePhone(number, itemId)
+>>>>>>> 5c4fae4c0fc124b9d07f40f29738e912357dafdc
         return code
 
     def ReleasePhone(self, phoneNumber, itemId):
