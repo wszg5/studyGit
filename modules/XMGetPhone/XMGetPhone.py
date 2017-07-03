@@ -15,15 +15,31 @@ class XMGetPhone:
 
     def action(self, d,z, args):
         z.heartbeat()
-        d.press.home()
-        self.scode = smsCode( d.server.adb.device_serial( ) )
-        while True:
-            z.sleep(10)
+        d.press.home( )
+        self.scode = smsCode(d.server.adb.device_serial())
+        runLock = int(args['run_lock'])
+        cateId = args['repo_number_id']
+        totalList = self.repo.GetNUmberNormalTotal(cateId)
+        normalTotal = int(totalList[0]['total'])
+
+        if normalTotal < runLock:
+            z.toast('库内未使用号码低于'+args['run_lock']+'，开始拉号码')
+        else:
+            z.toast( '库内未使用号码大于' + args['run_lock'] + '，模块无法运行' )
+
+        count = 1
+        while normalTotal < runLock:
+            if count > int(args['get_amount']):
+                z.toast('成功拉取'+args['get_amount'])
+                break
             PhoneNumber = self.scode.GetPhoneNumber( self.scode.WECHAT_REGISTER )  # 获取接码平台手机号码
-            self.scode.defriendPhoneNumber( PhoneNumber, self.scode.WECHAT_REGISTER )
             z.sleep(5)
-            cateId = args['repo_number_id']
-            self.repo.uploadPhoneNumber(PhoneNumber, cateId)
+            self.scode.defriendPhoneNumber( PhoneNumber, self.scode.WECHAT_REGISTER )#拉黑
+            self.repo.uploadPhoneNumber(PhoneNumber, cateId)#入库
+            if (args["time_delay"]):
+                z.sleep(int(args["time_delay"]))
+            count = count + 1;
+
 
 
 
@@ -38,12 +54,12 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("916c6fd5")#INNZL7YDLFPBNFN7
-    z = ZDevice("916c6fd5")
+    d = Device("HT544SK00366")#INNZL7YDLFPBNFN7
+    z = ZDevice("HT544SK00366")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     'dingdingdingdingdindigdingdingdingdingdingdingdingdingdingdingdingdignin'
-    args = {"repo_number_id": "181",}  # cate_id是仓库号，发中文问题
+    args = {"repo_number_id": "190", "run_lock":"500","get_amount":"100","time_delay":"10"}  # cate_id是仓库号，发中文问题
     o.action(d,z, args)
 
 

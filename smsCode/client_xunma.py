@@ -162,7 +162,7 @@ class client_xunma:
                 '''
 
     def GetVertifyCode(self, number, itemId, length=6):
-        for i in range(1, 10):
+        for i in range(1, 22):
             time.sleep(3)
             code = self.GetCode(number, itemId, length)
             if code is not None:

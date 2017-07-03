@@ -1,0 +1,26 @@
+{
+"id": "WXNormalDetection",
+"cate":"微信模块",
+"name":"检查微信号是否正常登陆在设备上",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"WX-D-01",
+"icon":"vcard-o",
+"remark":"微信版本6.5.4",
+"setting":[
+{
+"id": "repo_information_id",
+"name":"保存检查登录状态的库",
+"type":"repo",
+"source":"information",
+"top_cate_id":"4"
+},
+{
+"id": "time_delay",
+"name":"延时",
+"type":"textbox",
+"defaultValue":"1",
+"remark":"单位：秒"
+}
+]
+}

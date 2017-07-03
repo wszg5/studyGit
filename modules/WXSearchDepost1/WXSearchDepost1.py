@@ -42,6 +42,7 @@ class WXSearchDepost1:
         add_count = int( args['add_count'] )
         account = 0
         while True:
+            account = account + 1
             if account <= add_count:
                 cate_id = int(args["repo_number_id"])  # 得到取号码的仓库号
                 number_count = 1  # 每次取一个号码
@@ -83,8 +84,6 @@ class WXSearchDepost1:
                     d( descriptionContains='返回' ).click( )
                     d( descriptionContains='清除' ).click( )
                     z.sleep( 1 )
-                    account = account + 1
-                    continue
             else:
                 break
         if (args["time_delay"]):
@@ -103,7 +102,7 @@ if __name__ == "__main__":
     z = ZDevice("HT54VSK00608")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_number_id": "175", "add_count": "25",'repo_save_id':'182',"time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_number_id": "175", 'repo_save_id': '182', "add_count": "25", "time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
 

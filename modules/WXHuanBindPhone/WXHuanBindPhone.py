@@ -22,13 +22,12 @@ class WXBindQQ:
         z.sleep( 3 )
         d(textContains='帐号与安全').click()
         z.sleep( 3 )
-        d(text='QQ号').click()
+        d(text='手机号').click()
         z.sleep(3)
-        if not d(text='开始绑定').exists:
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"该微信已绑定QQ号\"" ).communicate()
-        else:
+        if d(text='绑定手机号').exists:
             z.heartbeat( )
 
+            d(text='更换手机号').click()
             cate_id = args["repo_cate_id"]
             time_limit = args['time_limit']
             numbers = self.repo.GetAccount( cate_id, time_limit, 1 )
@@ -42,7 +41,7 @@ class WXBindQQ:
             z.sleep( 1 )
             z.heartbeat( )
             d( text='开始绑定' ).click( )
-            d( text='QQ号' ).set_text( QQNumber )
+            d( text='QQ号').set_text( QQNumber )
             d( className='android.widget.EditText', index=2 ).set_text( QQPassword )
             d( text='完成' ).click( )
             z.sleep( 3 )

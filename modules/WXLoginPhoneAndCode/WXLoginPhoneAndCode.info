@@ -1,0 +1,26 @@
+{
+"id": "WXCheckSlot",
+"cate":"微信模块",
+"name":"微信绑定邮箱",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"WX04",
+"icon": "vcard-o",
+"remark":"微信版本，6.5.4",
+"setting":[
+	{
+	"id": "repo_cate_id",
+	"name":"号码库分类",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"25"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}
