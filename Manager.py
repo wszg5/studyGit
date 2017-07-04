@@ -16,6 +16,12 @@ def console():
     subprocess.call(["systemctl restart ztask.service"], shell=True)
     return "-"
 
+@app.route('/dsfaawe/provider')
+def provider():
+    import subprocess
+    subprocess.call(["systemctl restart stf-provider@floor4.service"], shell=True)
+    return "-"
+
 @app.route('/dsfkjw323e/sys')
 def sysd():
     import subprocess
