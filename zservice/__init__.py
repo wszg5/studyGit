@@ -595,7 +595,7 @@ class ZRemoteDevice(object):
         return True
 
     def wx_openuser_v1(self, v1, contactScene):
-        self.server.adb.cmd("shell", "am start -n com.tencent.mm/.plugin.profile.ui.ContactInfoUI --es Contact_User %s --ei Contact_Scene %s" % (v1, contactScene)).communicate()
+        self.server.adb.cmd("shell", "su -c 'am start -n com.tencent.mm/.plugin.profile.ui.ContactInfoUI --es Contact_User %s --ei Contact_Scene %s'" % (v1, contactScene)).communicate()
 
         return True
 
