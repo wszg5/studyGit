@@ -85,6 +85,8 @@ class WXSaveId:
             z.sleep(5)
 
         serial = z.wx_action("opennearui")  # 得到微信ｉｄ，unicode样式
+        serial1 = z.wx_userList()
+
         #print(serial)
         ids = json.loads(serial)  # 将unicode转换为idct
         allwxid = (list( ids ))   #将所有的微信ｉｄ由dict转换为list
@@ -120,8 +122,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("8HVSMZKBEQFIBQUW")
-    z = ZDevice("8HVSMZKBEQFIBQUW")
+    d = Device("HT54VSK01061")
+    z = ZDevice("HT54VSK01061")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 

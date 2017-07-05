@@ -27,7 +27,7 @@ class WXImpContactAddFriend:
         if gettime != None:
             d2 = datetime.datetime.strptime( gettime, '%Y-%m-%d %H:%M:%S' )
             delta1 = (d1 - d2)
-            # print( delta1 )
+            print( delta1 )
             delta = re.findall( r"\d+\.?\d*", str( delta1 ) )  # 将天小时等数字拆开
             day1 = int( delta[0] )
             hours1 = int( delta[1] )
@@ -40,7 +40,7 @@ class WXImpContactAddFriend:
             logging.info( "day=%s,hours=%s,minutes=%s" % (day1, hours1, minutes1) )
 
             logging.info( '两个时间的时间差%s' % allminutes )
-            run_time = int( args['run_time'] )  # 得到设定的时间
+            run_time = int( args['run_time'] ) * 60 # 得到设定的时间
             if allminutes < run_time:  # 由外界设定
                 z.toast( '该模块未满足指定时间间隔,程序结束' )
                 return 'end'
@@ -264,6 +264,26 @@ class WXImpContactAddFriend:
                     z.sleep(3)
                 SJZL = re.split(" ", SJZL1)
 
+                if d(text='设置备注和标签').exists:
+                    d(text='设置备注和标签').click()
+                    z.sleep(3)
+                    beizhuObj = d( className='android.widget.EditText', index=1)
+                    if beizhuObj.exists:
+                        if SJZL[0] != SJZL[1]:
+                            deltext = beizhuObj.info  # 将之前消息框的内容删除
+                            deltext = deltext['text']
+                            lenth = len( deltext )
+                            m = 0
+                            while m < lenth:
+                                d.press.delete( )
+                                m = m + 1
+                            z.input( SJZL1 )
+                        if SJZL[0] == SJZL[1]:
+                            z.input( SJZL[1] )
+                        d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
+                        z.sleep( 3 )
+
+
                 z.heartbeat( )
                 if d( text='添加到通讯录' ).exists:
                     d( text='添加到通讯录' ).click()
@@ -273,7 +293,7 @@ class WXImpContactAddFriend:
                     if d( text='发消息' ).exists:
                         danxiang = '单向'
                         para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,
-                                "x_05": danxiang}
+                                "x_05": danxiang,'x_20':ids}
                         self.repo.PostInformation( args["repo_save_information_id"], para )
                         z.toast( "%s入库完成" % phonenumber )
                         d( description='返回' ).click( )
@@ -285,7 +305,7 @@ class WXImpContactAddFriend:
                     d( description='返回' ).click( )
                     danxiang = '未知'
                     para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,
-                            "x_05": danxiang}
+                            "x_05": danxiang,'x_20':ids}
                     self.repo.PostInformation( args["repo_save_information_id"], para )
                     z.toast( "%s入库完成" % phonenumber )
                     d( description='返回' ).click( )
@@ -295,14 +315,14 @@ class WXImpContactAddFriend:
                 else:
                     danxiang = '未知'
                     para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,
-                            "x_05": danxiang}
+                            "x_05": danxiang,'x_20':ids}
                     self.repo.PostInformation( args["repo_save_information_id"], para )
                     z.toast( "%s入库完成" % phonenumber )
                     d( description='返回' ).click( )
                     i = i + 1
                     continue
 
-                danxiang = '非单向'  # 有添加到通讯录且非单向的情况
+                danxiang = '双向'  # 有添加到通讯录且非单向的情况
                 GenderFrom = args['gender']  # -------------------------------外界设定的性别
                 if GenderFrom != '不限':
                     if Gender != GenderFrom:  # 如果性别不符号的情况
@@ -317,7 +337,7 @@ class WXImpContactAddFriend:
                         continue
 
                 para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,
-                        "x_05": danxiang}
+                        "x_05": danxiang ,'x_20':ids}
                 self.repo.PostInformation( args["repo_save_information_id"], para )
                 z.toast( "%s入库完成" % phonenumber )
                 z.sleep( 1 )
@@ -333,21 +353,6 @@ class WXImpContactAddFriend:
                     d( className='android.widget.EditText', index=1 ).click( )
                     z.input( message )  # ----------------------------------------
                     z.sleep(2)
-
-                    beizhuObj = d( resourceId='com.tencent.mm:id/ceb', className='android.widget.EditText', index=1 )
-                    if beizhuObj.exists:
-                        beizhuObj.click()
-                        if SJZL[0] != SJZL[1]:
-                            deltext = beizhuObj.info  # 将之前消息框的内容删除
-                            deltext = deltext['text']
-                            lenth = len( deltext )
-                            m = 0
-                            while m < lenth:
-                                d.press.delete( )
-                                m = m + 1
-                            z.input(SJZL1)
-                        if SJZL[0] == SJZL[1]:
-                            z.input(SJZL[1])
 
                     d( text='发送' ).click( )
                     z.sleep( 1 )
@@ -428,8 +433,8 @@ if __name__ == "__main__":
     # d.dump(compressed=False)
 
 
-    args = {"repo_imp_number_id":"113",'run_time':'0','number_count':'15',"import_time_delay":"3",
-            "repo_material_id": "39", 'EndIndex': '3', 'repo_save_information_id': '171', 'gender': "不限","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_imp_number_id":"113",'run_time':'0','number_count':'15',"import_time_delay":"30",
+            "repo_material_id": "39", 'EndIndex': '3', 'repo_save_information_id': '197', 'gender': "不限","time_delay": "3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
 
