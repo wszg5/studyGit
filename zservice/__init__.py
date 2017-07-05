@@ -259,6 +259,8 @@ class AutomatorServer(object):
 
             self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'sh /data/local/tmp/install.sh'").communicate()
+            self.adb.cmd("shell", "su -c 'chmod - R 777 /data/data/de.robv.android.xposed.installer/'").communicate()
+
             self.adb.cmd("shell", "reboot").communicate()
 
 
@@ -456,6 +458,16 @@ class ZRemoteDevice(object):
 
     def generateSerial(self, serial=None):
         return self.server.jsonrpc.generateSerial(serial)
+
+    def wx_restart(self):
+        self.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
+
+        self.server.adb.cmd("shell", "su -c 'rm -rf /data/data/com.tencent.mm/tinker/*'").communicate()
+        self.server.adb.cmd("shell", "su -c 'mkdir -p /data/data/com.tencent.mm/tinker/'").communicate()
+        self.server.adb.cmd("shell", "su -c 'chmod 000 /data/data/com.tencent.mm/tinker/'").communicate()
+
+        self.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
+
 
     '''
     openyaoyiyao   打开摇一摇界面
