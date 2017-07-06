@@ -1,0 +1,46 @@
+{
+"id": "WXAssignSearchHello",
+"cate":"微信模块",
+"name":"微信指定好友互聊",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"WX-Y-02",
+"icon": "vcard-o",
+"remark":"微信版本，6.5.4",
+"setting":[
+	{
+	"id": "repo_number_id",
+	"name":"微信号码库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"23"
+	},
+	{
+    "id": "repo_material_id",
+    "name":"发信息素材库",
+    "type":"repo",
+    "source":"material",
+    "top_cate_id":"12"
+    },
+    {
+	"id": "msg_count",
+	"name":"发消息数",
+	"type":"textbox",
+	"defaultValue":"1",
+	"remark":"单位：条"
+	},
+	{
+	"id": "get_number",
+	"name":"取号数量",
+	"type":"textbox",
+	"defaultValue":"10",
+	"remark":"注：尽量一次不要取太多（10～50）"
+	},
+    {
+    "id": "run_time",
+    "name":"模块运行间隔时间",
+    "type":"textbox",
+    "remark":"单位：小时"
+    }
+]
+}

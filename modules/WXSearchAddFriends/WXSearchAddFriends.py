@@ -19,7 +19,7 @@ class WXSearchAddFriends:
         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
         d1 = datetime.datetime.strptime( nowtime, '%Y-%m-%d %H:%M:%S' )
         logging.info( '现在的时间%s' % nowtime )
-        gettime = cache.get( '%s_WXImpContactAddFriend_time' % d.server.adb.device_serial( ) )
+        gettime = cache.get( '%s_WXSearchAddFriends_time' % d.server.adb.device_serial( ) )
         logging.info( '以前的时间%s' % gettime )
 
         if gettime != None:
@@ -77,6 +77,7 @@ class WXSearchAddFriends:
         z.heartbeat()
         d(index='1',className='android.widget.TextView').click()   #点击搜索好友的输入框
         account = 0
+
         while True:
             if account<add_count:
                 cate_id = int(args["repo_number_id"])  # 得到取号码的仓库号
@@ -96,8 +97,9 @@ class WXSearchAddFriends:
                 z.heartbeat()
                 z.sleep(3)
                 d(textContains='搜索:').click()
+                z.sleep(8)
                 if d(textContains='操作过于频繁').exists:
-                    return
+                    break
                 z.sleep(2)
                 if d(textContains='用户不存在').exists:
                     d(descriptionContains='清除',index=2).click()
@@ -155,16 +157,43 @@ class WXSearchAddFriends:
                     sign = '空'
                 z.heartbeat()
 
+                v1s = z.wx_userList()
+                if len(v1s) != 2:
+                    v1 = list(json.loads(v1s))[0]  # 将字符串改为list样式
+
+
+
                 gender = args['gender']
                 if gender!='不限':
                     if Gender!=gender:     #看性别是否满足条件
-                        d(description='返回').click()
-                        d(descriptionContains='清除').click()
+                        if d( text='添加到通讯录' ).exists:  # 存在联系人的情况
+                            d( text='添加到通讯录' ).click( )
+                            if d( text='发消息' ).exists:
+                                seltype = '单向'
+                            else:
+                                seltype = '双向'
+
+                        d( descriptionContains='返回' ).click( )
+                        z.sleep( 3 )
+                        d( descriptionContains='返回' ).click( )
+                        z.sleep( 3 )
+                        d( descriptionContains='清除' ).click( )
+
+                        para = {"phoneNumber": WXnumber, 'x_01': nickname, 'x_02': Gender, "x_03": area, "x_04": sign,
+                                "x_05": seltype, 'x_20': v1}
+                        print( '--%s--%s--%s--%s--%s' % (WXnumber, nickname, Gender, area, sign) )
+                        self.repo.PostInformation( args["repo_information_id"], para )
+                        z.toast( "%s入库完成" % WXnumber )
                         continue
 
-                v1s = z.wx_userList()
-                if len( v1s ) != 2:
-                    v1 = list( json.loads( v1s ) )[0]  # 将字符串改为list样式
+                if d( text='设置备注和标签' ).exists:
+                    d( text='设置备注和标签' ).click( )
+                    z.sleep( 3 )
+                    beizhuObj = d( className='android.widget.EditText', index=1 )
+                    if beizhuObj.exists:
+                        z.input(WXnumber)
+                        d(text='保存').click()
+                        z.sleep(3)
 
                 z.heartbeat()
                 if d(text='添加到通讯录').exists:      #存在联系人的情况
@@ -178,21 +207,10 @@ class WXSearchAddFriends:
                     self.repo.PostInformation( args["repo_information_id"], para )
                     z.toast( "%s入库完成" % WXnumber )
                     if d(text='发消息').exists:
-                        deltext = d( className='android.widget.EditText', index=1 ).info  # 将之前消息框的内容删除
-                        deltext = deltext['text']
-                        lenth = len( deltext )
-                        m = 0
-                        while m < lenth:
-                            d.press.delete( )
-                            m = m + 1
-                        z.heartbeat( )
-                        d( className='android.widget.EditText', index=1 ).click( )
-                        z.input( message )  # ----------------------------------------
-                        z.sleep( 2 )
-
-                        d( text='发送' ).click( )
-                        z.sleep( 2 )
                         d( descriptionContains='返回' ).click( )
+                        z.sleep(3)
+                        d( descriptionContains='返回' ).click( )
+                        z.sleep(3)
                         d( descriptionContains='清除' ).click( )
                         continue
                 else:
@@ -220,7 +238,7 @@ class WXSearchAddFriends:
 
         now = datetime.datetime.now( )
         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-        cache.set( '%s_WXImpContactAddFriend_time' % d.server.adb.device_serial( ), nowtime, None )
+        cache.set( '%s_WXSearchAddFriends_time' % d.server.adb.device_serial( ), nowtime, None )
         z.toast( '模块结束，保存的时间是%s' % nowtime )
 
 def getPluginClass():
@@ -236,5 +254,5 @@ if __name__ == "__main__":
     z = ZDevice("HT54VSK01061")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_number_id": "44", "repo_information_id":'197',"repo_material_id": "39", "add_count": "15", 'gender':"不限","run_time": "0"}    #cate_id是仓库号，length是数量
+    args = {"repo_number_id": "44", "repo_information_id":'197',"repo_material_id": "39", "add_count": "15", 'gender':"男","run_time": "1"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

@@ -504,8 +504,8 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54VSK01061")#INNZL7YDLFPBNFN7
-    z = ZDevice("HT54VSK01061")
+    d = Device("HT53ASK00766")#INNZL7YDLFPBNFN7
+    z = ZDevice("HT53ASK00766")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     'dingdingdingdingdindigdingdingdingdingdingdingdingdingdingdingdingdignin'

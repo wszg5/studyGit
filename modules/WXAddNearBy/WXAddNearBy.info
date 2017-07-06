@@ -1,10 +1,10 @@
 {
 "id": "WXAddNearBy",
 "cate":"微信模块",
-"name":"微信附近的人加好友(唤醒ID)和检存",
+"name":"V1唤醒后筛选资料（尊云专用）",
 "url": "http://www.bejson.com",
-"version": "1.2",
-"code":"WX29",
+"version": "1.0",
+"code":"WX-D-08",
 "icon": "vcard-o",
 "remark":"微信版本6.5.4",
 "setting":[
@@ -16,34 +16,11 @@
 	"top_cate_id":"23"
 	},
 	{
-    "id": "repo_material_id",
-    "name":"验证信息素材库",
-    "type":"repo",
-    "source":"material",
-    "top_cate_id":"12"
-    },
-    {
-	"id": "forselect",
-	"name":"添加类型",
-	"type":"select",
-	"list":{"单向":"单向","混合":"混合"},
-	"defaultValue":"混合",
-	"remark":"添加类型"
-	},
-	{
 	"id": "repo_cate_id",
 	"name":"回写资料库",
 	"type":"repo",
 	"source":"information",
 	"top_cate_id":"4"
-	},
-	{
-	"id": "gender",
-	"name":"性别",
-	"type":"select",
-	"list":{"男":"男","女":"女","不限":"不限"},
-	"defaultValue":"女",
-	"remark":"性别要求"
 	},
     {
 	"id": "add_count",

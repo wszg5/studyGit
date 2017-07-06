@@ -44,6 +44,8 @@ class WXImpContactAddFriend:
             if allminutes < run_time:  # 由外界设定
                 z.toast( '该模块未满足指定时间间隔,程序结束' )
                 return 'end'
+            else:
+                return 'start'
         else:
             z.toast( '尚未保存时间' )
 
@@ -116,15 +118,14 @@ class WXImpContactAddFriend:
             z.sleep( int( args["import_time_delay"] ) )
 
     def action(self, d,z, args):
+        z.heartbeat( )
         condition = self.timeinterval( d, z, args )
         if condition == 'end':
             z.sleep( 2 )
             return
+        else:
+            self.ImpContact(d, z, args) #导入通讯录
 
-        self.ImpContact(d, z, args) #导入通讯录
-
-
-        z.heartbeat( )
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -140,7 +141,7 @@ class WXImpContactAddFriend:
             return
         z.sleep( 5 )
         while True:
-            if d( text='发现' ) and d( text='我' ) and d( text='通讯录' ).exists:
+            if d( text='发现' ).exists and d( text='我' ).exists and d( text='通讯录' ).exists:
                 break
             else:
                 d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
@@ -199,7 +200,6 @@ class WXImpContactAddFriend:
                     continue
                 else:
                     set1.add( name )
-                print( name )
                 endcon = 1
                 d( className='android.widget.ListView', index=0 ).child( className='android.widget.LinearLayout',
                                                                          index=i ). \
@@ -209,8 +209,7 @@ class WXImpContactAddFriend:
                 得到性别
                 '''
                 Gender = d(className='android.widget.LinearLayout', index=1).child(
-                    className='android.widget.LinearLayout', index=0).child(className='android.widget.ImageView',resourceId='com.tencent.mm:id/aeu',
-                                                                     index=1)  # 看性别是否有显示
+                    className='android.widget.LinearLayout', index=0).child(className='android.widget.ImageView',index=1)  # 看性别是否有显示
                 if Gender.exists:
                     z.heartbeat( )
                     Gender = Gender.info
@@ -250,7 +249,7 @@ class WXImpContactAddFriend:
                 print( '%s--%s--%s--%s--%s' % (phonenumber, name, Gender, sign, area) )
 
                 serial = z.wx_userList()
-                l = len(serial)
+                ids = ''
                 if len(serial)!=2:
                     ids = list(json.loads(serial))[0]  # 将字符串改为list样式
                     print( ids )
@@ -280,11 +279,14 @@ class WXImpContactAddFriend:
                             z.input( SJZL1 )
                         if SJZL[0] == SJZL[1]:
                             z.input( SJZL[1] )
-                        d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
-                        z.sleep( 3 )
+                        d(text='保存').click()
+                        z.sleep(3)
+                        # d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
+                        # z.sleep(3)
 
 
-                z.heartbeat( )
+
+                z.heartbeat()
                 if d( text='添加到通讯录' ).exists:
                     d( text='添加到通讯录' ).click()
                     if d( textContains='正在添加' ).exists:
@@ -323,6 +325,10 @@ class WXImpContactAddFriend:
                     continue
 
                 danxiang = '双向'  # 有添加到通讯录且非单向的情况
+                para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,
+                        "x_05": danxiang, 'x_20': ids}
+                self.repo.PostInformation( args["repo_save_information_id"], para )
+                z.toast( "%s入库完成" % phonenumber )
                 GenderFrom = args['gender']  # -------------------------------外界设定的性别
                 if GenderFrom != '不限':
                     if Gender != GenderFrom:  # 如果性别不符号的情况
@@ -335,11 +341,6 @@ class WXImpContactAddFriend:
                         d( description='返回' ).click( )
                         i = i + 1
                         continue
-
-                para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,
-                        "x_05": danxiang ,'x_20':ids}
-                self.repo.PostInformation( args["repo_save_information_id"], para )
-                z.toast( "%s入库完成" % phonenumber )
                 z.sleep( 1 )
                 if t < EndIndex:
                     deltext = d( className='android.widget.EditText', index=1 ).info  # 将之前消息框的内容删除
@@ -363,8 +364,7 @@ class WXImpContactAddFriend:
                 else:
                     d( description='返回' ).click( )
                     d( description='返回' ).click( )
-                    i = i + 1
-                    z.toast( '已经成向' + args['EndIndex'] + '个好友发送添加验证请求' )
+                    z.toast( '已经成功向' + args['EndIndex'] + '个好友发送添加验证请求' )
                     break
 
             else:
@@ -433,7 +433,7 @@ if __name__ == "__main__":
     # d.dump(compressed=False)
 
 
-    args = {"repo_imp_number_id":"113",'run_time':'0','number_count':'15',"import_time_delay":"30",
+    args = {"repo_imp_number_id":"113",'run_time':'1','number_count':'15',"import_time_delay":"30",
             "repo_material_id": "39", 'EndIndex': '3', 'repo_save_information_id': '197', 'gender': "不限","time_delay": "3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

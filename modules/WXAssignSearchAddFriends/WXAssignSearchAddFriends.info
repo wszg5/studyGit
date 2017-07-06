@@ -1,0 +1,26 @@
+{
+"id": "WXAssignSearchAddFriends",
+"cate":"微信模块",
+"name":"微信指定好友添加",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"WX-Y-01",
+"icon": "vcard-o",
+"remark":"微信版本，6.5.4",
+"setting":[
+	{
+	"id": "repo_number_id",
+	"name":"微信号码库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"23"
+	},
+	{
+	"id": "get_number",
+	"name":"取号数量",
+	"type":"textbox",
+	"defaultValue":"10",
+	"remark":"注：尽量一次不要取太多（10～50）"
+	}
+]
+}
