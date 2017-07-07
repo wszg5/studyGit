@@ -425,6 +425,21 @@ class ZRemoteDevice(object):
         key = 'timeout_%s' % self.server.adb.device_serial()
         cache.set(key, (datetime.datetime.now()  - datetime.datetime(2017, 1 ,1)).seconds)
 
+    ##设置模块运行时间戳
+    def setModuleLastRun(self, mid):
+        key = '%s_%s' % (self.server.adb.device_serial(), mid);
+        cache.set(key, int(time.time()), None)
+
+
+    ##返回本设备运行模块与当前时间的间隔（单位：分钟）
+    def getModuleRunInterval(self, mid):
+        key = '%s_%s' % (self.server.adb.device_serial(), mid);
+        lasttime = cache.get(key)
+        if lasttime is None:
+            return None
+        return (int(time.time()) - int(lasttime))/60;
+
+
     def checkTopActivity(self, activityName):
         out = self.cmd("shell", "dumpsys activity top  | grep ACTIVITY")[0].decode('utf-8')
         if out.find(activityName) > -1:

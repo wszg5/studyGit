@@ -6,7 +6,6 @@ from Repo import *
 import os, time, datetime, random
 import json
 from zservice import ZDevice
-from zcache import cache
 import re
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -15,39 +14,9 @@ logging.basicConfig(level=logging.INFO)
 class WXImpContactAddFriend:
     def __init__(self):
         self.repo = Repo()
+        self.mid = os.path.realpath(__file__)
 
-    def timeinterval(self,d, z, args):
-        now = datetime.datetime.now( )
-        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-        d1 = datetime.datetime.strptime( nowtime, '%Y-%m-%d %H:%M:%S' )
-        logging.info( '现在的时间%s' % nowtime )
-        gettime = cache.get( '%s_WXImpContactAddFriend_time'%d.server.adb.device_serial() )
-        logging.info( '以前的时间%s' % gettime )
 
-        if gettime != None:
-            d2 = datetime.datetime.strptime( gettime, '%Y-%m-%d %H:%M:%S' )
-            delta1 = (d1 - d2)
-            print( delta1 )
-            delta = re.findall( r"\d+\.?\d*", str( delta1 ) )  # 将天小时等数字拆开
-            day1 = int( delta[0] )
-            hours1 = int( delta[1] )
-            minutes1 = 0
-            if 'days' in str( delta1 ):
-                minutes1 = int( delta[2] )
-                allminutes = day1 * 24 * 60 + hours1 * 60 + minutes1
-            else:
-                allminutes = day1 * 60 + hours1  # 当时间不超过天时此时天数变量成为小时变量
-            logging.info( "day=%s,hours=%s,minutes=%s" % (day1, hours1, minutes1) )
-
-            logging.info( '两个时间的时间差%s' % allminutes )
-            run_time = int( args['run_time'] ) * 60 # 得到设定的时间
-            if allminutes < run_time:  # 由外界设定
-                z.toast( '该模块未满足指定时间间隔,程序结束' )
-                return 'end'
-            else:
-                return 'start'
-        else:
-            z.toast( '尚未保存时间' )
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
@@ -118,13 +87,16 @@ class WXImpContactAddFriend:
             z.sleep( int( args["import_time_delay"] ) )
 
     def action(self, d,z, args):
-        z.heartbeat( )
-        condition = self.timeinterval( d, z, args )
-        if condition == 'end':
-            z.sleep( 2 )
+
+        run_time = float(args['run_time']) * 60
+        run_interval = z.getModuleRunInterval(self.mid)
+        if run_interval is not None and run_interval < run_time :
+            z.toast(u'锁定时间还差:%d分钟' % int(run_time-run_interval))
+            z.sleep(2)
             return
-        else:
-            self.ImpContact(d, z, args) #导入通讯录
+        z.heartbeat( )
+
+        self.ImpContact(d, z, args) #导入通讯录
 
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
@@ -372,7 +344,7 @@ class WXImpContactAddFriend:
                     if i == 1:  # 通讯录没有人的情况
                         now = datetime.datetime.now( )
                         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                        cache.set( '%s_WXImpContactAddFriend_time' % d.server.adb.device_serial( ), nowtime, None )
+                        z.setModuleLastRun(self.mid)
                         z.toast( '模块结束，保存的时间是%s' % nowtime )
 
                         return
@@ -385,7 +357,7 @@ class WXImpContactAddFriend:
 
                         now = datetime.datetime.now( )
                         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                        cache.set( '%s_WXAddAddressList_time' % d.server.adb.device_serial( ), nowtime, None )
+                        z.setModuleLastRun(self.mid)
                         z.toast( '模块结束，保存的时间是%s' % nowtime )
 
                         if (args["time_delay"]):
@@ -397,7 +369,7 @@ class WXImpContactAddFriend:
 
         now = datetime.datetime.now( )
         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-        cache.set( '%s_WXImpContactAddFriend_time' % d.server.adb.device_serial( ), nowtime,None )
+        z.setModuleLastRun(self.mid)
         z.toast('模块结束，保存的时间是%s'%nowtime)
 
         if (args["time_delay"]):
@@ -407,18 +379,18 @@ def getPluginClass():
     return WXImpContactAddFriend
 
 if __name__ == "__main__":
-    # global args
 
     import sys
 
     reload(sys)
     sys.setdefaultencoding("utf-8")
-
     clazz = getPluginClass()
     o = clazz()
 
     d = Device("HT54VSK01061")
     z = ZDevice("HT54VSK01061")
+
+
 #    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
     z.server.install()
     #z.input("6565wv=1027&k=48KHKLm")
