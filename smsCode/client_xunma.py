@@ -165,6 +165,7 @@ class client_xunma:
                 '''
 
     def GetVertifyCode(self, number, itemId, length=6):
+        self.logger.info('开始获取验证码：%s, %s' % (number, itemId))
         for i in range(1, 22):
             time.sleep(3)
             code = self.GetCode(number, itemId, length)
@@ -216,9 +217,11 @@ class client_xunma:
             return []
         result = []
         smsList = content.split('[End]')
-        self.logger.info('收到消息：%s' % content)
+        if content:
+            self.logger.info('收到消息：%s' % content)
         for sms in smsList:
-            self.logger.info('切分消息：%s' % sms)
+            if sms:
+                self.logger.info('切分消息：%s' % sms)
             if 'MSG' not in sms:
                 continue
             data = sms.split('&');
