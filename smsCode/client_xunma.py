@@ -145,7 +145,7 @@ class client_xunma:
         for sms in smsList:
             if 'phone' in sms and 'code' in sms:
                 sms_number_key = 'verify_code_%s_%s' % (sms['itemid'], sms['phone'])
-                print ("KEY: %s, Code: %s" % (sms_number_key, sms['code']))
+                self.logger.info("KEY: %s, Code: %s" % (sms_number_key, sms['code']))
                 cache.set(sms_number_key, sms['code'])
                     #cache.set(sms['phone'], sms['code'])
                 '''
@@ -216,7 +216,9 @@ class client_xunma:
             return []
         result = []
         smsList = content.split('[End]')
+        self.logger.info('收到消息：%s' % content)
         for sms in smsList:
+            self.logger.info('切分消息：%s' % sms)
             if 'MSG' not in sms:
                 continue
             data = sms.split('&');
