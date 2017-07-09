@@ -98,6 +98,7 @@ if __name__ == "__main__":
 
     d = Device("INNZL7YDLFPBNFN7")
     z = ZDevice("INNZL7YDLFPBNFN7")
+    out = d.server.adb.run_cmd('shell', 'ls')
     z.input("xxx")
 #    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
     z.server.install()
