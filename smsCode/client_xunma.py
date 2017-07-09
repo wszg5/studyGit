@@ -128,7 +128,7 @@ class client_xunma:
             return code
         token = self.GetToken()
         try:
-            path = "getMessage?token=%s&itemId=%s&phone=%s"%(token, itemcode, number)
+            path = "/getMessage?token=%s&itemId=%s&phone=%s"%(token, itemcode, number)
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
             response = conn.getresponse()
@@ -139,6 +139,7 @@ class client_xunma:
                     self.GetToken(False)
                     return None
         except Exception:
+            self.logger.error(traceback.format_exc())
             return None
 
         smsList = self.ExtractSMS(data, length)
@@ -244,12 +245,12 @@ if __name__ == '__main__':
 
     im_type_list = {"qq_register": "2251"}
     xunma = client_xunma("asdfasdfasdf", "powerman", "12341234abc", im_type_list)
-
+    phone =  '17151211654'
+    print phone
+    print xunma.GetVertifyCode(phone, "qq_register", 6)
     sms = u'MSG&2251&13941940790&【腾讯科技】你正在注册微信帐号，验证码303615。请勿转发。[End]RES&2251&13941940790[End]'
     sms = None
     print(xunma.ExtractSMS(sms, 6))
     phone =  xunma.GetPhoneNumber("qq_register")
 
-    phone =  xunma.GetPhoneNumber("qq_register", phone)
-    print phone
-    print xunma.GetVertifyCode(phone, "qq_register", 6)
+
