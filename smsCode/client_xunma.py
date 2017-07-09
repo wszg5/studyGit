@@ -128,7 +128,7 @@ class client_xunma:
             return code
         token = self.GetToken()
         try:
-            path = "/getQueue?token=" + token + ""
+            path = "getMessage?token=%s&itemId=%s&phone=%s"%(token, itemcode, number)
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
             response = conn.getresponse()
