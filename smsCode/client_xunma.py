@@ -1,11 +1,21 @@
 # -*- coding:utf-8 -*-
+import cookielib
 import httplib, json
+import os
 import time
 import re
 import traceback
+import urllib
+import urllib2
 
+from BeautifulSoup import BeautifulSoup
+
+from imageCode import imageCode
 from zcache import cache
 import util
+
+
+
 
 
 class client_xunma:
@@ -169,6 +179,9 @@ class client_xunma:
         self.logger.info('开始获取验证码：%s, %s' % (number, itemId))
         for i in range(1, 22):
             time.sleep(3)
+            if i==20:
+                self.GetAllWebSms()
+
             code = self.GetCode(number, itemId, length)
             if code is not None:
                 return code
@@ -236,15 +249,125 @@ class client_xunma:
         print(result)
         return result;
 
+    def GetAllWebSms(self):
+        filename = '/tmp/cookie_xunma.txt'
+        # 声明一个MozillaCookieJar对象实例来保存cookie，之后写入文件
+        cookie = cookielib.MozillaCookieJar(filename)
+        # 利用urllib2库的HTTPCookieProcessor对象来创建cookie处理器
+        handler = urllib2.HTTPCookieProcessor(cookie)
+        # 通过handler来构建opener
+        opener = urllib2.build_opener(handler)
+        if os.path.exists(filename):
+            cookie.load(filename, ignore_discard=True, ignore_expires=True)
+        loginurl = "http://www.xunma.net/userManage/Message.aspx"
+        opener.addheaders = [("User-Agent",
+                              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.63 Safari/537.36")]
+        # 登陆前准备：获取lt和exection
+        response = opener.open(loginurl)
+        data = response.read()
+        if '<div class="title">用户登录<span>' in data:
+            self.LoginWeb(opener)
+            cookie.save(ignore_discard=True, ignore_expires=True)
+            return self.GetAllWebSms()
+        soup = BeautifulSoup(data)
+        tables = soup.findAll('table')
+        for tab in tables:
+            if '短信内容' not in tab.text or '手机号码' not in tab.text:
+                continue
+            for tr in tab.findAll('tr'):
+                tds = tr.findAll('td')
+                if len(tds) > 7:
+                    number = tds[1].getText()
+                    if len(number) != 11 :
+                        continue
+                    itemcode = self.GetWebItemId(opener, tds[4].getText())
+
+                    key = 'verify_code_%s_%s' % (itemcode, number)
+                    if not cache.get(key):
+                        res = re.findall("\d+", tds[2].getText())
+                        for code in res:
+                            if len(code) >= 4:
+                                cache.set(key, code)
+                                break
+
+
+    def GetWebItemId(self, opener, itemname):
+        key = 'itemname_' + itemname;
+        val = cache.get(key)
+        if val:
+            return val
+        url = 'http://www.xunma.net/userManage/Category.aspx?selectItem=' + itemname
+        response = opener.open(url)
+        data = response.read()
+        soup = BeautifulSoup(data)
+        tables = soup.findAll('table')
+        for tab in tables:
+            if u'项目名' not in tab.text or u'单价' not in tab.text:
+                continue
+            for tr in tab.findAll('tr'):
+                tds = tr.findAll('td')
+                if len(tds) > 3:
+                    if tds[1].getText() == itemname:
+                        cache.set(key, tds[0].getText(), 60*60*24)
+                        return tds[0].getText()
+
+
+    def GetWebCode(self, opener, code):
+        url = 'http://www.xunma.net/UserManage/ImgCode.aspx?' + str(int(time.time()))
+        response = opener.open(url)
+        data = response.read()
+        icode = imageCode()
+        im_id = ''
+        for i in range(0, 30, +1):  # 打码循环
+            if i > 0:
+                icode.reportError(im_id)
+            codeResult = icode.getCode(data, icode.CODE_TYPE_4_NUMBER_CHAR)
+            if codeResult:
+                return codeResult;
+
+    def LoginWeb(self, opener):
+        code = self.GetWebCode(opener, None) #{'Result': u'F412', 'Id': u'20170709:000000000007769038023'}
+        user = self.username.encode("utf-8")
+        pwd = self.password.encode("utf-8")
+        data = {'type': 'login', 'username':user, 'password': pwd, 'logintype':'0', 'imgcode':code['Result']}
+        postdata = urllib.urlencode(data)
+        path = "http://www.xunma.net/UserManage/action.aspx"
+        opener.addheaders = [("User-Agent",
+                              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.63 Safari/537.36")]
+
+        # 模拟登录,保存cookie到cookie.txt中
+        response = opener.open(path, postdata)
+        data = response.read()
+
+        response = opener.open('http://www.xunma.net/userManage/index.aspx')
+        data = response.read()
+
+        loginurl = "http://www.xunma.net/userManage/Message.aspx"
+
+        # 登陆前准备：获取lt和exection
+        response = opener.open(loginurl)
+        data = response.read()
+        print data
+
+
 
 
 if __name__ == '__main__':
     import sys
     reload(sys)
     sys.setdefaultencoding('utf8')
+    sms = '你正在注册微信帐号，验证码887994。请勿转发。【腾讯科技】	'
+    cache.clear()
+    res = re.findall("\d+" , sms)
+    for code in res:
+        if len(code) >= 4 :
+            print(code)
+            break
 
     im_type_list = {"qq_register": "2251"}
     xunma = client_xunma("asdfasdfasdf", "powerman", "12341234abc", im_type_list)
+    xunma.GetAllWebSms()
+#    xunma.GetWebCookie();
     phone =  '17151211654'
     print phone
     print xunma.GetVertifyCode(phone, "qq_register", 6)

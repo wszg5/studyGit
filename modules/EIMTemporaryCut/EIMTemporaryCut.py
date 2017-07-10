@@ -52,15 +52,11 @@ class EIMTemporaryCut:
             print('QQ号是：%s,QQ密码是：%s'%(QQNumber,QQPassword))
             d.server.adb.cmd("shell", "pm clear com.tencent.eim").communicate()  # 清除缓存
             d.server.adb.cmd("shell", "am start -n com.tencent.eim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-<<<<<<< HEAD
             z.sleep(3)
             while d(textContains='正在更新').exists:
                 z.sleep(2)
             z.sleep(6)
-=======
-            z.sleep(5)
 
->>>>>>> 4e4f21f1884a754d94ef7f78793387f981d2652c
             z.heartbeat()
 
             d(className='android.widget.Button', index=1, clickable='true').click()
@@ -71,14 +67,11 @@ class EIMTemporaryCut:
             z.sleep(4)
             if d(text='企业QQ').exists:
                 d(text='企业QQ').click()
-<<<<<<< HEAD
+
             if d(text='仅此一次').exists:
                 d(text='仅此一次').click()
-=======
-                if d(text='仅此一次').exists:
-                    d(text='仅此一次').click()
 
->>>>>>> 4e4f21f1884a754d94ef7f78793387f981d2652c
+
             z.heartbeat()
 
 
