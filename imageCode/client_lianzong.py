@@ -38,8 +38,11 @@ class client_lianzong(object):
     def getCode(self, im, im_type, timeout=60):
         import base64
         #f = open(r'c:\jb51.gif', 'rb')  # 二进制方式打开图文件
-        ls_f = base64.b64encode(im.read())  # 读取文件内容，转换为base64编码
-        im.close()
+        if isinstance(im, str):
+            ls_f = base64.b64encode(im)
+        else:
+            ls_f = base64.b64encode(im.read())  # 读取文件内容，转换为base64编码
+            im.close()
         #f.close()
         params = {
                     "ts":int(time.time()),
