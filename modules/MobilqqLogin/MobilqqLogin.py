@@ -17,8 +17,9 @@ from zservice import ZDevice
 class MobilqqLogin:
     def __init__(self):
         self.type = 'mobileqq'
+
         self.repo = Repo()
-        self.slot = Slot(self.type)
+        self.slot = Slot('', self.type)
 
 
     def GetUnique(self):
@@ -62,7 +63,7 @@ class MobilqqLogin:
             z.sleep(1)
             d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
             z.sleep(1)
-            d(resourceId='com.tencent.mobileqq:id/password', index=2).set_text(QQPassword)  # Bn2kJq5l     QQPassword
+            d(resourceId='com.tencent.mobileqq:id/password').set_text(QQPassword)  # Bn2kJq5l     QQPassword
             z.heartbeat()
             logger = util.logger
             print('QQ号:%s,QQ密码：%s'%(QQNumber,QQPassword))
@@ -102,7 +103,7 @@ class MobilqqLogin:
                     img.save(codePng)
                     im = open(codePng, 'rb')
 
-                    codeResult = icode.getCode(im, icode.CODE_TYPE_4_NUMBER_CHAR)
+                    codeResult = icode.getCode(im, icode.CODE_TYPE_4_NUMBER_CHAR, 60)
 
                     code = codeResult["Result"]
                     im_id = codeResult["Id"]
@@ -133,6 +134,8 @@ class MobilqqLogin:
                 return QQNumber
             z.sleep(1)
             if d(text='马上绑定').exists:
+                if d(text='关闭').exists:
+                    d(text='关闭').click()
                 return QQNumber
             z.sleep(1)
             if d(text='通讯录').exists:              #登陆上后弹出t通讯录的情况
@@ -239,9 +242,8 @@ class MobilqqLogin:
     def action(self, d,z, args):
         z.heartbeat()
         time_limit = args['time_limit']
-        time_limit1 = args['time_limit1']
         cate_id = args["repo_cate_id"]
-        slotnum = self.slot.getEmpty(d)  # 取空卡槽
+        slotnum = self.slot.getEmpty()  # 取空卡槽
         if slotnum == 0:    #没有空卡槽的话
             slotnum = self.slot.getSlot(d, time_limit)  # 没有空卡槽，取２小时没用过的卡槽
             print(slotnum)
@@ -346,8 +348,9 @@ class MobilqqLogin:
             if QQnumber=='nothing':
                 self.qiehuan(d,z,args)
             z.heartbeat()
-            self.slot.backup(d, slotnum, QQnumber)                   #设备信息，卡槽号，QQ号
+            self.slot.backup(d, str(slotnum)+'_'+QQnumber)                   #设备信息，卡槽号，QQ号
             self.repo.BackupInfo(cate_id, 'using', QQnumber,serialinfo,'%s_%s_%s' % (d.server.adb.device_serial(), self.type,slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
+
 
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
@@ -364,9 +367,9 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4AYSK00084")
-    z = ZDevice("HT4AYSK00084")
+    d = Device("INNZL7YDLFPBNFN7")
+    z = ZDevice("INNZL7YDLFPBNFN7")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id":"143","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"203","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

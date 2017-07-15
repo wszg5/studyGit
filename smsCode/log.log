@@ -12,3 +12,28 @@
 [2017-06-18 22:14:31] [INFO] itemcode_2251
 [2017-06-18 22:14:31] [INFO] token_BKIwIJtOTJixlDXTMs26kEMrU3eIRd42
 [2017-06-18 22:14:31] [INFO] ===XUNMA RESTURN:15651368837;
+[2017-07-09 12:11:00] [INFO] itemcode_2251
+[2017-07-09 12:11:00] [INFO] token_piIPBXZY5XZObpDyNrSZYOSjob6mRb43
+[2017-07-09 12:11:01] [INFO] ===XUNMA RESTURN:17151211654;
+[2017-07-09 12:12:46] [INFO] itemcode_2251
+[2017-07-09 12:12:46] [INFO] token_piIPBXZY5XZObpDyNrSZYOSjob6mRb43
+[2017-07-09 12:12:49] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-09 12:13:04] [INFO] 开始获取验证码：None, qq_register
+[2017-07-09 12:14:07] [INFO] 开始获取验证码：17151211654, qq_register
+[2017-07-09 12:14:47] [INFO] 开始获取验证码：17151211654, qq_register
+[2017-07-09 12:14:53] [ERROR] Traceback (most recent call last):
+  File "/Users/liujieyang/PycharmProjects/TaskConsole/smsCode/client_xunma.py", line 134, in GetCode
+    response = conn.getresponse()
+  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/httplib.py", line 1132, in getresponse
+    response.begin()
+  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/httplib.py", line 453, in begin
+    version, status, reason = self._read_status()
+  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/httplib.py", line 417, in _read_status
+    raise BadStatusLine(line)
+BadStatusLine: ''
+
+[2017-07-09 12:15:10] [INFO] 开始获取验证码：17151211654, qq_register
+[2017-07-09 12:15:19] [INFO] 收到消息：NOTION&单笔充值满 50元送 5%单笔充值满100元送10%自动赠送！上不封顶！[End]MSG&2251&17151211654&【腾讯科技】你正在注册微信帐号，验证码535668。请勿转发。[End]
+[2017-07-09 12:15:19] [INFO] 切分消息：NOTION&单笔充值满 50元送 5%单笔充值满100元送10%自动赠送！上不封顶！
+[2017-07-09 12:15:19] [INFO] 切分消息：MSG&2251&17151211654&【腾讯科技】你正在注册微信帐号，验证码535668。请勿转发。
+[2017-07-09 12:15:22] [INFO] KEY: verify_code_2251_17151211654, Code: 535668

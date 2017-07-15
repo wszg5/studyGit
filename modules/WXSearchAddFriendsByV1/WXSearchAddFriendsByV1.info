@@ -1,7 +1,7 @@
 {
 "id": "WXSearchAddFriendsByV1",
 "cate":"微信模块",
-"name":"v1值唤醒手机通讯录搜索加好友",
+"name":"v1值虚拟来路加好友",
 "url": "http://www.bejson.com",
 "version": "2.0",
 "code":"WX-S-1.1",
@@ -10,10 +10,17 @@
 "setting":[
 	{
 	"id": "repo_number_id",
-	"name":"微信号码库",
+	"name":"取v1值的微信号码库",
 	"type":"repo",
 	"source":"number",
 	"top_cate_id":"23"
+	},
+	{
+	"id": "repo_information_id",
+	"name":"v1值判断单双向回写资料库",
+	"type":"repo",
+	"source":"information",
+	"top_cate_id":"4"
 	},
 	{
     "id": "repo_material_id",
@@ -22,6 +29,13 @@
     "source":"material",
     "top_cate_id":"12"
     },
+    {
+	"id": "add_friend_way",
+	"name":"添加好友方式",
+	"type":"select",
+	"list":{"3":"微信号搜索","6":"朋友验证消息","13":"手机通讯录","15":"手机号搜索","17":"名片分享","18":"附近的人","30":"扫一扫","39":"公众号","随机":"随机"},
+	"defaultValue":"随机",
+	},
     {
 	"id": "add_count",
 	"name":"添加好友个数",
@@ -36,13 +50,6 @@
 	"defaultValue":"3",
 	"remark":"单位：小时"
 	},
-	 {
-	"id": "add_friend_way",
-	"name":"添加好友方式",
-	"type":"textbox",
-	"defaultValue":"随机",
-	"remark":"方式： 3,6,13,15,17,18,30,39,随机"
-	},
     {
     "id": "time_delay",
     "name":"加好友延时",
@@ -50,6 +57,5 @@
     "defaultValue":"5",
     "remark":"单位：秒"
     }
-
 ]
 }

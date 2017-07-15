@@ -128,7 +128,7 @@ class client_xunma:
             return code
         token = self.GetToken()
         try:
-            path = "/getQueue?token=" + token + ""
+            path = "/getMessage?token=%s&itemId=%s&phone=%s"%(token, itemcode, number)
             conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
             conn.request("GET", path)
             response = conn.getresponse()
@@ -139,13 +139,14 @@ class client_xunma:
                     self.GetToken(False)
                     return None
         except Exception:
+            self.logger.error(traceback.format_exc())
             return None
 
         smsList = self.ExtractSMS(data, length)
         for sms in smsList:
             if 'phone' in sms and 'code' in sms:
                 sms_number_key = 'verify_code_%s_%s' % (sms['itemid'], sms['phone'])
-                print ("KEY: %s, Code: %s" % (sms_number_key, sms['code']))
+                self.logger.info("KEY: %s, Code: %s" % (sms_number_key, sms['code']))
                 cache.set(sms_number_key, sms['code'])
                     #cache.set(sms['phone'], sms['code'])
                 '''
@@ -165,6 +166,7 @@ class client_xunma:
                 '''
 
     def GetVertifyCode(self, number, itemId, length=6):
+        self.logger.info('开始获取验证码：%s, %s' % (number, itemId))
         for i in range(1, 22):
             time.sleep(3)
             code = self.GetCode(number, itemId, length)
@@ -216,7 +218,11 @@ class client_xunma:
             return []
         result = []
         smsList = content.split('[End]')
+        if content:
+            self.logger.info('收到消息：%s' % content)
         for sms in smsList:
+            if sms:
+                self.logger.info('切分消息：%s' % sms)
             if 'MSG' not in sms:
                 continue
             data = sms.split('&');
@@ -239,12 +245,12 @@ if __name__ == '__main__':
 
     im_type_list = {"qq_register": "2251"}
     xunma = client_xunma("asdfasdfasdf", "powerman", "12341234abc", im_type_list)
-
+    phone =  '17151211654'
+    print phone
+    print xunma.GetVertifyCode(phone, "qq_register", 6)
     sms = u'MSG&2251&13941940790&【腾讯科技】你正在注册微信帐号，验证码303615。请勿转发。[End]RES&2251&13941940790[End]'
     sms = None
     print(xunma.ExtractSMS(sms, 6))
     phone =  xunma.GetPhoneNumber("qq_register")
 
-    phone =  xunma.GetPhoneNumber("qq_register", phone)
-    print phone
-    print xunma.GetVertifyCode(phone, "qq_register", 6)
+

@@ -15,15 +15,21 @@ class NewMobilqqAddByAddressListII:
         self.repo = Repo()
         self.xuma = None
 
-    def Gender(self, d, z):
+    def GetUnique(self):
+        nowTime = datetime.datetime.now( ).strftime( "%Y%m%d%H%M%S" );  # 生成当前时间
+        randomNum = random.randint( 0, 1000 );  # 生成的随机整数n，其中0<=n<=100
+        if randomNum <= 10:
+            randomNum = str( 00 ) + str( randomNum );
+        uniqueNum = str( nowTime ) + str( randomNum );
+        return uniqueNum
+
+    def Gender(self, d, obj):
+
         base_dir = os.path.abspath( os.path.join( os.path.dirname( __file__ ), os.path.pardir, "tmp" ) )
         if not os.path.isdir( base_dir ):
             os.mkdir( base_dir )
         sourcePng = os.path.join( base_dir, "%s_s.png" % (self.GetUnique( )) )
-        obj = d( resourceId='com.tencent.mobileqq:id/name', className='android.widget.TextView',
-                 descriptionContains='基本信息' )  # 当弹出选择QQ框的时候，定位不到验证码图片
         if obj.exists:
-            z.heartbeat( )
             obj = obj.info
             obj = obj['bounds']  # 验证码处的信息
             left = obj["left"]  # 验证码的位置信息
@@ -36,7 +42,7 @@ class NewMobilqqAddByAddressListII:
             img = Image.open( sourcePng )
             box = (left, top, right, bottom)  # left top right bottom
             region = img.crop( box )  # 截取验证码的图片
-            # show(region)　　　　　　　#展示资料卡上的信息
+            # show(region)    #展示资料卡上的信息
             image = region.convert( 'RGBA' )
             # 生成缩略图，减少计算量，减小cpu压力
             image.thumbnail( (200, 200) )
@@ -56,24 +62,10 @@ class NewMobilqqAddByAddressListII:
                 score = (saturation + 0.1) * count
                 if score > max_score:
                     max_score = score
-                    dominant_color = (r, g, b)
+                    dominant_color = (r, g, b)  # 红绿蓝
             # print("---------------------------------------------------------------------------")
             # print(dominant_color)
-            z.heartbeat( )
-            if None == dominant_color:
-                # print('见鬼了')
-                return '不限'
-            red = dominant_color[0]
-            blue = dominant_color[2]
-
-            if red > blue:
-                # print('女')
-                return '女'
-            else:
-                # print('男')
-                return '男'
-        else:  # 没有基本资料的情况
-            return '不限'
+            return dominant_color
 
     def Bind(self, d,z):
         circle = 0
@@ -226,8 +218,7 @@ class NewMobilqqAddByAddressListII:
                         className='android.widget.LinearLayout', index=1 ).child(
                         resourceId='com.tencent.mobileqq:id/name',
                         className='android.widget.LinearLayout',
-                        index=0 ).child(
-                        className='android.widget.LinearLayout', index=0 )
+                        index=0 )
 
                     while not d( textContains='适合打QQ电话' ).exists:
                         d.dump( compressed=False )
@@ -250,14 +241,25 @@ class NewMobilqqAddByAddressListII:
                             'text']
                         phoneNumber = phoneNumberStr[3:15]
 
+                    genderStr = d( className='android.widget.LinearLayout', index=7 ).child(
+                        className='android.widget.TextView', resourceId='com.tencent.mobileqq:id/name', index=0 )
+
+                    if genderStr.exists:
+                        genderInfo = self.Gender( d, genderStr )
+                        if genderInfo[0] > 200:
+                            gender2 = '女'
+                        elif genderInfo[2] > 200:
+                            gender2 = '男'
+                    else:
+                        gender2 = '男'
+
                     if gender1 != '不限':
-                        genderStr = obj_info.child( className='android.widget.LinearLayout', index=1 ).child(
-                            resourceId='com.tencent.mobileqq:id/info', className='android.widget.TextView',
-                            index=1 ).info['text']
-                        gender2 = genderStr[0:1]
                         if gender1 == gender2:  # gender1是外界设定的，gender2是读取到的
-                            d( text='加好友' ).click( )
+                            d(text='加好友').click()
                             z.sleep( 3 )
+                            if d(text='加好友').exists:
+                                d(textContains='返回').click()
+                                continue
                         else:
                             d( textContains='返回' ).click( )
                     else:
@@ -313,11 +315,11 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("INNZL7YDLFPBNFN7")
-    z = ZDevice("INNZL7YDLFPBNFN7")
+    d = Device("HT49RSK01046")
+    z = ZDevice("HT49RSK01046")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_material_id": "39", 'gender': "女", 'EndIndex': '50', "time_delay": "3"};  # cate_id是仓库号，length是数量
+    args = {"repo_material_id": "39", 'gender': "男", 'EndIndex': '2', "time_delay": "3"};  # cate_id是仓库号，length是数量
     o.action(d, z, args)
 
 
