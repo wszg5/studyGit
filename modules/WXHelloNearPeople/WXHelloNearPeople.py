@@ -14,12 +14,12 @@ class WXHelloNearPeople:
         self.repo = Repo()
         self.mid = os.path.realpath(__file__)
 
-    def action(self, d,z, args):
-        run_time = float( args['run_time'] ) * 60
-        run_interval = z.getModuleRunInterval( self.mid )
+    def action(self, d, z, args):
+        run_time = float(args['run_time']) * 60
+        run_interval = z.getModuleRunInterval(self.mid)
         if run_interval is not None and run_interval < run_time:
-            z.toast( u'锁定时间还差:%d分钟' % int( run_time - run_interval ) )
-            z.sleep( 2 )
+            z.toast(u'锁定时间还差:%d分钟' % int(run_time - run_interval))
+            z.sleep(2)
             return
 
         z.heartbeat()
@@ -32,10 +32,10 @@ class WXHelloNearPeople:
         z.sleep(7)
 
         while True:
-            if d( text='发现' ).exists and d( text='我' ).exists and d( text='通讯录' ).exists:
+            if d(text='发现').exists and d(text='我').exists and d(text='通讯录').exists:
                 break
             else:
-                d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
+                d(descriptionContains='返回', className='android.widget.ImageView').click()
 
         z.sleep(2)
         for i in range(0, 2):
@@ -47,6 +47,10 @@ class WXHelloNearPeople:
 
         if d(textContains='开始查看').exists:
             d(textContains='开始查看').click()
+            z.sleep(1.5)
+
+        if d(textContains='提高微信定位精确度').exists:
+            d(text='跳过').click()
             z.sleep(1.5)
 
         if d(textContains='下次不提示').exists:
@@ -65,6 +69,18 @@ class WXHelloNearPeople:
 
         if d(text='查看附近的人').exists:
             d(text='查看附近的人').click()
+            z.sleep( 3 )
+
+        while True:
+            v1List1 = z.wx_userList()
+            endIndex1 = len(list(json.loads(v1List1)))
+            if endIndex1 < 20:
+                break
+
+            for j in range(0, endIndex1):
+                v1_1 = list(json.loads(v1List1))[j]  # 将字符串改为list样式
+                self.repo.uploadPhoneNumber(v1_1, args['repo_number_id'])
+
 
         d( descriptionContains='更多' ).click( )
         if d(text='附近打招呼的人').exists:
@@ -104,15 +120,20 @@ class WXHelloNearPeople:
             d(text='查看全部').click()
             z.sleep(3)
 
+        while True:
+            v1List = z.wx_userList()
+            endIndex = len(list(json.loads(v1List)))
+            if endIndex < 20:
+                break
+
+            for a in range(0, endIndex):
+                v1 = list(json.loads(v1List))[a]  # 将字符串改为list样式
+                self.repo.uploadPhoneNumber(v1, args['repo_number_id'])
+
         z.sleep(8)
         i = 0
         count = 0
         while True:
-            v1List = z.wx_userList( )
-            for a in range( 0, 50 ):
-                v1 = list( json.loads( v1List ) )[a]  # 将字符串改为list样式
-                self.repo.uploadPhoneNumber( v1, args['repo_number_id'] )
-
             count = count + 1
             if count > int(args['hello_count']):
                 z.toast('已完成设置打招呼次数')
@@ -134,16 +155,17 @@ class WXHelloNearPeople:
                     z.sleep(1.5)
                 d(text='发送').click()
                 z.sleep(3)
-                d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
+                d(descriptionContains='返回', className='android.widget.ImageView').click()
                 z.sleep(2)
             else:
                 i = 1
-                d.swipe( width / 2, height * 7 / 8, width / 2, height / 8 )
+                d.swipe(width / 2, height * 7 / 8, width / 2, height / 8)
 
-        now = datetime.datetime.now( )
-        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+        now = datetime.datetime.now()
+        nowtime = now.strftime('%Y-%m-%d %H:%M:%S')  # 将日期转化为字符串 datetime => string
         z.setModuleLastRun(self.mid)
         z.toast('模块结束，保存的时间是%s' % nowtime)
+
 
 
 
@@ -162,6 +184,6 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"repo_material_id": "40","repo_number_id": "205", "hello_count": "10", 'gender': '女', 'run_time': "3"}    #cate_id是仓库号，length是数量
-    o.action(d,z, args)
+    o.action(d, z, args)
 
 

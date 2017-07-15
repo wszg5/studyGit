@@ -1,4 +1,6 @@
 # coding:utf-8
+import os
+
 from uiautomator import Device
 from Repo import *
 import time, datetime, random
@@ -11,8 +13,16 @@ logging.basicConfig(level=logging.INFO)
 class WXAutoReplyMsg:
     def __init__(self):
         self.repo = Repo()
+        self.mid = os.path.realpath( __file__ )
 
     def action(self, d,z, args):
+        run_time = float( args['run_time'] ) * 60
+        run_interval = z.getModuleRunInterval( self.mid )
+        if run_interval is not None and run_interval < run_time:
+            z.toast( u'锁定时间还差:%d分钟' % int( run_time - run_interval ) )
+            z.sleep( 2 )
+            return
+
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         z.sleep(7)
@@ -29,48 +39,56 @@ class WXAutoReplyMsg:
         if d(text='腾讯新闻').exists:
             d(text='腾讯新闻').long_click()
             z.sleep(2)
-            if d( text='删除该聊天' ).exists:
-                d( text='删除该聊天' ).click( )
+            if d(text='删除该聊天').exists:
+                d(text='删除该聊天').click()
 
         if d(text='微信团队').exists:
-            d( text='微信团队' ).long_click()
-            z.sleep( 2 )
-            if d( text='删除该聊天' ).exists:
-                d( text='删除该聊天' ).click( )
+            d(text='微信团队').long_click()
+            z.sleep(2)
+            if d(text='删除该聊天').exists:
+                d(text='删除该聊天').click()
 
         i = 0
+        j = 0
         while True:
             i = i + 1
             nearObj = d(className='android.widget.ListView', index=0).child(className='android.widget.LinearLayout', index=i).child(
                 className='android.widget.RelativeLayout',index=0).child(className='android.widget.TextView', index=1)
             if nearObj.exists:
+                if j > int(args['reply_count']):
+                    break
                 nearObj.click()
                 z.sleep(1.5)
                 for i in range( 0, msg_count ):
                     cate_id = args["repo_material_id"]
                     Material = self.repo.GetMaterial( cate_id, 0, 1 )
-                    if len( Material ) == 0:
-                        d.server.adb.cmd( "shell",
-                                          "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id ).communicate( )
-                        z.sleep( 10 )
+                    if len(Material) == 0:
+                        d.server.adb.cmd("shell",
+                                          "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
+                        z.sleep(10)
                         return
                     message = Material[0]['content']  # 取出发送消息的内容
-                    d( className='android.widget.EditText' ).click( )
-                    z.input( message )
-                    z.sleep( 1 )
-                    d( text='发送' ).click( )
-                d( descriptionContains='返回' ).click()
+                    d(className='android.widget.EditText').click()
+                    z.input(message)
+                    z.sleep(1)
+                    d(text='发送').click()
+                d(descriptionContains='返回').click()
                 z.sleep(1.5)
-                d( className='android.widget.ListView', index=0 ).child( className='android.widget.LinearLayout',
-                                                                         index=i ).long_click()
+                d(className='android.widget.ListView', index=0).child(className='android.widget.LinearLayout',
+                                                                         index=i).long_click()
                 if d(text='删除该聊天').exists:
                     d(text='删除该聊天').click()
                 z.sleep( 1 )
+                j += 1
             else:
-                if i > 18:
-                    z.sleep(3)
-                    i = 0
+                if i > 20:
+                    break
                 continue
+
+        now = datetime.datetime.now( )
+        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+        z.setModuleLastRun( self.mid )
+        z.toast( '模块结束，保存的时间是%s' % nowtime )
 
 
 def getPluginClass():
@@ -87,5 +105,5 @@ if __name__ == "__main__":
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_material_id": "200", "msg_count": "1"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "200", "msg_count": "1","reply_count": "3", "run_time": "1"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

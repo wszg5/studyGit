@@ -44,13 +44,6 @@
 	"defaultValue":"女",
 	"remark":"性别要求"
 	},
-    {
-	"id": "add_count",
-	"name":"添加好友个数",
-	"type":"textbox",
-	"defaultValue":"3",
-	"remark":"单位：个"
-	},
 	{
 	"id": "often_count",
 	"name":"频繁检存个数",

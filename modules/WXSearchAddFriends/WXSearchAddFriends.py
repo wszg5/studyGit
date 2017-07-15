@@ -24,8 +24,6 @@ class WXSearchAddFriends:
             return
         z.heartbeat()
 
-        add_count = int(args['add_count'])
-
         cate_id = args["repo_material_id"]
         Material = self.repo.GetMaterial(cate_id, 0, 1)
         if len(Material) == 0:
@@ -48,10 +46,8 @@ class WXSearchAddFriends:
             d(text='添加朋友').click()
         z.heartbeat()
         d(index='1',className='android.widget.TextView').click()   #点击搜索好友的输入框
-        account = 0
         counter = 0
         while True:
-            print(account)
             cate_id = int( args["repo_number_id"] )  # 得到取号码的仓库号
             number_count = 1  # 每次取一个号码
             while True:
@@ -138,104 +134,98 @@ class WXSearchAddFriends:
                     className='android.widget.TextView' ).info['text']
             else:
                 sign = '空'
-            z.heartbeat( )
+            z.heartbeat()
 
-            v1s = z.wx_userList( )
-            if len( v1s ) != 2:
-                v1 = list( json.loads( v1s ) )[0] # 将字符串改为list样式
+            v1s = z.wx_userList()
+            if len(v1s) != 2:
+                v1 = list(json.loads(v1s))[0] # 将字符串改为list样式
             else:
                 v1 = '空'
 
-            if account < add_count:
-                gender = args['gender']
-                if gender != '不限':
-                    if Gender != gender:  # 看性别是否满足条件
-                        if d( text='添加到通讯录' ).exists:  # 存在联系人的情况
-                            d( text='添加到通讯录' ).click( )
-                            if d( text='发消息' ).exists:
-                                seltype = '单向'
-                            else:
-                                seltype = '双向'
-
-                        if v1 == '空':
-                            v1s1 = z.wx_userList( )
-                            if len( v1s1 ) != 2:
-                                v1 = list( json.loads( v1s1 ) )[0]  # 将字符串改为list样式
-
-                        d( descriptionContains='返回' ).click( )
-                        z.sleep( 3 )
-                        d( descriptionContains='返回' ).click( )
-                        z.sleep( 3 )
-                        d( descriptionContains='清除' ).click( )
-
-                        para = {"phoneNumber": WXnumber, 'x_01': nickname, 'x_02': Gender, "x_03": area,
-                                "x_04": sign,
-                                "x_05": seltype, 'x_20': v1}
-                        print( '--%s--%s--%s--%s--%s' % (WXnumber, nickname, Gender, area, sign) )
-                        self.repo.PostInformation( args["repo_information_id"], para )
-                        z.toast( "%s入库完成" % WXnumber )
-                        continue
-
-                if d( text='设置备注和标签' ).exists:
-                    d( text='设置备注和标签' ).click( )
-                    z.sleep( 3 )
-                    beizhuObj = d( className='android.widget.EditText', index=1 )
-                    if beizhuObj.exists:
-                        z.input( WXnumber )
-                        d( text='保存' ).click( )
-                        z.sleep( 3 )
-
-                z.heartbeat( )
-                if d( text='添加到通讯录' ).exists:  # 存在联系人的情况
-                    d( text='添加到通讯录' ).click( )
-                    if d( text='发消息' ).exists:
-                        seltype = '单向'
-                    else:
-                        seltype = '双向'
+            gender = args['gender']
+            if gender != '不限':
+                if Gender != gender:  # 看性别是否满足条件
+                    if d( text='添加到通讯录' ).exists:  # 存在联系人的情况
+                        d( text='添加到通讯录' ).click( )
+                        if d( text='发消息' ).exists:
+                            seltype = '单向'
+                        else:
+                            seltype = '双向'
 
                     if v1 == '空':
-                        v1s2 = z.wx_userList( )
-                        if len( v1s2 ) != 2:
-                            v1 = list( json.loads( v1s2 ) )[0]  # 将字符串改为list样式
+                        v1s1 = z.wx_userList( )
+                        if len( v1s1 ) != 2:
+                            v1 = list( json.loads( v1s1 ) )[0]  # 将字符串改为list样式
 
-                    para = {"phoneNumber": WXnumber, 'x_01': nickname, 'x_02': Gender, "x_03": area, "x_04": sign,
+                    d( descriptionContains='返回' ).click( )
+                    z.sleep( 3 )
+                    d( descriptionContains='返回' ).click( )
+                    z.sleep( 3 )
+                    d( descriptionContains='清除' ).click( )
+
+                    para = {"phoneNumber": WXnumber, 'x_01': nickname, 'x_02': Gender, "x_03": area,
+                            "x_04": sign,
                             "x_05": seltype, 'x_20': v1}
                     print( '--%s--%s--%s--%s--%s' % (WXnumber, nickname, Gender, area, sign) )
                     self.repo.PostInformation( args["repo_information_id"], para )
                     z.toast( "%s入库完成" % WXnumber )
-                    if d( text='发消息' ).exists:
-                        d( descriptionContains='返回' ).click( )
-                        z.sleep( 3 )
-                        d( descriptionContains='返回' ).click( )
-                        z.sleep( 3 )
-                        d( descriptionContains='清除' ).click( )
-                        continue
-                else:
                     continue
-                z.sleep( 2 )
 
-                obj = d( className='android.widget.EditText' ).info  # 将之前消息框的内容删除
-                obj = obj['text']
-                lenth = len( obj )
-                t = 0
-                while t < lenth:
-                    d.press.delete( )
-                    t = t + 1
-                d( className='android.widget.EditText' ).click( )
-                z.input( message )
-                d( text='发送' ).click( )
-                z.heartbeat( )
-                d( descriptionContains='返回' ).click()
-                z.sleep(1.5)
-                d( descriptionContains='清除' ).click()
-                z.sleep( 1 )
-                account = account + 1
-                continue
-            else:
-                d( descriptionContains='返回' ).click( )
+            if d( text='设置备注和标签' ).exists:
+                d( text='设置备注和标签' ).click( )
                 z.sleep( 3 )
-                d( descriptionContains='清除' ).click( )
+                beizhuObj = d( className='android.widget.EditText', index=1 )
+                if beizhuObj.exists:
+                    z.input( WXnumber )
+                    d( text='保存' ).click( )
+                    z.sleep( 3 )
+
+            z.heartbeat()
+            if d(text='添加到通讯录').exists:  # 存在联系人的情况
+                d( text='添加到通讯录' ).click( )
+                if d( text='发消息' ).exists:
+                    seltype = '单向'
+                else:
+                    seltype = '双向'
+
+                if v1 == '空':
+                    v1s2 = z.wx_userList()
+                    if len( v1s2 ) != 2:
+                        v1 = list( json.loads( v1s2 ) )[0]  # 将字符串改为list样式
+
+                para = {"phoneNumber": WXnumber, 'x_01': nickname, 'x_02': Gender, "x_03": area, "x_04": sign,
+                        "x_05": seltype, 'x_20': v1}
+                print( '--%s--%s--%s--%s--%s' % (WXnumber, nickname, Gender, area, sign) )
+                self.repo.PostInformation( args["repo_information_id"], para )
+                z.toast( "%s入库完成" % WXnumber )
+                if d( text='发消息' ).exists:
+                    d( descriptionContains='返回' ).click( )
+                    z.sleep( 3 )
+                    d( descriptionContains='返回' ).click( )
+                    z.sleep( 3 )
+                    d( descriptionContains='清除' ).click( )
+                    continue
+            else:
                 continue
+            z.sleep( 2 )
+
+            obj = d( className='android.widget.EditText' ).info  # 将之前消息框的内容删除
+            obj = obj['text']
+            lenth = len( obj )
+            t = 0
+            while t < lenth:
+                d.press.delete( )
+                t = t + 1
+            d( className='android.widget.EditText' ).click( )
+            z.input( message )
+            d( text='发送' ).click( )
+            z.heartbeat( )
+            d( descriptionContains='返回' ).click( )
+            z.sleep( 1.5 )
+            d( descriptionContains='清除' ).click( )
+            z.sleep( 1 )
+            continue
+
 
         now = datetime.datetime.now()
         nowtime = now.strftime('%Y-%m-%d %H:%M:%S')  # 将日期转化为字符串 datetime => string
@@ -255,5 +245,6 @@ if __name__ == "__main__":
     z = ZDevice("5959d2f3")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_number_id": "44", "repo_information_id":'204', "repo_material_id": "39", "add_count": "1", "often_count":"3","save_often_number_id":"172", 'gender': "男", "run_time": "1"}    #cate_id是仓库号，length是数量
+    args = {"repo_number_id": "44", "repo_information_id":'204', "repo_material_id": "39", "often_count":"3","save_often_number_id":"172", 'gender': "男", "run_time": "1"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
+

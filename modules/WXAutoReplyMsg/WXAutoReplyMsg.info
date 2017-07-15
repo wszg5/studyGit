@@ -15,6 +15,13 @@
 	"source":"material",
 	"top_cate_id":"12"
 	},
+	{
+	"id": "reply_count",
+	"name":"回复次数",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：次"
+	},
     {
 	"id": "msg_count",
 	"name":"发消息数",
