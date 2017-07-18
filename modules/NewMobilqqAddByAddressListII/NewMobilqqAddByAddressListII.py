@@ -116,6 +116,7 @@ class NewMobilqqAddByAddressListII:
 
     def action(self, d,z, args):
 
+        z.toast("开始执行：普通QQ通讯录加好友单选")
         self.scode = smsCode( d.server.adb.device_serial( ) )
         gender1 = args['gender']
         z.heartbeat()
@@ -125,7 +126,7 @@ class NewMobilqqAddByAddressListII:
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        z.sleep(6)
+        z.sleep(10)
         cate_id = args["repo_material_id"]  # ------------------
         Material = self.repo.GetMaterial(cate_id, 0, 1)
         if len(Material) == 0:
@@ -154,21 +155,25 @@ class NewMobilqqAddByAddressListII:
         z.heartbeat()
         if d(text='验证手机号码').exists:
             PhoneNumber = None
-            a = 0
+            j = 0
             while PhoneNumber is None:
-                a += 1
+                j += 1
                 PhoneNumber = self.scode.GetPhoneNumber( self.scode.QQ_CONTACT_BIND )  # 获取接码平台手机号码
-                if a > 20:
+                if j > 20:
                     z.toast('取不到手机号码')
                     return
+            z.input( PhoneNumber )
+            z.sleep( 1.5 )
+            if d( text='下一步').exists:
+                d( text='下一步').click()
+                z.sleep( 3 )
+            if d(text='确定').exists:
+                d(text='确定').click()
+                z.sleep(2)
             code = self.scode.GetVertifyCode( PhoneNumber, self.scode.QQ_CONTACT_BIND )  # 获取接码验证码
             if code == '':
                 z.toast( PhoneNumber + '手机号,获取不到验证码' )
-            z.input(PhoneNumber)
-            z.sleep(1.5)
-            if d(text='下一步').exists:
-                d(text='下一步').click()
-                z.sleep(2)
+                return
             z.input(code)
             if d(text='完成').exists:
                 d(text='完成').click()
@@ -190,8 +195,8 @@ class NewMobilqqAddByAddressListII:
             d(text='匹配手机通讯录').click()
         z.heartbeat()
 
-        i = 1
-        t = 1
+        i = 2
+        t = 0
         a = 0
         b = 0
         EndIndex = int( args['EndIndex'] )
@@ -200,22 +205,43 @@ class NewMobilqqAddByAddressListII:
                 break
             obj = d( className='android.widget.AbsListView' ).child( className='android.widget.LinearLayout',
                                                                      index=i )  # 滑动的条件
-            if obj.exists:
-                i = i + 1
-                obj1 = d( className='android.widget.AbsListView' ).child( className='android.widget.LinearLayout',
-                                                                          index=i ) \
+            phoneNumList = []
+            for k in range( 1, 15 ):
+                obj2 = d( className='android.widget.AbsListView' ).child( className='android.widget.LinearLayout',
+                                                                          index=k ) \
                     .child( className='android.widget.ImageView', index=0 )  # 第i个内容存在并且是人的情况
+                if obj2.exists:
+                    getPhoneInfo = d( className='android.widget.AbsListView', resourceId='com.tencent.mobileqq:id/name',
+                                      index=0 ).child(
+                        className='android.widget.LinearLayout', index=k ).child(
+                        className='android.widget.RelativeLayout', index=0 ).child(
+                        className='android.widget.LinearLayout', index=1 ).child(
+                        className='android.widget.TextView', index=0 )
+                    if getPhoneInfo.exists:
+                        phoneNum = getPhoneInfo.info['text']
+                        phoneNumList.append( phoneNum )
+            phoneNumList1 = list(set(phoneNumList))
+
+            if obj.exists:
+                obj1 = d( className='android.widget.AbsListView' ).child( className='android.widget.LinearLayout', index=i ).child(
+                    className='android.widget.ImageView', index=0 )  # 第i个内容存在并且是人的情况
 
                 obj5 = d( className='android.widget.AbsListView' ).child( className='android.widget.LinearLayout',
                                                                           index=i ) \
                     .child( className='android.widget.FrameLayout' ).child( text='等待验证' )  # 验证已经发过的情况
 
+
                 if obj1.exists:
                     if obj5.exists:
-                        if b>5:
+                        if b>3:
+                            i = 1
+                            d.swipe( width / 2, height * 4 / 5, width / 2, height / 5 )
+                        elif b>5:
                             break
                         b = b + 1
+                        i += 1
                         continue
+
                     cate_id = args["repo_material_id"]
                     Material = self.repo.GetMaterial( cate_id, 0, 1 )
                     if len( Material ) == 0:
@@ -234,46 +260,49 @@ class NewMobilqqAddByAddressListII:
                         index=0 ).click( )
 
                     z.sleep( 5 )
+                    #
+                    # obj_info = d( resourceId='com.tencent.mobileqq:id/common_xlistview',
+                    #               className='android.widget.AbsListView', index=0 ).child(
+                    #     className='android.widget.LinearLayout', index=1 ).child(
+                    #     resourceId='com.tencent.mobileqq:id/name',
+                    #     className='android.widget.LinearLayout',
+                    #     index=0 )
+                    #
+                    # while not d( textContains='适合打QQ电话' ).exists:
+                    #     d.dump( compressed=False )
+                    #     if a > 5:
+                    #         a = 0
+                    #         break
+                    #     a += 1
+                    # phoneNumber = ''
+                    # if d( textContains='适合打QQ电话' ).exists:
+                    #     z.heartbeat( )
+                    #     obj3 = obj_info.child( className='android.widget.LinearLayout', index=2 ).child(
+                    #         resourceId='com.tencent.mobileqq:id/info', className='android.widget.TextView',
+                    #         index=1 )
+                    #     if not obj3.exists:
+                    #         d( textContains='返回' ).click( )
+                    #         continue
+                    #
+                    #     phoneNumberStr = obj_info.child( className='android.widget.LinearLayout', index=2 ).child(
+                    #         resourceId='com.tencent.mobileqq:id/info', className='android.widget.TextView' ).info[
+                    #         'text']
+                    #     phoneNumber = phoneNumberStr[3:15]
 
-                    obj_info = d( resourceId='com.tencent.mobileqq:id/common_xlistview',
-                                  className='android.widget.AbsListView', index=0 ).child(
-                        className='android.widget.LinearLayout', index=1 ).child(
-                        resourceId='com.tencent.mobileqq:id/name',
-                        className='android.widget.LinearLayout',
+                    JudgeGender = d( className='android.widget.LinearLayout', index=1 ).child(
+                        className='android.view.View',
+                        resourceId='com.tencent.mobileqq:id/icon',
                         index=0 )
-
-                    while not d( textContains='适合打QQ电话' ).exists:
-                        d.dump( compressed=False )
-                        if a > 5:
-                            a = 0
-                            break
-                        a += 1
-                    phoneNumber = ''
-                    if d( textContains='适合打QQ电话' ).exists:
-                        z.heartbeat( )
-                        obj3 = obj_info.child( className='android.widget.LinearLayout', index=2 ).child(
-                            resourceId='com.tencent.mobileqq:id/info', className='android.widget.TextView',
-                            index=1 )
-                        if not obj3.exists:
-                            d( textContains='返回' ).click( )
-                            continue
-
-                        phoneNumberStr = obj_info.child( className='android.widget.LinearLayout', index=2 ).child(
-                            resourceId='com.tencent.mobileqq:id/info', className='android.widget.TextView' ).info[
-                            'text']
-                        phoneNumber = phoneNumberStr[3:15]
-
-                    genderStr = d( className='android.widget.LinearLayout', index=7 ).child(
-                        className='android.widget.TextView', resourceId='com.tencent.mobileqq:id/name', index=0 )
-
-                    if genderStr.exists:
-                        genderInfo = self.Gender( d, genderStr )
-                        if genderInfo[0] > 200:
-                            gender2 = '女'
-                        elif genderInfo[2] > 200:
-                            gender2 = '男'
-                    else:
-                        gender2 = '男'
+                    if JudgeGender.exists:
+                        genderStr = \
+                        d( className='android.widget.AbsListView' ).child( className='android.widget.LinearLayout',
+                                                                           index=1 ).child(
+                            className='android.widget.LinearLayout', resourceId='com.tencent.mobileqq:id/name' ).child(
+                            className='android.widget.LinearLayout', index=0 ).child(
+                            className='android.widget.LinearLayout', index=1 ).child(
+                            className='android.widget.TextView', resourceId='com.tencent.mobileqq:id/info',
+                            index=1 ).info['text']
+                        gender2 = genderStr[0]
 
                     if gender1 != '不限':
                         if gender1 == gender2:  # gender1是外界设定的，gender2是读取到的
@@ -281,8 +310,9 @@ class NewMobilqqAddByAddressListII:
                             z.sleep( 3 )
                             if d(text='加好友').exists:
                                 d(textContains='返回').click()
-                                continue
+                                break
                         else:
+                            i += 1
                             d( textContains='返回' ).click( )
                     else:
                         d( text='加好友' ).click( )
@@ -299,30 +329,28 @@ class NewMobilqqAddByAddressListII:
                                 d.press.delete( )
                                 mn = mn + 1
                             z.input( message )
-
                             z.sleep( 2 )
-
-                            d( resourceId='com.tencent.mobileqq:id/name',
-                               className='android.widget.LinearLayout',
-                               index=1 ).child(
-                                resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText',
-                                index=1 ).click( )
-
-                            z.input( phoneNumber )
-
                             d( text='发送' ).click( )
                             t = t + 1
                             z.sleep( 3 )
+                            if d(text='请求发送失败').exists:
+                                d(text='确定').click()
                             d( textContains='返回' ).click( )
                         else:
+                            i += 1
                             d( textContains='取消' ).click( )
                             z.sleep(3)
                             d( textContains='返回' ).click( )
                             continue
+                else:
+                    i += 1
+                    continue
 
             else:
+                b = 0
                 i = 1
                 d.swipe( width / 2, height * 4 / 5, width / 2, height / 5 )
+
 
 
         if (args["time_delay"]):
@@ -341,8 +369,13 @@ if __name__ == "__main__":
     z = ZDevice("HT4A6SK01638")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_material_id": "39", 'gender': "男", 'EndIndex': '2', "time_delay": "3"};  # cate_id是仓库号，length是数量
+    args = {"repo_material_id": "39", 'gender': "男", 'EndIndex': '5', "time_delay": "3"};  # cate_id是仓库号，length是数量
     o.action(d, z, args)
+
+
+
+
+
 
 
 
