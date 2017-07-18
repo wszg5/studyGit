@@ -9,7 +9,7 @@ class WXAddNearBy:
     def __init__(self):
         self.repo = Repo()
 
-    def action(self, d,z, args):
+    def action(self, d, z, args):
         z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
@@ -45,17 +45,18 @@ class WXAddNearBy:
                 d(text='添加到通讯录').click()
                 z.sleep(3)
                 if d( text='发消息' ).exists:
-                    para = {'phoneNumber': nickname, 'x_01': Gender, 'x_02': '单向', 'x_03': id}
+                    para = {'phoneNumber': nickname, 'x_01': Gender, 'x_02': '单向', 'x_20': id}
                     self.repo.PostInformation( args["repo_cate_id"], para )
                     z.toast( "%s入库完成" % nickname )
                 else:
-                    para = {'phoneNumber': nickname, 'x_01': Gender, 'x_02': '双向', 'x_03': id}
+                    para = {'phoneNumber': nickname, 'x_01': Gender, 'x_02': '双向', 'x_20': id}
                     self.repo.PostInformation( args["repo_cate_id"], para )
                     z.toast( "%s入库完成" % nickname )
             else:
                 continue
 
         if (args["time_delay"]):
+            z.toast(args['add_count'] + '个添加完毕，模块结束运行')
             z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
@@ -67,10 +68,10 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54VSK01061")
-    z = ZDevice("HT54VSK01061")
+    d = Device("5959d2f3")
+    z = ZDevice("5959d2f3")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_wxcade_id": "131","repo_cate_id":"171","add_count": "10",'time_delay':"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_wxcade_id": "202", "repo_cate_id": "171", "add_count": "10", 'time_delay': "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

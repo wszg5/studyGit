@@ -95,6 +95,10 @@ class WXImpContactAddFriend:
             z.sleep(2)
             return
         z.heartbeat( )
+        z.sleep(8)
+
+        z.heartbeat( )
+        z.toast("开始执行：微信通讯录加好友+导入（尊云专用）模块")
 
         self.ImpContact(d, z, args) #导入通讯录
 
@@ -105,7 +109,6 @@ class WXImpContactAddFriend:
         d.press.home( )
         if d( text='微信' ).exists:
             d( text='微信' ).click( )
-
         else:
             # d.swipe( width - 20, height / 2, 0, height / 2, 5 )
             z.toast( '该页面没有微信' )
@@ -118,12 +121,12 @@ class WXImpContactAddFriend:
             else:
                 d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
 
-        d( description='更多功能按钮' ).click( )
-        d( textContains='添加朋友' ).click( )
+        d(description='更多功能按钮').click( )
+        d(textContains='添加朋友').click( )
         d( textContains='手机联系人' ).click( )
-        d( text='添加手机联系人' ).click( )
-        while d( textContains='正在获取' ).exists:
-            z.sleep( 3 )
+        d(text='添加手机联系人').click( )
+        while d(textContains='正在获取').exists:
+            z.sleep(3)
         z.heartbeat( )
         set1 = set( )
         change = 0
@@ -133,11 +136,11 @@ class WXImpContactAddFriend:
         EndIndex = int( args['EndIndex'] )  # ------------------
         while True:
             cate_id = args["repo_material_id"]  # ------------------
-            Material = self.repo.GetMaterial( cate_id, 0, 1 )
+            Material = self.repo.GetMaterial(cate_id, 0, 1)
             if len( Material ) == 0:
-                d.server.adb.cmd( "shell",
-                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id ).communicate( )
-                z.sleep( 10 )
+                d.server.adb.cmd("shell",
+                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate( )
+                z.sleep(10)
                 return
             message = Material[0]['content']  # 从素材库取出的要发的材料
             z.sleep(1)
@@ -387,8 +390,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT54VSK01061")
-    z = ZDevice("HT54VSK01061")
+    d = Device("36be646")
+    z = ZDevice("36be646")
 
 
 #    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
@@ -409,5 +412,6 @@ if __name__ == "__main__":
             "repo_material_id": "39", 'EndIndex': '3', 'repo_save_information_id': '197', 'gender': "不限","time_delay": "3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
+
 
 

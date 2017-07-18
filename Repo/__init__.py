@@ -108,6 +108,19 @@ class Repo:
         else:
             return []
 
+    def getInformationByGender(self,cate_id,gender):    #根据性别获取资料库素材
+        path = "/repo_api/WXInformation/getInformationList?cate_id=%s&gender=%s" % (cate_id,gender)
+        print('地址是%s'%path)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
+        response = conn.getresponse()
+        if response.status == 200:
+            data = response.read()
+            numbers = json.loads(data)
+            return  numbers
+        else:
+            return []
+
 
     def BackupInfo(self,cateId,status,Number,IMEI,remark):           #仓库号，状态，QQ号，备注设备id_卡槽id
         path = "/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&IMEI=%s&cardslot=%s" % (cateId,status,Number,IMEI,remark)
@@ -208,11 +221,11 @@ if __name__ == '__main__':
     # result = repo.SetAccount("6", "ddkf", "1918697054")
 
     # result = repo.GetMaterial("8",120,1)
-    print('')
+    #
     # print(result[0]["content"])
     # result1 = repo.GetNumber("13",0,10)              #意思是取13号仓库2小时内没有用过的号码，一次取16个
     # print(result1[0])
-
+    print( '' )
     # print (result[0])
     # print  result[0]["content"]
     # print (result)

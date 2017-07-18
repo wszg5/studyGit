@@ -40,6 +40,7 @@
     "id": "run_time",
     "name":"模块运行间隔时间",
     "type":"textbox",
+    "defaultValue":"1",
     "remark":"单位：小时"
     }
 ]

@@ -18,7 +18,7 @@ class MobilqqLogin:
     def __init__(self):
         self.type = 'mobileqq'
         self.repo = Repo()
-        self.slot = Slot(self.type)
+
 
 
     def GetUnique(self):
@@ -60,9 +60,13 @@ class MobilqqLogin:
             z.sleep(4)
             d(text='登 录').click()
             z.sleep(1)
-            d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
+            # d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
+            d(className='android.widget.EditText', index=0).click()  # ﻿1918697054----xiake1234.  QQNumber
+            z.input(QQNumber)
             z.sleep(1)
-            d(resourceId='com.tencent.mobileqq:id/password', index=2).set_text(QQPassword)  # Bn2kJq5l     QQPassword
+            # d(resourceId='com.tencent.mobileqq:id/password').set_text(QQPassword)  # Bn2kJq5l     QQPassword
+            d(resourceId='com.tencent.mobileqq:id/password').click()  # Bn2kJq5l     QQPassword
+            z.input( QQPassword )
             z.heartbeat()
             logger = util.logger
             print('QQ号:%s,QQ密码：%s'%(QQNumber,QQPassword))
@@ -76,13 +80,19 @@ class MobilqqLogin:
                 z.sleep(2)
             z.sleep(4)
             z.heartbeat()
-            if d(resourceId='com.tencent.mobileqq:id/name', index='2',className="android.widget.EditText").exists:  # 需要验证码的情况
-                icode = imageCode()
+            detection_robot = d( index='3', className="android.widget.EditText" )
+            not_detection_robot = d( resourceId='com.tencent.mobileqq:id/name', index='2',
+                                     className="android.widget.EditText" )
+            if detection_robot.exists or not_detection_robot.exists:  # 需要验证码的情况
+                icode = imageCode( )
                 im_id = ""
-                for i in range(0, 30, +1):  # 打码循环
+                for i in range( 0, 30, +1 ):  # 打码循环
                     if i > 0:
-                        icode.reportError(im_id)
-                    obj = d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.ImageView')      #当弹出选择QQ框的时候，定位不到验证码图片
+                        icode.reportError( im_id )
+                    obj = d( resourceId='com.tencent.mobileqq:id/name',
+                             className='android.widget.ImageView' )  # 当弹出选择QQ框的时候，定位不到验证码图片
+                    if not obj.exists:
+                        obj = d( index='2', className='android.widget.Image' )
                     obj = obj.info
                     obj = obj['bounds']  # 验证码处的信息
                     left = obj["left"]  # 验证码的位置信息
@@ -90,35 +100,43 @@ class MobilqqLogin:
                     right = obj['right']
                     bottom = obj['bottom']
 
-                    d.screenshot(sourcePng)  # 截取整个输入验证码时的屏幕
+                    d.screenshot( sourcePng )  # 截取整个输入验证码时的屏幕
 
-                    img = Image.open(sourcePng)
+                    img = Image.open( sourcePng )
                     box = (left, top, right, bottom)  # left top right bottom
-                    region = img.crop(box)  # 截取验证码的图片
+                    region = img.crop( box )  # 截取验证码的图片
 
-                    img = Image.new('RGBA', (right - left, bottom - top))
-                    img.paste(region, (0, 0))
+                    img = Image.new( 'RGBA', (right - left, bottom - top) )
+                    img.paste( region, (0, 0) )
 
-                    img.save(codePng)
-                    im = open(codePng, 'rb')
+                    img.save( codePng )
+                    im = open( codePng, 'rb' )
 
-                    codeResult = icode.getCode(im, icode.CODE_TYPE_4_NUMBER_CHAR)
+                    codeResult = icode.getCode( im, icode.CODE_TYPE_4_NUMBER_CHAR, 60 )
 
                     code = codeResult["Result"]
                     im_id = codeResult["Id"]
-                    os.remove(sourcePng)
-                    os.remove(codePng)
-                    z.heartbeat()
-                    d(resourceId='com.tencent.mobileqq:id/name', index='2',className="android.widget.EditText").set_text(code)
-                    z.sleep(3)
-                    d(text='完成', resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText').click()
-                    z.sleep(6)
-                    z.heartbeat()
-                    while d(className='android.widget.ProgressBar',index=0).exists:        #网速不给力时，点击完成后仍然在加载时的状态
-                        z.sleep(2)
-                    z.sleep(3)
-                    z.heartbeat()
-                    if d(text='输入验证码',resourceId='com.tencent.mobileqq:id/ivTitleName').exists:
+                    os.remove( sourcePng )
+                    os.remove( codePng )
+                    z.heartbeat( )
+                    z.sleep(5)
+                    if not_detection_robot.exists:
+                        d( resourceId='com.tencent.mobileqq:id/name', index='2',
+                           className="android.widget.EditText" ).set_text( code )
+                    else:
+                        detection_robot.set_text( code )
+                    z.sleep( 3 )
+                    if d( descriptionContains='验证', className='android.view.View' ).exists:
+                        d( descriptionContains='验证', className='android.view.View' ).click( )
+                    else:
+                        d( text='完成', resourceId='com.tencent.mobileqq:id/ivTitleBtnRightText' ).click( )
+                    z.sleep( 6 )
+                    z.heartbeat( )
+                    while d( className='android.widget.ProgressBar', index=0 ).exists:  # 网速不给力时，点击完成后仍然在加载时的状态
+                        z.sleep( 2 )
+                    z.sleep( 3 )
+                    z.heartbeat( )
+                    if d( text='输入验证码', resourceId='com.tencent.mobileqq:id/ivTitleName' ).exists:
                         continue
                     else:
                         break
@@ -133,6 +151,8 @@ class MobilqqLogin:
                 return QQNumber
             z.sleep(1)
             if d(text='马上绑定').exists:
+                if d(text='关闭').exists:
+                    d(text='关闭').click()
                 return QQNumber
             z.sleep(1)
             if d(text='通讯录').exists:              #登陆上后弹出t通讯录的情况
@@ -150,16 +170,18 @@ class MobilqqLogin:
                 d(text='取消').click()
             continue
     def qiehuan(self,d,z,args):
-        time_limit = args['time_limit']
+        time_limit = int(args['time_limit'])
         cate_id = args["repo_cate_id"]
-        slotnum = self.slot.getSlot(d, time_limit)  # 没有空卡槽，取２小时没用过的卡槽
+        serial = d.server.adb.device_serial( )
+        self.slot = Slot( serial, self.type )
+        slotnum = self.slot.getAvailableSlot(time_limit)  # 没有空卡槽，取２小时没用过的卡槽
         print(slotnum)
         while slotnum == 0:  # 2小时没有用过的卡槽也为空的情况
             d.server.adb.cmd("shell",
                              "am broadcast -a com.zunyun.zime.toast --es msg \"QQ卡槽全满，无间隔时间段未用\"").communicate()
             z.heartbeat()
             z.sleep(30)
-            slotnum = self.slot.getSlot(d, time_limit)
+            slotnum = self.slot.getAvailableSlot(time_limit)
         z.heartbeat()
         d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
 
@@ -233,23 +255,25 @@ class MobilqqLogin:
             if QQnumber=='nothing':
                 self.qiehuan(d,z,args)
             z.heartbeat()
-            self.slot.backup(d, slotnum, QQnumber)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
+            self.slot.backup(slotnum, str(slotnum)+'_'+QQnumber)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
             self.repo.BackupInfo(cate_id, 'using', QQnumber, serialinfo, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
 
     def action(self, d,z, args):
         z.heartbeat()
-        time_limit = args['time_limit']
-        time_limit1 = args['time_limit1']
+        time_limit = int(args['time_limit'])
         cate_id = args["repo_cate_id"]
-        slotnum = self.slot.getEmpty(d)  # 取空卡槽
+        serial = d.server.adb.device_serial( )
+        self.slot = Slot(serial, self.type)
+        slotnum = self.slot.getEmpty()  # 取空卡槽
         if slotnum == 0:    #没有空卡槽的话
-            slotnum = self.slot.getSlot(d, time_limit)  # 没有空卡槽，取２小时没用过的卡槽
+            slotObj = self.slot.getAvailableSlot(time_limit)  # 取空卡槽，取２小时没用过的卡槽
+            slotnum = slotObj['id']
             print(slotnum)
-            while slotnum == 0:  # 2小时没用过的卡槽也为没有的情况
+            while slotnum is None:  # 2小时没用过的卡槽也为没有的情况
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ卡槽全满，无间隔时间段未用\"").communicate()
                 z.heartbeat()
                 z.sleep(30)
-                slotnum = self.slot.getSlot(d, time_limit)
+                slotnum = self.slot.getAvailableSlot(time_limit)
             z.heartbeat()
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
 
@@ -271,7 +295,8 @@ class MobilqqLogin:
                 else:
                     z.generateSerial(getSerial)  # 将串号保存
             z.heartbeat()
-            self.slot.restore(d, slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
+            print(slotnum)
+            self.slot.restore(slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
             d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
             d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
             z.heartbeat()
@@ -281,7 +306,7 @@ class MobilqqLogin:
                 if 'icmp_seq'and 'bytes from'and'time' in ping[0]:
                     break
                 z.sleep(2)
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为"+str(slotnum)+"号\"").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为"+slotnum+"号\"").communicate()
             z.sleep(2)
             if d(textContains='主题装扮').exists:
                 d(text='关闭').click()
@@ -309,7 +334,7 @@ class MobilqqLogin:
                 z.heartbeat()
                 obj = self.slot.getSlotInfo(d, slotnum)  # 得到切换后的QQ号
                 QQnumber = obj['info']  # info为QQ号
-                self.slot.backup(d, slotnum, QQnumber)  # 设备信息，卡槽号，QQ号
+                self.slot.backup( slotnum, str( slotnum ) + '_' + QQnumber )  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo(cate_id, 'using', QQnumber,getSerial,'%s_%s_%s' % (d.server.adb.device_serial(),self.type, slotnum))  # 仓库号，状态，QQ号，备注设备id_卡槽id
 
             else:        #切换不成功的情况
@@ -320,7 +345,7 @@ class MobilqqLogin:
                 if QQnumber == 'nothing':
                     self.qiehuan(d, z, args)
                 z.heartbeat()
-                self.slot.backup(d, slotnum, QQnumber)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
+                self.slot.backup( slotnum, str( slotnum ) + '_' + QQnumber )  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
                 self.repo.BackupInfo(cate_id, 'using', QQnumber,serialinfo,'%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
 
 
@@ -346,8 +371,9 @@ class MobilqqLogin:
             if QQnumber=='nothing':
                 self.qiehuan(d,z,args)
             z.heartbeat()
-            self.slot.backup(d, slotnum, QQnumber)                   #设备信息，卡槽号，QQ号
+            self.slot.backup(slotnum, str(slotnum)+'_'+QQnumber)                   #设备信息，卡槽号，QQ号
             self.repo.BackupInfo(cate_id, 'using', QQnumber,serialinfo,'%s_%s_%s' % (d.server.adb.device_serial(), self.type,slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
+
 
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
@@ -364,9 +390,16 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4AYSK00084")
-    z = ZDevice("HT4AYSK00084")
+    d = Device("HT4A6SK01638")
+    z = ZDevice("HT4A6SK01638")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id":"143","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"208","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
+    # serial = d.server.adb.device_serial( )
+    # type = 'mobileqq'
+    # slot = Slot( serial, type )
+    # for i in range(1,21):
+    #     slot.clear(i)
+    #     print('已经清除')
+    # print('全部清除')

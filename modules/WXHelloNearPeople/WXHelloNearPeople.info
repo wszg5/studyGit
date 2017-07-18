@@ -1,10 +1,10 @@
 {
 "id": "WXHelloNearPeople",
 "cate":"微信模块",
-"name":"附件的人打招呼",
+"name":"微信附近人打招呼（尊云专用）",
 "url": "http://www.bejson.com",
 "version": "1.2.1",
-"code":"WX-29",
+"code":"WX-D-T3",
 "icon": "vcard-o",
 "remark":"微信版本6.5.4",
 "setting":[
@@ -14,6 +14,13 @@
 	"type":"repo",
 	"source":"material",
 	"top_cate_id":"12"
+	},
+	{
+	"id": "repo_number_id",
+	"name":"v1值存放库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"23"
 	},
     {
 	"id": "hello_count",

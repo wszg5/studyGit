@@ -1,10 +1,10 @@
 {
 "id": "WXAutoReplyMsg",
 "cate":"微信模块",
-"name":"微信监测自动回复",
+"name":"微信监测自动回复（尊云专用）",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"WX-Y-03",
+"code":"WX-D-T5",
 "icon": "vcard-o",
 "remark":"微信版本6.5.4",
 "setting":[
@@ -15,12 +15,26 @@
 	"source":"material",
 	"top_cate_id":"12"
 	},
+	{
+	"id": "reply_count",
+	"name":"回复次数",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：次"
+	},
     {
 	"id": "msg_count",
 	"name":"发消息数",
 	"type":"textbox",
 	"defaultValue":"1",
 	"remark":"单位：条"
-	}
+	},
+	{
+    "id": "run_time",
+    "name":"模块运行度量值",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：时"
+    }
 ]
 }

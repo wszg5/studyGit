@@ -95,7 +95,7 @@ class Slot:
         if target is None:
             target = self.package
 
-        self.adb.run_cmd("shell", "pm clear %s"%target)
+        self.adb.run_cmd("shell", "pm clear %s" % target)
         self.adb.run_cmd("shell", "su -c 'chmod -R 777 /data/data/%s/'" % target)
         self.adb.run_cmd("shell", "su -c 'chmod -R 777 /data/data/com.zy.bak/'")
         #self.adb.run_cmd("shell", "pm clear com.tencent.tim").wait()
