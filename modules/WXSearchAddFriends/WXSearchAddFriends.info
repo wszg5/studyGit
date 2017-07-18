@@ -1,10 +1,10 @@
 {
 "id": "WXSearchAddFriends",
 "cate":"微信模块",
-"name":"微信搜索加好友加检存",
+"name":"微信搜索加好友+检存（尊云专用）",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"WX31",
+"code":"WX-D-T1",
 "icon": "vcard-o",
 "remark":"微信版本，6.5.4",
 "setting":[

@@ -65,11 +65,11 @@ class WXSearchAddFriends:
             z.input( WXnumber )
             z.heartbeat( )
             z.sleep( 3 )
-            d( textContains='搜索:' ).click( )
+            d(textContains='搜索:', className='android.widget.TextView').click()
             z.sleep( 8 )
-            often_count = int( args['often_count'] )
+            often_count = int(args['often_count'])
 
-            if d( textContains='操作过于频繁' ).exists:
+            if d( textContains='操作过于频繁').exists:
                 counter = counter + 1
                 if counter > often_count:
                     counter = 0

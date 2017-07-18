@@ -116,7 +116,7 @@ class NewMobilqqAddByAddressListII:
 
     def action(self, d,z, args):
 
-
+        self.scode = smsCode( d.server.adb.device_serial( ) )
         gender1 = args['gender']
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
@@ -152,6 +152,28 @@ class NewMobilqqAddByAddressListII:
         d(textContains='加好友').click()
         d(text='添加手机联系人').click()
         z.heartbeat()
+        if d(text='验证手机号码').exists:
+            PhoneNumber = None
+            a = 0
+            while PhoneNumber is None:
+                a += 1
+                PhoneNumber = self.scode.GetPhoneNumber( self.scode.QQ_CONTACT_BIND )  # 获取接码平台手机号码
+                if a > 20:
+                    z.toast('取不到手机号码')
+                    return
+            code = self.scode.GetVertifyCode( PhoneNumber, self.scode.QQ_CONTACT_BIND )  # 获取接码验证码
+            if code == '':
+                z.toast( PhoneNumber + '手机号,获取不到验证码' )
+            z.input(PhoneNumber)
+            z.sleep(1.5)
+            if d(text='下一步').exists:
+                d(text='下一步').click()
+                z.sleep(2)
+            z.input(code)
+            if d(text='完成').exists:
+                d(text='完成').click()
+            z.sleep(5)
+
         if d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText',index=2).exists:  # 检查到尚未 启用通讯录
             if d(text=' +null', resourceId='com.tencent.mobileqq:id/name').exists:
                 d(text=' +null', resourceId='com.tencent.mobileqq:id/name').click()
@@ -315,8 +337,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT49RSK01046")
-    z = ZDevice("HT49RSK01046")
+    d = Device("HT4A6SK01638")
+    z = ZDevice("HT4A6SK01638")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_material_id": "39", 'gender': "男", 'EndIndex': '2', "time_delay": "3"};  # cate_id是仓库号，length是数量

@@ -1,10 +1,10 @@
 {
     "id": "WXImpContactAddFriend",
     "cate":"微信模块",
-    "name": "导入通讯录加好友(微信专用)",
+    "name": "微信通讯录加好友+导入（尊云专用）",
     "url": "http://www.bejson.com",
     "version": "1.1",
-    "code": "WX-T-02",
+    "code": "WX-D-T2",
     "icon":"vcard-o",
     "remark": "导入系统通讯录(微信专用)",
     "setting": [

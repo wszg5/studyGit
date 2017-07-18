@@ -95,16 +95,10 @@ class WXImpContactAddFriend:
             z.sleep(2)
             return
         z.heartbeat( )
-        z.sleep(5)
+        z.sleep(8)
 
-        module_name = '导入通讯录加好友(微信专用)'
-        d.server.adb.cmd( "shell",
-                          "am broadcast -a com.zunyun.zime.toast --es msg \"开始执行%s模块\"").communicate( )
-
-        d.server.adb.cmd( "shell",
-                          "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\""  ).communicate( )
-
-
+        z.heartbeat( )
+        z.toast("开始执行：微信通讯录加好友+导入（尊云专用）模块")
 
         self.ImpContact(d, z, args) #导入通讯录
 
@@ -127,12 +121,12 @@ class WXImpContactAddFriend:
             else:
                 d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
 
-        d( description='更多功能按钮' ).click( )
-        d( textContains='添加朋友' ).click( )
+        d(description='更多功能按钮').click( )
+        d(textContains='添加朋友').click( )
         d( textContains='手机联系人' ).click( )
-        d( text='添加手机联系人' ).click( )
-        while d( textContains='正在获取' ).exists:
-            z.sleep( 3 )
+        d(text='添加手机联系人').click( )
+        while d(textContains='正在获取').exists:
+            z.sleep(3)
         z.heartbeat( )
         set1 = set( )
         change = 0
@@ -396,8 +390,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("5959d2f3")
-    z = ZDevice("5959d2f3")
+    d = Device("36be646")
+    z = ZDevice("36be646")
 
 
 #    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()

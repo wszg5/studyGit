@@ -100,8 +100,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("5959d2f3")
-    z = ZDevice("5959d2f3")
+    d = Device("36be646")
+    z = ZDevice("36be646")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 

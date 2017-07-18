@@ -1,10 +1,10 @@
 {
 "id": "WXHelloNearPeople",
 "cate":"微信模块",
-"name":"附件的人打招呼",
+"name":"微信附近人打招呼（尊云专用）",
 "url": "http://www.bejson.com",
 "version": "1.2.1",
-"code":"WX-29",
+"code":"WX-D-T3",
 "icon": "vcard-o",
 "remark":"微信版本6.5.4",
 "setting":[

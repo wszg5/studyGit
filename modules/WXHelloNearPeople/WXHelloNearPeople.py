@@ -61,7 +61,7 @@ class WXHelloNearPeople:
 
         if d(textContains='补充个人信息').exists:
             d(text='女').click()
-            d(text='地区').click()
+            d(textContains='地区').click()
             z.sleep(3)
             d(className='android.widget.LinearLayout',index=1).child(className='android.widget.ImageView',index=0).click()
             z.sleep(1.5)
@@ -96,17 +96,22 @@ class WXHelloNearPeople:
                 if d(text='通过验证').exists:
                     d(text='通过验证').click()
                     z.sleep(2)
+                    if d( text='完成' ).exists:
+                        d( text='完成' ).click( )
+                        z.sleep( 2 )
+                    d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
                 else:
                     d(descriptionContains='返回', className='android.widget.ImageView').click()
                     z.sleep(2)
-                    HolleNearPeople.long_click()
+                    logging.info("准备长按－－－－－－－－－")
+                    if HolleNearPeople.exists:
+                        HolleNearPeople.long_click()
+                        logging.info("长按中－－－－－－－－－－－")
+                    logging.info( "长按结束－－－－－－－－－－－" )
                     z.sleep(1.5)
-                    if d(text='删除').exists:
-                        d(text='删除').click()
-                if d(text='完成').exists:
-                    d(text='完成').click()
-                    z.sleep(2)
-                d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
+                    if d(textContains='删除').exists:
+                        d(textContains='删除').click()
+                    continue
 
         d(descriptionContains='更多').click()
         gender = args['gender']
@@ -178,8 +183,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("5959d2f3")
-    z = ZDevice("5959d2f3")
+    d = Device("36be646")
+    z = ZDevice("36be646")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
