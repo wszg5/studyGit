@@ -244,8 +244,9 @@ class client_xunma:
                 phone = data[2]
                 sms = data[3]
                 res = re.findall("\d{%s}" % length, sms)
-                code = res[0]
-                result.append({'phone': phone, 'code' : code, 'itemid': itemid});
+                if len(res>0):
+                    code = res[0]
+                    result.append({'phone': phone, 'code' : code, 'itemid': itemid});
         print(result)
         return result;
 
