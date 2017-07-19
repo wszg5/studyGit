@@ -651,9 +651,22 @@ class ZRemoteDevice(object):
 
         return True
 
-    def freeze_rotation(self, freeze=True):
-        '''freeze or unfreeze the device rotation in current status.'''
-        self.server.jsonrpc.freezeRotation(freeze)
+    def img_crop(self, sourcePng, point):
+        from PIL import Image
+        img = Image.open(sourcePng)
+        print img.size
+        left = int(point["x1"] * img.size[0])
+        top = int(point["y1"] * img.size[1])
+        right = int(point["x2"] * img.size[0])
+        bottom = int(point["y2"] * img.size[1])
+        box = (left, top, right, bottom)  # left top right bottom
+        region = img.crop( box )  # 截取验证码的图片
+
+        img = Image.new( 'RGBA', (right - left, bottom - top) )
+        img.paste( region, (0, 0) )
+        cropedPng = '/tmp/%s.png' % uuid.uuid1()
+        img.save( cropedPng )
+        return cropedPng
 
     def clear_traversed_text(self):
         '''clear the last traversed text.'''
