@@ -17,7 +17,7 @@
 	},
 	{
 	"id": "repo_save_id",
-	"name":"保存正常好的资料库",
+	"name":"储存正常号的资料库",
 	"type":"repo",
 	"source":"information",
 	"top_cate_id":"4"
@@ -27,7 +27,7 @@
 	"name":"搜索检存次数",
 	"type":"textbox",
 	"defaultValue":"3",
-	"remark":"单位：个"
+	"remark":"单位：次"
 	},
     {
     "id": "time_delay",

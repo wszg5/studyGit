@@ -1,4 +1,5 @@
 # coding:utf-8
+from smsCode import smsCode
 from uiautomator import Device
 from Repo import *
 import time, datetime, random
@@ -6,11 +7,19 @@ from zservice import ZDevice
 
 class WXBindQQ:
 
+
+
+
+
+
+
+
     def __init__(self):
         self.repo = Repo()
 
     def action(self, d,z, args):
         z.heartbeat()
+        self.scode = smsCode( d.server.adb.device_serial( ) )
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         z.sleep(15)
@@ -22,29 +31,34 @@ class WXBindQQ:
         z.sleep( 3 )
         d(textContains='帐号与安全').click()
         z.sleep( 3 )
-        d(text='QQ号').click()
+        d(text='手机号').click()
         z.sleep(3)
-        if not d(text='开始绑定').exists:
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"该微信已绑定QQ号\"" ).communicate()
-        else:
+        if d(text='绑定手机号').exists:
             z.heartbeat( )
 
-            cate_id = args["repo_cate_id"]
-            time_limit = args['time_limit']
-            numbers = self.repo.GetAccount( cate_id, time_limit, 1 )
-            if len( numbers ) == 0:
-                d.server.adb.cmd( "shell",
-                                  "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码%s号仓库为空，等待中\"" % cate_id ).communicate( )
-                z.sleep( 10 )
-                return
-            QQNumber = numbers[0]['number']  # 即将登陆的QQ号
-            QQPassword = numbers[0]['password']
+            d(text='更换手机号').click()
+            PhoneNumber = self.scode.GetPhoneNumber( self.scode.WECHAT_REGISTER )  # 获取接码平台手机号码
+            z.input( PhoneNumber )
             z.sleep( 1 )
+            if d(text='下一步').exists:
+                d(text='下一步').click()
             z.heartbeat( )
-            d( text='开始绑定' ).click( )
-            d( text='QQ号' ).set_text( QQNumber )
-            d( className='android.widget.EditText', index=2 ).set_text( QQPassword )
-            d( text='完成' ).click( )
+            if d(text='正在验证').exists:
+                z.sleep(35)
+
+            code = self.scode.GetVertifyCode( PhoneNumber, self.scode.WECHAT_REGISTER )  # 获取接码验证码
+            self.scode.defriendPhoneNumber( PhoneNumber, self.scode.WECHAT_REGISTER )
+            if code == '':
+                z.toast( PhoneNumber + '手机号,获取不到验证码' )
+                return
+            z.input(code)
+            if d(text='下一步').exists:
+                d(text='下一步').click()
+                z.sleep(10)
+            if d(textContains='验证码不正确').exists:
+                d(text='确定').click()
+            z.sleep(3)
+            z.heartbeat( )
             z.sleep( 3 )
             z.heartbeat( )
 
@@ -110,8 +124,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT53ASK00088")
-    z = ZDevice("HT53ASK00088")
+    d = Device("HT54VSK00608")
+    z = ZDevice("HT54VSK00608")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "132", "repo_bindQQ_id": "189", "time_limit": "0", "time_delay": "3"}   #cate_id是仓库号，length是数量

@@ -1,23 +1,17 @@
-# coding:utf-8
-import threading
-import time
-from PIL import Image
-from uiautomator import Device
-import re,subprocess
-import util
-from Repo import *
-from imageCode import imageCode
-import time, datetime, random
-from zservice import ZDevice
+import datetime
 import os
+import random
+
+from PIL import Image
+
+from Repo import Repo
+from imageCode import imageCode
 
 
-class MobilqqLoginNoSolt:
+class denglu:
     def __init__(self):
         self.type = 'mobileqq'
         self.repo = Repo()
-
-
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
         randomNum = random.randint(0, 1000);  # 生成的随机整数n，其中0<=n<=100
@@ -25,8 +19,6 @@ class MobilqqLoginNoSolt:
             randomNum = str(00) + str(randomNum);
         uniqueNum = str(nowTime) + str(randomNum);
         return uniqueNum
-
-
     def login(self,d,args,z):
         z.heartbeat()
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
@@ -137,46 +129,3 @@ class MobilqqLoginNoSolt:
                 if d(text='帐号无法登录').exists:
                     d(text='取消').click()
                 continue
-
-    def action(self, d,z, args):
-        z.heartbeat()
-        d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
-        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-        z.sleep(6)
-        d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
-        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
-        z.heartbeat()
-        while True:
-            ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
-            print(ping)
-            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-                break
-            z.sleep(2)
-        z.heartbeat()
-        serialinfo = z.generateSerial("788")  # 修改串号等信息
-        self.login(d,args,z)
-        z.heartbeat()
-        if (args["time_delay"]):
-            z.sleep(int(args["time_delay"]))
-
-
-
-
-def getPluginClass():
-    return MobilqqLoginNoSolt
-
-if __name__ == "__main__":
-    clazz = getPluginClass()
-    o = clazz()
-
-    d = Device("HT54VSK00608")
-    z = ZDevice("HT54VSK00608")
-
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    # d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
-    # slot.restore(d, 9)
-
-    # d.dump(compressed=False)
-    args = {"repo_cate_id":"143","time_limit":"1","time_delay":"3"};    #cate_id是仓库号，length是数量
-
-    o.action(d,z, args)

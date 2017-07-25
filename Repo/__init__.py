@@ -23,14 +23,14 @@ class Repo:
                    "Connection": "Keep-Alive"};
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         params = urllib.urlencode(data)
-        conn.request(method="POST", url=path, body=params, headers=headers);
+        conn.request(method="POST", url=path, body=params, headers=headers)
         # 返回处理后的数据
-        response = conn.getresponse();
+        response = conn.getresponse()
         # 判断是否提交成功
         if response.status == 302:
-            print ("发布成功!^_^!");
+            print ("发布成功!^_^!")
         else:
-            print ("发布失败\^0^/");
+            print ("发布失败\^0^/")
             # 关闭连接
         conn.close();
 
@@ -157,8 +157,24 @@ class Repo:
         else:
             return []
 
-    def GetTrueAnswer(self, cateId,phonenumber,answer_1,answer_2,answer_3,answer_4,answer_5):
-        path = "/repo_api/WXInformation/getTrueAnswer?cate_id=%s&phoneNumber=%s&x_07=%s&x_08=%s&x_09=%s&x_10=%s&x_11=%s" % (cateId,phonenumber,answer_1,answer_2,answer_3,answer_4,answer_5 )
+    def GetTrueAnswer(self, data):
+        path = "/repo_api/WXInformation/getTrueAnswer"
+        headers = {"Content-Type": "application/x-www-form-urlencoded",
+                   "Connection": "Keep-Alive"};
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        params = urllib.urlencode( data )
+        conn.request( method="POST", url=path, body=params, headers=headers );
+        # 返回处理后的数据
+        response = conn.getresponse( )
+        if response.status == 200:
+            data = response.read( )
+            numbers = json.loads( data )
+            return numbers
+        else:
+            return []
+
+    def GetNUmberNormalTotal(self, cateId,cateType='number'):
+        path = "/repo_api/number/GetStatusTotal?cate_id=%s&cate_type=%s" % (cateId,cateType)
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
         conn.request("GET", path)
         response = conn.getresponse( )
@@ -202,3 +218,6 @@ if __name__ == '__main__':
     # print (result)
     # print (result[0]['number'])
     # print(result[0]["password"])
+
+
+

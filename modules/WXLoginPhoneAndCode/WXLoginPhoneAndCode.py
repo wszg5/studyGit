@@ -4,7 +4,7 @@ from Repo import *
 import time, datetime, random
 from zservice import ZDevice
 
-class WXBindMail:
+class WXLoginPhoneAndCode:
 
     def __init__(self):
         self.repo = Repo()
@@ -40,7 +40,7 @@ class WXBindMail:
             z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
-    return WXBindMail
+    return WXLoginPhoneAndCode
 
 if __name__ == "__main__":
     import sys
@@ -48,8 +48,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT53ASK00088")
-    z = ZDevice("HT53ASK00088")
+    d = Device("HT4A4SK00901")
+    z = ZDevice("HT4A4SK00901")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d(className='android.widget.EditText').set_text('2375714387@qq.com')
