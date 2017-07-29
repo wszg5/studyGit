@@ -95,7 +95,7 @@ class MobilqqLogin:
                 z.sleep( 2 )
             z.sleep( 8 )
             z.toast("机器人打码－－")
-            if not d(text='验证码').exists:
+            if not d(textContains='验证码').exists:
                 z.toast( "机器人打码跳出－－" )
                 break
 
@@ -219,7 +219,7 @@ class MobilqqLogin:
                         z.sleep( 2 )
                     z.sleep( 3 )
                     z.heartbeat( )
-                    if not d( text='验证码' ).exists:
+                    if not d( textContains='验证码' ).exists:
                         break
             else:
                 if not self.WebViewBlankPages(d) is None:
@@ -243,6 +243,10 @@ class MobilqqLogin:
 
             if d(text='搜索', resourceId='com.tencent.mobileqq:id/name').exists:  # 不需要验证码的情况
                 return QQNumber
+
+            if d(textContains='完成新手任务').exists:
+                d(text='取消')
+                return QQNumber
             z.sleep(1)
             z.toast("开始马上绑定")
             if d(text='马上绑定').exists:
@@ -259,6 +263,21 @@ class MobilqqLogin:
                         if j > 20:
                             z.toast( '取不到手机号码' )
                             return
+
+                    if not d(textContains='+86').exists:
+                        d(description='点击选择国家和地区').click()
+                        if d(text='中国').exists:
+                            d(text='中国').click()
+                        else:
+                            str = d.info  # 获取屏幕大小等信息
+                            height = str["displayHeight"]
+                            width = str["displayWidth"]
+                            d.click(width * 5 / 12, height * 5 / 32)
+                            z.sleep(1.5)
+                            z.input('中国')
+                            z.sleep(2)
+                            d(text='+86').click()
+
                     z.input( PhoneNumber )
                     z.sleep( 1.5 )
                     if d( text='下一步' ).exists:
@@ -295,11 +314,14 @@ class MobilqqLogin:
                 return QQNumber
             if d(textContains='密码错误').exists:
                 logger.info('===========密码错误==============帐号:%s,密码:%s' % (QQNumber, QQPassword))
+                self.repo.BackupInfo( cate_id, 'frozen', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
             z.heartbeat()
-            self.repo.BackupInfo(cate_id, 'frozen',QQNumber, '','')  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
             z.sleep(1)
             if d(text='帐号无法登录').exists:
                 d(text='取消').click()
+            if d(textContains='完成新手任务').exists:
+                d(text='取消')
+                return QQNumber
             continue
     def qiehuan(self,d,z,args):
         time_limit = int(args['time_limit'])
@@ -412,7 +434,21 @@ class MobilqqLogin:
             self.repo.BackupInfo(cate_id, 'using', QQnumber, serialinfo, '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
 
     def action(self, d,z, args):
-        z.toast("开始执行：普通ＱＱ登录有卡槽")
+        z.toast("正在ping网络是否通畅")
+        z.heartbeat()
+        i = 0
+        while i < 200:
+            i += 1
+            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            print( ping )
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                z.toast( "网络通畅。开始执行：普通ＱＱ登录有卡槽" )
+                break
+            z.sleep( 2 )
+        if i < 200 :
+            z.toast("网络不通，请检查网络状态")
+            return
+
         z.heartbeat()
         time_limit = int(args['time_limit'])
         cate_id = args["repo_cate_id"]
@@ -560,13 +596,12 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A6SK01638")
-    z = ZDevice("HT4A6SK01638")
+    d = Device("cda0ae8d")
+    z = ZDevice("cda0ae8d")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "208", "time_limit": "120", "time_limit1": "120", "time_delay": "3"};    #cate_id是仓库号，length是数量
 
     o.action(d, z, args)
-
 
     # serial = d.server.adb.device_serial( )
     # type = 'mobileqq'

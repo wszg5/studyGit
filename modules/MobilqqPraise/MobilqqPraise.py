@@ -41,7 +41,7 @@ class MobilqqPraise:
                 while True:
                     if d(descriptionContains='赞').exists:
                         z.heartbeat()
-                        for k in range(0,10,+1):
+                        for k in range(0,1,+1):
                             allnum = d(descriptionContains='赞').info['contentDescription']
                             allnum = re.findall(r'\d',allnum)
                             # print(allnum)
@@ -82,8 +82,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A6SK01638")
-    z = ZDevice("HT4A6SK01638")
+    d = Device("cda0ae8d")
+    z = ZDevice("cda0ae8d")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_cate_id":"119","add_count":"16","time_delay":"3"};    #cate_id是仓库号，length是数量
 

@@ -114,6 +114,47 @@ class MobilqqAddressCheckDeposit:
 
         return 'true'
 
+    def bindPhoneNumber(self):
+        z.toast( "点击开始绑定" )
+        d( text='马上绑定' ).click( )
+        while d( text='验证手机号码' ).exists:
+
+            PhoneNumber = None
+            j = 0
+            while PhoneNumber is None:
+                j += 1
+                PhoneNumber = self.scode.GetPhoneNumber( self.scode.QQ_CONTACT_BIND )  # 获取接码平台手机号码
+                z.heartbeat( )
+                if j > 20:
+                    z.toast( '取不到手机号码' )
+                    return
+            z.input( PhoneNumber )
+            z.sleep( 1.5 )
+            if d( text='下一步' ).exists:
+                d( text='下一步' ).click( )
+                z.sleep( 3 )
+            if d( text='确定' ).exists:
+                d( text='确定' ).click( )
+                z.sleep( 2 )
+            code = self.scode.GetVertifyCode( PhoneNumber, self.scode.QQ_CONTACT_BIND, '4' )  # 获取接码验证码
+            self.scode.defriendPhoneNumber( PhoneNumber, self.scode.QQ_CONTACT_BIND )
+            if code == '':
+                z.toast( PhoneNumber + '手机号,获取不到验证码' )
+                if d( text='返回' ).exists:
+                    d( text='返回' ).click( )
+                if not d( textContains='中国' ).exists:
+                    if d( text='返回' ).exists:
+                        d( text='返回' ).click( )
+                if d( className='android.view.View', descriptionContains='删除' ).exists:
+                    d( className='android.view.View', descriptionContains='删除' ).click( )
+                continue
+            z.heartbeat( )
+            z.input( code )
+            if d( text='完成' ).exists:
+                d( text='完成' ).click( )
+            z.sleep( 5 )
+            break
+        z.sleep( 1 )
     def action(self, d,z, args):
 
         z.toast("开始执行：普通QQ通讯录匹配提取")
@@ -130,14 +171,12 @@ class MobilqqAddressCheckDeposit:
         z.heartbeat()
         if not d(text='消息', resourceId='com.tencent.mobileqq:id/name').exists:  # 到了通讯录这步后看号有没有被冻结
             return 2
-        if d(text='绑定手机号码').exists:
-            d(text='关闭').click()
-            d(text='关闭').click()
-            z.sleep(1)
+        if d( text='马上绑定' ).exists:
+            self.bindPhoneNumber()
         if d(text='主题装扮').exists:
             d(text='关闭').click()
         if d(text='马上绑定').exists:
-            d(text='关闭').click()
+            self.bindPhoneNumber()
         if d(text='通讯录').exists:
             d(text='关闭').click()
         d(description='快捷入口').click()
