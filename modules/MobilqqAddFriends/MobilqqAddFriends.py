@@ -93,7 +93,7 @@ class MobilqqAddFriends:
                 continue
             z.sleep(1)
             z.heartbeat()
-            d.swipe(width / 2, height * 4 / 6, width / 2, height / 6);
+            # d.swipe(width / 2, height * 4 / 6, width / 2, height / 6);
             d(text='加好友').click()
             z.sleep(3)
 
@@ -200,8 +200,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4BLSK00255")
-    z = ZDevice("HT4BLSK00255")
+    d = Device("HT4A6SK01638")
+    z = ZDevice("HT4A6SK01638")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
 

@@ -4,7 +4,7 @@ from Repo import *
 import  time
 from zservice import ZDevice
 
-class MobilqqConcern:
+class MobilqqConcernII:
     def __init__(self):
         self.repo = Repo()
 
@@ -16,43 +16,33 @@ class MobilqqConcern:
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         z.sleep(8)
-        d(className='android.widget.TabWidget', index=2).child(className='android.widget.FrameLayout', index=2).child(
-            className='android.widget.RelativeLayout', index=0).click()
-        d(text='附近').click()
-        z.heartbeat()
-        while True:
-            if d(text='新鲜事').exists:
-                break
-            else:
-                z.sleep(2)
-        d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout', index=2).child(
-            className='android.widget.LinearLayout', index=0).click()  # 点击进入自己的主页
 
-        forwait = 0
-        while True:
-            if d( text='知道了' ).exists:
-                d( text='知道了' ).click( )
-                break
-            else:
-                z.sleep( 2 )
-                if forwait == 5:
-                    break
-                else:
-                    forwait = forwait + 1
-            z.sleep(1)
-        d(descriptionContains='赞').child(className='android.view.View').click()
-        # d(descriptionContains='帐户及设置').click()
-        # d(descriptionContains='等级').click()
-        # d(descriptionContains='赞').click()
+        obj = d(className='android.widget.ImageView', resourceId='com.tencent.mobileqq:id/conversation_head')
+        if obj.exists:
+            obj.click()
+        else:
+            d.swipe(0, height / 2, width - 20, height / 2, 5)
+        z.sleep(1.5)
+
+        obj1 = d(className='android.widget.ImageView', resourceId='com.tencent.mobileqq:id/head')
+        if obj1.exists:
+            obj1.click()
         z.sleep(3)
-        d(text='我赞过谁').click()
+
+        obj2 = d(descriptionContains='次赞，按钮', className='android.widget.RelativeLayout',resourceId='com.tencent.mobileqq:id/name')
+        if obj2.exists:
+            obj2.click()
+        z.sleep(5)
+
+        if d(text='我赞过谁').exists:
+            d(text='我赞过谁').click()
         z.heartbeat()
         z.sleep(3)
         obj3 = d(className='android.widget.AbsListView').child(className='android.widget.RelativeLayout', index=1) \
             .child(className='android.widget.RelativeLayout', index=1).child(
             className='android.widget.LinearLayout')  # 用来点击的
         if not obj3.exists:
-            #我没赞过好友的情况
+            z.toast("我没赞过好友") #我没赞过好友的情况
             return
         z.heartbeat()
         set1 = set()
@@ -118,7 +108,7 @@ class MobilqqConcern:
 
 
 def getPluginClass():
-    return MobilqqConcern
+    return MobilqqConcernII
 
 if __name__ == "__main__":
     import sys
@@ -132,6 +122,7 @@ if __name__ == "__main__":
     args = {"add_count":"1000","time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
+
 
 
 
