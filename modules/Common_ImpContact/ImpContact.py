@@ -98,6 +98,12 @@ if __name__ == "__main__":
 
     d = Device("HT4AVSK01106")
     z = ZDevice("HT4AVSK01106")
+    pkg = 'com.tencent.mobileqq'
+    z.server.install()
+    z.generate_serial('com.tencent.mobileqq')
+    print(z.get_serial(pkg))
+    info = '{"buildManufacturer":"ZTE","buildModel":"ZTE G720C","buildSerial":"ytz0fad63hkensm","buildVersionRelease":"Android 2.2.3","empty":false,"settingsSecureAndroidId":"wwx31wo6hhxbkrw","telephonyGetDeviceId":"864948416091531","telephonyGetLine1Number":"+8615015541026","telephonyGetNetworkType":"12","telephonyGetSimSerialNumber":"84508614357292636763","telephonyGetSubscriberId":"48313995020377949279","wifiInfoGetMacAddress":"00:03:6C:6B:B2:EA","wifiInfoGetSSID":"TP-ZPBZEBM7"}'
+    z.set_serial(pkg, info)
     source = '/tmp/xxx.png'
     d.screenshot(source)
     width = 540.0

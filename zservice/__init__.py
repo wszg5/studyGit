@@ -196,6 +196,7 @@ class AutomatorServer(object):
     __apk_files = ["libs/zime.apk"]
     # Used for check if installed
     __apk_vercode = '1.9.5'
+    __zserial_vercode = '3.2.1'
     __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
@@ -233,9 +234,18 @@ class AutomatorServer(object):
         if pkginfo['version_name'] != self.__apk_vercode:
             return True
 
+        pkginfo = self.adb.package_info('com.sollyu.xposed.hook.model')
+        if pkginfo is None:
+            return True
+        if pkginfo['version_name'] != self.__zserial_vercode:
+            return True
+
+
         pkginfo = self.adb.package_info('de.robv.android.xposed.installer')
         out = self.adb.cmd("shell","\"su -c 'cat /data/data/de.robv.android.xposed.installer/shared_prefs/enabled_modules.xml'\"").communicate()[0].decode('utf-8')
         if pkginfo is not None and out.find("<int name=\"com.zunyun.zime\" value=\"1\" />") == -1:
+            return True
+        if pkginfo is not None and out.find("<int name=\"com.sollyu.xposed.hook.model\" value=\"1\" />") == -1:
             return True
         return False
 
@@ -254,8 +264,8 @@ class AutomatorServer(object):
             filename = os.path.join(base_dir, 'libs/zime.apk')
             self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
             #if self.getPackageVersion() != self.__apk_vercode:
-             #   filename = os.path.join(base_dir, 'libs/zime.apk')
-              #  self.adb.run_cmd("install -r %s" % filename)
+            filename = os.path.join(base_dir, 'libs/zserial.apk')
+            self.adb.run_cmd("install -r %s" % filename)
 
             self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'sh /data/local/tmp/install.sh'").communicate()
@@ -667,6 +677,30 @@ class ZRemoteDevice(object):
         cropedPng = '/tmp/%s.png' % uuid.uuid1()
         img.save( cropedPng )
         return cropedPng
+
+    '''
+    一键生成串号，pkg:目标应用的packageName
+    return：串号信息
+    '''
+    def generate_serial(self, pkg):
+        self.server.adb.run_cmd("shell",
+                         'am broadcast -a com.android.vending.INSTALL_REFERRER -f 32 -a com.zunyun.serial.action --es ac generate --es pkg %s' % pkg)
+        return None
+
+    def get_serial(self, pkg):
+        path = '/sdcard/serial.json'
+        out = self.server.adb.run_cmd("shell", "\"su -c 'rm %s'\"" % path).output
+        self.server.adb.run_cmd("shell",
+                         'am broadcast -a com.android.vending.INSTALL_REFERRER -f 32 -a com.zunyun.serial.action --es ac get --es pkg %s --es fileName %s' % (pkg, path))
+        out = self.server.adb.run_cmd("shell", "\"su -c 'cat %s'\"" % path).output
+        return out
+
+    def set_serial(self, pkg, serial):
+        t = base64.b64encode(serial)
+
+        self.server.adb.run_cmd("shell",
+                         'am broadcast -a com.android.vending.INSTALL_REFERRER -f 32 -a com.zunyun.serial.action --es ac set --es pkg %s --es serial %s' % (pkg, t))
+        return None
 
     def clear_traversed_text(self):
         '''clear the last traversed text.'''
