@@ -9,6 +9,20 @@ class MobilqqConcern:
         self.repo = Repo()
 
     def action(self, d,z,args):
+        z.toast( "正在ping网络是否通畅" )
+        z.heartbeat( )
+        i = 0
+        while i < 200:
+            i += 1
+            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            print( ping )
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                z.toast( "网络通畅。" )
+                break
+            z.sleep( 2 )
+        if i > 200:
+            z.toast( "网络不通，请检查网络状态" )
+            return
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]

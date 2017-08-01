@@ -10,7 +10,7 @@
 "setting":[
     {
 	"id": "add_count",
-	"name":"添加好友个数",
+	"name":"关注人数",
 	"type":"textbox",
 	"defaultValue":"3",
 	"remark":"单位：个"

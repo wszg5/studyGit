@@ -9,6 +9,22 @@ class MobilqqPraise:
         self.repo = Repo()
 
     def action(self, d,z,args):
+        z.toast( "正在ping网络是否通畅" )
+        z.heartbeat( )
+        i = 0
+        while i < 200:
+            i += 1
+            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            print( ping )
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                z.toast( "网络通畅。" )
+                break
+            z.sleep( 2 )
+        if i > 200:
+            z.toast( "网络不通，请检查网络状态" )
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
+            return
         z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
@@ -26,6 +42,8 @@ class MobilqqPraise:
                 if len(numbers) == 0:
                     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\"" % repo_number_cate_id).communicate()
                     z.sleep(10)
+                    if (args["time_delay"]):
+                        z.sleep( int( args["time_delay"] ) )
                     return
                 z.heartbeat()
                 QQnumber = numbers[0]['number']
@@ -41,7 +59,7 @@ class MobilqqPraise:
                 while True:
                     if d(descriptionContains='赞').exists:
                         z.heartbeat()
-                        for k in range(0,1,+1):
+                        for k in range(0, 1):
                             allnum = d(descriptionContains='赞').info['contentDescription']
                             allnum = re.findall(r'\d',allnum)
                             # print(allnum)
@@ -55,6 +73,8 @@ class MobilqqPraise:
                                 if tect==1:
                                     z.sleep(2)
                                     z.toast('点赞人数已满')
+                                    if (args["time_delay"]):
+                                        z.sleep( int( args["time_delay"] ) )
                                     return
                                 tect = 1
                             else:

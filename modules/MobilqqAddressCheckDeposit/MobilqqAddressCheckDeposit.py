@@ -156,8 +156,23 @@ class MobilqqAddressCheckDeposit:
             break
         z.sleep( 1 )
     def action(self, d,z, args):
+        z.toast( "正在ping网络是否通畅" )
+        z.heartbeat( )
+        i = 0
+        while i < 200:
+            i += 1
+            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            print( ping )
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                z.toast( "网络通畅。开始执行：普通QQ通讯录匹配提取" )
+                break
+            z.sleep( 2 )
+        if i > 200:
+            z.toast( "网络不通，请检查网络状态" )
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
+            return
 
-        z.toast("开始执行：普通QQ通讯录匹配提取")
         self.scode = smsCode( d.server.adb.device_serial( ) )
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
@@ -193,6 +208,8 @@ class MobilqqAddressCheckDeposit:
                 z.heartbeat()
                 if j > 20:
                     z.toast('取不到手机号码')
+                    if (args["time_delay"]):
+                        z.sleep( int( args["time_delay"] ) )
                     return
             z.input( PhoneNumber )
             z.sleep( 1.5 )
@@ -229,9 +246,13 @@ class MobilqqAddressCheckDeposit:
             text = self.Bind(d,z)  # 未开启通讯录的，现绑定通讯录
             z.heartbeat()
             if text == 'false':  # 操作过于频繁的情况
+                if (args["time_delay"]):
+                    z.sleep( int( args["time_delay"] ) )
                 return
             z.sleep(7)
         if d(textContains='没有可匹配的').exists:
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
             return
         if d(text='匹配手机通讯录').exists:
             d(text='匹配手机通讯录').click()
@@ -247,6 +268,8 @@ class MobilqqAddressCheckDeposit:
             d(text='添加手机联系人').click()
             if not obj1.exists:
                 z.toast("该手机上没有联系人")
+                if (args["time_delay"]):
+                    z.sleep( int( args["time_delay"] ) )
                 return
 
         overNumber1 = None

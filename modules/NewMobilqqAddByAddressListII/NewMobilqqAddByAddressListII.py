@@ -115,8 +115,23 @@ class NewMobilqqAddByAddressListII:
         return 'true'
 
     def action(self, d,z, args):
+        z.toast( "正在ping网络是否通畅" )
+        z.heartbeat( )
+        i = 0
+        while i < 200:
+            i += 1
+            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            print( ping )
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                z.toast( "网络通畅。开始执行：普通QQ通讯录加好友单选" )
+                break
+            z.sleep( 2 )
+        if i > 200:
+            z.toast( "网络不通，请检查网络状态" )
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
+            return
 
-        z.toast("开始执行：普通QQ通讯录加好友单选")
         self.scode = smsCode( d.server.adb.device_serial( ) )
         gender1 = args['gender']
         z.heartbeat()
@@ -154,6 +169,8 @@ class NewMobilqqAddByAddressListII:
                 z.heartbeat()
                 if j > 20:
                     z.toast('取不到手机号码')
+                    if (args["time_delay"]):
+                        z.sleep( int( args["time_delay"] ) )
                     return
             z.input( PhoneNumber )
             z.sleep( 1.5 )
@@ -193,6 +210,8 @@ class NewMobilqqAddByAddressListII:
                 return
             z.sleep(7)
         if d(textContains='没有可匹配的').exists:
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
             return
         if d(text='匹配手机通讯录').exists:
             d(text='匹配手机通讯录').click()
@@ -208,6 +227,8 @@ class NewMobilqqAddByAddressListII:
             d(text='添加手机联系人').click()
             if not obj1.exists:
                 z.toast("该手机上没有联系人")
+                if (args["time_delay"]):
+                    z.sleep( int( args["time_delay"] ) )
                 return
         t = 0
         b = 0
@@ -247,6 +268,8 @@ class NewMobilqqAddByAddressListII:
                 d.server.adb.cmd( "shell",
                                   "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id ).communicate( )
                 z.sleep( 10 )
+                if (args["time_delay"]):
+                    z.sleep( int( args["time_delay"] ) )
                 return
             message = Material[0]['content']  # 取出验证消息的内容
             z.sleep( 1 )
@@ -311,6 +334,8 @@ class NewMobilqqAddByAddressListII:
                             if d( text='请求发送失败' ).exists:
                                 d( text='确定' ).click( )
                                 z.sleep( 1.5 )
+                            d( textContains='取消' ).click( )
+                            z.sleep(2)
                             d( textContains='返回' ).click( )
                         else:
                             d( textContains='取消' ).click( )
