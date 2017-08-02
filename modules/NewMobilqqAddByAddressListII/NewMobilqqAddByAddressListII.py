@@ -143,8 +143,8 @@ class NewMobilqqAddByAddressListII:
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         z.sleep(10)
         z.heartbeat()
-        if not d(text='消息', resourceId='com.tencent.mobileqq:id/name').exists:  # 到了通讯录这步后看号有没有被冻结
-            return 2
+        if not d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists: # 到了通讯录这步后看号有没有被冻结
+            return
         if d(text='绑定手机号码').exists:
             d(text='关闭').click()
             d(text='关闭').click()

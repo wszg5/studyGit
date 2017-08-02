@@ -173,6 +173,9 @@ class MobilqqAddressCheckDeposit:
                 z.sleep( int( args["time_delay"] ) )
             return
 
+        if not d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists: # 到了通讯录这步后看号有没有被冻结
+            return
+
         self.scode = smsCode( d.server.adb.device_serial( ) )
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
