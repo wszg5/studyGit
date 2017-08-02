@@ -31,9 +31,6 @@ class MobilqqAddFriends:
                 z.sleep( int( args["time_delay"] ) )
             return
 
-        if not d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists: # 到了通讯录这步后看号有没有被冻结
-            return
-
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
@@ -49,6 +46,13 @@ class MobilqqAddFriends:
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         z.sleep(5)
+
+        if not d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists:  # 到了通讯录这步后看号有没有被冻结
+            z.toast( "卡槽QQ状态异常，跳过此模块" )
+            return
+        else:
+            z.toast( "卡槽QQ状态正常，继续执行" )
+
         d(description='快捷入口').click()
         z.sleep(2)
         if not d(text='扫一扫').exists:

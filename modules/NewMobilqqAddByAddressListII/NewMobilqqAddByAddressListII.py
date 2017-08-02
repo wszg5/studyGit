@@ -132,6 +132,7 @@ class NewMobilqqAddByAddressListII:
                 z.sleep( int( args["time_delay"] ) )
             return
 
+
         self.scode = smsCode( d.server.adb.device_serial( ) )
         gender1 = args['gender']
         z.heartbeat()
@@ -143,8 +144,13 @@ class NewMobilqqAddByAddressListII:
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         z.sleep(10)
         z.heartbeat()
+
         if not d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists: # 到了通讯录这步后看号有没有被冻结
+            z.toast("卡槽QQ状态异常，跳过此模块")
             return
+        else:
+            z.toast("卡槽QQ状态正常，继续执行")
+
         if d(text='绑定手机号码').exists:
             d(text='关闭').click()
             d(text='关闭').click()
@@ -167,7 +173,7 @@ class NewMobilqqAddByAddressListII:
                 j += 1
                 PhoneNumber = self.scode.GetPhoneNumber( self.scode.QQ_CONTACT_BIND )  # 获取接码平台手机号码
                 z.heartbeat()
-                if j > 20:
+                if j > 2:
                     z.toast('取不到手机号码')
                     if (args["time_delay"]):
                         z.sleep( int( args["time_delay"] ) )
