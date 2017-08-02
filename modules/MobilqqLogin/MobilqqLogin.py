@@ -207,7 +207,7 @@ class MobilqqLogin:
                           "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
         while d( textContains='正在更新数据' ).exists:
             z.sleep( 2 )
-        z.sleep( 6 )
+        z.sleep(20)
         z.heartbeat( )
         d.dump(compressed=False)
         d( text='登 录' ).click( )
@@ -231,7 +231,7 @@ class MobilqqLogin:
         z.sleep(1)
         while d(text='登录中').exists:
             z.sleep(2)
-        z.sleep(15)
+        z.sleep(30)
         z.heartbeat()
         detection_robot = d(index='3', className="android.widget.EditText")
         not_detection_robot = d( resourceId='com.tencent.mobileqq:id/name', index='2',
@@ -409,7 +409,7 @@ class MobilqqLogin:
         while d( textContains='正在更新数据' ).exists:
             z.sleep( 2 )
 
-        z.sleep( 15 )
+        z.sleep( 20 )
         z.heartbeat( )
         if d( textContains='主题装扮' ).exists:
             d( text='关闭' ).click( )
@@ -461,6 +461,7 @@ class MobilqqLogin:
 
         z.heartbeat()
         z.generate_serial("com.tencent.mobileqq") # 随机生成手机特征码
+
 
         time_limit = int(args['time_limit'])
         cate_id = args["repo_cate_id"]
@@ -524,7 +525,7 @@ class MobilqqLogin:
             while d(textContains='正在更新数据').exists:
                 z.sleep(2)
 
-            z.sleep( 15 )
+            z.sleep( 20 )
             z.heartbeat()
             if d(textContains='主题装扮').exists:
                 d(text='关闭').click()
@@ -599,12 +600,11 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A6SK01638")
-    z = ZDevice("HT4A6SK01638")
+    d = Device("cda0ae8d")
+    z = ZDevice("cda0ae8d")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "132", "time_limit": "120", "time_limit1": "120", "time_delay": "3"};    #cate_id是仓库号，length是数量
-
-
+    # z.server.install( )
     o.action(d, z, args)
 
     # z.server.install()
