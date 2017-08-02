@@ -231,7 +231,7 @@ class MobilqqLogin:
         z.sleep(1)
         while d(text='登录中').exists:
             z.sleep(2)
-        z.sleep(8)
+        z.sleep(15)
         z.heartbeat()
         detection_robot = d(index='3', className="android.widget.EditText")
         not_detection_robot = d( resourceId='com.tencent.mobileqq:id/name', index='2',
@@ -323,7 +323,7 @@ class MobilqqLogin:
 
         z.toast("强制停止，拉起")
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq" ).communicate( )  # 强制停止
-        z.sleep( 1 )
+        z.sleep(1)
         d.server.adb.cmd("shell",
                           "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
 

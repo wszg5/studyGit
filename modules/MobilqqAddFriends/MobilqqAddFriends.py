@@ -47,11 +47,11 @@ class MobilqqAddFriends:
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         z.sleep(5)
 
-        if not d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists:  # 到了通讯录这步后看号有没有被冻结
+        if d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists:  # 到了通讯录这步后看号有没有被冻结
+            z.toast( "卡槽QQ状态正常，继续执行" )
+        else:
             z.toast( "卡槽QQ状态异常，跳过此模块" )
             return
-        else:
-            z.toast( "卡槽QQ状态正常，继续执行" )
 
         d(description='快捷入口').click()
         z.sleep(2)
