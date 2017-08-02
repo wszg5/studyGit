@@ -100,6 +100,7 @@ if __name__ == "__main__":
     z = ZDevice("HT4AVSK01106")
     pkg = 'com.tencent.mobileqq'
     z.server.install()
+    print z.qq_getLoginStatus(d)
     z.generate_serial('com.tencent.mobileqq')
     print(z.get_serial(pkg))
     info = '{"buildManufacturer":"ZTE","buildModel":"ZTE G720C","buildSerial":"ytz0fad63hkensm","buildVersionRelease":"Android 2.2.3","empty":false,"settingsSecureAndroidId":"wwx31wo6hhxbkrw","telephonyGetDeviceId":"864948416091531","telephonyGetLine1Number":"+8615015541026","telephonyGetNetworkType":"12","telephonyGetSimSerialNumber":"84508614357292636763","telephonyGetSubscriberId":"48313995020377949279","wifiInfoGetMacAddress":"00:03:6C:6B:B2:EA","wifiInfoGetSSID":"TP-ZPBZEBM7"}'
