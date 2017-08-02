@@ -96,8 +96,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("896b27d3")
-    z = ZDevice("896b27d3")
+    d = Device("HT4AVSK01106")
+    z = ZDevice("HT4AVSK01106")
     pkg = 'com.tencent.mobileqq'
     z.server.install()
     z.generate_serial('com.tencent.mobileqq')

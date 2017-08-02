@@ -195,7 +195,7 @@ class AutomatorServer(object):
 
     __apk_files = ["libs/zime.apk"]
     # Used for check if installed
-    __apk_vercode = '1.9.5'
+    __apk_vercode = '1.9.6'
     __zserial_vercode = '3.2.2'
     __apk_pkgname = 'com.zunyun.zime'
 
