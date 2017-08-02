@@ -9,9 +9,31 @@ class MobilqqPraise:
         self.repo = Repo()
 
     def action(self, d,z,args):
+        z.toast( "正在ping网络是否通畅" )
+        z.heartbeat( )
+        i = 0
+        while i < 200:
+            i += 1
+            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            print( ping )
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                z.toast( "网络通畅。" )
+                break
+            z.sleep( 2 )
+        if i > 200:
+            z.toast( "网络不通，请检查网络状态" )
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
+            return
         z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+
+        if d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists:  # 到了通讯录这步后看号有没有被冻结
+            z.toast( "卡槽QQ状态正常，继续执行" )
+        else:
+            z.toast( "卡槽QQ状态异常，跳过此模块" )
+            return
         z.sleep(8)
 
         add_count = int(args['add_count'])  # 要添加多少人
@@ -26,6 +48,8 @@ class MobilqqPraise:
                 if len(numbers) == 0:
                     d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\"" % repo_number_cate_id).communicate()
                     z.sleep(10)
+                    if (args["time_delay"]):
+                        z.sleep( int( args["time_delay"] ) )
                     return
                 z.heartbeat()
                 QQnumber = numbers[0]['number']
@@ -41,7 +65,7 @@ class MobilqqPraise:
                 while True:
                     if d(descriptionContains='赞').exists:
                         z.heartbeat()
-                        for k in range(0,10,+1):
+                        for k in range(0, 1):
                             allnum = d(descriptionContains='赞').info['contentDescription']
                             allnum = re.findall(r'\d',allnum)
                             # print(allnum)
@@ -55,6 +79,8 @@ class MobilqqPraise:
                                 if tect==1:
                                     z.sleep(2)
                                     z.toast('点赞人数已满')
+                                    if (args["time_delay"]):
+                                        z.sleep( int( args["time_delay"] ) )
                                     return
                                 tect = 1
                             else:
@@ -82,8 +108,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A6SK01638")
-    z = ZDevice("HT4A6SK01638")
+    d = Device("cda0ae8d")
+    z = ZDevice("cda0ae8d")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_cate_id":"119","add_count":"16","time_delay":"3"};    #cate_id是仓库号，length是数量
 

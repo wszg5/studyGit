@@ -114,9 +114,65 @@ class MobilqqAddressCheckDeposit:
 
         return 'true'
 
-    def action(self, d,z, args):
+    def bindPhoneNumber(self,z,d):
+        z.toast( "点击开始绑定" )
+        d( text='马上绑定' ).click( )
+        while d( text='验证手机号码' ).exists:
 
-        z.toast("开始执行：普通QQ通讯录匹配提取")
+            PhoneNumber = None
+            j = 0
+            while PhoneNumber is None:
+                j += 1
+                PhoneNumber = self.scode.GetPhoneNumber( self.scode.QQ_CONTACT_BIND )  # 获取接码平台手机号码
+                z.heartbeat( )
+                if j > 20:
+                    z.toast( '取不到手机号码' )
+                    return "nothing"
+            z.input( PhoneNumber )
+            z.sleep( 1.5 )
+            if d( text='下一步' ).exists:
+                d( text='下一步' ).click( )
+                z.sleep( 3 )
+            if d( text='确定' ).exists:
+                d( text='确定' ).click( )
+                z.sleep( 2 )
+            code = self.scode.GetVertifyCode( PhoneNumber, self.scode.QQ_CONTACT_BIND, '4' )  # 获取接码验证码
+            self.scode.defriendPhoneNumber( PhoneNumber, self.scode.QQ_CONTACT_BIND )
+            if code == '':
+                z.toast( PhoneNumber + '手机号,获取不到验证码' )
+                if d( text='返回' ).exists:
+                    d( text='返回' ).click( )
+                if not d( textContains='中国' ).exists:
+                    if d( text='返回' ).exists:
+                        d( text='返回' ).click( )
+                if d( className='android.view.View', descriptionContains='删除' ).exists:
+                    d( className='android.view.View', descriptionContains='删除' ).click( )
+                continue
+            z.heartbeat( )
+            z.input( code )
+            if d( text='完成' ).exists:
+                d( text='完成' ).click( )
+            z.sleep( 5 )
+            break
+        z.sleep( 1 )
+    def action(self, d,z, args):
+        z.toast( "正在ping网络是否通畅" )
+        z.heartbeat( )
+        i = 0
+        while i < 200:
+            i += 1
+            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            print( ping )
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                z.toast( "网络通畅。开始执行：普通QQ通讯录匹配提取" )
+                break
+            z.sleep( 2 )
+        if i > 200:
+            z.toast( "网络不通，请检查网络状态" )
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
+            return
+
         self.scode = smsCode( d.server.adb.device_serial( ) )
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
@@ -128,16 +184,25 @@ class MobilqqAddressCheckDeposit:
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         z.sleep(10)
         z.heartbeat()
+
+        if d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists:  # 到了通讯录这步后看号有没有被冻结
+            z.toast( "卡槽QQ状态正常，继续执行" )
+        else:
+            z.toast( "卡槽QQ状态异常，跳过此模块" )
+            return
+
         if not d(text='消息', resourceId='com.tencent.mobileqq:id/name').exists:  # 到了通讯录这步后看号有没有被冻结
             return 2
-        if d(text='绑定手机号码').exists:
-            d(text='关闭').click()
-            d(text='关闭').click()
-            z.sleep(1)
+        if d( text='马上绑定' ).exists:
+            result = self.bindPhoneNumber(z,d)
+            if result == "nothing":
+                return
         if d(text='主题装扮').exists:
             d(text='关闭').click()
         if d(text='马上绑定').exists:
-            d(text='关闭').click()
+            result = self.bindPhoneNumber( z, d )
+            if result == "nothing":
+                return
         if d(text='通讯录').exists:
             d(text='关闭').click()
         d(description='快捷入口').click()
@@ -152,8 +217,10 @@ class MobilqqAddressCheckDeposit:
                 j += 1
                 PhoneNumber = self.scode.GetPhoneNumber( self.scode.QQ_CONTACT_BIND )  # 获取接码平台手机号码
                 z.heartbeat()
-                if j > 20:
+                if j > 2:
                     z.toast('取不到手机号码')
+                    if (args["time_delay"]):
+                        z.sleep( int( args["time_delay"] ) )
                     return
             z.input( PhoneNumber )
             z.sleep( 1.5 )
@@ -190,9 +257,13 @@ class MobilqqAddressCheckDeposit:
             text = self.Bind(d,z)  # 未开启通讯录的，现绑定通讯录
             z.heartbeat()
             if text == 'false':  # 操作过于频繁的情况
+                if (args["time_delay"]):
+                    z.sleep( int( args["time_delay"] ) )
                 return
             z.sleep(7)
         if d(textContains='没有可匹配的').exists:
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
             return
         if d(text='匹配手机通讯录').exists:
             d(text='匹配手机通讯录').click()
@@ -208,6 +279,8 @@ class MobilqqAddressCheckDeposit:
             d(text='添加手机联系人').click()
             if not obj1.exists:
                 z.toast("该手机上没有联系人")
+                if (args["time_delay"]):
+                    z.sleep( int( args["time_delay"] ) )
                 return
 
         overNumber1 = None

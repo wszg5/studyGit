@@ -9,6 +9,28 @@ class MobilqqConcernII:
         self.repo = Repo()
 
     def action(self, d,z,args):
+        z.toast( "正在ping网络是否通畅" )
+        z.heartbeat( )
+        i = 0
+        while i < 200:
+            i += 1
+            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            print( ping )
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                z.toast( "网络通畅。" )
+                break
+            z.sleep( 2 )
+        if i > 200:
+            z.toast( "网络不通，请检查网络状态" )
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
+            return
+
+        if d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists:  # 到了通讯录这步后看号有没有被冻结
+            z.toast( "卡槽QQ状态正常，继续执行" )
+        else:
+            z.toast( "卡槽QQ状态异常，跳过此模块" )
+            return
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
@@ -29,7 +51,7 @@ class MobilqqConcernII:
             obj1.click()
         z.sleep(3)
 
-        obj2 = d(descriptionContains='次赞，按钮', className='android.widget.RelativeLayout',resourceId='com.tencent.mobileqq:id/name')
+        obj2 = d(descriptionContains='次赞，按钮')
         if obj2.exists:
             obj2.click()
         z.sleep(5)
@@ -43,6 +65,8 @@ class MobilqqConcernII:
             className='android.widget.LinearLayout')  # 用来点击的
         if not obj3.exists:
             z.toast("我没赞过好友") #我没赞过好友的情况
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
             return
         z.heartbeat()
         set1 = set()
@@ -70,6 +94,9 @@ class MobilqqConcernII:
                     z.sleep(2)
                 z.heartbeat()
 
+                if d(textContains='知道').exists:
+                    d(textContains='知道').click()
+
                 if d(text='关注').exists:
                     d(text='关注').click()
                     z.sleep(3)
@@ -80,8 +107,6 @@ class MobilqqConcernII:
                         d(text='关注').click()
                         z.sleep(1)
                         mmm = 1
-                    # if d(text='关注').exists:
-                    #     return
 
                     d.press.back()
                     i = i+1
@@ -90,6 +115,8 @@ class MobilqqConcernII:
                     z.heartbeat()
                     if d(text='关注').exists:
                         z.toast('关注频繁，结束程序')
+                        if (args["time_delay"]):
+                            z.sleep( int( args["time_delay"] ) )
                         return
                     d.press.back()
                     i = i+1
@@ -104,7 +131,7 @@ class MobilqqConcernII:
                 i = 1
                 continue
         if (args["time_delay"]):
-            z.sleep(int(args["time_delay"]))
+            z.sleep( int( args["time_delay"] ) )
 
 
 def getPluginClass():
