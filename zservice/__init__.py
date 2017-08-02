@@ -196,7 +196,7 @@ class AutomatorServer(object):
     __apk_files = ["libs/zime.apk"]
     # Used for check if installed
     __apk_vercode = '1.9.5'
-    __zserial_vercode = '3.2.1'
+    __zserial_vercode = '3.2.2'
     __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
@@ -684,14 +684,14 @@ class ZRemoteDevice(object):
     '''
     def generate_serial(self, pkg):
         self.server.adb.run_cmd("shell",
-                         'am broadcast -a com.android.vending.INSTALL_REFERRER -f 32 -a com.zunyun.serial.action --es ac generate --es pkg %s' % pkg)
+                         'am broadcast -a com.zunyun.serial.action --include-stopped-packages   -n com.sollyu.xposed.hook.model/com.sollyu.android.appenv.ActionReceiver --es ac generate --es pkg %s' % pkg)
         return None
 
     def get_serial(self, pkg):
         path = '/sdcard/serial.json'
         out = self.server.adb.run_cmd("shell", "\"su -c 'rm %s'\"" % path).output
         self.server.adb.run_cmd("shell",
-                         'am broadcast -a com.android.vending.INSTALL_REFERRER -f 32 -a com.zunyun.serial.action --es ac get --es pkg %s --es fileName %s' % (pkg, path))
+                         'am broadcast -a com.zunyun.serial.action --include-stopped-packages   -n com.sollyu.xposed.hook.model/com.sollyu.android.appenv.ActionReceiver --es ac get --es pkg %s --es fileName %s' % (pkg, path))
         out = self.server.adb.run_cmd("shell", "\"su -c 'cat %s'\"" % path).output
         return out
 
@@ -699,7 +699,7 @@ class ZRemoteDevice(object):
         t = base64.b64encode(serial)
 
         self.server.adb.run_cmd("shell",
-                         'am broadcast -a com.android.vending.INSTALL_REFERRER -f 32 -a com.zunyun.serial.action --es ac set --es pkg %s --es serial %s' % (pkg, t))
+                         'am broadcast -a com.zunyun.serial.action --include-stopped-packages   -n com.sollyu.xposed.hook.model/com.sollyu.android.appenv.ActionReceiver --es ac set --es pkg %s --es serial %s' % (pkg, t))
         return None
 
     def clear_traversed_text(self):
