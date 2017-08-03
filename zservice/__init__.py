@@ -481,8 +481,50 @@ class ZRemoteDevice(object):
         self.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \\\"%s\\\"" % t)
         return True
 
-    def generateSerial(self, serial=None):
-        return self.server.jsonrpc.generateSerial(serial)
+    def qq_getLoginStatus(self, d):
+        activity = self.getTopActivity()
+        print activity
+        if 'com.tencent.mobileqq' not in activity:
+            return {'success': False, 'remark': u'当前界面非QQ界面' + activity}
+
+        if 'com.tencent.mobileqq/.activity.InstallActivity' in activity:
+            self.toast('QQ正在更新数据，请稍等')
+            self.sleep(2)
+            return self.qq_getLoginStatus(d)
+
+
+        if 'com.tencent.mobileqq/.activity.RegisterGuideActivity' in activity:
+            return {'success': False, 'remark': 'RegisterGuideActivity'}
+
+        if 'com.tencent.mobileqq/.activity.LoginActivity' in activity:
+            return {'success': False, 'remark': 'LoginActivity'}
+
+        self.sleep(5)
+
+        if 'com.tencent.mobileqq/.activity.NotificationActivity' in activity:
+            self.toast('发现弹窗，点击左侧按钮后再行判断')
+            d(resourceId='com.tencent.mobileqq:id/dialogLeftBtn').click()
+            self.sleep(2)
+            return self.qq_getLoginStatus(d)
+
+
+        if 'com.tencent.mobileqq/.activity.UpgradeActivity' in activity:  #QQ更新提醒
+            self.toast('发现升级弹窗，点击暂不升级后再行判断')
+            d(text='暂不升级').click()
+            self.sleep(2)
+            return self.qq_getLoginStatus(d)
+
+        if 'com.tencent.mobileqq/.activity.PhoneUnityIntroductionActivity' in activity:  # QQ主界面
+            return {'success': True, 'remark': 'PhoneUnityIntroductionActivity'}
+
+
+        if 'com.tencent.mobileqq/.activity.SplashActivity' in activity:
+            return {'success': True, 'remark': 'ok'}
+
+        self.toast('存在未判断的QQ界面状态，请提取日志')
+        import util
+        logger = util.logger
+        logger.info('UNKNOW ACTIVITY: %s' % activity)
 
     def wx_restart(self):
         self.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
