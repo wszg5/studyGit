@@ -145,11 +145,7 @@ class NewMobilqqAddByAddressListII:
         z.sleep(10)
         z.heartbeat()
 
-        if d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists: # 到了通讯录这步后看号有没有被冻结
-            z.toast( "卡槽QQ状态正常，继续执行" )
-        else:
-            z.toast( "卡槽QQ状态异常，跳过此模块" )
-            return
+    
 
 
         if d(text='绑定手机号码').exists:
