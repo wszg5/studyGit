@@ -481,16 +481,34 @@ class ZRemoteDevice(object):
         self.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \\\"%s\\\"" % t)
         return True
 
-    def qq_getLoginStatus(self, d):
+    def isNetConnected(self):
+        ping = self.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
+        if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+            return  True
+        return False
+
+    def qq_openUser(self, num):
+        self.server.adb.run_cmd("shell",
+                         'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"' % num)  # qq名片页面
+
+    def qq_getLoginStatus(self, d, maxSleep = 40):
+        if maxSleep < 0:
+           return {'success': False, 'remark': 'Timeout'}
+
+        if not self.isNetConnected():
+            self.toast('网络未连接，超时等待 %d' % maxSleep)
+            self.sleep(2)
+            return self.qq_getLoginStatus(d, maxSleep - 2)
+
+
         activity = self.getTopActivity()
-        print activity
         if 'com.tencent.mobileqq' not in activity:
             return {'success': False, 'remark': u'当前界面非QQ界面' + activity}
 
         if 'com.tencent.mobileqq/.activity.InstallActivity' in activity:
-            self.toast('QQ正在更新数据，请稍等')
+            self.toast('QQ正在更新数据，请稍等, %d' % maxSleep)
             self.sleep(2)
-            return self.qq_getLoginStatus(d)
+            return self.qq_getLoginStatus(d, maxSleep - 2)
 
 
         if 'com.tencent.mobileqq/.activity.RegisterGuideActivity' in activity:
@@ -499,13 +517,21 @@ class ZRemoteDevice(object):
         if 'com.tencent.mobileqq/.activity.LoginActivity' in activity:
             return {'success': False, 'remark': 'LoginActivity'}
 
-        self.sleep(5)
-
         if 'com.tencent.mobileqq/.activity.NotificationActivity' in activity:
-            self.toast('发现弹窗，点击左侧按钮后再行判断')
-            d(resourceId='com.tencent.mobileqq:id/dialogLeftBtn').click()
-            self.sleep(2)
-            return self.qq_getLoginStatus(d)
+            if d(textContains='身份过期').exists:
+                return {'success': False, 'remark': u'身份过期'}
+
+            if d(resourceId='com.tencent.mobileqq:id/dialogLeftBtn').exists:
+                self.toast('发现弹窗，点击左侧按钮后再行判断')
+                d(resourceId='com.tencent.mobileqq:id/dialogLeftBtn').click()
+                self.sleep(2)
+                return self.qq_getLoginStatus(d)
+
+            if d(resourceId='com.tencent.mobileqq:id/dialogRightBtn').exists:
+                self.toast('发现弹窗，点击右侧按钮后再行判断')
+                d(resourceId='com.tencent.mobileqq:id/dialogRightBtn').click()
+                self.sleep(2)
+                return self.qq_getLoginStatus(d)
 
 
         if 'com.tencent.mobileqq/.activity.UpgradeActivity' in activity:  #QQ更新提醒
@@ -517,9 +543,24 @@ class ZRemoteDevice(object):
         if 'com.tencent.mobileqq/.activity.PhoneUnityIntroductionActivity' in activity:  # QQ主界面
             return {'success': True, 'remark': 'PhoneUnityIntroductionActivity'}
 
+        if 'com.tencent.mobileqq/.activity.phone.PhoneMatchActivity' in activity:  # QQ主界面
+            return {'success': True, 'remark': 'PhoneMatchActivity'}
+
 
         if 'com.tencent.mobileqq/.activity.SplashActivity' in activity:
-            return {'success': True, 'remark': 'ok'}
+            #主界面尝试唤起10000号名片
+            self.qq_openUser('10000')
+            while maxSleep > 0:
+                self.toast('尝试拉取10000号资料, %d' % maxSleep)
+                self.sleep(2)
+                maxSleep = maxSleep -2
+                activity = self.getTopActivity()
+                if 'com.tencent.mobileqq/.activity.FriendProfileCardActivity' not in activity:
+                    return self.qq_getLoginStatus(d, maxSleep)
+
+                if d(textContains='系统消息').exists:
+                    return {'success': True, 'remark': 'ok'}
+            return {'success': False, 'remark': 'check 10000 info Timeout'}
 
         self.toast('存在未判断的QQ界面状态，请提取日志')
         import util
