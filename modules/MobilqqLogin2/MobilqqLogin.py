@@ -143,17 +143,17 @@ class MobilqqLogin:
                     str = d.info  # 获取屏幕大小等信息
                     height = str["displayHeight"]
                     width = str["displayWidth"]
-                    d.click(width * 5 / 12, height * 5 / 32)
-                    z.sleep(1.5)
-                    z.input('中国')
-                    z.sleep(2)
-                    d(text='+86').click()
+                    d.click( width * 5 / 12, height * 5 / 32 )
+                    z.sleep( 1.5 )
+                    z.input( '中国' )
+                    z.sleep( 2 )
+                    d( text='+86' ).click( )
 
-            z.input(PhoneNumber)
-            z.sleep(1.5)
-            if d(text='下一步').exists:
-                d(text='下一步').click()
-                z.sleep(3)
+            z.input( PhoneNumber )
+            z.sleep( 1.5 )
+            if d( text='下一步' ).exists:
+                d( text='下一步' ).click( )
+                z.sleep( 3 )
             e = 0
             while d( text='正在发送请求' ).exists:
                 e += 1
@@ -321,30 +321,50 @@ class MobilqqLogin:
         d.server.adb.cmd( "shell",
                           "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
 
-        loginStatusList = z.qq_getLoginStatus( d )
-        if loginStatusList is None:
-            z.toast( "登陆新场景，现无法判断登陆状态" )
-            return None
-        loginStatus = loginStatusList['success']
-        if loginStatus:
-            z.toast( "卡槽QQ状态正常，继续执行" )
-        else:
+        while d( textContains='正在更新数据' ).exists:
+            z.sleep( 2 )
+
+        z.sleep( 20 )
+        z.heartbeat()
+        if d( text='去安全中心' ).exists:
             self.repo.BackupInfo( cate_id, 'frozen', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
-            z.toast( "卡槽QQ状态异常，跳过此模块" )
             return "nothing"
 
+        if d( text='登陆失败' ).exists:
+            self.repo.BackupInfo( cate_id, 'frozen', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+            return "nothing"
+
+        if d( text='身份过期' ).exists or d( text='下线通知' ).exists:
+            self.repo.BackupInfo( cate_id, 'frozen', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+            return "nothing"
+
+        if d( textContains='密码错误' ).exists:
+            self.repo.BackupInfo( cate_id, 'frozen', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+            return "nothing"
 
         if d( text='马上绑定' ).exists:
             self.BindAddressBook(z, d, args)
+            return QQNumber
+        z.sleep( 1 )
+        if d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists:  # 登陆上后弹出t通讯录的情况
+            return QQNumber
 
         if d( text='匹配手机通讯录' ).exists:  # 登陆上后弹出t通讯录的情况
             d( text='匹配手机通讯录' ).click()
             z.sleep(1.5)
             if d(text='取消').exists:
                 d(text='取消').child()
+            return QQNumber
 
-        return QQNumber
+        if d( textContains='更换主题' ).exists:
+            return QQNumber
 
+        if d(textContains='主题装扮').exists:
+            d(text='关闭').click()
+            return QQNumber
+        else:
+
+            return "nothing"
 
     def qiehuan(self,d,z,args):
         time_limit = int(args['time_limit'])
@@ -368,6 +388,21 @@ class MobilqqLogin:
         # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
         # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
         z.sleep(6)
+
+        getSerial = self.repo.Getserial(cate_id,
+                                        '%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))  # 得到之前的串号
+        time.sleep(1)
+        if len(getSerial) == 0:  # 之前的信息保存失败的话
+            # d.server.adb.cmd("shell","am broadcast -a com.zunyun.zime.toast --es msg \"串号获取失败，重新设置\"").communicate()  # 在５１上测时库里有东西但是王红机器关闭后仍获取失败
+            print('切换失败')
+            getSerial = z.generateSerial("788")  # 修改信息
+        else:
+            getSerial = getSerial[0]['imei']  # 如果信息保存成功但串号没保存成功的情况
+            print('卡槽切换时的sereial%s' % getSerial)
+            if getSerial is None:  # 如果串号为空，在该卡槽下保存新的串号
+                getSerial = z.generateSerial("788")  # 修改信息
+            else:
+                z.generateSerial(getSerial)  # 将串号保存
         z.heartbeat()
         self.slot.restore(slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
         # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
@@ -388,14 +423,30 @@ class MobilqqLogin:
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         z.sleep(2)
         z.heartbeat()
-        loginStatusList = z.qq_getLoginStatus( d )
-        if loginStatusList is None:
-            z.toast( "登陆新场景，现无法判断登陆状态" )
-            return None
-        loginStatus = loginStatusList['success']
-        if loginStatus:
-            z.toast( "卡槽QQ状态正常，继续执行" )
-        else:
+        while d( textContains='正在更新数据' ).exists:
+            z.sleep( 2 )
+
+        z.sleep( 20 )
+        z.heartbeat( )
+        if d( textContains='主题装扮' ).exists:
+            d( text='关闭' ).click( )
+            z.sleep( 1 )
+
+        if d( text='马上绑定' ).exists:
+            self.BindAddressBook(z, d, args)
+
+        if d( text='匹配手机通讯录' ).exists:  # 登陆上后弹出t通讯录的情况
+            d( text='匹配手机通讯录' ).click( )
+
+        d.dump( compressed=False )
+        if d( text='身份过期' ).exists:
+            d( text='确定' ).click( )
+
+        if d( text='下线通知' ).exists:
+            d( text='退出' ).click( )
+
+        if d( text='登 录', className='android.widget.Button' ).exists or d( text='身份过期' ).exists or d(
+                text='下线通知' ).exists:
             obj = self.slot.getSlotInfo( slotnum )
             remark = obj['remark']
             remarkArr = remark.split( "_" )
@@ -403,16 +454,9 @@ class MobilqqLogin:
             self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
             self.slot.clear( slotnum )  # 清空改卡槽，并补登
             z.toast( "卡槽QQ状态异常，补登陆卡槽" )
-            self.action( d, z, args )
-
-        if d( text='马上绑定' ).exists:
-            self.BindAddressBook(z, d, args)
-
-        if d( text='匹配手机通讯录' ).exists:  # 登陆上后弹出t通讯录的情况
-            d( text='匹配手机通讯录' ).click()
-            z.sleep(1.5)
-            if d(text='取消').exists:
-                d(text='取消').child()
+            self.action(d,z, args)
+        else:
+            z.toast( "卡槽QQ状态正常，继续执行" )
 
     def action(self, d, z, args):
         z.toast("正在ping网络是否通畅")
@@ -459,6 +503,22 @@ class MobilqqLogin:
             # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate() #开飞行模式
             # d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
             z.sleep(6)
+
+
+            # getSerial = self.repo.Getserial(cate_id,'%s_%s_%s' % (d.server.adb.device_serial(), self.type, slotnum))     #得到之前的串号
+            # time.sleep(1)
+            # if len(getSerial)==0:      #之前的信息保存失败的话
+            #     # d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"串号获取失败，重新设置\"" ).communicate()   #在５１上测时库里有东西但是王红机器关闭后仍获取失败
+            #     getSerial = z.generateSerial("788")  # 修改信息
+            # else:
+            #     getSerial = getSerial[0]['imei']      #如果信息保存成功但串号没保存成功的情况
+            #     print('卡槽切换时的sereial%s'%getSerial)
+            #     if getSerial is None:          #如果串号为空，在该卡槽下保存新的串号
+            #         getSerial = z.generateSerial("788")  # 修改信息
+            #     else:
+            #         z.generateSerial(getSerial)  # 将串号保存
+
+
             z.heartbeat()
             self.slot.restore(slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
             # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate() # 关飞行模式
@@ -479,30 +539,39 @@ class MobilqqLogin:
             z.sleep(2)
 
             z.heartbeat()
-            loginStatusList = z.qq_getLoginStatus( d )
-            if loginStatusList is None:
-                z.toast( "登陆新场景，现无法判断登陆状态" )
-                return None
-            loginStatus = loginStatusList['success']
-            if loginStatus:
-                z.toast( "卡槽QQ状态正常，继续执行" )
-            else:
-                obj = self.slot.getSlotInfo( slotnum )
-                remark = obj['remark']
-                remarkArr = remark.split( "_" )
-                QQnumber = remarkArr[1]
-                self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
-                self.slot.clear( slotnum )  # 清空改卡槽，并补登
-                z.toast( "卡槽QQ状态异常，补登陆卡槽" )
+            while d(textContains='正在更新数据').exists:
+                z.sleep(2)
+
+            z.sleep( 20 )
+            z.heartbeat()
+            if d(textContains='主题装扮').exists:
+                d(text='关闭').click()
+                z.sleep(1)
 
             if d( text='马上绑定' ).exists:
                 self.BindAddressBook(z, d, args)
 
             if d( text='匹配手机通讯录' ).exists:  # 登陆上后弹出t通讯录的情况
-                d( text='匹配手机通讯录' ).click( )
-                z.sleep( 1.5 )
-                if d( text='取消' ).exists:
-                    d( text='取消' ).child( )
+                d( text='匹配手机通讯录' ).click()
+
+            d.dump(compressed=False)
+            if d(text='身份过期').exists:
+                d(text='确定').click()
+
+            if d(text='下线通知').exists:
+                d(text='退出').click( )
+
+            if d(text='登 录', className='android.widget.Button').exists or d(text='身份过期').exists or d( text='下线通知' ).exists:
+                obj = self.slot.getSlotInfo( slotnum )
+                remark = obj['remark']
+                remarkArr = remark.split("_")
+                QQnumber = remarkArr[1]
+                self.repo.BackupInfo(cate_id, 'frozen', QQnumber, '', '')  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+                self.slot.clear( slotnum )  # 清空改卡槽，并补登
+                z.toast("卡槽QQ状态异常，补登陆卡槽")
+                self.action( d, z, args )
+            else:
+                z.toast( "卡槽QQ状态正常，继续执行" )
 
         else:  # 有空卡槽的情况
             d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
