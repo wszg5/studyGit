@@ -13,6 +13,24 @@ class MobilqqAddFriends:
         self.repo = Repo()
 
     def action(self, d,z, args):
+
+        z.toast( "正在ping网络是否通畅" )
+        z.heartbeat( )
+        i = 0
+        while i < 200:
+            i += 1
+            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            print( ping )
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                z.toast( "网络通畅。" )
+                break
+            z.sleep( 2 )
+        if i > 200:
+            z.toast( "网络不通，请检查网络状态" )
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
+            return
+
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
@@ -28,6 +46,18 @@ class MobilqqAddFriends:
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         z.sleep(5)
+
+        loginStatusList = z.qq_getLoginStatus( d )
+        if loginStatusList is None:
+            z.toast( "登陆新场景，现无法判断登陆状态" )
+            return
+        loginStatus = loginStatusList['success']
+        if loginStatus:
+            z.toast( "卡槽QQ状态正常，继续执行" )
+        else:
+            z.toast( "卡槽QQ状态异常，跳过此模块" )
+            return
+
         d(description='快捷入口').click()
         z.sleep(2)
         if not d(text='扫一扫').exists:
@@ -50,6 +80,8 @@ class MobilqqAddFriends:
             d.server.adb.cmd( "shell",
                               "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\"" % cate_id ).communicate( )
             z.sleep( 10 )
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
             return
         z.heartbeat( )
         numbers = numbers[0]['number']
@@ -65,6 +97,8 @@ class MobilqqAddFriends:
                 d.server.adb.cmd( "shell",
                                   "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id1 ).communicate( )
                 z.sleep( 10 )
+                if (args["time_delay"]):
+                    z.sleep( int( args["time_delay"] ) )
                 return
             message = Material[0]['content']  # 取出验证消息的内容
 
@@ -73,6 +107,8 @@ class MobilqqAddFriends:
             if len( numbers ) == 0:
                 d.server.adb.cmd( "shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\"" % cate_id ).communicate( )
                 z.sleep( 10 )
+                if (args["time_delay"]):
+                    z.sleep( int( args["time_delay"] ) )
                 return
             z.heartbeat()
             numbers = numbers[0]['number']
@@ -93,7 +129,7 @@ class MobilqqAddFriends:
                 continue
             z.sleep(1)
             z.heartbeat()
-            d.swipe(width / 2, height * 4 / 6, width / 2, height / 6);
+            # d.swipe(width / 2, height * 4 / 6, width / 2, height / 6);
             d(text='加好友').click()
             z.sleep(3)
 
@@ -167,9 +203,13 @@ class MobilqqAddFriends:
                 z.heartbeat()
                 obj.click()
                 if d(text='添加失败，请勿频繁操作',resourceId='com.tencent.mobileqq:id/name').exists:
+                    if (args["time_delay"]):
+                        z.sleep( int( args["time_delay"] ) )
                     return
                 d(text='返回').click()
                 if add_count ==i+1:
+                    if (args["time_delay"]):
+                        z.sleep( int( args["time_delay"] ) )
                     return
                 d(description='清空').click()
                 obj = d(className='android.widget.EditText',index=0)
@@ -200,8 +240,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4BLSK00255")
-    z = ZDevice("HT4BLSK00255")
+    d = Device("HT4A6SK01638")
+    z = ZDevice("HT4A6SK01638")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
 

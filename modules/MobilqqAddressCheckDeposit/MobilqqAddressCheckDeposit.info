@@ -1,0 +1,28 @@
+{
+"id": "MobilqqAddressCheckDeposit",
+"name":"普通QQ通讯录匹配提取",
+"cate":"QQ模块",
+"font": "qq",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQ-D-01",
+"icon":"vcard-o",
+"remark":"普通QQ通讯录匹配提取",
+"setting":[
+	{
+	"id": "repo_number_id",
+	"name":"存放手机号码仓库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"23"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}
+

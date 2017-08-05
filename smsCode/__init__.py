@@ -16,11 +16,11 @@ class smsCode:
     def __init__(self, serial):
         self.platform = dbapi.GetSetting("sms_platform")
         if self.platform == 'xunma':
-            self.platform = "xunma";
+            self.platform = "xunma"
         elif self.platform == 'hellotrue':  #爱乐赞
-            self.platform = "hellotrue";
+            self.platform = "hellotrue"
         else:
-            self.platform = "jyzszp"; #玉米
+            self.platform = "jyzszp"   #玉米
 
         self.username = dbapi.GetSetting("%s_user"%self.platform);
         self.password = dbapi.GetSetting("%s_password" % self.platform);
@@ -60,7 +60,9 @@ class smsCode:
 
     def GetVertifyCode(self, number, itemId, length=6):
         code = self.client.GetVertifyCode(number, itemId, int(length))
-        self.ReleasePhone(number, itemId)
+
+        if code == '':
+            self.ReleasePhone(number, itemId)
         return code
 
     def ReleasePhone(self, phoneNumber, itemId):

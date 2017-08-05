@@ -6,7 +6,10 @@ from Repo import *
 import os, time, datetime, random
 import json
 from zservice import ZDevice
+<<<<<<< HEAD
 from zcache import cache
+=======
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
 import re
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -15,6 +18,7 @@ logging.basicConfig(level=logging.INFO)
 class WXImpContactAddFriend:
     def __init__(self):
         self.repo = Repo()
+<<<<<<< HEAD
 
     def timeinterval(self,d, z, args):
         now = datetime.datetime.now( )
@@ -46,6 +50,11 @@ class WXImpContactAddFriend:
                 return 'end'
         else:
             z.toast( '尚未保存时间' )
+=======
+        self.mid = os.path.realpath(__file__)
+
+
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
@@ -116,6 +125,7 @@ class WXImpContactAddFriend:
             z.sleep( int( args["import_time_delay"] ) )
 
     def action(self, d,z, args):
+<<<<<<< HEAD
         condition = self.timeinterval( d, z, args )
         if condition == 'end':
             z.sleep( 2 )
@@ -124,6 +134,23 @@ class WXImpContactAddFriend:
         # self.ImpContact(d, z, args) #导入通讯录
 
         z.heartbeat( )
+=======
+
+        run_time = float(args['run_time']) * 60
+        run_interval = z.getModuleRunInterval(self.mid)
+        if run_interval is not None and run_interval < run_time :
+            z.toast(u'锁定时间还差:%d分钟' % int(run_time-run_interval))
+            z.sleep(2)
+            return
+        z.heartbeat( )
+        z.sleep(8)
+
+        z.heartbeat( )
+        z.toast("开始执行：微信通讯录加好友+导入（尊云专用）模块")
+
+        self.ImpContact(d, z, args) #导入通讯录
+
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -131,7 +158,10 @@ class WXImpContactAddFriend:
         d.press.home( )
         if d( text='微信' ).exists:
             d( text='微信' ).click( )
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
         else:
             # d.swipe( width - 20, height / 2, 0, height / 2, 5 )
             z.toast( '该页面没有微信' )
@@ -139,11 +169,16 @@ class WXImpContactAddFriend:
             return
         z.sleep( 5 )
         while True:
+<<<<<<< HEAD
             if d( text='发现' ) and d( text='我' ) and d( text='通讯录' ).exists:
+=======
+            if d( text='发现' ).exists and d( text='我' ).exists and d( text='通讯录' ).exists:
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
                 break
             else:
                 d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
 
+<<<<<<< HEAD
         d( description='更多功能按钮' ).click( )
         d( textContains='添加朋友' ).cl导入通讯录
 
@@ -158,6 +193,14 @@ class WXImpContactAddFriend:
         d( text='添加手机联系人' ).click( )
         while d( textContains='正在获取' ).exists:
             z.sleep( 3 )
+=======
+        d(description='更多功能按钮').click( )
+        d(textContains='添加朋友').click( )
+        d( textContains='手机联系人' ).click( )
+        d(text='添加手机联系人').click( )
+        while d(textContains='正在获取').exists:
+            z.sleep(3)
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
         z.heartbeat( )
         set1 = set( )
         change = 0
@@ -167,6 +210,7 @@ class WXImpContactAddFriend:
         EndIndex = int( args['EndIndex'] )  # ------------------
         while True:
             cate_id = args["repo_material_id"]  # ------------------
+<<<<<<< HEAD
             Material = self.repo.GetMaterial( cate_id, 0, 1 )
             if len( Material ) == 0:
                 d.server.adb.cmd( "shell",
@@ -178,10 +222,23 @@ class WXImpContactAddFriend:
             wxname = d( className='android.widget.ListView' ).child( className='android.widget.LinearLayout', index=i ) \
                 .child( className='android.widget.LinearLayout' ).child( className='android.widget.LinearLayout',
                                                                          index=1 ).child( textContains='微信:' )  # 得到微信名
+=======
+            Material = self.repo.GetMaterial(cate_id, 0, 1)
+            if len( Material ) == 0:
+                d.server.adb.cmd("shell",
+                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id).communicate( )
+                z.sleep(10)
+                return
+            message = Material[0]['content']  # 从素材库取出的要发的材料
+            z.sleep(1)
+            wxname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=i) \
+                .child(className='android.widget.LinearLayout').child(className='android.widget.LinearLayout', index=1).child(textContains='微信:')  # 得到微信名
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
             if wxname.exists:
                 '''
                 得到电话号
                 '''
+<<<<<<< HEAD
                 phone = d( className='android.widget.ListView' ).child( className='android.widget.LinearLayout',
                                                                         index=i ).child(
                     className='android.widget.LinearLayout' ).child( className='android.widget.LinearLayout',
@@ -196,6 +253,17 @@ class WXImpContactAddFriend:
                     className='android.widget.LinearLayout', index=0 ).child( className='android.widget.FrameLayout',
                                                                               index=2 ).child(
                     text='已添加' )  # 该编号好友已经被添加的情况
+=======
+                phone = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=i).child(
+                    className='android.widget.LinearLayout').child(className='android.widget.LinearLayout', index=1).child(
+                    className='android.widget.TextView', index=0)
+                phonenumber = phone.info['text']
+
+                z.heartbeat()
+
+                alreadyAdd = d( className='android.widget.ListView' ).child( className='android.widget.LinearLayout', index=i ).child(
+                    className='android.widget.LinearLayout', index=0 ).child( className='android.widget.FrameLayout',index=2 ).child(text='已添加' )  # 该编号好友已经被添加的情况
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
                 if alreadyAdd.exists:
                     i = i + 1
                     continue
@@ -212,7 +280,10 @@ class WXImpContactAddFriend:
                     continue
                 else:
                     set1.add( name )
+<<<<<<< HEAD
                 print( name )
+=======
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
                 endcon = 1
                 d( className='android.widget.ListView', index=0 ).child( className='android.widget.LinearLayout',
                                                                          index=i ). \
@@ -221,9 +292,14 @@ class WXImpContactAddFriend:
                 '''
                 得到性别
                 '''
+<<<<<<< HEAD
                 Gender = d( className='android.widget.LinearLayout', index=1 ).child(
                     className='android.widget.LinearLayout' ).child( className='android.widget.ImageView',
                                                                      index=1 )  # 看性别是否有显示
+=======
+                Gender = d(className='android.widget.LinearLayout', index=1).child(
+                    className='android.widget.LinearLayout', index=0).child(className='android.widget.ImageView',index=1)  # 看性别是否有显示
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
                 if Gender.exists:
                     z.heartbeat( )
                     Gender = Gender.info
@@ -262,7 +338,49 @@ class WXImpContactAddFriend:
 
                 print( '%s--%s--%s--%s--%s' % (phonenumber, name, Gender, sign, area) )
 
+<<<<<<< HEAD
                 z.heartbeat( )
+=======
+                serial = z.wx_userList()
+                ids = ''
+                if len(serial)!=2:
+                    ids = list(json.loads(serial))[0]  # 将字符串改为list样式
+                    print( ids )
+
+                if d(text='社交资料').exists:
+                    d(text='社交资料').click()
+                    z.sleep(3)
+                    SJZL1 = d( resourceId='android:id/summary', className='android.widget.TextView', index=0 ).info[
+                        'text']
+                    d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
+                    z.sleep(3)
+                SJZL = re.split(" ", SJZL1)
+
+                if d(text='设置备注和标签').exists:
+                    d(text='设置备注和标签').click()
+                    z.sleep(3)
+                    beizhuObj = d( className='android.widget.EditText', index=1)
+                    if beizhuObj.exists:
+                        if SJZL[0] != SJZL[1]:
+                            deltext = beizhuObj.info  # 将之前消息框的内容删除
+                            deltext = deltext['text']
+                            lenth = len( deltext )
+                            m = 0
+                            while m < lenth:
+                                d.press.delete( )
+                                m = m + 1
+                            z.input( SJZL1 )
+                        if SJZL[0] == SJZL[1]:
+                            z.input( SJZL[1] )
+                        d(text='保存').click()
+                        z.sleep(3)
+                        # d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
+                        # z.sleep(3)
+
+
+
+                z.heartbeat()
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
                 if d( text='添加到通讯录' ).exists:
                     d( text='添加到通讯录' ).click()
                     if d( textContains='正在添加' ).exists:
@@ -271,7 +389,11 @@ class WXImpContactAddFriend:
                     if d( text='发消息' ).exists:
                         danxiang = '单向'
                         para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,
+<<<<<<< HEAD
                                 "x_05": danxiang}
+=======
+                                "x_05": danxiang,'x_20':ids}
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
                         self.repo.PostInformation( args["repo_save_information_id"], para )
                         z.toast( "%s入库完成" % phonenumber )
                         d( description='返回' ).click( )
@@ -283,7 +405,11 @@ class WXImpContactAddFriend:
                     d( description='返回' ).click( )
                     danxiang = '未知'
                     para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,
+<<<<<<< HEAD
                             "x_05": danxiang}
+=======
+                            "x_05": danxiang,'x_20':ids}
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
                     self.repo.PostInformation( args["repo_save_information_id"], para )
                     z.toast( "%s入库完成" % phonenumber )
                     d( description='返回' ).click( )
@@ -293,13 +419,18 @@ class WXImpContactAddFriend:
                 else:
                     danxiang = '未知'
                     para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,
+<<<<<<< HEAD
                             "x_05": danxiang}
+=======
+                            "x_05": danxiang,'x_20':ids}
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
                     self.repo.PostInformation( args["repo_save_information_id"], para )
                     z.toast( "%s入库完成" % phonenumber )
                     d( description='返回' ).click( )
                     i = i + 1
                     continue
 
+<<<<<<< HEAD
                 danxiang = '非单项'  # 有添加到通讯录且非单项的情况
                 GenderFrom = args['gender']  # -------------------------------外界设定的性别
                 if GenderFrom != '不限':
@@ -308,15 +439,33 @@ class WXImpContactAddFriend:
                                 "x_05": danxiang}
                         self.repo.PostInformation( args["repo_save_information_id"], para )
                         z.toast( "%s入库完成" % phonenumber )
+=======
+                danxiang = '双向'  # 有添加到通讯录且非单向的情况
+                para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,
+                        "x_05": danxiang, 'x_20': ids}
+                self.repo.PostInformation( args["repo_save_information_id"], para )
+                z.toast( "%s入库完成" % phonenumber )
+                GenderFrom = args['gender']  # -------------------------------外界设定的性别
+                if GenderFrom != '不限':
+                    if Gender != GenderFrom:  # 如果性别不符号的情况
+                        # para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,
+                        #         "x_05": danxiang}
+                        # self.repo.PostInformation( args["repo_save_information_id"], para )
+                        # z.toast( "%s入库完成" % phonenumber )
+                        z.toast('性别不符')
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
                         d( description='返回' ).click( )
                         d( description='返回' ).click( )
                         i = i + 1
                         continue
+<<<<<<< HEAD
 
                 para = {"phoneNumber": phonenumber, 'x_01': name, 'x_02': Gender, "x_03": area, "x_04": sign,
                         "x_05": danxiang}
                 self.repo.PostInformation( args["repo_save_information_id"], para )
                 z.toast( "%s入库完成" % phonenumber )
+=======
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
                 z.sleep( 1 )
                 if t < EndIndex:
                     deltext = d( className='android.widget.EditText', index=1 ).info  # 将之前消息框的内容删除
@@ -329,6 +478,11 @@ class WXImpContactAddFriend:
                     z.heartbeat( )
                     d( className='android.widget.EditText', index=1 ).click( )
                     z.input( message )  # ----------------------------------------
+<<<<<<< HEAD
+=======
+                    z.sleep(2)
+
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
                     d( text='发送' ).click( )
                     z.sleep( 1 )
                     d( description='返回' ).click( )
@@ -338,15 +492,24 @@ class WXImpContactAddFriend:
                 else:
                     d( description='返回' ).click( )
                     d( description='返回' ).click( )
+<<<<<<< HEAD
                     i = i + 1
                     continue
+=======
+                    z.toast( '已经成功向' + args['EndIndex'] + '个好友发送添加验证请求' )
+                    break
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
 
             else:
                 if change == 0:  # 一次还没有点击到人
                     if i == 1:  # 通讯录没有人的情况
                         now = datetime.datetime.now( )
                         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+<<<<<<< HEAD
                         cache.set( '%s_WXImpContactAddFriend_time' % d.server.adb.device_serial( ), nowtime, None )
+=======
+                        z.setModuleLastRun(self.mid)
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
                         z.toast( '模块结束，保存的时间是%s' % nowtime )
 
                         return
@@ -359,7 +522,11 @@ class WXImpContactAddFriend:
 
                         now = datetime.datetime.now( )
                         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+<<<<<<< HEAD
                         cache.set( '%s_WXAddAddressList_time' % d.server.adb.device_serial( ), nowtime, None )
+=======
+                        z.setModuleLastRun(self.mid)
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
                         z.toast( '模块结束，保存的时间是%s' % nowtime )
 
                         if (args["time_delay"]):
@@ -371,7 +538,11 @@ class WXImpContactAddFriend:
 
         now = datetime.datetime.now( )
         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+<<<<<<< HEAD
         cache.set( '%s_WXImpContactAddFriend_time' % d.server.adb.device_serial( ), nowtime,None )
+=======
+        z.setModuleLastRun(self.mid)
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
         z.toast('模块结束，保存的时间是%s'%nowtime)
 
         if (args["time_delay"]):
@@ -381,18 +552,31 @@ def getPluginClass():
     return WXImpContactAddFriend
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     # global args
+=======
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
 
     import sys
 
     reload(sys)
     sys.setdefaultencoding("utf-8")
+<<<<<<< HEAD
 
     clazz = getPluginClass()
     o = clazz()
 
     d = Device("HT54VSK01061")
     z = ZDevice("HT54VSK01061")
+=======
+    clazz = getPluginClass()
+    o = clazz()
+
+    d = Device("36be646")
+    z = ZDevice("36be646")
+
+
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
 #    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
     z.server.install()
     #z.input("6565wv=1027&k=48KHKLm")
@@ -407,7 +591,17 @@ if __name__ == "__main__":
     # d.dump(compressed=False)
 
 
+<<<<<<< HEAD
     args = {"repo_imp_number_id":"113",'run_time':'0','number_count':'15',"import_time_delay":"3",
             "repo_material_id": "39", 'EndIndex': '3', 'repo_save_information_id': '171', 'gender': "不限","time_delay": "3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
+=======
+    args = {"repo_imp_number_id":"113",'run_time':'1','number_count':'15',"import_time_delay":"30",
+            "repo_material_id": "39", 'EndIndex': '3', 'repo_save_information_id': '197', 'gender': "不限","time_delay": "3"}    #cate_id是仓库号，length是数量
+
+    o.action(d,z, args)
+
+
+
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8

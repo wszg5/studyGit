@@ -1,0 +1,19 @@
+{
+"id": "QQDelete66600000",
+"cate":"QQ模块",
+"name":"删除QQ号为66600000的好友",
+"font": "qq",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQ--D-1.0",
+"icon": "vcard-o",
+"remark":"删除QQ号为66600000的好友",
+"setting":[
+	{
+	"id": "QQNumber",
+	"name":"需要删除的QQ号",
+	"type":"textbox",
+    "defaultValue":"66600000",
+	}
+]
+}

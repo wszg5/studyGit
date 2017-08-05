@@ -13433,9 +13433,15 @@ error: [Errno 111] Connection refused
 [2017-07-01 19:18:03] [INFO] itemcode_2251
 [2017-07-01 19:18:03] [INFO] token_i0JjsH5tHcVy7pl5gu4syoxcaqxvdg65
 [2017-07-01 19:18:08] [INFO] ===XUNMA RESTURN:17070466823;
+<<<<<<< HEAD
 [2017-07-03 13:48:27] [INFO] itemcode_2251
 [2017-07-03 13:48:27] [INFO] token_SmA0JoqgUM3mRhgzNzbWH5mr5xQiM957
 [2017-07-03 13:48:47] [ERROR] Traceback (most recent call last):
+=======
+[2017-07-03 10:18:41] [INFO] itemcode_2251
+[2017-07-03 10:18:41] [INFO] token_rTUgBUNeItuh6YpFjQLaH7oY9Hm8ND77
+[2017-07-03 10:19:01] [ERROR] Traceback (most recent call last):
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
   File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 80, in GetPhoneNumber
     conn.request("GET", path)
   File "/usr/lib/python2.7/httplib.py", line 1057, in request
@@ -13454,6 +13460,7 @@ error: [Errno 111] Connection refused
     for res in getaddrinfo(host, port, 0, SOCK_STREAM):
 gaierror: [Errno -3] Temporary failure in name resolution
 
+<<<<<<< HEAD
 [2017-07-03 13:48:47] [INFO] itemcode_2251
 [2017-07-03 13:48:47] [INFO] token_SmA0JoqgUM3mRhgzNzbWH5mr5xQiM957
 [2017-07-03 13:49:01] [INFO] ===XUNMA RESTURN:False:Session 过期
@@ -13611,6 +13618,27 @@ gaierror: [Errno -3] Temporary failure in name resolution
 [2017-07-03 14:31:30] [INFO] itemcode_2251
 [2017-07-03 14:31:30] [INFO] token_tgWuFvN4W2fVuMc9dUqlsly5FSmGxV39
 [2017-07-03 14:31:50] [ERROR] Traceback (most recent call last):
+=======
+[2017-07-03 10:19:01] [INFO] itemcode_2251
+[2017-07-03 10:19:01] [INFO] token_rTUgBUNeItuh6YpFjQLaH7oY9Hm8ND77
+[2017-07-03 10:19:05] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-07-03 10:19:50] [INFO] itemcode_2251
+[2017-07-03 10:19:50] [INFO] token_rTUgBUNeItuh6YpFjQLaH7oY9Hm8ND77
+[2017-07-03 10:20:00] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-07-03 10:20:04] [INFO] itemcode_2251
+[2017-07-03 10:20:04] [INFO] token_sQTElqXHsMAwphdsRj6bvchErjqIBr18
+[2017-07-03 10:20:07] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 10:20:25] [INFO] itemcode_2251
+[2017-07-03 10:20:25] [INFO] token_sQTElqXHsMAwphdsRj6bvchErjqIBr18
+[2017-07-03 10:20:28] [INFO] ===XUNMA RESTURN:13281290734;
+[2017-07-03 10:21:42] [INFO] [{u'xkey': None, u'phonenumber': u'13281290734', u'id': 30, u'x40': None, u'x09': None, u'x08': None, u'x29': None, u'x28': u'0', u'x03': u'2000-01-01 00:00:00', u'x02': u'0', u'x01': u'exist', u'x26': None, u'x07': None, u'x06': u'2000-01-01 00:00:00', u'x05': u'\u7a7a', u'x04': u'0', u'x22': None, u'x25': None, u'x24': None, u'cateId': None, u'x27': u'0', u'x32': None, u'x33': None, u'x30': None, u'x31': None, u'x36': None, u'x37': None, u'x34': None, u'x35': None, u'x21': None, u'x38': None, u'x39': None, u'x20': None, u'x18': None, u'x19': u'WXRegister', u'x23': None, u'x10': None, u'x11': None, u'x12': None, u'x13': None, u'x14': None, u'x15': None, u'x16': None, u'x17': None}]
+[2017-07-03 10:21:42] [INFO] 我是numbers------------------------------------------------
+[2017-07-03 10:21:42] [INFO] 0
+[2017-07-03 10:21:42] [INFO] 我是numbers[0][x02]－－－－－－－－－－－－－－－－－－－－－－
+[2017-07-03 10:24:32] [INFO] itemcode_2251
+[2017-07-03 10:24:32] [INFO] token_sQTElqXHsMAwphdsRj6bvchErjqIBr18
+[2017-07-03 10:24:52] [ERROR] Traceback (most recent call last):
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
   File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 80, in GetPhoneNumber
     conn.request("GET", path)
   File "/usr/lib/python2.7/httplib.py", line 1057, in request
@@ -13629,6 +13657,7 @@ gaierror: [Errno -3] Temporary failure in name resolution
     for res in getaddrinfo(host, port, 0, SOCK_STREAM):
 gaierror: [Errno -3] Temporary failure in name resolution
 
+<<<<<<< HEAD
 [2017-07-03 14:31:50] [INFO] itemcode_2251
 [2017-07-03 14:31:50] [INFO] token_tgWuFvN4W2fVuMc9dUqlsly5FSmGxV39
 [2017-07-03 14:32:06] [INFO] ===XUNMA RESTURN:13697497494;
@@ -13810,6 +13839,103 @@ gaierror: [Errno -3] Temporary failure in name resolution
 [2017-07-03 22:14:40] [INFO] itemcode_2251
 [2017-07-03 22:14:40] [INFO] token_WVueGU2JImPFj6N6G7QiIVqYRqRIER10
 [2017-07-03 22:15:00] [ERROR] Traceback (most recent call last):
+=======
+[2017-07-03 10:24:52] [INFO] itemcode_2251
+[2017-07-03 10:24:52] [INFO] token_sQTElqXHsMAwphdsRj6bvchErjqIBr18
+[2017-07-03 10:25:01] [INFO] ===XUNMA RESTURN:13281290734;
+[2017-07-03 10:26:44] [INFO] [{u'xkey': None, u'phonenumber': u'13829504980', u'id': 64, u'x40': None, u'x09': None, u'x08': None, u'x29': None, u'x28': u'0', u'x03': u'2000-01-01 00:00:00', u'x02': u'0', u'x01': u'exist', u'x26': None, u'x07': None, u'x06': u'2000-01-01 00:00:00', u'x05': u'\u7a7a', u'x04': u'0', u'x22': None, u'x25': None, u'x24': None, u'cateId': None, u'x27': u'0', u'x32': None, u'x33': None, u'x30': None, u'x31': None, u'x36': None, u'x37': None, u'x34': None, u'x35': None, u'x21': None, u'x38': None, u'x39': None, u'x20': None, u'x18': None, u'x19': u'WXRegister', u'x23': None, u'x10': None, u'x11': None, u'x12': None, u'x13': None, u'x14': None, u'x15': None, u'x16': None, u'x17': None}]
+[2017-07-03 10:26:44] [INFO] 我是numbers------------------------------------------------
+[2017-07-03 10:26:45] [INFO] 0
+[2017-07-03 10:26:45] [INFO] 我是numbers[0][x02]－－－－－－－－－－－－－－－－－－－－－－
+[2017-07-03 10:29:18] [INFO] itemcode_2251
+[2017-07-03 10:29:18] [INFO] token_sQTElqXHsMAwphdsRj6bvchErjqIBr18
+[2017-07-03 10:29:18] [INFO] ===XUNMA RESTURN:13113204370;
+[2017-07-03 10:35:42] [INFO] itemcode_2251
+[2017-07-03 10:35:42] [INFO] token_sQTElqXHsMAwphdsRj6bvchErjqIBr18
+[2017-07-03 10:35:45] [INFO] ===XUNMA RESTURN:13923927649;
+[2017-07-03 10:36:55] [INFO] [{u'xkey': None, u'phonenumber': u'13923927649', u'id': 94, u'x40': None, u'x09': None, u'x08': None, u'x29': None, u'x28': u'0', u'x03': u'2000-01-01 00:00:00', u'x02': u'0', u'x01': u'exist', u'x26': None, u'x07': None, u'x06': u'2000-01-01 00:00:00', u'x05': u'\u7a7a', u'x04': u'0', u'x22': None, u'x25': None, u'x24': None, u'cateId': None, u'x27': u'0', u'x32': None, u'x33': None, u'x30': None, u'x31': None, u'x36': None, u'x37': None, u'x34': None, u'x35': None, u'x21': None, u'x38': None, u'x39': None, u'x20': None, u'x18': None, u'x19': u'WXRegister', u'x23': None, u'x10': None, u'x11': None, u'x12': None, u'x13': None, u'x14': None, u'x15': None, u'x16': None, u'x17': None}]
+[2017-07-03 10:36:55] [INFO] 我是numbers------------------------------------------------
+[2017-07-03 10:36:55] [INFO] 0
+[2017-07-03 10:36:55] [INFO] 我是numbers[0][x02]－－－－－－－－－－－－－－－－－－－－－－
+[2017-07-03 10:43:53] [INFO] 13923927649
+[2017-07-03 10:43:53] [INFO] [{u'xkey': None, u'phonenumber': u'13923927649', u'id': 94, u'x40': None, u'x09': None, u'x08': None, u'x29': None, u'x28': u'0', u'x03': u'2000-01-01 00:00:00', u'x02': u'1', u'x01': u'exist', u'x26': None, u'x07': None, u'x06': u'2017-07-03 10:36:31', u'x05': u'\u7a7a', u'x04': u'0', u'x22': None, u'x25': None, u'x24': None, u'cateId': None, u'x27': u'0', u'x32': None, u'x33': None, u'x30': None, u'x31': None, u'x36': None, u'x37': None, u'x34': None, u'x35': None, u'x21': None, u'x38': None, u'x39': None, u'x20': None, u'x18': None, u'x19': u'WXRegister', u'x23': None, u'x10': None, u'x11': None, u'x12': None, u'x13': None, u'x14': None, u'x15': None, u'x16': None, u'x17': None}]
+[2017-07-03 10:43:54] [INFO] 我是x_04_number--------------------------------------------------------
+[2017-07-03 10:44:13] [INFO] {'cateId': '189', 'x_key': u'iPhone', 'x_01': 'exist', 'phoneNumber': '13923927649', 'x_19': 'WXRegister'}
+[2017-07-03 10:45:53] [INFO] 13923927649
+[2017-07-03 10:45:53] [INFO] [{u'xkey': None, u'phonenumber': u'13923927649', u'id': 94, u'x40': None, u'x09': None, u'x08': None, u'x29': None, u'x28': u'0', u'x03': u'2000-01-01 00:00:00', u'x02': u'1', u'x01': u'exist', u'x26': None, u'x07': u'iPhone', u'x06': u'2017-07-03 10:36:31', u'x05': u'\u7a7a', u'x04': u'1', u'x22': None, u'x25': None, u'x24': None, u'cateId': None, u'x27': u'0', u'x32': None, u'x33': None, u'x30': None, u'x31': None, u'x36': None, u'x37': None, u'x34': None, u'x35': None, u'x21': None, u'x38': None, u'x39': None, u'x20': None, u'x18': None, u'x19': u'WXRegister', u'x23': None, u'x10': None, u'x11': None, u'x12': None, u'x13': None, u'x14': None, u'x15': None, u'x16': None, u'x17': None}]
+[2017-07-03 10:45:53] [INFO] 我是x_04_number--------------------------------------------------------
+[2017-07-03 10:46:06] [INFO] {'cateId': '189', 'x_19': 'WXRegister', 'x_01': 'exist', 'phoneNumber': '13923927649', 'x_05': '\xe7\xa9\xba'}
+[2017-07-03 10:50:05] [INFO] itemcode_2251
+[2017-07-03 10:50:05] [INFO] token_sQTElqXHsMAwphdsRj6bvchErjqIBr18
+[2017-07-03 10:50:06] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-07-03 10:50:10] [INFO] itemcode_2251
+[2017-07-03 10:50:10] [INFO] token_a94QN9kNAbmMnUrGtTePFz0JyicbRF51
+[2017-07-03 10:50:11] [INFO] ===XUNMA RESTURN:13094729639;
+[2017-07-03 11:01:50] [INFO] itemcode_2251
+[2017-07-03 11:01:50] [INFO] token_a94QN9kNAbmMnUrGtTePFz0JyicbRF51
+[2017-07-03 11:01:54] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 11:02:11] [INFO] itemcode_2251
+[2017-07-03 11:02:11] [INFO] token_a94QN9kNAbmMnUrGtTePFz0JyicbRF51
+[2017-07-03 11:02:14] [INFO] ===XUNMA RESTURN:13923972862;
+[2017-07-03 11:04:48] [INFO] itemcode_2251
+[2017-07-03 11:04:48] [INFO] token_a94QN9kNAbmMnUrGtTePFz0JyicbRF51
+[2017-07-03 11:04:52] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 11:05:09] [INFO] itemcode_2251
+[2017-07-03 11:05:09] [INFO] token_a94QN9kNAbmMnUrGtTePFz0JyicbRF51
+[2017-07-03 11:05:17] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 11:05:34] [INFO] itemcode_2251
+[2017-07-03 11:05:34] [INFO] token_a94QN9kNAbmMnUrGtTePFz0JyicbRF51
+[2017-07-03 11:05:53] [INFO] ===XUNMA RESTURN:13281283946;
+[2017-07-03 11:16:59] [INFO] itemcode_2251
+[2017-07-03 11:16:59] [INFO] token_a94QN9kNAbmMnUrGtTePFz0JyicbRF51
+[2017-07-03 11:17:00] [INFO] ===XUNMA RESTURN:14575892517;
+[2017-07-03 11:21:23] [INFO] {'cateId': '189', 'x_key': u'vivo-vivo V3M A', 'x_01': 'exist', 'phoneNumber': '14575892517', 'x_19': 'WXRegister'}
+[2017-07-03 11:23:23] [INFO] {'cateId': '189', 'x_key': u'Xiaomi-MI 3W', 'x_01': 'exist', 'phoneNumber': '14575892517', 'x_19': 'WXRegister'}
+[2017-07-03 11:24:34] [INFO] itemcode_2251
+[2017-07-03 11:24:34] [INFO] token_a94QN9kNAbmMnUrGtTePFz0JyicbRF51
+[2017-07-03 11:24:37] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 11:24:55] [INFO] itemcode_2251
+[2017-07-03 11:24:55] [INFO] token_a94QN9kNAbmMnUrGtTePFz0JyicbRF51
+[2017-07-03 11:25:04] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 11:25:21] [INFO] itemcode_2251
+[2017-07-03 11:25:21] [INFO] token_a94QN9kNAbmMnUrGtTePFz0JyicbRF51
+[2017-07-03 11:25:22] [INFO] ===XUNMA RESTURN:13281203642;
+[2017-07-03 11:27:42] [INFO] itemcode_2251
+[2017-07-03 11:27:42] [INFO] token_a94QN9kNAbmMnUrGtTePFz0JyicbRF51
+[2017-07-03 11:27:44] [INFO] ===XUNMA RESTURN:13283423685;
+[2017-07-03 11:48:22] [INFO] itemcode_2251
+[2017-07-03 11:48:22] [INFO] token_a94QN9kNAbmMnUrGtTePFz0JyicbRF51
+[2017-07-03 11:48:22] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-07-03 11:48:26] [INFO] itemcode_2251
+[2017-07-03 11:48:26] [INFO] token_10Js5l50JWdA5xsUAKzLW7Y0Jvog9F51
+[2017-07-03 11:48:31] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 11:48:48] [INFO] itemcode_2251
+[2017-07-03 11:48:48] [INFO] token_10Js5l50JWdA5xsUAKzLW7Y0Jvog9F51
+[2017-07-03 11:48:50] [INFO] ===XUNMA RESTURN:13094728870;
+[2017-07-03 11:51:30] [INFO] itemcode_2251
+[2017-07-03 11:51:30] [INFO] token_10Js5l50JWdA5xsUAKzLW7Y0Jvog9F51
+[2017-07-03 11:51:45] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 11:52:02] [INFO] itemcode_2251
+[2017-07-03 11:52:02] [INFO] token_10Js5l50JWdA5xsUAKzLW7Y0Jvog9F51
+[2017-07-03 11:52:03] [INFO] ===XUNMA RESTURN:13642743976;
+[2017-07-03 11:55:45] [INFO] itemcode_2251
+[2017-07-03 11:55:45] [INFO] token_10Js5l50JWdA5xsUAKzLW7Y0Jvog9F51
+[2017-07-03 11:55:47] [INFO] ===XUNMA RESTURN:13094729639;
+[2017-07-03 12:09:33] [INFO] itemcode_2251
+[2017-07-03 12:09:33] [INFO] token_10Js5l50JWdA5xsUAKzLW7Y0Jvog9F51
+[2017-07-03 12:09:48] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-07-03 12:10:07] [INFO] itemcode_2251
+[2017-07-03 12:10:07] [INFO] token_1ZkMRiOtAv1Ye7a8ODI9BVmB7SITEV69
+[2017-07-03 12:10:30] [INFO] itemcode_2251
+[2017-07-03 12:10:30] [INFO] token_1ZkMRiOtAv1Ye7a8ODI9BVmB7SITEV69
+[2017-07-03 12:10:36] [INFO] ===XUNMA RESTURN:13546850899;
+[2017-07-03 12:14:13] [INFO] itemcode_2251
+[2017-07-03 12:14:13] [INFO] token_1ZkMRiOtAv1Ye7a8ODI9BVmB7SITEV69
+[2017-07-03 12:14:15] [INFO] ===XUNMA RESTURN:13067954194;
+[2017-07-03 12:16:37] [INFO] itemcode_2251
+[2017-07-03 12:16:37] [INFO] token_1ZkMRiOtAv1Ye7a8ODI9BVmB7SITEV69
+[2017-07-03 12:16:57] [ERROR] Traceback (most recent call last):
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
   File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 80, in GetPhoneNumber
     conn.request("GET", path)
   File "/usr/lib/python2.7/httplib.py", line 1057, in request
@@ -13828,9 +13954,15 @@ gaierror: [Errno -3] Temporary failure in name resolution
     for res in getaddrinfo(host, port, 0, SOCK_STREAM):
 gaierror: [Errno -3] Temporary failure in name resolution
 
+<<<<<<< HEAD
 [2017-07-03 22:15:00] [INFO] itemcode_2251
 [2017-07-03 22:15:00] [INFO] token_WVueGU2JImPFj6N6G7QiIVqYRqRIER10
 [2017-07-03 22:15:20] [ERROR] Traceback (most recent call last):
+=======
+[2017-07-03 12:16:57] [INFO] itemcode_2251
+[2017-07-03 12:16:57] [INFO] token_1ZkMRiOtAv1Ye7a8ODI9BVmB7SITEV69
+[2017-07-03 12:17:17] [ERROR] Traceback (most recent call last):
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
   File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 80, in GetPhoneNumber
     conn.request("GET", path)
   File "/usr/lib/python2.7/httplib.py", line 1057, in request
@@ -13849,9 +13981,45 @@ gaierror: [Errno -3] Temporary failure in name resolution
     for res in getaddrinfo(host, port, 0, SOCK_STREAM):
 gaierror: [Errno -3] Temporary failure in name resolution
 
+<<<<<<< HEAD
 [2017-07-03 22:15:20] [INFO] itemcode_2251
 [2017-07-03 22:15:20] [INFO] token_WVueGU2JImPFj6N6G7QiIVqYRqRIER10
 [2017-07-03 22:15:40] [ERROR] Traceback (most recent call last):
+=======
+[2017-07-03 12:17:17] [INFO] itemcode_2251
+[2017-07-03 12:17:17] [INFO] token_1ZkMRiOtAv1Ye7a8ODI9BVmB7SITEV69
+[2017-07-03 12:17:40] [INFO] ===XUNMA RESTURN:13173543084;
+[2017-07-03 12:19:01] [INFO] itemcode_2251
+[2017-07-03 12:19:01] [INFO] token_1ZkMRiOtAv1Ye7a8ODI9BVmB7SITEV69
+[2017-07-03 12:19:18] [INFO] ===XUNMA RESTURN:13642743793;
+[2017-07-03 12:21:18] [INFO] itemcode_2251
+[2017-07-03 12:21:18] [INFO] token_1ZkMRiOtAv1Ye7a8ODI9BVmB7SITEV69
+[2017-07-03 12:21:21] [INFO] ===XUNMA RESTURN:14575892751;
+[2017-07-03 12:26:52] [INFO] itemcode_2251
+[2017-07-03 12:26:52] [INFO] token_1ZkMRiOtAv1Ye7a8ODI9BVmB7SITEV69
+[2017-07-03 12:26:57] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 12:27:14] [INFO] itemcode_2251
+[2017-07-03 12:27:14] [INFO] token_1ZkMRiOtAv1Ye7a8ODI9BVmB7SITEV69
+[2017-07-03 12:27:32] [INFO] ===XUNMA RESTURN:13941980458;
+[2017-07-03 13:01:36] [INFO] itemcode_2251
+[2017-07-03 13:01:36] [INFO] token_1ZkMRiOtAv1Ye7a8ODI9BVmB7SITEV69
+[2017-07-03 13:01:36] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-07-03 13:01:40] [INFO] itemcode_2251
+[2017-07-03 13:01:40] [INFO] token_olU0JRnAoetehY0J48gpW1nFxhdsBL14
+[2017-07-03 13:01:58] [INFO] ===XUNMA RESTURN:13829525664;
+[2017-07-03 13:22:30] [INFO] itemcode_2251
+[2017-07-03 13:22:30] [INFO] token_olU0JRnAoetehY0J48gpW1nFxhdsBL14
+[2017-07-03 13:22:30] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-07-03 13:22:58] [INFO] itemcode_2251
+[2017-07-03 13:22:58] [INFO] token_cRaxpKt1E98QxKkK3u65JTbZbKDwEh54
+[2017-07-03 13:23:20] [INFO] ===XUNMA RESTURN:13829509426;
+[2017-07-03 13:25:26] [INFO] itemcode_2251
+[2017-07-03 13:25:26] [INFO] token_cRaxpKt1E98QxKkK3u65JTbZbKDwEh54
+[2017-07-03 13:25:42] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 13:25:59] [INFO] itemcode_2251
+[2017-07-03 13:25:59] [INFO] token_cRaxpKt1E98QxKkK3u65JTbZbKDwEh54
+[2017-07-03 13:26:34] [ERROR] Traceback (most recent call last):
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
   File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 80, in GetPhoneNumber
     conn.request("GET", path)
   File "/usr/lib/python2.7/httplib.py", line 1057, in request
@@ -13866,6 +14034,7 @@ gaierror: [Errno -3] Temporary failure in name resolution
     self.connect()
   File "/usr/lib/python2.7/httplib.py", line 836, in connect
     self.timeout, self.source_address)
+<<<<<<< HEAD
   File "/usr/lib/python2.7/socket.py", line 557, in create_connection
     for res in getaddrinfo(host, port, 0, SOCK_STREAM):
 gaierror: [Errno -3] Temporary failure in name resolution
@@ -13999,6 +14168,20 @@ gaierror: [Errno -3] Temporary failure in name resolution
 [2017-07-04 11:26:24] [INFO] itemcode_2251
 [2017-07-04 11:26:24] [INFO] token_dmP0J2j3BUmeIym31xYy4IJx5Naz9k40
 [2017-07-04 11:26:44] [ERROR] Traceback (most recent call last):
+=======
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+timeout: timed out
+
+[2017-07-03 13:26:34] [INFO] itemcode_2251
+[2017-07-03 13:26:34] [INFO] token_cRaxpKt1E98QxKkK3u65JTbZbKDwEh54
+[2017-07-03 13:26:49] [INFO] ===XUNMA RESTURN:14575890803;
+[2017-07-03 13:29:35] [INFO] {'cateId': '189', 'x_key': u'OPPO-OPPO R11', 'x_01': 'exist', 'phoneNumber': '14575890803', 'x_19': 'WXRegister'}
+[2017-07-03 13:30:29] [INFO] {'cateId': '189', 'x_key': u'Meizu-m1 metal', 'x_01': 'exist', 'phoneNumber': '14575890803', 'x_19': 'WXRegister'}
+[2017-07-03 13:31:17] [INFO] itemcode_2251
+[2017-07-03 13:31:17] [INFO] token_cRaxpKt1E98QxKkK3u65JTbZbKDwEh54
+[2017-07-03 13:31:37] [ERROR] Traceback (most recent call last):
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
   File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 80, in GetPhoneNumber
     conn.request("GET", path)
   File "/usr/lib/python2.7/httplib.py", line 1057, in request
@@ -14017,9 +14200,15 @@ gaierror: [Errno -3] Temporary failure in name resolution
     for res in getaddrinfo(host, port, 0, SOCK_STREAM):
 gaierror: [Errno -3] Temporary failure in name resolution
 
+<<<<<<< HEAD
 [2017-07-04 11:26:44] [INFO] itemcode_2251
 [2017-07-04 11:26:44] [INFO] token_dmP0J2j3BUmeIym31xYy4IJx5Naz9k40
 [2017-07-04 11:27:04] [ERROR] Traceback (most recent call last):
+=======
+[2017-07-03 13:31:37] [INFO] itemcode_2251
+[2017-07-03 13:31:37] [INFO] token_cRaxpKt1E98QxKkK3u65JTbZbKDwEh54
+[2017-07-03 13:31:57] [ERROR] Traceback (most recent call last):
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
   File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 80, in GetPhoneNumber
     conn.request("GET", path)
   File "/usr/lib/python2.7/httplib.py", line 1057, in request
@@ -14038,9 +14227,24 @@ gaierror: [Errno -3] Temporary failure in name resolution
     for res in getaddrinfo(host, port, 0, SOCK_STREAM):
 gaierror: [Errno -3] Temporary failure in name resolution
 
+<<<<<<< HEAD
 [2017-07-04 11:27:04] [INFO] itemcode_2251
 [2017-07-04 11:27:04] [INFO] token_dmP0J2j3BUmeIym31xYy4IJx5Naz9k40
 [2017-07-04 11:27:24] [ERROR] Traceback (most recent call last):
+=======
+[2017-07-03 13:31:57] [INFO] itemcode_2251
+[2017-07-03 13:31:57] [INFO] token_cRaxpKt1E98QxKkK3u65JTbZbKDwEh54
+[2017-07-03 13:32:06] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 13:32:23] [INFO] itemcode_2251
+[2017-07-03 13:32:23] [INFO] token_cRaxpKt1E98QxKkK3u65JTbZbKDwEh54
+[2017-07-03 13:32:29] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 13:32:46] [INFO] itemcode_2251
+[2017-07-03 13:32:46] [INFO] token_cRaxpKt1E98QxKkK3u65JTbZbKDwEh54
+[2017-07-03 13:32:48] [INFO] ===XUNMA RESTURN:13173543084;
+[2017-07-03 13:41:18] [INFO] itemcode_2251
+[2017-07-03 13:41:18] [INFO] token_cRaxpKt1E98QxKkK3u65JTbZbKDwEh54
+[2017-07-03 13:41:38] [ERROR] Traceback (most recent call last):
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
   File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 80, in GetPhoneNumber
     conn.request("GET", path)
   File "/usr/lib/python2.7/httplib.py", line 1057, in request
@@ -14059,6 +14263,7 @@ gaierror: [Errno -3] Temporary failure in name resolution
     for res in getaddrinfo(host, port, 0, SOCK_STREAM):
 gaierror: [Errno -3] Temporary failure in name resolution
 
+<<<<<<< HEAD
 [2017-07-04 11:27:24] [INFO] itemcode_2251
 [2017-07-04 11:27:24] [INFO] token_dmP0J2j3BUmeIym31xYy4IJx5Naz9k40
 [2017-07-04 11:27:40] [INFO] ===XUNMA RESTURN:13094729639;
@@ -14106,3 +14311,39 @@ gaierror: [Errno -3] Temporary failure in name resolution
 [2017-07-04 11:51:19] [INFO] itemcode_2251
 [2017-07-04 11:51:19] [INFO] token_pa4JMGNJP6KGCGASWN1FBMZOsAY87m17
 [2017-07-04 11:51:23] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+=======
+[2017-07-03 13:41:38] [INFO] itemcode_2251
+[2017-07-03 13:41:38] [INFO] token_cRaxpKt1E98QxKkK3u65JTbZbKDwEh54
+[2017-07-03 13:41:53] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 13:42:10] [INFO] itemcode_2251
+[2017-07-03 13:42:10] [INFO] token_cRaxpKt1E98QxKkK3u65JTbZbKDwEh54
+[2017-07-03 13:42:46] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 13:43:03] [INFO] itemcode_2251
+[2017-07-03 13:43:03] [INFO] token_cRaxpKt1E98QxKkK3u65JTbZbKDwEh54
+[2017-07-03 13:43:15] [INFO] ===XUNMA RESTURN:13644192217;
+[2017-07-03 13:45:28] [INFO] {'cateId': '189', 'x_key': u'iPhone', 'x_01': 'exist', 'phoneNumber': '13644192217', 'x_19': 'WXRegister'}
+[2017-07-03 13:46:23] [INFO] {'cateId': '189', 'x_19': 'WXRegister', 'x_01': 'exist', 'phoneNumber': '13644192217', 'x_05': u'PC-2017009'}
+[2017-07-03 18:06:43] [INFO] itemcode_2251
+[2017-07-03 18:06:43] [INFO] token_i0JjsH5tHcVy7pl5gu4syoxcaqxvdg65
+[2017-07-03 18:06:48] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-07-03 18:06:54] [INFO] itemcode_2251
+[2017-07-03 18:06:54] [INFO] token_2SAwWDh0J1WaihidypSMfQMYZg5vXg65
+[2017-07-03 18:07:02] [INFO] ===XUNMA RESTURN:13941944501;
+[2017-07-03 18:08:50] [INFO] itemcode_2251
+[2017-07-03 18:08:50] [INFO] token_2SAwWDh0J1WaihidypSMfQMYZg5vXg65
+[2017-07-03 18:08:55] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 18:09:12] [INFO] itemcode_2251
+[2017-07-03 18:09:12] [INFO] token_2SAwWDh0J1WaihidypSMfQMYZg5vXg65
+[2017-07-03 18:09:16] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 18:09:34] [INFO] itemcode_2251
+[2017-07-03 18:09:34] [INFO] token_2SAwWDh0J1WaihidypSMfQMYZg5vXg65
+[2017-07-03 18:09:46] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 18:10:04] [INFO] itemcode_2251
+[2017-07-03 18:10:04] [INFO] token_2SAwWDh0J1WaihidypSMfQMYZg5vXg65
+[2017-07-03 18:10:13] [INFO] ===XUNMA RESTURN:False:暂时没有此项目号码，请等会试试...
+[2017-07-03 18:10:30] [INFO] itemcode_2251
+[2017-07-03 18:10:30] [INFO] token_2SAwWDh0J1WaihidypSMfQMYZg5vXg65
+[2017-07-03 18:10:34] [INFO] ===XUNMA RESTURN:13075717943;
+[2017-07-03 18:14:21] [INFO] itemcode_2251
+[2017-07-03 18:14:21] [INFO] token_2SAwWDh0J1WaihidypSMfQMYZg5vXg65
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8

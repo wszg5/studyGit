@@ -241,8 +241,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT52ESK00321")
-    z = ZDevice("HT52ESK00321")
+    d = Device("HT54VSK01061")
+    z = ZDevice("HT54VSK01061")
 
     # slot = slot('tim')
 
@@ -252,12 +252,12 @@ if __name__ == "__main__":
     args = {"repo_cate_id":"64","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     # util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
-    # o.action(d,z, args)
+    o.action(d,z, args)
     # d.server.adb.cmd("shell", "pm clear com.taojin.dungeon.sy37").communicate()  # 清除缓存
     # d.server.adb.cmd("shell","am start -n com.taojin.dungeon.sy37/com.taojin.dungeon.MySplashActivity").communicate()  # 拉起来
 
-    while 1:
-        time.sleep(0.44)
-        d.click(100,150)
-        d.click(270, 484)
+    # while 1:
+    #     time.sleep(0.44)
+    #     d.click(100,150)
+    #     d.click(270, 484)
 

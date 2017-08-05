@@ -94,9 +94,12 @@ class client_jyzszp:
         token = self.GetToken()
         itemcode = self.im_type_list[itemId]
         path = "/Api/index/cancelSMSRecv?uid=%s&token=%s&mobiles=%s&pid=%s" % (self.username, token, phoneNumber, itemcode)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET", path)
-        response = conn.getresponse()
+        try:
+            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+            conn.request("GET", path)
+            response = conn.getresponse()
+        except Exception:
+            return 'ok'
         if response.status == 200:
             data = response.read()
         else:
@@ -145,9 +148,12 @@ class client_jyzszp:
         token = self.GetToken()
         itemcode = self.im_type_list[itemId]
         path = "/Api/index/addIgnoreList?uid=%s&token=%s&mobiles=%s&pid=%s" % (self.username, token, phoneNumber,itemcode)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET", path)
-        response = conn.getresponse()
+        try:
+            conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+            conn.request("GET", path)
+            response = conn.getresponse()
+        except Exception:
+            return 'ok'
         if response.status == 200:
             data = response.read()
         else:

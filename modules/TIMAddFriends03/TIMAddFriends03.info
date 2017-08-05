@@ -4,7 +4,7 @@
 "name":"TIM加好友(搜索查找)",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"TIM03",
+"code":"TIM-A-1.0",
 "icon": "vcard-o",
 "remark":"TIM加好友(搜索查找)",
 "setting":[
@@ -20,7 +20,8 @@
     "name":"验证信息素材库",
     "type":"repo",
     "source":"material",
-    "top_cate_id":"12"
+    "top_cate_id":"12",
+    "remark":"取验证语"
     },
 
     {

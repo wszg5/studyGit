@@ -9,7 +9,7 @@ from PIL import Image
 import util
 from Repo import *
 from imageCode import imageCode
-from slot import slot
+from slot import Slot
 from uiautomator import Device
 from zservice import ZDevice
 
@@ -18,7 +18,7 @@ class MobilqqLogin2:
     def __init__(self):
         self.type = 'mobileqq'
         self.repo = Repo()
-        self.slot = slot(self.type)
+        self.slot = Slot('', self.type)
         self.logger = util.logger
 
     def GetUnique(self):
@@ -159,7 +159,7 @@ class MobilqqLogin2:
             if d(textContains='密码错误').exists:
                 self.logger.info('===========密码错误==============帐号:%s,密码:%s' % (QQNumber, QQPassword))
             z.heartbeat()
-            self.repo.BackupInfo(cate_id, 'frozen',QQNumber, '','')  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+            self.repo.BackupInfo(cate_id, 'frozen', QQNumber, '', '')  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
             z.sleep(1)
             if d(text='帐号无法登录').exists:
                 d(text='取消').click()
@@ -170,7 +170,7 @@ class MobilqqLogin2:
         d.dump(compressed=False)
         time_limit = args['time_limit']
         cate_id = args["repo_cate_id"]
-        slotnum = self.slot.getEmpty(d)  # 取空卡槽
+        slotnum = self.slot.getEmpty()  # 取空卡槽
 
         print(slotnum)
         if slotnum == 0:    #没有空卡槽的话
@@ -277,7 +277,7 @@ class MobilqqLogin2:
             z.heartbeat()
             QQnumber = self.login(d,args,z)
             z.heartbeat()
-            self.slot.backup(d, slotnum, QQnumber)                   #设备信息，卡槽号，QQ号
+            self.slot.backup(d, str(slotnum)+'_'+QQnumber)                   #设备信息，卡槽号，QQ号
             self.repo.BackupInfo(cate_id, 'using', QQnumber,serialinfo,'%s_%s_%s' % (d.server.adb.device_serial(), self.type,slotnum))  # 仓库号,使用中,QQ号,设备号_卡槽号
 
         if (args["time_delay"]):
@@ -296,8 +296,8 @@ if __name__ == "__main__":
     o = clazz()
 
 
-    d = Device("HT4BLSK00255")
-    z = ZDevice("HT4BLSK00255")
-    args = {"repo_cate_id":"133","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    d = Device("9ef40375")
+    z = ZDevice("9ef40375")
+    args = {"repo_cate_id":"203","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

@@ -1,0 +1,40 @@
+{
+"id": "QQUpdateNameGenderBirthday",
+"cate":"QQ模块",
+"name":"修改QQ昵称,性别,年龄",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQ-U-2.0",
+"icon": "vcard-o",
+"remark":"修改QQ昵称,性别,年龄",
+"setting":[
+	{
+	"id": "repo_name_id",
+	"name":"QQ修改昵称仓库号",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "birthday_start",
+	"name":"最早出生时间",
+	"type":"textbox",
+    "defaultValue":"1980",
+     "remark":"控制年龄"
+	},
+	{
+	"id": "birthday_end",
+	"name":"最迟出生时间",
+	"type":"textbox",
+    "defaultValue":"2000",
+    "remark":"控制年龄(此出生时间比最早出生时间大)"
+	},
+	{
+	"id": "gender",
+	"name":"性别",
+	"type":"textbox",
+    "defaultValue":"男",
+    "remark":"男或女"
+	}
+]
+}

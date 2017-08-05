@@ -119,8 +119,13 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
+<<<<<<< HEAD
     d = Device("HT53ASK00088")
     z = ZDevice("HT53ASK00088")
+=======
+    d = Device("HT54VSK01061")
+    z = ZDevice("HT54VSK01061")
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_normal_number_id": "195", 'repo_not_exist_id': '192','repo_exception_id': '193','repo_check_frequency_id': '194',"run_lock": "500", "check_count": "100"}    #cate_id是仓库号，length是数量

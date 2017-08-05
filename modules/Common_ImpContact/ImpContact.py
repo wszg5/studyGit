@@ -96,8 +96,16 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("INNZL7YDLFPBNFN7")
-    z = ZDevice("INNZL7YDLFPBNFN7")
+    d = Device("HT4AVSK01106")
+    z = ZDevice("HT4AVSK01106")
+    source = '/tmp/xxx.png'
+    d.screenshot(source)
+    width = 540.0
+    height = 960.0
+    p =  { "x1":37/width, "y1":380/height, "x2":502/width, "y2":473/height}
+    z.img_crop(source, p)
+
+    out = d.server.adb.run_cmd('shell', 'ls')
     z.input("xxx")
 #    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
     z.server.install()

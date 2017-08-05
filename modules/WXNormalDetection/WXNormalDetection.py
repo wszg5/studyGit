@@ -10,7 +10,6 @@ class WXNormalDetection:
 
 
     def action(self, d,z,args):
-        d(text='确定').click()
 
         d.press.home()
 
@@ -38,8 +37,8 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54VSK01061")
-    z = ZDevice("HT54VSK01061")
+    d = Device("36be646")
+    z = ZDevice("36be646")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").communicate()    #打开android设置页面
 

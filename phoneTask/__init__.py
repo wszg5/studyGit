@@ -83,14 +83,16 @@ class phoneTask:
                         # 检查设备对应的任务状态
                         new_taskid = dbapi.GetDeviceTask(deviceid)
                         if new_taskid is None or new_taskid == "":  # 任务中删除了该设备
-                            return
+                            os._exit(0)
                         if (new_taskid != self.taskid):  # 设备对应的taskid发生了变化
-                            return
+                            os._exit(0)
                         task = dbapi.GetTask(new_taskid)
                         if task.get("status") != "running":  # 任务状态已停止
-                            return
+                            os._exit(0)
+            else:
+                os._exit(0)
         else:
-            time.sleep(5)
+            os._exit(0)
 
     def deviceThread(self, deviceid, port, zport):
         while True:

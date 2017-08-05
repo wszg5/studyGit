@@ -1,10 +1,10 @@
 {
-"id": "TIMCardHolderAddFriends",
+"id": "TIMAddFriendsByCard",
 "cate":"其他模块",
 "name":"TIM名片加好友",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"T11",
+"code":"TIMAC-1.0",
 "icon": "vcard-o",
 "remark":"名片加好友",
 "setting":[
@@ -13,7 +13,7 @@
 	"name":"号码库分类",
 	"type":"repo",
 	"source":"number",
-	"top_cate_id":"21"
+	"top_cate_id":"23"
 	},
     {
 	"id": "add_count",

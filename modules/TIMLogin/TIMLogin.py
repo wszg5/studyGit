@@ -3,16 +3,18 @@ from uiautomator import Device
 from zservice import ZDevice
 from Repo import *
 import time
-from slot import slot
+from slot import Slot
 
 
 class TIMLogin:
     def __init__(self):
         self.repo = Repo()
-        self.slot = slot('tim')
-
+        self.type = 'tim'
+        # self.slot = Slot('tim')
 
     def login(self,d,z,args):
+        serial = d.server.adb.device_serial( )
+        self.slot = Slot( serial, self.type )
         cateId = args['repo_cate_id']
         name = self.repo.GetMaterial(cateId,120,1)
         name = name[0]['content']
@@ -56,6 +58,8 @@ class TIMLogin:
 
 
     def action(self, d, z,args):
+        serial = d.server.adb.device_serial( )
+        self.slot = Slot( serial, self.type )
         time_limit = args['time_limit']
         cate_id = args["repo_cate_id"]
         name = self.slot.getEmpty(d)                    #取空卡槽
@@ -98,7 +102,7 @@ class TIMLogin:
 
 
         if (args["time_delay"]):
-         time.sleep(int(args["time_delay"]))
+            time.sleep(int(args["time_delay"]))
 
 
 
@@ -108,8 +112,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT54VSK01061")
+    z = ZDevice("HT54VSK01061")
     # print(d.dump(compressed=False))
     # print(d.info)
 

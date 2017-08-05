@@ -121,8 +121,9 @@ def CommandListen():
                     for device in devices:
                         serial= device["serial"]
                         if processDict.has_key(serial):
-                            logger.war("%s收到任务停止指令，移除进程" % deviceid)
+                            logger.war("%s收到任务停止指令，移除进程" % serial)
                             processDict[serial].terminate()
+                            stopProcess(serial)
                             del processDict[serial]
                 elif data["COMMAND"] == "ADB":
                     serial = data["serial"]
@@ -156,13 +157,15 @@ def kill_crawler():
 
 
 def startProcess(deviceid):
+    stopProcess(deviceid)
     from phoneTask import phoneTask
 
     device_port = portDict[deviceid]
     port = device_port["port"]
     zport = device_port["zport"]
     t = phoneTask(deviceid)
-    processDict[deviceid] = multiprocessing.Process(target=t.deviceThread, args=(deviceid, port, zport))
+    name = 'task_%s' % deviceid
+    processDict[deviceid] = multiprocessing.Process(target=t.deviceThread,name=name, args=(deviceid, port, zport))
     processDict[deviceid].name = 'sub_ztask_%s'%deviceid
     processDict[deviceid].daemon = True
     processDict[deviceid].start()
@@ -182,6 +185,19 @@ def installApk(deviceid):
         z.server.adb.cmd("shell", "su -c 'chmod 000 /data/data/com.tencent.mm/tinker/'").communicate()
     z.server.install()
 
+def stopProcess(deviceid):
+    name = 'task_%s' % deviceid
+    cmd='ps aux|grep %s'%name
+    f=os.popen(cmd)
+    regex=re.compile(r'/w+/s+(/d+)/s+.*')
+    txt=f.read()
+    if len(txt)<5:
+        print 'there is no thread by name or command %s'%name
+        return
+
+    ids=regex.findall(txt)
+    cmd="kill -9 %s"%' '.join(ids)
+    os.system(cmd)
 
 processDict = {}
 portDict = {}

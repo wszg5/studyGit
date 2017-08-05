@@ -131,8 +131,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("5959d2f3")
+    z = ZDevice("5959d2f3")
     z.server.install()
     z.wx_action('opennearui')
 

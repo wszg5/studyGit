@@ -19,13 +19,21 @@ class WXNewSearchDepost1:
         cate_id = int( args["repo_number_id"] ) # 得到取号码的仓库号
         saveCate = args['repo_save_exist_id']
         totalList = self.repo.GetNUmberNormalTotal( saveCate )
+<<<<<<< HEAD
         # normalTotal = int( totalList[0]['total'] )
         normalTotal = 123
+=======
+        normalTotal = int( totalList[0]['total'] )
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
 
         if normalTotal < runLock:
             z.toast( '库内未使用号码低于' + args['run_lock'] + '，开始检存' )
 
+<<<<<<< HEAD
             d.press.home( ) #点ｈｏｍｅ键
+=======
+            d.press.home( )
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
             if d( text='微信' ).exists:
                 d( text='微信' ).click( )
             else:
@@ -121,11 +129,19 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
+<<<<<<< HEAD
     d = Device("36be646")
     z = ZDevice("36be646")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_id": "190", 'repo_save_exist_id': '189', "run_lock": "500", "check_count": "10",
+=======
+    d = Device("HT544SK00366")
+    z = ZDevice("HT544SK00366")
+    z.server.install()
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+    args = {"repo_number_id": "190", 'repo_save_exist_id': '175', "run_lock": "500", "check_count": "100",
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
             "repo_save_not_exist_id": "183"}  # cate_id是仓库号，length是数量
 
     o.action(d,z, args)

@@ -25,7 +25,7 @@ class MobilqqAddFrRouse:
             Material = self.repo.GetMaterial( cate_id1, 0, 1 )
             if len( Material ) == 0:
                 d.server.adb.cmd( "shell",
-                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id ).communicate( )
+                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id1 ).communicate( )
                 z.sleep( 10 )
                 return
             message = Material[0]['content']  # 取出验证消息的内容
@@ -44,7 +44,10 @@ class MobilqqAddFrRouse:
             z.sleep(1)
 
             z.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"'%QQnumber)  # qq名片页面
-            z.sleep(2)
+            z.sleep(10)
+            if d(descriptionContains='点击可赞', className='android.widget.RelativeLayout',index=2).child(className='android.view.View',index=0).exists:
+                for i in range( 0, 10 ):
+                    d(descriptionContains='点击可赞').child(className='android.view.View').click()
             if d(text='QQ').exists:
                 d(text='QQ').click()
                 z.sleep(0.5)
@@ -82,9 +85,9 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4BLSK00255")
-    z = ZDevice("HT4BLSK00255")
+    d = Device("HT4A6SK01638")
+    z = ZDevice("HT4A6SK01638")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","add_count":"3","time_delay":"3"};    #cate_id是仓库号，length是数量
 
-    o.action(d,z, args)
+    o.action(d, z, args)

@@ -253,11 +253,13 @@ class AutomatorServer(object):
             self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
             filename = os.path.join(base_dir, 'libs/zime.apk')
             self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
+            #if self.getPackageVersion() != self.__apk_vercode:
+             #   filename = os.path.join(base_dir, 'libs/zime.apk')
+              #  self.adb.run_cmd("install -r %s" % filename)
+
             self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'sh /data/local/tmp/install.sh'").communicate()
-            if self.getPackageVersion() != self.__apk_vercode:
-                filename = os.path.join(base_dir, 'libs/zime.apk')
-                self.adb.run_cmd("install -r %s" % filename)
+            self.adb.cmd("shell", "su -c 'chmod - R 777 /data/data/de.robv.android.xposed.installer/'").communicate()
 
             self.adb.cmd("shell", "reboot").communicate()
 
@@ -423,6 +425,21 @@ class ZRemoteDevice(object):
         key = 'timeout_%s' % self.server.adb.device_serial()
         cache.set(key, (datetime.datetime.now()  - datetime.datetime(2017, 1 ,1)).seconds)
 
+    ##设置模块运行时间戳
+    def setModuleLastRun(self, mid):
+        key = '%s_%s' % (self.server.adb.device_serial(), mid);
+        cache.set(key, int(time.time()), None)
+
+
+    ##返回本设备运行模块与当前时间的间隔（单位：分钟）
+    def getModuleRunInterval(self, mid):
+        key = '%s_%s' % (self.server.adb.device_serial(), mid);
+        lasttime = cache.get(key)
+        if lasttime is None:
+            return None
+        return (int(time.time()) - int(lasttime))/60;
+
+
     def checkTopActivity(self, activityName):
         out = self.cmd("shell", "dumpsys activity top  | grep ACTIVITY")[0].decode('utf-8')
         if out.find(activityName) > -1:
@@ -456,6 +473,16 @@ class ZRemoteDevice(object):
 
     def generateSerial(self, serial=None):
         return self.server.jsonrpc.generateSerial(serial)
+
+    def wx_restart(self):
+        self.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
+
+        self.server.adb.cmd("shell", "su -c 'rm -rf /data/data/com.tencent.mm/tinker/*'").communicate()
+        self.server.adb.cmd("shell", "su -c 'mkdir -p /data/data/com.tencent.mm/tinker/'").communicate()
+        self.server.adb.cmd("shell", "su -c 'chmod 000 /data/data/com.tencent.mm/tinker/'").communicate()
+
+        self.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
+
 
     '''
     openyaoyiyao   打开摇一摇界面
@@ -594,6 +621,11 @@ class ZRemoteDevice(object):
 
         return True
 
+    def wx_openuser_v1(self, v1, contactScene):
+        self.server.adb.cmd("shell", "su -c 'am start -n com.tencent.mm/.plugin.profile.ui.ContactInfoUI --es Contact_User %s --ei Contact_Scene %s'" % (v1, contactScene)).communicate()
+
+        return True
+
     def wx_yaoyiyao(self):
         base_dir = os.path.dirname(__file__)
         filename = os.path.join(base_dir, 'libs/isyaoyiyao')
@@ -619,9 +651,22 @@ class ZRemoteDevice(object):
 
         return True
 
-    def freeze_rotation(self, freeze=True):
-        '''freeze or unfreeze the device rotation in current status.'''
-        self.server.jsonrpc.freezeRotation(freeze)
+    def img_crop(self, sourcePng, point):
+        from PIL import Image
+        img = Image.open(sourcePng)
+        print img.size
+        left = int(point["x1"] * img.size[0])
+        top = int(point["y1"] * img.size[1])
+        right = int(point["x2"] * img.size[0])
+        bottom = int(point["y2"] * img.size[1])
+        box = (left, top, right, bottom)  # left top right bottom
+        region = img.crop( box )  # 截取验证码的图片
+
+        img = Image.new( 'RGBA', (right - left, bottom - top) )
+        img.paste( region, (0, 0) )
+        cropedPng = '/tmp/%s.png' % uuid.uuid1()
+        img.save( cropedPng )
+        return cropedPng
 
     def clear_traversed_text(self):
         '''clear the last traversed text.'''

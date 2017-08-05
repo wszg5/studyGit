@@ -9,7 +9,7 @@ class WXAddNearBy:
     def __init__(self):
         self.repo = Repo()
 
-    def action(self, d,z, args):
+    def action(self, d, z, args):
         z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
@@ -36,58 +36,27 @@ class WXAddNearBy:
             elif d(description='女').exists:
                 Gender = '女'
             else:
-                Gender = '不限'
+                Gender = '未知'
+
             nickname = d(className='android.widget.ListView').child(className='android.widget.LinearLayout',index=1).child(className='android.widget.LinearLayout',index=0).child(className='android.widget.TextView')
             nickname = nickname.info['text']
 
-            para = {'x_01': nickname, 'x_02': Gender,"x_":id}
-            self.repo.PostInformation( args["repo_cate_id"], para )
-            z.toast( "%s入库完成" % nickname )
-
-            gender = args['gender']
-            if gender!='不限':
-                if not d(description=gender).exists:
-                    continue
-
-            if  d(text='添加到通讯录').exists:
+            if d(text='添加到通讯录').exists:
                 d(text='添加到通讯录').click()
+                z.sleep(3)
+                if d( text='发消息' ).exists:
+                    para = {'phoneNumber': nickname, 'x_01': Gender, 'x_02': '单向', 'x_20': id}
+                    self.repo.PostInformation( args["repo_cate_id"], para )
+                    z.toast( "%s入库完成" % nickname )
+                else:
+                    para = {'phoneNumber': nickname, 'x_01': Gender, 'x_02': '双向', 'x_20': id}
+                    self.repo.PostInformation( args["repo_cate_id"], para )
+                    z.toast( "%s入库完成" % nickname )
             else:
                 continue
-            z.sleep(2)
-            forselect = args['forselect']
-            if forselect=='单向':
-                z.sleep(1)
-                continue
-            time.sleep(1)
-            if d(text='发消息').exists:
-                continue
-            z.heartbeat()
-            obj = d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=0)\
-                .child(className='android.widget.LinearLayout',index=0).child(className='android.widget.EditText')    #得到消息框内容
-            obj1 = obj.info
-            text = obj1['text']
-            if len(text)>0:
-                d.swipe(478, 193, 495, 211, 1)
-            check = obj.info
-            check = check['text']
-            lenth = len(check)
-            z.heartbeat()
-            while lenth>0:
-                d.press.delete()
-                lenth = lenth-1
-
-            cate_id = args["repo_material_id"]
-            Material = self.repo.GetMaterial(cate_id, 0, 1)
-            if len(Material) == 0:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id).communicate()
-                z.sleep(10)
-                return
-            message = Material[0]['content']  # 取出验证消息的内容
-            z.input(message)
-            z.heartbeat()
-            d(text='发送').click()
 
         if (args["time_delay"]):
+            z.toast(args['add_count'] + '个添加完毕，模块结束运行')
             z.sleep(int(args["time_delay"]))
 
 def getPluginClass():
@@ -99,10 +68,10 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("INNZL7YDLFPBNFN7")
-    z = ZDevice("INNZL7YDLFPBNFN7")
+    d = Device("5959d2f3")
+    z = ZDevice("5959d2f3")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_wxcade_id": "131","repo_cate_id":171,"add_count": "10",'forselect':'单向','gender':'不限',"repo_material_id": "39",'time_delay':"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_wxcade_id": "202", "repo_cate_id": "171", "add_count": "10", 'time_delay': "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

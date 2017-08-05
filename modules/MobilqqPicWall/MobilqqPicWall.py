@@ -12,8 +12,15 @@ class MobilqqPicWall:
         z.sleep(8)
         z.heartbeat()
         d(description='帐户及设置').click()
+        z.sleep(1.5)
         d(descriptionContains='等级：').click()
-        d(text='上传照片').click()
+        z.sleep( 1.5 )
+        d(text='编辑资料').click()
+        z.sleep( 1.5 )
+        d(text='照片墙').click()
+        z.sleep(3)
+        d(description='上传照片').click()
+        z.sleep(1.5)
         d(text='从手机相册选择').click()
         z.sleep(3)
         for i in range(0,9):
@@ -39,8 +46,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4BLSK00255")
-    z = ZDevice("HT4BLSK00255")
+    d = Device("cda0ae8d")
+    z = ZDevice("cda0ae8d")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"time_delay":"3"};    #cate_id是仓库号，length是数量

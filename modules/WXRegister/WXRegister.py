@@ -58,11 +58,13 @@ class WeiXinRegister:
             name = Material[0]['content']  # 从素材库取出的要发的材料
             z.input(name)       #name
 
+
             if not d( text='中国' ).exists:
                 d( text='国家/地区' ).click( )
                 d( className='android.support.v7.widget.LinearLayoutCompat', index=1 ).click( )
                 z.input( '中' )
                 d( text='中国' ).click( )
+
 
             d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout', index=2).child(
                 className='android.widget.EditText', index=1).click()
@@ -84,6 +86,7 @@ class WeiXinRegister:
 
             PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER,number)#获取接码平台手机号码
             # PhoneNumber = '13829507040'
+
 
             if PhoneNumber is None:
                 self.repo.DeleteInformation( saveCate, number )
@@ -112,6 +115,7 @@ class WeiXinRegister:
                 d( text='确定' ).click()
                 break
 
+
             if d(textContains='相同手机号不可频繁重复注册微信帐号').exists:
                 para = {"phoneNumber": PhoneNumber, 'x_03': nowTime, 'x_19': 'WXRegister'}
                 self.repo.PostInformation( saveCate, para )
@@ -119,13 +123,15 @@ class WeiXinRegister:
                 break
 
             d( text='确定' ).click()
+            z.sleep(3)
+
 
             if d(textContains='正在验证').exists:
                 z.sleep(35)
             z.heartbeat()
 
             code = self.scode.GetVertifyCode(PhoneNumber, self.scode.WECHAT_REGISTER)#获取接码验证码
-            self.scode.defriendPhoneNumber(PhoneNumber,self.scode.WECHAT_REGISTER)
+            # self.scode.defriendPhoneNumber(PhoneNumber,self.scode.WECHAT_REGISTER)
             if code == '':
                 self.repo.DeleteInformation( saveCate, PhoneNumber )
                 z.toast(PhoneNumber + '手机号,获取不到验证码')
@@ -140,6 +146,7 @@ class WeiXinRegister:
             para = {"phoneNumber": PhoneNumber, 'x_02': x_02, 'x_19': 'WXRegister'}
             self.repo.PostInformation( saveCate, para )
             d(text='请输入验证码').click()
+            d(text='请输入验证码').click()
             z.input(code)
             d(text='下一步', className='android.widget.Button').click()
             z.sleep(10)
@@ -149,7 +156,6 @@ class WeiXinRegister:
                 d(text='确定').click()
                 d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=0).child(className='android.widget.LinearLayout',index=2).child(
                     className='android.widget.LinearLayout',index=0).child(className='android.widget.EditText', index=1).click.bottomright()
-                # code = '596028'
                 code = self.scode.GetVertifyCode(PhoneNumber, self.scode.WECHAT_REGISTER)
                 self.scode.defriendPhoneNumber(PhoneNumber,self.scode.WECHAT_REGISTER)
                 if code == '':
@@ -192,7 +198,7 @@ class WeiXinRegister:
                 break
 
             z.sleep(2)
-            n = 1
+            n = 0
             while True:
                 z.sleep(5)
 
@@ -205,14 +211,15 @@ class WeiXinRegister:
                     else:
                         z.sleep(15)
                         z.heartbeat( )
-                        n = 1
 
 
                 if d( textContains='看看手机通讯录' ).exists:
                     d( text='是' ).click()
                     number_info = self.repo.GetInformation(saveCate,PhoneNumber)
+
                     logger.info(number_info)
                     logger.info('number_info--------------------------------------------')
+
                     if number_info[0]['x05'] is None:
                         para = {"phoneNumber": PhoneNumber, 'x_05': 'YES', 'x_19': 'WXRegister', 'x_26': '登陆状态YSE','x_20': d.server.adb.device_serial( )}
                     else:
@@ -286,7 +293,14 @@ class WeiXinRegister:
 
 
                 if d(text='确认登录').exists:
+
                     self.repo.DeleteInformation( saveCate, PhoneNumber )
+
+                    if n==1:
+                        self.repo.DeleteInformation( saveCate, PhoneNumber )
+                    else:
+                        para = {"phoneNumber": PhoneNumber, 'x_01': "exist", 'x_03': nowTime, 'x_19': 'WXRegister'}
+                        self.repo.PostInformation( saveCate, para )
                     break
 
 
@@ -380,6 +394,10 @@ class WeiXinRegister:
                                     true = trues[0]['x07']
                                     logger.info( true )
                                     logger.info( 'true----------------------------------------------------' )
+
+                                    trues = repo.GetTrueAnswer(data)
+                                    true = trues[0]['x07']
+
 
                                     if true == x0_val:
                                         x_value = x0_val
@@ -512,11 +530,10 @@ if __name__ == "__main__":
     import sys
     reload( sys )
     sys.setdefaultencoding( 'utf8' )
-
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54VSK00608")#INNZL7YDLFPBNFN7
-    z = ZDevice("HT54VSK00608")
+    d = Device("HT53ASK00766")#INNZL7YDLFPBNFN7
+    z = ZDevice("HT53ASK00766")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     'dingdingdingdingdindigdingdingdingdingdingdingdingdingdingdingdingdignin'
