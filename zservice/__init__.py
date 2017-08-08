@@ -550,6 +550,9 @@ class ZRemoteDevice(object):
         if 'com.tencent.mobileqq/.activity.SplashActivity' in activity:
             #主界面尝试唤起10000号名片
             self.qq_openUser('10000')
+            if d( text='QQ' ).exists:
+                d( text='QQ' ).click( )
+
             while maxSleep > 0:
                 self.toast('尝试拉取10000号资料, %d' % maxSleep)
                 self.sleep(2)

@@ -4,7 +4,7 @@ from Repo import *
 import  time, datetime, random
 from zservice import ZDevice
 
-class MobilqqAddFrRouse:
+class MobilqqAddFriendByCard:
     def __init__(self):
         self.repo = Repo()
 
@@ -61,15 +61,14 @@ class MobilqqAddFrRouse:
 
             z.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"'%QQnumber)  # qq名片页面
             z.sleep(10)
-            if d(descriptionContains='点击可赞', className='android.widget.RelativeLayout',index=2).child(className='android.view.View',index=0).exists:
-                for i in range( 0, 10 ):
-                    d(descriptionContains='点击可赞').child(className='android.view.View').click()
+
             if d( textContains='下次默认' ).exists:
                 d( textContains='下次默认' ).click( )
 
             if d(text='QQ').exists:
                 d(text='QQ').click()
                 z.sleep(0.5)
+
             d(text='加好友').click()
             z.sleep(2)
             z.heartbeat()
@@ -94,7 +93,7 @@ class MobilqqAddFrRouse:
 
 
 def getPluginClass():
-    return MobilqqAddFrRouse
+    return MobilqqAddFriendByCard
 
 if __name__ == "__main__":
     import sys

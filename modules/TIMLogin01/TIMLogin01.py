@@ -1,21 +1,21 @@
 # coding:utf-8
-import threading
-import time
+
 from PIL import Image
+from imageCode import imageCode
+from smsCode import smsCode
 from uiautomator import Device
-import os,re,subprocess
+import os
 import util
 from Repo import *
-from RClient import *
 import time, datetime, random
-from slot import slot
+from slot import Slot
 from zservice import ZDevice
 
 class TIMLogin01:
 
     def __init__(self):
         self.repo = Repo()
-        self.slot = slot('tim')
+        self.type = 'tim'
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
@@ -25,239 +25,357 @@ class TIMLogin01:
         uniqueNum = str(nowTime) + str(randomNum);
         return uniqueNum
 
+    def LoginPlayCode(self, d, z):
+        self.scode = smsCode( d.server.adb.device_serial( ) )
+        base_dir = os.path.abspath( os.path.join( os.path.dirname( __file__ ), os.path.pardir, "tmp" ) )
+        if not os.path.isdir( base_dir ):
+            os.mkdir( base_dir )
+        sourcePng = os.path.join( base_dir, "%s_s.png" % (self.GetUnique( )) )
+        codePng = os.path.join( base_dir, "%s_c.png" % (self.GetUnique( )) )
+        detection_robot = d( index='3', className="android.widget.EditText" )
+        not_detection_robot = d( resourceId='com.tencent.tim:id/name', index='2',
+                                 className="android.widget.EditText" )
+        if detection_robot.exists or not_detection_robot.exists:  # 需要验证码的情况
+            icode = imageCode( )
+            im_id = ""
+            for i in range( 0, 4 ):  # 打码循环
+                if i > 0:
+                    icode.reportError( im_id )
+                obj = d( resourceId='com.tencent.tim:id/name',
+                         className='android.widget.ImageView' )  # 当弹出选择QQ框的时候，定位不到验证码图片
+                if not obj.exists:
+                    obj = d( index='2', className='android.widget.Image' )
+                obj = obj.info
+                obj = obj['bounds']  # 验证码处的信息
+                left = obj["left"]  # 验证码的位置信息
+                top = obj['top']
+                right = obj['right']
+                bottom = obj['bottom']
 
-    def login(self,d,z,args):
-        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
-        if not os.path.isdir(base_dir):
-            os.mkdir(base_dir)
-        sourcePng = os.path.join(base_dir, "%s_s.png" % (self.GetUnique()))
-        codePng = os.path.join(base_dir, "%s_c.png" % (self.GetUnique()))
+                d.screenshot( sourcePng )  # 截取整个输入验证码时的屏幕
 
+                img = Image.open( sourcePng )
+                box = (left, top, right, bottom)  # left top right bottom
+                region = img.crop( box )  # 截取验证码的图片
 
-        cate_id = args["repo_cate_id"]
-        numbers = self.repo.GetAccount(cate_id, 120, 1)
-        print(numbers)
-        wait = 1
-        while wait == 1:  # 判断仓库是否有东西
-            try:
-                QQNumber = numbers[0]['number']  # 即将登陆的QQ号
-                wait = 0
-            except Exception:
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"仓库为空，没有取到号码\"")
-                time.sleep(20)
-        QQPassword = numbers[0]['password']
-        time.sleep(1)
-        t=1
-        while t ==1:
-            d.server.adb.cmd("shell", "pm clear com.tencent.tim").wait()  # 清除缓存
-            d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").wait()  # 拉起来
-            time.sleep(3)
-            for k in range(1, 35):
-                time.sleep(1)
-                if d(resourceId='com.tencent.tim:id/title', index=1, text='熟悉的QQ习惯').exists:
-                    str = d.info  # 获取屏幕大小等信息
-                    height = str["displayHeight"]
-                    width = str["displayWidth"]
-                    for i in range(0, 2):
-                        d.swipe(width * 0.75, height * 0.5, width * 0.05, height * 0.5, 10)
-                        time.sleep(1)
-                    d(resourceId='com.tencent.tim:id/name', index=1, text='立即体验').click()
+                img = Image.new( 'RGBA', (right - left, bottom - top) )
+                img.paste( region, (0, 0) )
+
+                img.save( codePng )
+                im = open( codePng, 'rb' )
+
+                codeResult = icode.getCode( im, icode.CODE_TYPE_4_NUMBER_CHAR, 60 )
+
+                code = codeResult["Result"]
+                im_id = codeResult["Id"]
+                os.remove( sourcePng )
+                os.remove( codePng )
+                z.heartbeat( )
+                z.sleep( 5 )
+                if not_detection_robot.exists:
+                    d( resourceId='com.tencent.tim:id/name', index='2',
+                       className="android.widget.EditText" ).set_text( code )
+                else:
+                    detection_robot.set_text( code )
+                z.sleep( 3 )
+                if d( descriptionContains='验证', className='android.view.View' ).exists:
+                    d( descriptionContains='验证', className='android.view.View' ).click( )
+                else:
+                    d( text='完成', resourceId='com.tencent.tim:id/ivTitleBtnRightText' ).click( )
+                z.sleep( 5 )
+                z.heartbeat( )
+                while d( className='android.widget.ProgressBar', index=0 ).exists:  # 网速不给力时，点击完成后仍然在加载时的状态
+                    z.sleep( 2 )
+                z.heartbeat( )
+                if detection_robot.exists or not_detection_robot.exists:
+                    continue
+                else:
                     break
-
-            if k == 35:
-                continue
-            time.sleep(2)
-            d(text='QQ号登录',resourceId='com.tencent.tim:id/btn_login').click()
-
-            d(className='android.widget.EditText',text='QQ号/手机号/邮箱').set_text(177751879)    #3001313499    3030327691   QQNumber
-            d(resourceId='com.tencent.tim:id/password',description='密码 安全').set_text('13141314Abc')    #Bn2kJq5l
-            d(text='登 录',resourceId='com.tencent.tim:id/login').click()
-            while d(className='android.widget.LinearLayout').child(text='登录中',resourceId='com.tencent.tim:id/name').exists:
-                time.sleep(1)
-            # time.sleep(6)
-
-
-            # d.watcher('success').when(text='搜索').when(resourceId='com.tencent.tim:id/name')
-
-            # if d(text='搜索',resourceId='com.tencent.tim:id/name').exists:       #直接登陆成功的情况
-            #     return  # 放到方法里改为return
-
-
-            # if d(text='帐号无法登录', resourceId='com.tencent.eim:id/dialogTitle').exists:  # 帐号被冻结
-            #     self.repo.SetAccount(cate_id, 'frozen', QQNumber)
-            #     break
-
-            if d(resourceId='com.tencent.tim:id/name', index='2', className="android.widget.EditText").exists:        #需要验证码的情况
-                co = RClient()
-                im_id = ""
-                for i in range(0, 30, +1):         #打码循环
-                    if i > 0:
-                        co.rk_report_error(im_id)
-                    obj = d(resourceId='com.tencent.tim:id/name', className='android.widget.ImageView')
-                    obj = obj.info
-                    print(obj)
-                    obj = obj['bounds']  # 验证码处的信息
-                    left = obj["left"]  # 验证码的位置信息
-                    top = obj['top']
-                    right = obj['right']
-                    bottom = obj['bottom']
-
-                    d.screenshot(sourcePng)  # 截取整个输入验证码时的屏幕
-
-                    img = Image.open(sourcePng)
-                    box = (left, top, right, bottom)  # left top right bottom
-                    region = img.crop(box)  # 截取验证码的图片
-
-                    img = Image.new('RGBA', (right - left, bottom - top))
-                    img.paste(region, (0, 0))
-
-                    img.save(codePng)
-                    im = open(codePng, 'rb').read()
-
-                    codeResult = co.rk_create(im, 3040)
-                    code = codeResult["Result"]
-                    im_id = codeResult["Id"]
-                    os.remove(sourcePng)
-                    os.remove(codePng)
-
-                    d(resourceId='com.tencent.tim:id/name', index='2', className="android.widget.EditText").set_text(code)
-                    time.sleep(1)
-                    d(text='完成', resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
-                    time.sleep(2)
-
-                    if d(text='登 录').exists:  # 密码错误
-                        self.repo.SetAccount(cate_id, 'locked', QQNumber)
-                        break
-
-                    if d(text='帐号无法登录', resourceId='com.tencent.tim:id/dialogTitle').exists:  # 帐号被冻结
-                        self.repo.SetAccount(cate_id, 'frozen', QQNumber)
-                        break
-                    if d(text='身份过期',resourceId='com.tencent.tim:id/dialogTitle').exists:
-                        break
-                    #
-                    if d(text='搜索',resourceId='com.tencent.tim:id/name').exists:
-                        return  # 放到方法里改为return
-
-
-            if d(text='搜索', resourceId='com.tencent.tim:id/name').exists:       #不需要验证码的情况
-                # t=2
-                return QQNumber # 放到方法里改为return
-            if d(text='马上绑定').exists:
-                # t=2
-                return QQNumber
-
-
-        if (args["time_delay"]):
-            time.sleep(int(args["time_delay"]))
-
-    def action1(self, d, z,args):
-        time_limit = args['time_limit']
-        cate_id = args["repo_cate_id"]
-
-        name = self.slot.getEmpty(d)                    #取空卡槽
-        print name
-        while name ==0:
-            name = self.slot.getSlot(d,time_limit)              #没有空卡槽，取２小时没用过的卡槽
-            print '切换为'+str(name)
-            while name == 0:                               #2小时没有用过的卡槽也为空的情况
-                d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"卡槽全满，无2小时未用\"").communicate()
-                time.sleep(30)
-                name = self.slot.getSlot(d,time_limit)
-
-            z.set_mobile_data(False)
-            time.sleep(3)
-            self.slot.restore(d,name)                      #有２小时没用过的卡槽情况，切换卡槽
-            z.set_mobile_data(True)
-            time.sleep(8)
-
-            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.qk.toast --es msg \"TIM卡槽成功切换成"+str(name)+"\"").communicate()
-            time.sleep(1)
-
-            d.server.adb.cmd("shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-            for k in range(1, 35):
-                time.sleep(1)
-                if d(resourceId='com.tencent.tim:id/title', index=1, text='熟悉的QQ习惯').exists:
-                    str = d.info  # 获取屏幕大小等信息
-                    height = str["displayHeight"]
-                    width = str["displayWidth"]
-                    for i in range(0, 2):
-                        d.swipe(width * 0.75, height * 0.5, width * 0.05, height * 0.5, 10)
-                        time.sleep(1)
-                    d(resourceId='com.tencent.tim:id/name', index=1, text='立即体验').click()
-                    break
-
-            if k == 35:
-                continue
-            time.sleep(2)
-
-            if d(text='消息',resourceId='com.tencent.tim:id/ivTitleName').exists:
-                obj = self.slot.getSlotInfo(d,name)  #得到切换后的QQ号
-                info = obj['info']  #info为QQ号
-                self.repo.BackupInfo(cate_id,'using',info,'%s_%s'%(d.server.adb.device_serial(),name))  # 将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
+            z.sleep( 5 )
+            if d( textContains='验证码' ).exists:
+                return "no"
             else:
-                info = self.login(d,z,args)                                             #帐号无法登陆则登陆,重新注册登陆
-                self.slot.backup(d, name, info)  # 登陆之后备份,将备份后的信息传到后台　仓库号，状态，QQ号，备注设备id_卡槽id
-                self.repo.BackupInfo(cate_id, 'using', info, '%s_%s'%(d.server.adb.device_serial(),name))  # 将登陆上的仓库cate_id,设备号d，卡槽号name，qq号info，备份到仓库
+                return "yes"
+        else:
+            return "no"
+
+    def login(self,d,args,z):
+        z.heartbeat()
+        Str = d.info  # 获取屏幕大小等信息
+        height = float( Str["displayHeight"] )
+        width = float( Str["displayWidth"] )
+        W_H = width / height
+        screenScale = round( W_H, 2 )
+
+        cate_id = args["repo_cate_id"]
+        time_limit1 = args['time_limit1']
+        numbers = self.repo.GetAccount( cate_id, time_limit1, 1 )
+        while len( numbers ) == 0:
+            z.heartbeat( )
+            d.server.adb.cmd( "shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库无%s分钟未用,开始切换卡槽\"" % (
+            cate_id, time_limit1) ).communicate( )
+            z.sleep( 2 )
+            return 0
+
+        QQNumber = numbers[0]['number']  # 即将登陆的QQ号
+        QQPassword = numbers[0]['password']
+        z.sleep( 1 )
+        z.heartbeat( )
+        d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate( )  # 清除缓存
+        d.server.adb.cmd("shell",
+                          "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
+        z.sleep(5)
+        while d( textContains='正在更新数据' ).exists:
+            z.sleep( 2 )
+        z.sleep(3)
+        z.heartbeat( )
+        d.dump(compressed=False)
+        if d(text='登 录',resourceId='com.tencent.tim:id/btn_login').exists:
+            z.toast("控件点击")
+            d( text='登 录' ).click()
+        else:
+            if screenScale == 0.61:
+                d.click(140, 788)
+            if screenScale == 0.56:
+                d.click(186, 1128)
 
 
-        else:                           #有空卡槽的情况
-            # z.set_mobile_data(False)
-            # time.sleep(3)
-            # z.set_mobile_data(True)
-            # time.sleep(8)
-            info = self.login(d,z,args)
-            self.slot.backup(d,name,info)          #设备信息，卡槽号，QQ号
-            self.repo.BackupInfo(cate_id, 'using', info,'%s_%s'%(d.server.adb.device_serial(),name))     #仓库号,使用中,QQ号,设备号_卡槽号
+        z.sleep( 1 )
+        # d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
+        d(className='android.widget.EditText', index=0).click()  # ﻿1918697054----xiake1234.  QQNumber
+        z.input( QQNumber )
+
+        z.sleep( 1 )
+        # d(resourceId='com.tencent.mobileqq:id/password').set_text(QQPassword)  # Bn2kJq5l     QQPassword
+        d(resourceId='com.tencent.tim:id/password').click()  # Bn2kJq5l     QQPassword
+        z.input( QQPassword )
+        z.heartbeat()
+        logger = util.logger
+        print('QQ号:%s,QQ密码：%s' % (QQNumber, QQPassword))
+        d.dump(compressed=False )
+        d( text='登 录', resourceId='com.tencent.tim:id/login' ).click( )
+        z.sleep(1)
+        while d(text='登录中').exists:
+            z.sleep(2)
+        z.sleep(5)
+        z.heartbeat()
+        playCodeResult = self.LoginPlayCode(d, z) #打验证码
+        if playCodeResult == "no":
+            return "nothing"
+        z.sleep(5)
+        z.heartbeat()
+        if d( text='马上绑定' ).exists:
+            return QQNumber
+
+        if d( text='匹配手机通讯录' ).exists:  # 登陆上后弹出t通讯录的情况
+            d( text='匹配手机通讯录' ).click()
+            z.sleep(1.5)
+            if d(text='取消').exists:
+                d(text='取消').child()
+            return QQNumber
+
+        if d(text='消息').exists and d(description='快捷入口').exists:
+            z.toast("卡槽QQ状态正常，继续执行")
+            return QQNumber
+        else:
+            self.repo.BackupInfo( cate_id, 'frozen', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+            z.toast( "卡槽QQ状态异常，跳过此模块" )
+            return "nothing"
+
+
+    def qiehuan(self,d,z,args):
+        time_limit = int(args['time_limit'])
+        cate_id = args["repo_cate_id"]
+        serial = d.server.adb.device_serial( )
+        self.slot = Slot( serial, self.type )
+        slotObj = self.slot.getAvailableSlot(time_limit)  # 没有空卡槽，取２小时没用过的卡槽
+        if not slotObj is None:
+            slotnum = slotObj['id']
+        while slotnum == 0:  # 2小时没有用过的卡槽也为空的情况
+            d.server.adb.cmd("shell",
+                             "am broadcast -a com.zunyun.zime.toast --es msg \"QQ卡槽全满，无间隔时间段未用\"").communicate()
+            z.heartbeat()
+            z.sleep(30)
+            slotObj = self.slot.getAvailableSlot( time_limit )  # 没有空卡槽，取２小时没用过的卡槽
+            if not slotObj is None:
+                slotnum = slotObj['id']
+        z.heartbeat()
+        d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate()  # 清除缓存
+
+        # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+        # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+        z.sleep(6)
+        z.heartbeat()
+        self.slot.restore(slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
+        # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+        # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+        z.heartbeat()
+        while True:
+            ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
+            print(ping)
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                break
+            z.sleep(2)
+
+        d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + str(slotnum) + "号\"").communicate()
+        z.sleep(2)
+        d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+        z.sleep(2)
+
+        z.heartbeat()
+        if d( text='消息' ).exists or d( text='马上绑定' ).exists or d( text='匹配手机通讯录' ).exists:
+            if d( text='匹配手机通讯录' ).exists:  # 登陆上后弹出t通讯录的情况
+                d( text='匹配手机通讯录' ).click( )
+                z.sleep( 1.5 )
+                if d( text='取消' ).exists:
+                    d( text='取消' ).child( )
+            z.toast( "卡槽QQ切换成功，继续执行" )
+        else:
+            obj = self.slot.getSlotInfo( slotnum )
+            remark = obj['remark']
+            remarkArr = remark.split( "_" )
+            QQnumber = remarkArr[1]
+            self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+            self.slot.clear( slotnum )  # 清空改卡槽，并补登
+            z.toast( "卡槽QQ状态异常，补登陆卡槽" )
+            self.action( d, z, args )
+
+
+    def action(self,d,z,args):
+        z.toast( "正在ping网络是否通畅" )
+        z.heartbeat( )
+        i = 0
+        while i < 200:
+            i += 1
+            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            print( ping )
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                z.toast( "网络通畅。开始执行：TIM登录有卡槽" )
+                break
+            z.sleep( 2 )
+        if i > 200:
+            z.toast( "网络不通，请检查网络状态" )
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
+            return
+
+        z.generate_serial( "com.tencent.mobileqq" )  # 随机生成手机特征码
+
+        time_limit = int( args['time_limit'] )
+        cate_id = args["repo_cate_id"]
+        serial = d.server.adb.device_serial( )
+        self.slot = Slot( serial, self.type )
+        slotnum = self.slot.getEmpty( )  # 取空卡槽
+        if slotnum == 0:  # 没有空卡槽的话
+            slotObj = self.slot.getAvailableSlot( time_limit )  # 取空卡槽，取２小时没用过的卡槽
+            if not slotObj is None:
+                slotnum = slotObj['id']
+            print( slotnum )
+            while slotObj is None:  # 2小时没用过的卡槽也为没有的情况
+                d.server.adb.cmd( "shell",
+                                  "am broadcast -a com.zunyun.zime.toast --es msg \"QQ卡槽全满，无间隔时间段未用\"" ).communicate( )
+                z.heartbeat( )
+                z.sleep( 30 )
+                slotObj = self.slot.getAvailableSlot( time_limit )
+                if not slotObj is None:
+                    slotnum = slotObj['id']
+            z.heartbeat( )
+            d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
+
+            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate() #开飞行模式
+            # d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+            z.sleep( 6 )
+            z.heartbeat( )
+            self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
+            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate() # 关飞行模式
+            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+
+            z.heartbeat( )
+            while True:
+                ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+                print( ping )
+                if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                    break
+                z.sleep( 2 )
+
+            z.sleep( 2 )
+            d.server.adb.cmd( "shell",
+                              "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + slotnum + "号\"" ).communicate( )
+            z.sleep( 2 )
+            d.server.adb.cmd( "shell",
+                              "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
+
+            z.sleep( 8 )
+            z.heartbeat( )
+            if d( text='消息' ).exists or d( text='马上绑定' ).exists or d( text='匹配手机通讯录' ).exists:
+                if d( text='匹配手机通讯录' ).exists:  # 登陆上后弹出t通讯录的情况
+                    d( text='匹配手机通讯录' ).click( )
+                    z.sleep( 1.5 )
+                    if d( text='取消' ).exists:
+                        d( text='取消' ).child( )
+                z.toast("卡槽QQ切换成功，继续执行")
+            else:
+                obj = self.slot.getSlotInfo( slotnum )
+                remark = obj['remark']
+                remarkArr = remark.split( "_" )
+                QQnumber = remarkArr[1]
+                self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+                self.slot.clear( slotnum )  # 清空改卡槽，并补登
+                z.toast( "卡槽QQ状态异常，补登陆卡槽" )
+                self.action( d, z, args )
+
+        else:  # 有空卡槽的情况
+            d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
+
+            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+            # z.sleep(6)
+            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+            z.heartbeat( )
+            while True:
+                ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+                print( ping )
+                if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                    break
+                z.sleep( 2 )
+            serialinfo = d.server.adb.device_serial( )
+            # print('登陆时的serial%s'%serialinfo)
+            z.heartbeat( )
+            QQnumber = self.login( d, args, z )
+            if QQnumber == 'nothing':
+                self.slot.clear( slotnum )  # 清空改卡槽，并补登
+                self.action( d, z, args )
+            if QQnumber == 0:
+                z.toast( "仓库为空，无法登陆。开始切换卡槽" )
+                slotNum = self.qiehuan( d, z, args )
+                if slotNum != 0:
+                    z.toast( "卡槽QQ切换成功，继续执行" )
+                    return
+            z.heartbeat( )
+            self.slot.backup( slotnum, str( slotnum ) + '_' + QQnumber )  # 设备信息，卡槽号，QQ号
+            self.repo.BackupInfo( cate_id, 'using', QQnumber, serialinfo, '%s_%s_%s' % (
+            d.server.adb.device_serial( ), self.type, slotnum) )  # 仓库号,使用中,QQ号,设备号_卡槽号
 
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
-
-
-
-    # def action(self, d, z, args):
-
-
-
-
-
-# def runwatch(d, data):                                  #watcher除了点击还可以做什么，watcher到可以结束方法吗，可以改变参数吗
-#     times = 120
-#     while True:
-#         if data == 1:
-#             return True
-#         # d.watchers.reset()
-#         d.watchers.run()                      #强制运行所有watchers
-#         times -= 1
-#         if times == 0:
-#             break
-#         else:
-#             time.sleep(0.5)
 
 def getPluginClass():
     return TIMLogin01
 
 if __name__ == "__main__":
+    import sys
+    reload( sys )
+    sys.setdefaultencoding( 'utf8' )
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT52ESK00321")
-    z = ZDevice("HT52ESK00321")
-
-    # slot = slot('tim')
-
-    # slot.restore(d, 1)  # 有２小时没用过的卡槽情况，切换卡槽
+    d = Device("HT53XSK00427")
+    z = ZDevice("HT53XSK00427")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id":"64","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
-    # util.doInThread(runwatch, d, 0, t_setDaemon=True)
-
+    args = {"repo_cate_id": "132", "time_limit": "120", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
     # o.action(d,z, args)
-    # d.server.adb.cmd("shell", "pm clear com.taojin.dungeon.sy37").communicate()  # 清除缓存
-    # d.server.adb.cmd("shell","am start -n com.taojin.dungeon.sy37/com.taojin.dungeon.MySplashActivity").communicate()  # 拉起来
-
-    while 1:
-        time.sleep(0.44)
-        d.click(100,150)
-        d.click(270, 484)
+    d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
 
