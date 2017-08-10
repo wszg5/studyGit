@@ -116,6 +116,7 @@ class MobilqqAddressCheckDeposit:
 
     def bindPhoneNumber(self,z,d):
         z.toast( "点击开始绑定" )
+        self.scode = smsCode( d.server.adb.device_serial( ) )
         d( text='马上绑定' ).click( )
         while d( text='验证手机号码' ).exists:
 
@@ -128,6 +129,21 @@ class MobilqqAddressCheckDeposit:
                 if j > 20:
                     z.toast( '取不到手机号码' )
                     return "nothing"
+
+            if not d( textContains='+86' ).exists:
+                d( description='点击选择国家和地区' ).click( )
+                if d( text='中国' ).exists:
+                    d( text='中国' ).click( )
+                else:
+                    str = d.info  # 获取屏幕大小等信息
+                    height = str["displayHeight"]
+                    width = str["displayWidth"]
+                    d.click(width * 5 / 12, height * 5 / 32)
+                    z.sleep(1.5)
+                    z.input('中国')
+                    z.sleep(2)
+                    d(text='+86').click()
+
             z.input( PhoneNumber )
             z.sleep( 1.5 )
             if d( text='下一步' ).exists:
@@ -185,14 +201,17 @@ class MobilqqAddressCheckDeposit:
         z.sleep(10)
         z.heartbeat()
 
-        if d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists:  # 到了通讯录这步后看号有没有被冻结
+        loginStatusList = z.qq_getLoginStatus( d )
+        if loginStatusList is None:
+            z.toast( "登陆新场景，现无法判断登陆状态" )
+            return
+        loginStatus = loginStatusList['success']
+        if loginStatus:
             z.toast( "卡槽QQ状态正常，继续执行" )
         else:
             z.toast( "卡槽QQ状态异常，跳过此模块" )
             return
 
-        if not d(text='消息', resourceId='com.tencent.mobileqq:id/name').exists:  # 到了通讯录这步后看号有没有被冻结
-            return 2
         if d( text='马上绑定' ).exists:
             result = self.bindPhoneNumber(z,d)
             if result == "nothing":
