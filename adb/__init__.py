@@ -11,6 +11,8 @@ import subprocess
 
 import sys
 
+import time
+
 
 def _is_windows():
     return os.name == "nt"
@@ -73,6 +75,7 @@ class Adb(object):
         Raises:
             IOError
         '''
+        '''
         p = self.cmd(*args)
         try:
             exit_code = p.wait()
@@ -80,6 +83,31 @@ class Adb(object):
             return namedtuple('CmdReturn', ['output', 'exit_code'])(output, exit_code)
         finally:
             p.stdout.close()
+        '''
+        timeout = 15
+        p = self.cmd(*args)
+        out = namedtuple('CmdReturn', ['output', 'exit_code'])('Unkonw', -1)
+        while True:
+            timeout = timeout - 1
+            try:
+                exit_code = p.poll()
+                if exit_code == 0 and timeout > 0:
+                    output = p.stdout.read()
+                    out = namedtuple('CmdReturn', ['output', 'exit_code'])(output, exit_code)
+                    break
+
+                elif not exit_code and timeout < 0:
+                    p.kill()
+                    out = namedtuple('CmdReturn', ['output', 'exit_code'])('timeout', exit_code)
+                    break
+
+                else:
+                    time.sleep(1)
+            finally:
+                p.stdout.close()
+                break
+
+        return out
 
     def shell(self, *args):
         '''adb command, return adb shell <args> output.'''
