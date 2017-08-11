@@ -1,10 +1,10 @@
 {
 "id": "TIMAddFriendsByCard",
 "cate":"其他模块",
-"name":"TIM名片夹加好友",
+"name":"TIM名加好友(名片夹)",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"TIM-A-C-1.0",
+"code":"TIM-A-C-2.0",
 "icon": "vcard-o",
 "remark":"我的名片夹加好友",
 "setting":[
@@ -23,6 +23,22 @@
     "top_cate_id":"12",
     "remark":"加好友发的验证消息"
     },
+    {
+    "id": "repo_sava_cate_id",
+    "name":"号码入库",
+    "type":"repo",
+    "source":"number",
+    "top_cate_id":"23",
+    "remark":"匹配出来名片的手机号码入库"
+    },
+    {
+	"id": "switch_card",
+	"name":"展示名片",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"否",
+	"remark":"是否展示名片"
+	},
 	{
 	"id": "add_count",
 	"name":"加好友总数",

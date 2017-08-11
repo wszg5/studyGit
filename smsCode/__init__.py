@@ -16,11 +16,11 @@ class smsCode:
     def __init__(self, serial):
         self.platform = dbapi.GetSetting("sms_platform")
         if self.platform == 'xunma':
-            self.platform = "xunma"
+            self.platform = "xunma";
         elif self.platform == 'hellotrue':  #爱乐赞
-            self.platform = "hellotrue"
+            self.platform = "hellotrue";
         else:
-            self.platform = "jyzszp"   #玉米
+            self.platform = "jyzszp"; #玉米
 
         self.username = dbapi.GetSetting("%s_user"%self.platform);
         self.password = dbapi.GetSetting("%s_password" % self.platform);

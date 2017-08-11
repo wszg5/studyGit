@@ -1,0 +1,10 @@
+{
+"id": "TIMUpdateHeadPortrait",
+"cate":"其他模块",
+"name":"TIM修改头像",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"TIM-U-H1.0",
+"icon": "vcard-o",
+"remark":"TIM修改头像"
+}

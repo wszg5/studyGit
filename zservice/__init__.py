@@ -195,7 +195,8 @@ class AutomatorServer(object):
 
     __apk_files = ["libs/zime.apk"]
     # Used for check if installed
-    __apk_vercode = '1.9.5'
+    __apk_vercode = '1.9.6'
+    __zserial_vercode = '3.2.2'
     __apk_pkgname = 'com.zunyun.zime'
 
     __sdk = 0
@@ -233,9 +234,18 @@ class AutomatorServer(object):
         if pkginfo['version_name'] != self.__apk_vercode:
             return True
 
+        pkginfo = self.adb.package_info('com.sollyu.xposed.hook.model')
+        if pkginfo is None:
+            return True
+        if pkginfo['version_name'] != self.__zserial_vercode:
+            return True
+
+
         pkginfo = self.adb.package_info('de.robv.android.xposed.installer')
         out = self.adb.cmd("shell","\"su -c 'cat /data/data/de.robv.android.xposed.installer/shared_prefs/enabled_modules.xml'\"").communicate()[0].decode('utf-8')
         if pkginfo is not None and out.find("<int name=\"com.zunyun.zime\" value=\"1\" />") == -1:
+            return True
+        if pkginfo is not None and out.find("<int name=\"com.sollyu.xposed.hook.model\" value=\"1\" />") == -1:
             return True
         return False
 
@@ -254,8 +264,8 @@ class AutomatorServer(object):
             filename = os.path.join(base_dir, 'libs/zime.apk')
             self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
             #if self.getPackageVersion() != self.__apk_vercode:
-             #   filename = os.path.join(base_dir, 'libs/zime.apk')
-              #  self.adb.run_cmd("install -r %s" % filename)
+            filename = os.path.join(base_dir, 'libs/zserial.apk')
+            self.adb.run_cmd("install -r %s" % filename)
 
             self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
             self.adb.cmd("shell", "su -c 'sh /data/local/tmp/install.sh'").communicate()
@@ -471,8 +481,91 @@ class ZRemoteDevice(object):
         self.cmd("shell", "am broadcast -a ZY_INPUT_TEXT --es text \\\"%s\\\"" % t)
         return True
 
-    def generateSerial(self, serial=None):
-        return self.server.jsonrpc.generateSerial(serial)
+    def isNetConnected(self):
+        ping = self.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
+        if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+            return  True
+        return False
+
+    def qq_openUser(self, num):
+        self.server.adb.run_cmd("shell",
+                         'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"' % num)  # qq名片页面
+
+    def qq_getLoginStatus(self, d, maxSleep = 40):
+        if maxSleep < 0:
+           return {'success': False, 'remark': 'Timeout'}
+
+        if not self.isNetConnected():
+            self.toast('网络未连接，超时等待 %d' % maxSleep)
+            self.sleep(2)
+            return self.qq_getLoginStatus(d, maxSleep - 2)
+
+
+        activity = self.getTopActivity()
+        if 'com.tencent.mobileqq' not in activity:
+            return {'success': False, 'remark': u'当前界面非QQ界面' + activity}
+
+        if 'com.tencent.mobileqq/.activity.InstallActivity' in activity:
+            self.toast('QQ正在更新数据，请稍等, %d' % maxSleep)
+            self.sleep(2)
+            return self.qq_getLoginStatus(d, maxSleep - 2)
+
+
+        if 'com.tencent.mobileqq/.activity.RegisterGuideActivity' in activity:
+            return {'success': False, 'remark': 'RegisterGuideActivity'}
+
+        if 'com.tencent.mobileqq/.activity.LoginActivity' in activity:
+            return {'success': False, 'remark': 'LoginActivity'}
+
+        if 'com.tencent.mobileqq/.activity.NotificationActivity' in activity:
+            if d(textContains='身份过期').exists:
+                return {'success': False, 'remark': u'身份过期'}
+
+            if d(resourceId='com.tencent.mobileqq:id/dialogLeftBtn').exists:
+                self.toast('发现弹窗，点击左侧按钮后再行判断')
+                d(resourceId='com.tencent.mobileqq:id/dialogLeftBtn').click()
+                self.sleep(2)
+                return self.qq_getLoginStatus(d)
+
+            if d(resourceId='com.tencent.mobileqq:id/dialogRightBtn').exists:
+                self.toast('发现弹窗，点击右侧按钮后再行判断')
+                d(resourceId='com.tencent.mobileqq:id/dialogRightBtn').click()
+                self.sleep(2)
+                return self.qq_getLoginStatus(d)
+
+
+        if 'com.tencent.mobileqq/.activity.UpgradeActivity' in activity:  #QQ更新提醒
+            self.toast('发现升级弹窗，点击暂不升级后再行判断')
+            d(text='暂不升级').click()
+            self.sleep(2)
+            return self.qq_getLoginStatus(d)
+
+        if 'com.tencent.mobileqq/.activity.PhoneUnityIntroductionActivity' in activity:  # QQ主界面
+            return {'success': True, 'remark': 'PhoneUnityIntroductionActivity'}
+
+        if 'com.tencent.mobileqq/.activity.phone.PhoneMatchActivity' in activity:  # QQ主界面
+            return {'success': True, 'remark': 'PhoneMatchActivity'}
+
+
+        if 'com.tencent.mobileqq/.activity.SplashActivity' in activity:
+            #主界面尝试唤起10000号名片
+            self.qq_openUser('10000')
+            while maxSleep > 0:
+                self.toast('尝试拉取10000号资料, %d' % maxSleep)
+                self.sleep(2)
+                maxSleep = maxSleep -2
+                activity = self.getTopActivity()
+                if 'com.tencent.mobileqq/.activity.FriendProfileCardActivity' not in activity:
+                    return self.qq_getLoginStatus(d, maxSleep)
+
+                if d(textContains='系统消息').exists:
+                    return {'success': True, 'remark': 'ok'}
+            return {'success': False, 'remark': 'check 10000 info Timeout'}
+
+        self.toast('存在未判断的QQ界面状态，请提取日志')
+        import util
+        logger = util.logger
+        logger.info('UNKNOW ACTIVITY: %s' % activity)
 
     def wx_restart(self):
         self.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
@@ -667,6 +760,30 @@ class ZRemoteDevice(object):
         cropedPng = '/tmp/%s.png' % uuid.uuid1()
         img.save( cropedPng )
         return cropedPng
+
+    '''
+    一键生成串号，pkg:目标应用的packageName
+    return：串号信息
+    '''
+    def generate_serial(self, pkg):
+        self.server.adb.run_cmd("shell",
+                         'am broadcast -a com.zunyun.serial.action --include-stopped-packages   -n com.sollyu.xposed.hook.model/com.sollyu.android.appenv.ActionReceiver --es ac generate --es pkg %s' % pkg)
+        return None
+
+    def get_serial(self, pkg):
+        path = '/sdcard/serial.json'
+        out = self.server.adb.run_cmd("shell", "\"su -c 'rm %s'\"" % path).output
+        self.server.adb.run_cmd("shell",
+                         'am broadcast -a com.zunyun.serial.action --include-stopped-packages   -n com.sollyu.xposed.hook.model/com.sollyu.android.appenv.ActionReceiver --es ac get --es pkg %s --es fileName %s' % (pkg, path))
+        out = self.server.adb.run_cmd("shell", "\"su -c 'cat %s'\"" % path).output
+        return out
+
+    def set_serial(self, pkg, serial):
+        t = base64.b64encode(serial)
+
+        self.server.adb.run_cmd("shell",
+                         'am broadcast -a com.zunyun.serial.action --include-stopped-packages   -n com.sollyu.xposed.hook.model/com.sollyu.android.appenv.ActionReceiver --es ac set --es pkg %s --es serial %s' % (pkg, t))
+        return None
 
     def clear_traversed_text(self):
         '''clear the last traversed text.'''

@@ -1,0 +1,33 @@
+{
+"id": "TIMUpdateSignatureAndName",
+"cate":"其他模块",
+"name":"TIM修改个性签名和昵称",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"TIM-U-S2.1",
+"icon": "vcard-o",
+"remark":"修改个性签名和昵称",
+"setting":[
+	{
+	"id": "repo_name_id",
+	"name":"QQ修改昵称仓库号",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "repo_key_word",
+	"name":"关键字",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "repo_cate_qq_id",
+	"name":"QQ帐号库",
+	"type":"repo",
+	"source":"account",
+	"top_cate_id":"1"
+	}
+]
+}

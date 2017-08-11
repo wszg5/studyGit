@@ -8,8 +8,8 @@ import traceback
 import urllib
 import urllib2
 
-from BeautifulSoup import BeautifulSoup
-
+# from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 from imageCode import imageCode
 from zcache import cache
 import util
