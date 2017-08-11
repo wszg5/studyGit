@@ -221,6 +221,7 @@ class TIMLogin01:
         d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
         d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
         z.heartbeat()
+        z.toast( "正在ping网络是否通畅" )
         while True:
             ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
             print(ping)
@@ -258,22 +259,22 @@ class TIMLogin01:
 
 
     def action(self,d,z,args):
-        z.toast( "正在ping网络是否通畅" )
-        z.heartbeat( )
-        i = 0
-        while i < 200:
-            i += 1
-            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
-            print( ping )
-            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-                z.toast( "网络通畅。开始执行：TIM登录有卡槽" )
-                break
-            z.sleep( 2 )
-        if i > 200:
-            z.toast( "网络不通，请检查网络状态" )
-            if (args["time_delay"]):
-                z.sleep( int( args["time_delay"] ) )
-            return
+        # z.toast( "正在ping网络是否通畅" )
+        # z.heartbeat( )
+        # i = 0
+        # while i < 200:
+        #     i += 1
+        #     ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+        #     print( ping )
+        #     if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+        #         z.toast( "网络通畅。开始执行：TIM登录有卡槽" )
+        #         break
+        #     z.sleep( 2 )
+        # if i > 200:
+        #     z.toast( "网络不通，请检查网络状态" )
+        #     if (args["time_delay"]):
+        #         z.sleep( int( args["time_delay"] ) )
+        #     return
 
         z.generate_serial("com.tencent.tim")  # 随机生成手机特征码
         z.toast("随机生成手机特征码")
@@ -309,6 +310,7 @@ class TIMLogin01:
             d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()#开飞行模式
 
             z.heartbeat( )
+            z.toast( "正在ping网络是否通畅" )
             while True:
                 ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
                 print( ping )
@@ -356,6 +358,7 @@ class TIMLogin01:
             d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
             d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
             z.heartbeat( )
+            z.toast( "正在ping网络是否通畅" )
             while True:
                 ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
                 print( ping )
@@ -397,7 +400,7 @@ if __name__ == "__main__":
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "132", "time_limit": "120", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
-    # o.action(d, z, args)
+    o.action(d, z, args)
     # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
     # serial = d.server.adb.device_serial( )
     # type = 'tim'

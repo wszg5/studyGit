@@ -122,8 +122,10 @@ class TIMLogin01:
         z.sleep( 1 )
         z.heartbeat( )
         d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate( )  # 清除缓存
-        d.server.adb.cmd("shell",
-                          "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
+        # d.server.adb.cmd("shell",
+        #                   "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
+        z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
+
         z.sleep(5)
         while d( textContains='正在更新数据' ).exists:
             z.sleep( 2 )
@@ -176,6 +178,7 @@ class TIMLogin01:
         z.sleep(5)
         z.heartbeat()
         if d( text='马上绑定' ).exists:
+            z.toast( "卡槽QQ状态正常，继续执行" )
             return QQNumber
 
         if d( text='匹配手机通讯录' ).exists:  # 登陆上后弹出t通讯录的情况
@@ -183,6 +186,12 @@ class TIMLogin01:
             z.sleep(1.5)
             if d(text='取消').exists:
                 d(text='取消').child()
+            z.toast( "卡槽QQ状态正常，继续执行" )
+            return QQNumber
+
+        if d(text='跳过').exists:
+            d(text='跳过').click()
+            z.toast( "卡槽QQ状态正常，继续执行" )
             return QQNumber
 
         if d(text='消息').exists and d(description='快捷入口').exists:
@@ -229,7 +238,8 @@ class TIMLogin01:
 
         d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + str(slotnum) + "号\"").communicate()
         z.sleep(2)
-        d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+        # d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+        z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
 
         z.sleep( 5 )
         while d( textContains='正在更新数据' ).exists:
@@ -318,8 +328,10 @@ class TIMLogin01:
             d.server.adb.cmd( "shell",
                               "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + slotnum + "号\"" ).communicate( )
             z.sleep( 2 )
-            d.server.adb.cmd( "shell",
-                              "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
+            # d.server.adb.cmd( "shell",
+            #                   "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
+            z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
+
 
             z.sleep(5)
             while d( textContains='正在更新数据' ).exists:
