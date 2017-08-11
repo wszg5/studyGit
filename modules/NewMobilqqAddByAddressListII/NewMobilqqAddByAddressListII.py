@@ -151,19 +151,13 @@ class NewMobilqqAddByAddressListII:
             return
         loginStatus = loginStatusList['success']
         if loginStatus:
-=======
-        if d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists: # 到了通讯录这步后看号有没有被冻结
->>>>>>> fc75ece82dfa7a15da2e8ec009f8387c3a7d2a50
             z.toast( "卡槽QQ状态正常，继续执行" )
         else:
             z.toast( "卡槽QQ状态异常，跳过此模块" )
             return
 
 
-<<<<<<< HEAD
 
-=======
->>>>>>> fc75ece82dfa7a15da2e8ec009f8387c3a7d2a50
         if d(text='绑定手机号码').exists:
             d(text='关闭').click()
             d(text='关闭').click()

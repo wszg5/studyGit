@@ -5,3 +5,92 @@
 [2017-08-05 14:31:07] [INFO] token_gbYw9Fdn5FjCra7r3ht9vkn1MQVxMx47
 [2017-08-05 14:31:07] [INFO] ===XUNMA RESTURN:13434814258;
 [2017-08-05 14:31:36] [INFO] 开始获取验证码：13434814258, qq_contact_bind
+[2017-08-11 15:48:12] [INFO] itemcode_7581
+[2017-08-11 15:48:12] [INFO] token_diK3op4QULU8nVlLf2KMk65v9KwFhZ24
+[2017-08-11 15:48:13] [INFO] ===XUNMA RESTURN:13431654049;
+[2017-08-11 15:50:14] [INFO] 开始获取验证码：13431654049, qq_contact_bind
+[2017-08-11 15:58:19] [INFO] itemcode_7581
+[2017-08-11 15:58:19] [INFO] token_ENczT5LmKrp5OxULdOQ7Tirbd84gHA40
+[2017-08-11 15:58:19] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-08-11 15:59:16] [INFO] itemcode_7581
+[2017-08-11 15:59:16] [INFO] token_LA6DS8jxqwQWN950JIQvYhUSZ26Auy20
+[2017-08-11 15:59:16] [INFO] ===XUNMA RESTURN:17136485288;
+[2017-08-11 16:00:04] [INFO] 开始获取验证码：17136485288, qq_contact_bind
+[2017-08-11 17:11:21] [INFO] itemcode_7581
+[2017-08-11 17:11:21] [INFO] token_VQbOR2uy9Os30JhKCX4hKnQ9b92lPS69
+[2017-08-11 17:11:51] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 91, in GetPhoneNumber
+    response = conn.getresponse()
+  File "/usr/lib/python2.7/httplib.py", line 1136, in getresponse
+    response.begin()
+  File "/usr/lib/python2.7/httplib.py", line 453, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python2.7/httplib.py", line 409, in _read_status
+    line = self.fp.readline(_MAXLINE + 1)
+  File "/usr/lib/python2.7/socket.py", line 480, in readline
+    data = self._sock.recv(self._rbufsize)
+timeout: timed out
+
+[2017-08-11 17:11:51] [INFO] itemcode_7581
+[2017-08-11 17:11:51] [INFO] token_VQbOR2uy9Os30JhKCX4hKnQ9b92lPS69
+[2017-08-11 17:12:21] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 91, in GetPhoneNumber
+    response = conn.getresponse()
+  File "/usr/lib/python2.7/httplib.py", line 1136, in getresponse
+    response.begin()
+  File "/usr/lib/python2.7/httplib.py", line 453, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python2.7/httplib.py", line 409, in _read_status
+    line = self.fp.readline(_MAXLINE + 1)
+  File "/usr/lib/python2.7/socket.py", line 480, in readline
+    data = self._sock.recv(self._rbufsize)
+timeout: timed out
+
+[2017-08-11 17:12:21] [INFO] itemcode_7581
+[2017-08-11 17:12:21] [INFO] token_VQbOR2uy9Os30JhKCX4hKnQ9b92lPS69
+[2017-08-11 17:12:51] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 91, in GetPhoneNumber
+    response = conn.getresponse()
+  File "/usr/lib/python2.7/httplib.py", line 1136, in getresponse
+    response.begin()
+  File "/usr/lib/python2.7/httplib.py", line 453, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python2.7/httplib.py", line 409, in _read_status
+    line = self.fp.readline(_MAXLINE + 1)
+  File "/usr/lib/python2.7/socket.py", line 480, in readline
+    data = self._sock.recv(self._rbufsize)
+timeout: timed out
+
+[2017-08-11 17:12:51] [INFO] itemcode_7581
+[2017-08-11 17:12:51] [INFO] token_VQbOR2uy9Os30JhKCX4hKnQ9b92lPS69
+[2017-08-11 17:13:21] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 91, in GetPhoneNumber
+    response = conn.getresponse()
+  File "/usr/lib/python2.7/httplib.py", line 1136, in getresponse
+    response.begin()
+  File "/usr/lib/python2.7/httplib.py", line 453, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python2.7/httplib.py", line 409, in _read_status
+    line = self.fp.readline(_MAXLINE + 1)
+  File "/usr/lib/python2.7/socket.py", line 480, in readline
+    data = self._sock.recv(self._rbufsize)
+timeout: timed out
+
+[2017-08-11 17:13:21] [INFO] itemcode_7581
+[2017-08-11 17:13:21] [INFO] token_VQbOR2uy9Os30JhKCX4hKnQ9b92lPS69
+[2017-08-11 17:13:51] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 91, in GetPhoneNumber
+    response = conn.getresponse()
+  File "/usr/lib/python2.7/httplib.py", line 1136, in getresponse
+    response.begin()
+  File "/usr/lib/python2.7/httplib.py", line 453, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python2.7/httplib.py", line 409, in _read_status
+    line = self.fp.readline(_MAXLINE + 1)
+  File "/usr/lib/python2.7/socket.py", line 480, in readline
+    data = self._sock.recv(self._rbufsize)
+timeout: timed out
+
+[2017-08-11 17:13:51] [INFO] itemcode_7581
+[2017-08-11 17:13:51] [INFO] token_VQbOR2uy9Os30JhKCX4hKnQ9b92lPS69
+[2017-08-11 17:13:51] [INFO] ===XUNMA RESTURN:False:Session 过期

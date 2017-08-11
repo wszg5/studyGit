@@ -117,9 +117,13 @@ class MobilqqAddressCheckDeposit:
     def bindPhoneNumber(self,z,d):
         z.toast( "点击开始绑定" )
 <<<<<<< HEAD
+<<<<<<< HEAD
         self.scode = smsCode( d.server.adb.device_serial( ) )
 =======
 >>>>>>> fc75ece82dfa7a15da2e8ec009f8387c3a7d2a50
+=======
+        self.scode = smsCode( d.server.adb.device_serial( ) )
+>>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
         d( text='马上绑定' ).click( )
         while d( text='验证手机号码' ).exists:
 
@@ -133,6 +137,9 @@ class MobilqqAddressCheckDeposit:
                     z.toast( '取不到手机号码' )
                     return "nothing"
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
 
             if not d( textContains='+86' ).exists:
                 d( description='点击选择国家和地区' ).click( )
@@ -148,8 +155,11 @@ class MobilqqAddressCheckDeposit:
                     z.sleep(2)
                     d(text='+86').click()
 
+<<<<<<< HEAD
 =======
 >>>>>>> fc75ece82dfa7a15da2e8ec009f8387c3a7d2a50
+=======
+>>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
             z.input( PhoneNumber )
             z.sleep( 1.5 )
             if d( text='下一步' ).exists:
@@ -208,25 +218,34 @@ class MobilqqAddressCheckDeposit:
         z.heartbeat()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
         loginStatusList = z.qq_getLoginStatus( d )
         if loginStatusList is None:
             z.toast( "登陆新场景，现无法判断登陆状态" )
             return
         loginStatus = loginStatusList['success']
         if loginStatus:
+<<<<<<< HEAD
 =======
         if d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists:  # 到了通讯录这步后看号有没有被冻结
 >>>>>>> fc75ece82dfa7a15da2e8ec009f8387c3a7d2a50
+=======
+>>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
             z.toast( "卡槽QQ状态正常，继续执行" )
         else:
             z.toast( "卡槽QQ状态异常，跳过此模块" )
             return
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         if not d(text='消息', resourceId='com.tencent.mobileqq:id/name').exists:  # 到了通讯录这步后看号有没有被冻结
             return 2
 >>>>>>> fc75ece82dfa7a15da2e8ec009f8387c3a7d2a50
+=======
+>>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
         if d( text='马上绑定' ).exists:
             result = self.bindPhoneNumber(z,d)
             if result == "nothing":

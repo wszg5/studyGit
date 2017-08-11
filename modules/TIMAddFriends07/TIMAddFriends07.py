@@ -5,7 +5,7 @@ import os, time, datetime, random
 from zservice import ZDevice
 from PIL import Image
 import colorsys
-from RClient import *
+# from RClient import *
 
 
 class TIMAddFriends07:
@@ -88,42 +88,53 @@ class TIMAddFriends07:
         time.sleep(5)
         d(className='android.widget.TabWidget', resourceId='android:id/tabs', index=1).child(
             className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
-        time.sleep(3)
-        if d(text='联系人', resourceId='com.tencent.tim:id/ivTitleName').exists:  # 如果已经到联系人界面
-            obj = d(className='android.widget.AbsListView', index=1).child(index=8,resourceId='com.tencent.tim:id/group_item_layout').child(
-                checked='false', resourceId='com.tencent.tim:id/name')
-            if obj.exists:
-                time.sleep(2)
-                d(resourceId='com.tencent.tim:id/group_item_layout', index=8).click()  # 未展开的情况，先点击展开
-                time.sleep(1)
-                d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
-            else:
-                d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
-        else:  # 没有在联系人界面的话
-            d(className='android.widget.TabWidget', resourceId='android:id/tabs', index=1).child(
-                className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
-            obj = d(className='android.widget.AbsListView', index=1).child(index=8,resourceId='com.tencent.tim:id/group_item_layout').child(
-                checked='false', resourceId='com.tencent.tim:id/name')
-            if obj.exists:
-                d(resourceId='com.tencent.tim:id/group_item_layout', index=8).click()  # 未展开的情况，先点击展开
-                d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
-            else:
-                d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
-        i = 1
+        # time.sleep(3)
+        # if d(text='联系人', resourceId='com.tencent.tim:id/ivTitleName').exists:  # 如果已经到联系人界面
+        #     # obj = d(className='android.widget.AbsListView', index=1).child(index=8,resourceId='com.tencent.tim:id/group_item_layout').child(
+        #     #     checked='false', resourceId='com.tencent.tim:id/name')
+        #     # d(text="添加",resourceId="com.tencent.tim:id/ivTitleBtnRightText").click()
+        #
+        #     # if obj.exists:
+        #     #     time.sleep(2)
+        #     #     d(resourceId='com.tencent.tim:id/group_item_layout', index=8).click()  # 未展开的情况，先点击展开
+        #     #     time.sleep(1)
+        #     #     d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+        #     # else:
+        #     #     d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+        # else:  # 没有在联系人界面的话
+        #     d(className='android.widget.TabWidget', resourceId='android:id/tabs', index=1).child(
+        #         className='android.widget.FrameLayout', index=1).click()  # 点击到联系人
+        #     obj = d(className='android.widget.AbsListView', index=1).child(index=8,resourceId='com.tencent.tim:id/group_item_layout').child(
+        #         checked='false', resourceId='com.tencent.tim:id/name')
+        #     if obj.exists:
+        #         d(resourceId='com.tencent.tim:id/group_item_layout', index=8).click()  # 未展开的情况，先点击展开
+        #         d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+        #     else:
+        #         d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+        while True:                          #由于网速慢或手机卡可能误点
+            if d( index=1, className='android.widget.ImageView' ).exists:
+                z.heartbeat( )
+                d( index=1, className="android.widget.FrameLayout" ).child( index=0,className="android.widget.RelativeLayout" ).click( )
+            if d(text="加好友").exists:    #由于网速慢或手机卡可能误点
+                d(text="加好友").click()
+                d(text="返回",className="android.widget.TextView").click()
+                d( index=2, className="android.widget.FrameLayout" ).child( index=0,className="android.widget.RelativeLayout" ).click( )
+            z.sleep( 2 )
+            # if  d(textContains="通讯录").exists:
+            if d(text="添加",resourceId="com.tencent.tim:id/ivTitleBtnRightText").exists:
+                z.heartbeat( )
+                d( text="添加", resourceId="com.tencent.tim:id/ivTitleBtnRightText" ).click( )
+                break
+        i = 2
         t = 1
+        d(index=0,text="添加手机联系人").click()
         EndIndex = int(args['EndIndex'])
         while t < EndIndex + 1:
             cate_id = args["repo_material_id"]
             time.sleep(2)
 
-            obj = d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(
-                resourceId='com.tencent.tim:id/group_item_layout', index=10)
-            if obj.exists and i == 10:  # 通讯录好友已经到底的情况
-                return
-            if i > 11:
-                return
-            obj = d(resourceId='com.tencent.tim:id/elv_buddies', className='android.widget.AbsListView').child(
-                className='android.widget.RelativeLayout', index=i).child(resourceId='com.tencent.tim:id/text1',index=1)  # 点击第ｉ个人
+            obj = d(index=0,resourceId='com.tencent.tim:id/name', className='android.widget.AbsListView').child(
+                className="android.widget.LinearLayout", index=i).child(text="添加",index=2)
             if obj.exists:
                 obj.click()
                 time.sleep(2)
@@ -139,33 +150,62 @@ class TIMAddFriends07:
                     d(textContains='返回').click()
                     i = i + 1
                     continue
-
-            d(className='android.widget.Button', text='加好友').click()
+            if obj.exists:
+                return
+            if d(text='加好友',className='android.widget.Button').exists:
+                d(text='加好友',className='android.widget.Button').click()
             time.sleep(2)
-            if not d(index=3, className='android.widget.EditText').exists:
-                d(className='android.widget.TextView', text='返回').click()
-                d(className='android.widget.TextView', text='返回').click()
-                continue
-
             material = self.repo.GetMaterial(cate_id, 0, 1)
             material = material[0]['content']  # 从素材库取出的要发的材料
-
-            d(index=3, className='android.widget.EditText').click()  # material
-            obj = d(index=3, className='android.widget.EditText').info  # 将之前消息框的内容删除
+            z.sleep( 2 )
+            z.heartbeat( )
+            if d( text='加好友', className="android.widget.Button" ).exists:  # 拒绝被添加的轻况
+                continue
+            if d( text='必填', resourceId='com.tencent.tim:id/name' ).exists:  # 要回答问题的情况
+                z.heartbeat( )
+                continue
+            d.dump( compressed=False )
+            if d( text="风险提示" ).exists:  # 风险提示
+                z.heartbeat( )
+                continue
+            obj = d( text='发送', resourceId='com.tencent.tim:id/ivTitleBtnRightText' )  # 不需要验证可直接添加为好友的情况
+            if obj.exists:
+                z.sleep( 2 )
+                obj.click( )
+                if d( text='添加失败，请勿频繁操作', resourceId='com.tencent.tim:id/name' ).exists:
+                    z.heartbeat( )
+                    z.toast( "频繁操作,跳出模块" )
+                    return
+                else:
+                    print(  "请求发送成功" )
+                continue
+            d.dump( compressed=False )
+            obj = d( index=3, className='android.widget.EditText',
+                     resourceId='com.tencent.tim:id/name' ).info  # 将之前消息框的内容删除        需要发送验证信息
             obj = obj['text']
-            lenth = len(obj)
-            delet = 0
-            while delet < lenth:
-                d.press.delete()
-                delet = delet + 1
-
-            z.input(material)
-            time.sleep(1)
-            d(className='android.widget.TextView', text='下一步').click()
-            d(className='android.widget.TextView', text='发送').click()
-            i = i + 1
-            t = t + 1
-            continue
+            lenth = len( obj )
+            t = 0
+            while t < lenth:
+                d.press.delete( )
+                t = t + 1
+            time.sleep( 2 )
+            z.input( material )
+            # d(index=2,className="android.widget.CompoundButton",resourceId="com.tencent.tim:id/name").click()
+            # if "是" in switch_card:
+            #     if d( index=2, className="android.widget.CompoundButton", resourceId="com.tencent.tim:id/name" ).exists:
+            #         d( index=2, className="android.widget.CompoundButton",
+            #            resourceId="com.tencent.tim:id/name" ).click( )
+            d( text='下一步', resourceId='com.tencent.tim:id/ivTitleBtnRightText' ).click( )
+            z.sleep( 1 )
+            d( text='发送' ).click( )
+            if d( resourceId='com.tencent.tim:id/name', text='添加失败，请勿频繁操作' ).exists:  # 操作过于频繁的情况
+                z.toast( "频繁操作,跳出模块" )
+                return
+            # print( QQnumber + "请求发送成功" )
+            z.heartbeat( )
+            # count = count + 1
+            # if count == add_count:
+            #     break
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -182,8 +222,8 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT52DSK00474")
-    z = ZDevice("HT52DSK00474")
+    d = Device("HT54VSK01061")
+    z = ZDevice("HT54VSK01061")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_material_id": "40", 'gender':"不限", "time_delay": "3", "EndIndex": "8"};  # cate_id是仓库号，length是数量
