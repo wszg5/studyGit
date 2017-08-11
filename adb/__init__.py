@@ -75,7 +75,6 @@ class Adb(object):
         Raises:
             IOError
         '''
-        '''
         p = self.cmd(*args)
         try:
             exit_code = p.wait()
@@ -108,6 +107,7 @@ class Adb(object):
                 break
 
         return out
+        '''
 
     def shell(self, *args):
         '''adb command, return adb shell <args> output.'''
