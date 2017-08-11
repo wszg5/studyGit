@@ -111,6 +111,10 @@ class TIMAddFriends07:
         #         d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
         #     else:
         #         d.swipe(width / 2, height * 5 / 6, width / 2, height / 4)
+        #         continue
+        cate_id = args["repo_material_id"]
+        material = self.repo.GetMaterial( cate_id, 0, 1 )
+        material = material[0]['content']  # 从素材库取出的要发的材料
         while True:                          #由于网速慢或手机卡可能误点
             if d( index=1, className='android.widget.ImageView' ).exists:
                 z.heartbeat( )
@@ -136,27 +140,23 @@ class TIMAddFriends07:
             obj = d(index=0,resourceId='com.tencent.tim:id/name', className='android.widget.AbsListView').child(
                 className="android.widget.LinearLayout", index=i).child(text="添加",index=2)
             if obj.exists:
+                top = obj.info["bounds"]["top"]
+                bottom = obj.info["bounds"]["bottom"]
+                h = bottom-top
                 obj.click()
                 time.sleep(2)
             else:
-                i = i + 1
+                d.swipe( width / 2, height, width / 2, height-h, 5 )
+                i = 10
                 continue
 
-            if gender != '不限':
-                gender2 = self.Gender(d)
-                if gender == gender2:               # gender是外界设定的，gender2是读取到的
-                    time.sleep(1)
-                else:
-                    d(textContains='返回').click()
-                    i = i + 1
-                    continue
-            if obj.exists:
-                return
-            if d(text='加好友',className='android.widget.Button').exists:
-                d(text='加好友',className='android.widget.Button').click()
-            time.sleep(2)
-            material = self.repo.GetMaterial(cate_id, 0, 1)
-            material = material[0]['content']  # 从素材库取出的要发的材料
+            # if gender != '不限':
+            #     gender2 = self.Gender(d)
+            #     if gender == gender2:               # gender是外界设定的，gender2是读取到的
+            #         time.sleep(1)
+            #     else:
+            #         d(textContains='返回').click()
+            #         i = i + 1
             z.sleep( 2 )
             z.heartbeat( )
             if d( text='加好友', className="android.widget.Button" ).exists:  # 拒绝被添加的轻况

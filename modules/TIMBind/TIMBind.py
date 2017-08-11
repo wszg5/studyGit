@@ -71,7 +71,8 @@ class TIMBind:
             z.sleep( 2 )
             # if  d(textContains="通讯录").exists:
             d.swipe( width / 2 , height / 2, width / 2, 0, 5 )
-            if d(index=8,resourceId="com.tencent.tim:id/group_item_layout",className="android.widget.RelativeLayout").exists:
+            if d( index=10, resourceId="com.tencent.tim:id/group_item_layout",className="android.widget.RelativeLayout" ).child(
+                    index=1,resourceId="com.tencent.tim:id/group_name",className="android.view.View").exists:
                 z.heartbeat( )
                 d( index=10, resourceId="com.tencent.tim:id/group_item_layout",
                    className="android.widget.RelativeLayout" ).child(index=1,resourceId="com.tencent.tim:id/group_name",className="android.view.View").click( )
