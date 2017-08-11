@@ -98,15 +98,16 @@ class Adb(object):
 
                 elif not exit_code and timeout < 0:
                     p.kill()
+                    raise "Timeout for ADB Shell"
                     out = namedtuple('CmdReturn', ['output', 'exit_code'])('timeout', exit_code)
                     break
 
                 else:
                     time.sleep(1)
-            finally:
-                p.stdout.close()
-                break
+            except:
+                continue
 
+        p.stdout.close()
         return out
 
     def shell(self, *args):

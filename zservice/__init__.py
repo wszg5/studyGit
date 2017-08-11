@@ -562,6 +562,7 @@ class ZRemoteDevice(object):
                     return self.qq_getLoginStatus(d, maxSleep)
 
                 if d(textContains='系统消息').exists:
+                    d.press.back()
                     return {'success': True, 'remark': 'ok'}
             return {'success': False, 'remark': 'check 10000 info Timeout'}
 
