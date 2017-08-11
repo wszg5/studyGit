@@ -298,13 +298,13 @@ class TIMLogin01:
             z.heartbeat( )
             d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
 
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate() #开飞行模式
-            # d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate() #开数据流量
+            # d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()#开飞行模式
             # z.sleep( 6 )
             # z.heartbeat( )
             self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate() # 关飞行模式
-            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate() # 关数据流量
+            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()#开飞行模式
 
             z.heartbeat( )
             while True:
@@ -347,10 +347,10 @@ class TIMLogin01:
         else:  # 有空卡槽的情况
             d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
 
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
             # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-            # z.sleep(6)
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+            z.sleep(3)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
             # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
             z.heartbeat( )
             while True:
@@ -394,7 +394,7 @@ if __name__ == "__main__":
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "132", "time_limit": "120", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
-    # o.action(d, z, args)
+    o.action(d, z, args)
     # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
     # serial = d.server.adb.device_serial( )
     # type = 'tim'
@@ -408,4 +408,9 @@ if __name__ == "__main__":
 
     # FriendsTotalObj = d( resourceId='com.tencent.tim:id/contact_count', className='android.view.View' ).info['text']
     # print(FriendsTotalObj)
-    o.qiehuan(d,z,args)
+    #
+    # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+    # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" ).communicate( )
+
+    # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+    # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()

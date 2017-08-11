@@ -212,13 +212,13 @@ class TIMLogin01:
         z.heartbeat()
         d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate()  # 清除缓存
 
-        # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
-        # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+        d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
         z.sleep(6)
         z.heartbeat()
         self.slot.restore(slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-        # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
-        # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+        d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
         z.heartbeat()
         while True:
             ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
@@ -298,13 +298,13 @@ class TIMLogin01:
             z.heartbeat( )
             d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
 
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate() #开飞行模式
-            # d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-            # z.sleep( 6 )
-            # z.heartbeat( )
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate() #开飞行模式
+            d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+            z.sleep( 6 )
+            z.heartbeat( )
             self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate() # 关飞行模式
-            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate() # 关飞行模式
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
 
             z.heartbeat( )
             while True:
@@ -347,11 +347,11 @@ class TIMLogin01:
         else:  # 有空卡槽的情况
             d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
 
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
-            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-            # z.sleep(6)
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
-            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+            z.sleep(6)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
             z.heartbeat( )
             while True:
                 ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )

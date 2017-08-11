@@ -156,8 +156,6 @@ class NewMobilqqAddByAddressListII:
             z.toast( "卡槽QQ状态异常，跳过此模块" )
             return
 
-
-
         if d(text='绑定手机号码').exists:
             d(text='关闭').click()
             d(text='关闭').click()
