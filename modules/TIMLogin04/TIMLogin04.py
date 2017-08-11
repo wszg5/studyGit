@@ -408,4 +408,3 @@ if __name__ == "__main__":
 
     # FriendsTotalObj = d( resourceId='com.tencent.tim:id/contact_count', className='android.view.View' ).info['text']
     # print(FriendsTotalObj)
-    o.qiehuan(d,z,args)
