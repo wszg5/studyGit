@@ -102,10 +102,9 @@ class Adb(object):
                     out = namedtuple('CmdReturn', ['output', 'exit_code'])('timeout', exit_code)
                     break
 
-                else:
-                    time.sleep(1)
             except:
                 continue
+            time.sleep(1)
 
         p.stdout.close()
         return out
