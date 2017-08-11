@@ -106,7 +106,6 @@ if __name__ == "__main__":
     print (slot.getSlots())
     #slot.backup('1', 'slot_1')
     #slot.restore('1')
-
     print z.qq_getLoginStatus(d)
     z.generate_serial('com.tencent.mobileqq')
     print(z.get_serial(pkg))
