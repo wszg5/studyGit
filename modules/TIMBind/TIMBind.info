@@ -1,0 +1,21 @@
+{
+"id": "TIMBind",
+"name":"TIM绑定通讯录",
+"cate":"其他模块",
+"font": "tim",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"TIM-B1.0",
+"icon":"vcard-o",
+"remark":"TIM绑定通讯录",
+"setting":[
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}
+

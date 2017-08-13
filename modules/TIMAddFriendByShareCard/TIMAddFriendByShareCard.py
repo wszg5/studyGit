@@ -166,6 +166,7 @@ class TIMAddFriendByShareCard:
                     # d( text='返回', resourceId='com.tencent.tim:id/ivTitleBtnLeft' ).click( )
                     # add_count = add_count+1
                     continue
+            z.sleep(1)
             d.dump( compressed=False )
             d(text='加好友',className="android.widget.Button").click()
             z.sleep(2)
@@ -230,8 +231,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54VSK01061")
-    z = ZDevice("HT54VSK01061")
+    d = Device("cda0ae8d")
+    z = ZDevice("cda0ae8d")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_cate_id":"119","repo_material_cate_id":"39",'gender':"男","add_count":"3","time_delay":"3","switch_card":"否"}    #cate_id是仓库号，length是数量
 

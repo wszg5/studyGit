@@ -4,13 +4,20 @@
 "name":"TIM修改个性签名和昵称",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"TIM-U-S2.1",
+"code":"TIM-U-S2.2",
 "icon": "vcard-o",
 "remark":"修改个性签名和昵称",
 "setting":[
 	{
 	"id": "repo_name_id",
 	"name":"QQ修改昵称仓库号",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "repo_signature_id",
+	"name":"QQ修改个性签名仓库号",
 	"type":"repo",
 	"source":"material",
 	"top_cate_id":"12"
@@ -23,11 +30,11 @@
 	"top_cate_id":"12"
 	},
 	{
-	"id": "repo_cate_qq_id",
-	"name":"QQ帐号库",
-	"type":"repo",
-	"source":"account",
-	"top_cate_id":"1"
-	}
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
 ]
 }
