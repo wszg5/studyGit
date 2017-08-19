@@ -30,6 +30,13 @@ class TIMAddFriendsByAddressList:
             GetBindNumber = self.scode.GetPhoneNumber( self.scode.QQ_CONTACT_BIND )
             print( GetBindNumber )
             z.sleep( 2 )
+            z.heartbeat( )
+            obj = d( className="android.view.View", description="删除 按钮" )
+            if obj.exists:
+                z.heartbeat( )
+                z.sleep( 1 )
+                obj.click( )
+            z.sleep( 2 )
             d( resourceId='com.tencent.tim:id/name', className='android.widget.EditText' ).set_text(
                 GetBindNumber )  # GetBindNumber
             z.heartbeat( )
@@ -94,6 +101,13 @@ class TIMAddFriendsByAddressList:
                     z.input( '中国' )
                     z.sleep( 2 )
                     d( text='+86' ).click( )
+            z.heartbeat( )
+            obj = d( className="android.view.View", description="删除 按钮" )
+            if obj.exists:
+                z.heartbeat( )
+                z.sleep( 1 )
+                obj.click( )
+            z.sleep( 2 )
             z.input( PhoneNumber )
             z.sleep( 1.5 )
             if d( text='下一步' ).exists:
@@ -180,6 +194,12 @@ class TIMAddFriendsByAddressList:
                     if (args["time_delay"]):
                         z.sleep( int( args["time_delay"] ) )
                     return
+            obj = d( className="android.view.View", description="删除 按钮" )
+            if obj.exists:
+                z.heartbeat( )
+                z.sleep( 1 )
+                obj.click( )
+            z.sleep( 2 )
             z.input( PhoneNumber )
             z.sleep( 1.5 )
             if d( text='下一步' ).exists:
@@ -283,7 +303,38 @@ class TIMAddFriendsByAddressList:
                 continue
             if d( text='必填', resourceId='com.tencent.tim:id/name' ).exists:  # 要回答问题的情况
                 z.heartbeat( )
-                d(text="手机联系人",resourceId="com.tencent.tim:id/ivTitleBtnLeft").click()
+                objtext = d(textContains="问题",index=0,resourceId="com.tencent.tim:id/textView1",className="android.widget.TextView")
+                objnum = d(index=1,resourceId="com.tencent.tim:id/name",className="android.widget.FrameLayout").child(
+                    index=0,className="android.widget.RelativeLayout",resourceId="com.tencent.tim:id/name").child(index=2,resourceId="com.tencent.tim:id/name",className="android.widget.TextView")
+                if objtext.exists:
+                    objtext = objtext.info["text"]
+                    if  "电话" in objtext or "手机" in objtext or "号码" in objtext:
+                        if objnum.exists:
+                            objnum = objnum.info["text"][3:]
+                            z.input(objnum)
+                            z.sleep(1)
+                            z.heartbeat()
+                            d(text="下一步").click()
+                            z.sleep(1)
+                            z.heartbeat()
+                            if d(text="下一步").exists:
+                                z.sleep(1)
+                                z.heartbeat()
+                                d(text="手机联系人").click()
+                                z.sleep(1)
+                                z.heartbeat()
+                            else:
+                                z.sleep(1)
+                                z.heartbeat()
+                                if d(text="发送").click():
+                                    d(text="发送").click()
+                                if d( text='添加失败，请勿频繁操作' ).exists:
+                                    z.heartbeat( )
+                                    z.toast( "频繁操作,跳出模块" )
+                                    return
+
+                    else:
+                        d(text="手机联系人",resourceId="com.tencent.tim:id/ivTitleBtnLeft",className="android.widget.TextView").click()
                 index = index +1
                 obj = d( index=0, resourceId='com.tencent.tim:id/name', className='android.widget.AbsListView' ).child(
                     className="android.widget.LinearLayout", index=index ).child( text="添加", index=2 )
@@ -327,9 +378,36 @@ class TIMAddFriendsByAddressList:
             # d(index=2,className="android.widget.CompoundButton",resourceId="com.tencent.tim:id/name").click()
             if "是" in switch_card:
                 if d( index=2, className="android.widget.CompoundButton", resourceId="com.tencent.tim:id/name" ).exists:
-                    d( index=2, className="android.widget.CompoundButton",
-                       resourceId="com.tencent.tim:id/name" ).click( )
-            z.heartbeat()
+                    d( index=2, className="android.widget.CompoundButton", resourceId="com.tencent.tim:id/name" ).click( )
+                else:
+                    if d(text="设置我的名片").exists:
+                        d(text="设置我的名片").click()
+                        while True:
+                            z.sleep(1)
+                            z.heartbeat()
+                            d(text = "添加我的名片").click()
+                            d(index=3,resourceId="com.tencent.tim:id/name",className="android.widget.Button").click()
+                            z.sleep(2)
+                            obj = d( index=0, className="com.tencent.widget.GridView",resourceId="com.tencent.tim:id/photo_list_gv" ).child(
+                                index=0, className="android.widget.RelativeLayout" )
+                            if obj.exists:
+                                z.sleep( 1 )
+                                z.heartbeat( )
+                                obj.click( )
+                                z.sleep( 3 )
+                                d( text='确定', resourceId='com.tencent.tim:id/name' ).click( )
+                                time.sleep( 3 )
+                                z.heartbeat( )
+                                d(text="完成").click()
+                                z.sleep( 1 )
+                                z.heartbeat( )
+                                d(text="返回").click()
+                                break
+                            if d( index=0,resourceId="com.tencent.tim:id/name",className="android.widget.ImageButton" ).exists:
+                                d( index=0, resourceId="com.tencent.tim:id/name", className="android.widget.ImageButton" ).click( )
+                                d(text="退出").click()
+            z.sleep( 1 )
+            z.heartbeat( )
             d( text='下一步', resourceId='com.tencent.tim:id/ivTitleBtnRightText',className="android.widget.TextView" ).click( )
             z.sleep( 1 )
             d( text='发送' ).click( )
@@ -368,5 +446,5 @@ if __name__ == "__main__":
     z = ZDevice("HT54VSK01061")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_material_id": "39", "time_delay": "3", "EndIndex": "8","switch_card":"否"};  # cate_id是仓库号，length是数量
+    args = {"repo_material_id": "39", "time_delay": "3", "EndIndex": "8","switch_card":"是"};  # cate_id是仓库号，length是数量
     o.action(d, z, args)

@@ -35,7 +35,7 @@ class MobilqqConcern:
         d(text='附近').click()
         z.heartbeat()
         while True:
-            if d(text='新鲜事').exists:
+            if d(text='附近的人').exists:
                 break
             else:
                 z.sleep(2)
@@ -140,8 +140,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A6SK01638")
-    z = ZDevice("HT4A6SK01638")
+    d = Device("HT54VSK01061")
+    z = ZDevice("HT54VSK01061")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"add_count":"1000","time_delay":"3"}    #cate_id是仓库号，length是数量
 

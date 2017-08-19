@@ -38,6 +38,13 @@ class TIMBind:
             GetBindNumber = self.scode.GetPhoneNumber( self.scode.QQ_CONTACT_BIND )
             print( GetBindNumber )
             z.sleep( 2 )
+            z.heartbeat( )
+            obj = d( className="android.view.View", description="删除 按钮" )
+            if obj.exists:
+                z.heartbeat( )
+                z.sleep( 1 )
+                obj.click( )
+            z.sleep( 2 )
             d( resourceId='com.tencent.tim:id/name', className='android.widget.EditText' ).set_text(
                 GetBindNumber )  # GetBindNumber
             z.heartbeat( )
@@ -102,6 +109,13 @@ class TIMBind:
                     z.input( '中国' )
                     z.sleep( 2 )
                     d( text='+86' ).click( )
+            z.heartbeat( )
+            obj = d( className="android.view.View", description="删除 按钮" )
+            if obj.exists:
+                z.heartbeat( )
+                z.sleep( 1 )
+                obj.click( )
+            z.sleep( 2 )
             z.input( PhoneNumber )
             z.sleep( 1.5 )
             if d( text='下一步' ).exists:
@@ -186,6 +200,12 @@ class TIMBind:
                     if (args["time_delay"]):
                         z.sleep( int( args["time_delay"] ) )
                     return
+            obj = d( className="android.view.View", description="删除 按钮" )
+            if obj.exists:
+                z.heartbeat( )
+                z.sleep( 1 )
+                obj.click( )
+            z.sleep( 2 )
             z.input( PhoneNumber )
             z.sleep( 1.5 )
             if d( text='下一步' ).exists:

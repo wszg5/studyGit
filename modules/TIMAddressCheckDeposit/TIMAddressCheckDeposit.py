@@ -31,6 +31,13 @@ class TIMAddressCheckDeposit:
             GetBindNumber = self.scode.GetPhoneNumber( self.scode.QQ_CONTACT_BIND )
             print( GetBindNumber )
             z.sleep( 2 )
+            z.heartbeat()
+            obj = d( className="android.view.View", description="删除 按钮" )
+            if obj.exists:
+                z.heartbeat( )
+                z.sleep( 1 )
+                obj.click( )
+            z.sleep(2)
             d( resourceId='com.tencent.tim:id/name', className='android.widget.EditText' ).set_text(GetBindNumber )  # GetBindNumber
             z.heartbeat( )
             z.sleep( 1 )
@@ -94,6 +101,13 @@ class TIMAddressCheckDeposit:
                     z.input( '中国' )
                     z.sleep( 2 )
                     d( text='+86' ).click( )
+            z.heartbeat( )
+            obj = d( className="android.view.View", description="删除 按钮" )
+            if obj.exists:
+                z.heartbeat( )
+                z.sleep( 1 )
+                obj.click( )
+            z.sleep( 2 )
             z.input( PhoneNumber )
             z.sleep( 1.5 )
             if d( text='下一步' ).exists:
@@ -177,6 +191,13 @@ class TIMAddressCheckDeposit:
                     if (args["time_delay"]):
                         z.sleep( int( args["time_delay"] ) )
                     return
+            z.heartbeat( )
+            obj = d( className="android.view.View", description="删除 按钮" )
+            if obj.exists:
+                z.heartbeat( )
+                z.sleep( 1 )
+                obj.click( )
+            z.sleep( 2 )
             z.input( PhoneNumber )
             z.sleep( 1.5 )
             if d( text='下一步' ).exists:
@@ -260,44 +281,34 @@ class TIMAddressCheckDeposit:
             obj2 =  obj = d(index=0,resourceId='com.tencent.tim:id/name', className='android.widget.AbsListView').child(
         className="android.widget.LinearLayout", index=index).child(className="android.widget.TextView",index=1)  # 第i个内容存在并且是人的情况
             if obj2.exists:
-                obj2.click()
-                z.sleep(1)
-                getPhoneInfo = d(index=3,className="android.widget.AbsListView").child(index=0,className="android.widget.RelativeLayout").child(index=1,resourceId="com.tencent.tim:id/name",className="android.widget.TextView")
-                if getPhoneInfo.exists:
-                    phoneNum = getPhoneInfo.info['text']
+                # getPhoneInfo = d( index=0, resourceId='com.tencent.tim:id/name', className='android.widget.AbsListView' ).child(
+                #     className="android.widget.LinearLayout", index=index ).child( resourceId="com.tencent.tim:id/name",className="android.widget.TextView", index=1 )
+                if obj2.exists:
+                    phoneNum = obj2.info['text']
                     if phoneNum not in listNum:
-                        listNum.append(phoneNum)
+                        listNum.append( phoneNum )
                         self.repo.uploadPhoneNumber( phoneNum, cate_id )
-                    d(text="电话").click()
                     index = index + 1
                     continue
-                # else:
-                #     if d(text="备份通讯录").exists:
-                #         d(text="通讯录").click()
-                #         index= index +1
-                #         continue
             else:
                 if unclick2:
                     index = index
                     unclick2 = False
                 else:
                     index = index - 1
+                    z.heartbeat()
+                    z.sleep(1)
                 d.swipe( width / 2, height * 5 / 6, width / 2, height / 6 )
                 z.sleep(2)
                 obj2 = obj = d( index=0, resourceId='com.tencent.tim:id/name',className='android.widget.AbsListView' ).child(
                     className="android.widget.LinearLayout", index=index ).child(className="android.widget.TextView", index=1 )
                 if obj2.exists:
-                    obj2.click()
-                    getPhoneInfo = d( index=3, className="android.widget.AbsListView" ).child( index=0, className="android.widget.RelativeLayout" ).child(
-                        index=1, resourceId="com.tencent.tim:id/name", className="android.widget.TextView" )
-                    if getPhoneInfo.exists:
-                        phoneNum = getPhoneInfo.info['text']
-                        if phoneNum  in listNum:
-                            z.toast( "通讯录号码提取完毕，模块结束运行" )
-                            return
-                    index=1
-                    z.sleep(1)
-                    d( text="电话" ).click( )
+                    phoneNum = obj2.info['text']
+                    if phoneNum  in listNum:
+                        z.toast( "通讯录号码提取完毕，模块结束运行" )
+                        return
+                index=1
+                z.sleep(1)
                 continue
             if (args["time_delay"]):
                 z.sleep( int( args["time_delay"] ) )
