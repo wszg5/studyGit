@@ -1,0 +1,41 @@
+{
+"id": "QLLogin",
+"name":"QQ轻聊版登录(有卡槽)",
+"cate":"QQLite模块",
+"font":"qq",
+"url":"http://www.bejson.com",
+"version":"1.0",
+"code":"QQLite-L-01",
+"icon":"vcard-o",
+"remark":"QQ轻聊版登录(有卡槽)",
+"setting":[
+    {
+    "id": "repo_cate_id",
+    "name":"账号库分类",
+    "type":"repo",
+    "source":"account",
+    "top_cate_id":"1"
+    },
+    {
+    "id": "time_limit",
+    "name":"QQ卡槽提取间隔（单位分钟）",
+    "type":"textbox",
+    "defaultValue":"120",
+    "remark":"注：如果没有符合条件账号，调度将一直等待至有可用账号"
+    },
+    {
+    "id": "time_limit1",
+    "name":"QQ账号提取间隔（单位分钟）",
+    "type":"textbox",
+    "defaultValue":"120",
+    "remark":"注：如果没有符合条件账号，调度将一直等待至有可用账号"
+    },
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

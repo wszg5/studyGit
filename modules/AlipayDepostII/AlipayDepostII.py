@@ -430,7 +430,7 @@ if __name__ == "__main__":
         z.generateSerial()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
-    args = {"repo_number_id":44,"repo_cate_id":184};    #cate_id是仓库号，length是数量
+    args = {"repo_number_id":44,"repo_cate_id":219};    #cate_id是仓库号，length是数量
 
     o.action(d, z,args)
 

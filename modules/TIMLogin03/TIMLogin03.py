@@ -11,7 +11,7 @@ import time, datetime, random
 from slot import Slot
 from zservice import ZDevice
 
-class TIMLogin01:
+class TIMLogin03:
 
     def __init__(self):
         self.repo = Repo()
@@ -130,15 +130,19 @@ class TIMLogin01:
             z.sleep( 2 )
         z.sleep(3)
         z.heartbeat( )
+        if d(className='android.widget.ImageView',resourceId='com.tencent.tim:id/title',index=1).exists:
+            for i in range(0,2):
+                d.swipe( width - 20, height / 2, 0, height / 2, 5 )
+                z.sleep(1.5)
+            if d(text='立即体验').exists:
+                d(text='立即体验').click()
+        z.sleep(2)
         d.dump(compressed=False)
         if d(text='登 录',resourceId='com.tencent.tim:id/btn_login').exists:
             z.toast("控件点击")
             d( text='登 录' ).click()
         else:
-            if screenScale == 0.61:
-                d.click(140, 788)
-            if screenScale == 0.56:
-                d.click(186, 1128)
+           d( text='QQ号登录' ).click( )
         z.sleep( 1 )
         # d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
         d(className='android.widget.EditText', index=0).click()  # ﻿1918697054----xiake1234.  QQNumber
@@ -196,6 +200,9 @@ class TIMLogin01:
 
 
     def qiehuan(self,d,z,args):
+        Str = d.info  # 获取屏幕大小等信息
+        height = float( Str["displayHeight"] )
+        width = float( Str["displayWidth"] )
         time_limit = int(args['time_limit'])
         cate_id = args["repo_cate_id"]
         serial = d.server.adb.device_serial( )
@@ -240,6 +247,14 @@ class TIMLogin01:
 
         z.sleep( 3 )
         z.heartbeat()
+        if d(className='android.widget.ImageView',resourceId='com.tencent.tim:id/title',index=1).exists:
+            for i in range(0,2):
+                d.swipe( width - 20, height / 2, 0, height / 2, 5 )
+                z.sleep(1.5)
+            if d(text='立即体验').exists:
+                d(text='立即体验').click()
+        z.sleep(2)
+
         if d( text='消息' ).exists or d( text='马上绑定' ).exists or d( text='匹配手机通讯录' ).exists:
             if d( text='匹配手机通讯录' ).exists:  # 登陆上后弹出t通讯录的情况
                 d( text='匹配手机通讯录' ).click( )
@@ -259,22 +274,9 @@ class TIMLogin01:
 
 
     def action(self,d,z,args):
-        # z.toast( "正在ping网络是否通畅" )
-        # z.heartbeat( )
-        # i = 0
-        # while i < 200:
-        #     i += 1
-        #     ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
-        #     print( ping )
-        #     if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-        #         z.toast( "网络通畅。开始执行：TIM登录有卡槽" )
-        #         break
-        #     z.sleep( 2 )
-        # if i > 200:
-        #     z.toast( "网络不通，请检查网络状态" )
-        #     if (args["time_delay"]):
-        #         z.sleep( int( args["time_delay"] ) )
-        #     return
+        Str = d.info  # 获取屏幕大小等信息
+        height = float( Str["displayHeight"] )
+        width = float( Str["displayWidth"] )
 
         z.generate_serial("com.tencent.tim")  # 随机生成手机特征码
         z.toast("随机生成手机特征码")
@@ -318,7 +320,6 @@ class TIMLogin01:
                     break
                 z.sleep( 2 )
 
-            # z.sleep( 2 )
             d.server.adb.cmd( "shell",
                               "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + slotnum + "号\"" ).communicate( )
             z.sleep( 2 )
@@ -328,9 +329,16 @@ class TIMLogin01:
 
             z.sleep(5)
             while d( textContains='正在更新数据' ).exists:
-                z.sleep(2)
-            z.sleep(3)
+                z.sleep( 2 )
+            z.sleep( 3 )
 
+            if d( className='android.widget.ImageView', resourceId='com.tencent.tim:id/title', index=1 ).exists:
+                for i in range( 0, 2 ):
+                    d.swipe( width - 20, height / 2, 0, height / 2, 5 )
+                    z.sleep( 1.5 )
+                if d( text='立即体验' ).exists:
+                    d( text='立即体验' ).click( )
+            z.sleep( 2 )
             z.heartbeat()
             if d( text='消息' ).exists or d( text='马上绑定' ).exists or d( text='匹配手机通讯录' ).exists:
                 if d( text='匹配手机通讯录' ).exists:  # 登陆上后弹出t通讯录的情况
@@ -375,6 +383,8 @@ class TIMLogin01:
             elif QQnumber == 0:
                 z.toast( "仓库为空，无法登陆。开始切换卡槽" )
                 self.qiehuan( d, z, args )
+            elif QQnumber is None:
+                return
             else:
                 z.heartbeat()
                 self.slot.backup( slotnum, str( slotnum ) + '_' + QQnumber )  # 设备信息，卡槽号，QQ号
@@ -386,7 +396,7 @@ class TIMLogin01:
             time.sleep(int(args["time_delay"]))
 
 def getPluginClass():
-    return TIMLogin01
+    return TIMLogin03
 
 if __name__ == "__main__":
     import sys
@@ -402,6 +412,8 @@ if __name__ == "__main__":
     args = {"repo_cate_id": "132", "time_limit": "120", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
     o.action(d, z, args)
     # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
+    # d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止
+    # z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
     # serial = d.server.adb.device_serial( )
     # type = 'tim'
     # slot = Slot( serial, type )

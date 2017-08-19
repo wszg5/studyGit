@@ -151,7 +151,7 @@ class TIMLogin01:
         logger = util.logger
         print('QQ号:%s,QQ密码：%s' % (QQNumber, QQPassword))
         d.dump(compressed=False )
-        d( text='登 录', resourceId='com.tencent.tim:id/login' ).click( )
+        d( text='QQ号登录').click( )
         z.sleep(1)
         while d(text='登录中').exists:
             z.sleep(2)
@@ -389,8 +389,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("HT49YSK00272")
+    z = ZDevice("HT49YSK00272")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "132", "time_limit": "120", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
