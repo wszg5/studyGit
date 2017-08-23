@@ -33,9 +33,9 @@ class TIMSimpleRegister:
         time.sleep(2)
 
         phoneNumber = self.xm.GetPhoneNumber('2111')
-        print '手机号'
-        print phoneNumber
-        print '============'
+        print ('手机号')
+        print (phoneNumber)
+        print ('============')
         time.sleep(2)
 
         d(text='请输入你的手机号码', className='android.widget.EditText').set_text(phoneNumber)
@@ -70,15 +70,15 @@ class TIMSimpleRegister:
             if d(text='重新发送', className='android.widget.TextView').exists:
                 d(text='重新发送', className='android.widget.TextView').click()
                 time.sleep(2)
-                print '重新发送'
+                print ('重新发送')
                 vertifyCode = self.xm.GetVertifyCode(phoneNumber, '2111')
 
                 if vertifyCode == '':
                     self.xm.ReleasePhone(phoneNumber, '2111')
-                    print '验证码获取失败'
+                    print ('验证码获取失败')
                     return False
 
-        print vertifyCode
+        print (vertifyCode)
         self.xm.defriendPhoneNumber(phoneNumber, '2111')
         d(text='请输入短信验证码', className='android.widget.EditText').set_text(vertifyCode)
 

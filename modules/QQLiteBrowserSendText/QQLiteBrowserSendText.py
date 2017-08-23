@@ -45,8 +45,7 @@ class QQLiteBrowserSendText:
             numbers = list[i]
             time.sleep(1)
             # numbers = 1633232366+i      #测试用
-            d.server.adb.cmd("shell",
-                             "am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").wait()  # 拉起来
+            d.server.adb.cmd("shell", "am start -a android.intent.action.VIEW -d http://www.jianli58.com/qq.html").wait()  # 拉起来
             time.sleep(1)
             d(className='android.widget.Button', index=2, description='清空号码').click()
             time.sleep(1)

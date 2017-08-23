@@ -122,10 +122,8 @@ class TIMLogin01:
         z.sleep( 1 )
         z.heartbeat( )
         d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate( )  # 清除缓存
-        # d.server.adb.cmd("shell",
-        #                   "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
-        z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
-
+        d.server.adb.cmd("shell",
+                          "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
         z.sleep(5)
         while d( textContains='正在更新数据' ).exists:
             z.sleep( 2 )
@@ -153,7 +151,7 @@ class TIMLogin01:
         logger = util.logger
         print('QQ号:%s,QQ密码：%s' % (QQNumber, QQPassword))
         d.dump(compressed=False )
-        d( text='登 录', resourceId='com.tencent.tim:id/login' ).click( )
+        d( text='QQ号登录').click( )
         z.sleep(1)
         while d(text='登录中').exists:
             z.sleep(2)
@@ -178,7 +176,6 @@ class TIMLogin01:
         z.sleep(5)
         z.heartbeat()
         if d( text='马上绑定' ).exists:
-            z.toast( "卡槽QQ状态正常，继续执行" )
             return QQNumber
 
         if d( text='匹配手机通讯录' ).exists:  # 登陆上后弹出t通讯录的情况
@@ -186,12 +183,6 @@ class TIMLogin01:
             z.sleep(1.5)
             if d(text='取消').exists:
                 d(text='取消').child()
-            z.toast( "卡槽QQ状态正常，继续执行" )
-            return QQNumber
-
-        if d(text='跳过').exists:
-            d(text='跳过').click()
-            z.toast( "卡槽QQ状态正常，继续执行" )
             return QQNumber
 
         if d(text='消息').exists and d(description='快捷入口').exists:
@@ -221,13 +212,13 @@ class TIMLogin01:
         z.heartbeat()
         d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate()  # 清除缓存
 
-        # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
-        # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+        d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
         z.sleep(6)
         z.heartbeat()
         self.slot.restore(slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-        # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
-        # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+        d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
         z.heartbeat()
         while True:
             ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
@@ -238,8 +229,7 @@ class TIMLogin01:
 
         d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + str(slotnum) + "号\"").communicate()
         z.sleep(2)
-        # d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
+        d.server.adb.cmd("shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
 
         z.sleep( 5 )
         while d( textContains='正在更新数据' ).exists:
@@ -308,13 +298,13 @@ class TIMLogin01:
             z.heartbeat( )
             d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
 
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate() #开飞行模式
-            # d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-            # z.sleep( 6 )
-            # z.heartbeat( )
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate() #开飞行模式
+            d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+            z.sleep( 6 )
+            z.heartbeat( )
             self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate() # 关飞行模式
-            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate() # 关飞行模式
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
 
             z.heartbeat( )
             while True:
@@ -328,10 +318,8 @@ class TIMLogin01:
             d.server.adb.cmd( "shell",
                               "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + slotnum + "号\"" ).communicate( )
             z.sleep( 2 )
-            # d.server.adb.cmd( "shell",
-            #                   "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
-            z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
-
+            d.server.adb.cmd( "shell",
+                              "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
 
             z.sleep(5)
             while d( textContains='正在更新数据' ).exists:
@@ -359,11 +347,11 @@ class TIMLogin01:
         else:  # 有空卡槽的情况
             d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
 
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
-            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-            # z.sleep(6)
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
-            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+            z.sleep(6)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
             z.heartbeat( )
             while True:
                 ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
@@ -381,8 +369,6 @@ class TIMLogin01:
             elif QQnumber == 0:
                 z.toast( "仓库为空，无法登陆。开始切换卡槽" )
                 self.qiehuan( d, z, args )
-            elif QQnumber is None:
-                return
             else:
                 z.heartbeat()
                 self.slot.backup( slotnum, str( slotnum ) + '_' + QQnumber )  # 设备信息，卡槽号，QQ号
@@ -408,7 +394,7 @@ if __name__ == "__main__":
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "132", "time_limit": "120", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
-    o.action(d, z, args)
+    # o.action(d, z, args)
     # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
     # serial = d.server.adb.device_serial( )
     # type = 'tim'
