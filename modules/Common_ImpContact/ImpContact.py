@@ -50,7 +50,11 @@ class ImpContact:
             pname = ""
             for number in numbers:
                 if number["name"] is None:
-                    pname = number["number"]
+                    random_name = args['random_name']
+                    if random_name == '是':
+                        pname = z.phoneToName(number["number"])
+                    else:
+                        pname = number["number"]
                 else:
                     pname = number["name"]
                 lines = "%s%s----%s\r" %(lines, pname, number["number"])
@@ -98,6 +102,9 @@ if __name__ == "__main__":
 
     d = Device("896b27d3")
     z = ZDevice("896b27d3")
+
+    name = z.phoneToName('12345678910')
+    phone = z.nameToPhone(name)
     pkg = 'com.tencent.mobileqq'
     z.server.install()
 

@@ -17,6 +17,7 @@ import uuid
 import requests,datetime
 
 from adb import Adb
+from const import const
 from zcache import cache
 
 DEVICE_PORT = int(os.environ.get('ZSERVICE_DEVICE_PORT', '19008'))
@@ -449,6 +450,26 @@ class ZRemoteDevice(object):
             return None
         return (int(time.time()) - int(lasttime))/60;
 
+    def nameToPhone(self, name):
+        phone = ''
+        for char in name.decode('utf8'):
+            phone += str(const.CHINESE_ARRAY.index(char))
+
+        return phone[0:11]
+
+    def phoneToName(self, phone):
+        num = int(phone[0:3])
+        name = const.CHINESE_ARRAY[num]
+
+        num = int(phone[3:6])
+        name += const.CHINESE_ARRAY[num]
+
+        num = int(phone[6:9])
+        name += const.CHINESE_ARRAY[num]
+
+        num = int(phone[9:11]) * 10
+        name += const.CHINESE_ARRAY[num]
+        return name
 
     def checkTopActivity(self, activityName):
         out = self.cmd("shell", "dumpsys activity top  | grep ACTIVITY")[0].decode('utf-8')
