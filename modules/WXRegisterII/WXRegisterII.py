@@ -33,6 +33,9 @@ class WeiXinRegister:
         saveCate = args['repo_information_id']
         self.scode = smsCode(d.server.adb.device_serial())
         logger = util.logger
+        z.generate_serial( "com.tencent.mm" )  # 随机生成手机特征码
+        z.toast( "随机生成手机特征码" )
+        password = self.GenPassword( )
         while True:
 
             nowTime = datetime.datetime.now( ).strftime( "%Y-%m-%d %H:%M:%S" );  # 生成当前时间
@@ -67,32 +70,21 @@ class WeiXinRegister:
                         break
                     d.swipe( width - 20, height / 2, 0, height / 2, 5 )
 
-                z.sleep( 8 )
-                if d( text='注册' ).exists:
-                    d( text='注册' ).click( )
-                cate_id = args['repo_material_id']  # 得到昵称库的id
-                Material = self.repo.GetMaterial( cate_id, 0, 1 )  # 修改昵称
-                if len( Material ) == 0:
-                    d.server.adb.cmd( "shell",
-                                      "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id ).communicate( )
-                    z.sleep( 10 )
-                    return
-                name = Material[0]['content']  # 从素材库取出的要发的材料
-                z.input( name )  # name
+                while not d( text='注册' ).exists:
+                    z.toast( "等待 登录按钮　出现" )
+                    d.dump( compressed=False )
+                    z.sleep( 3 )
 
+                if d( text='登录' ).exists:
+                    d( text='登录' ).click( )
+
+                z.sleep(2)
                 if not d( text='中国' ).exists:
                     d( text='国家/地区' ).click( )
-                    d( className='android.support.v7.widget.LinearLayoutCompat', index=1 ).click( )
+                    z.sleep(1.5)
+                    d(resourceId='com.tencent.mm:id/aq').click( )
                     z.input( '中' )
                     d( text='中国' ).click( )
-
-                d( className='android.widget.ScrollView' ).child( className='android.widget.LinearLayout',
-                                                                  index=2 ).child(
-                    className='android.widget.EditText', index=1 ).click( )
-                d( className='android.widget.ScrollView' ).child( className='android.widget.LinearLayout',
-                                                                  index=2 ).child(
-                    className='android.widget.EditText', index=1 ).click.bottomright( )
-                z.heartbeat( )
 
                 information_cate_id = args['repo_information_id']
                 numbers = self.repo.GetInformation( information_cate_id )
@@ -101,12 +93,10 @@ class WeiXinRegister:
                                       "am broadcast -a com.zunyun.zime.toast --es msg \"资料库%s号仓库为空，没有取到手机号\"" % information_cate_id ).communicate( )
                     z.sleep( 10 )
                     return
+
                 z.heartbeat( )
-
                 number = numbers[0]['phonenumber']
-
                 PhoneNumber = self.scode.GetPhoneNumber( self.scode.WECHAT_REGISTER, number )  # 获取接码平台手机号码
-
                 if PhoneNumber is None:
                     self.repo.DeleteInformation( saveCate, number )
                     z.toast( '讯码查不无此号' )
@@ -115,32 +105,14 @@ class WeiXinRegister:
                 z.heartbeat( )
                 print( PhoneNumber )
                 z.input( PhoneNumber )
-                d( className='android.widget.LinearLayout', index=3 ).child(
-                    className='android.widget.EditText' ).click( )
-                d( textContains='密码' ).click( )
-                z.heartbeat( )
-                password = self.GenPassword( )
-                z.input( password )
-                print( password )
-                print( '↑ ↑ ↑ ↑ ↑ ↑ ↑　↑  上面是手机＋密码 ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ' )
-                z.heartbeat( )
+                d( text='用短信验证码登录' ).click( )
+                z.sleep( 1.5 )
+                if d(text='下一步').exists:
+                    d(text='下一步').click()
+                    z.sleep( 1.5 )
 
-                d( text='注册' ).click( )
-                z.sleep( 3 )
-
-                if d( textContains='操作太频繁，请稍后再试' ).exists:
-                    para = {"phoneNumber": PhoneNumber, 'x_03': nowTime, 'x_19': 'WXRegister'}
-                    self.repo.PostInformation( saveCate, para )
+                while d(text='确认手机号码').exists:
                     d( text='确定' ).click( )
-                    break
-
-                if d( textContains='相同手机号不可频繁重复注册微信帐号' ).exists:
-                    para = {"phoneNumber": PhoneNumber, 'x_03': nowTime, 'x_19': 'WXRegister'}
-                    self.repo.PostInformation( saveCate, para )
-                    d( text='确定' ).click( )
-                    break
-
-                d( text='确定' ).click( )
                 z.sleep( 3 )
 
                 if d( textContains='正在验证' ).exists:
@@ -161,37 +133,12 @@ class WeiXinRegister:
                 d( text='请输入验证码' ).click( )
                 d( text='请输入验证码' ).click( )
                 z.input( code )
+                z.sleep(2)
                 d( text='下一步', className='android.widget.Button' ).click( )
-                z.sleep( 10 )
+                z.sleep(5)
+
+
                 z.heartbeat( )
-
-                ac = 0
-                while d( text='验证码不正确，请重新输入' ).exists:
-                    if ac > 5:
-                        break
-                    d( text='确定' ).click( )
-                    d( className='android.widget.ScrollView' ).child( className='android.widget.LinearLayout',
-                                                                      index=0 ).child(
-                        className='android.widget.LinearLayout', index=2 ).child(
-                        className='android.widget.LinearLayout', index=0 ).child( className='android.widget.EditText',
-                                                                                  index=1 ).click.bottomright( )
-                    code = self.scode.GetVertifyCode( PhoneNumber, self.scode.WECHAT_REGISTER )
-                    self.scode.defriendPhoneNumber( PhoneNumber, self.scode.WECHAT_REGISTER )
-                    if code == '':
-                        self.repo.DeleteInformation( saveCate, PhoneNumber )
-                        z.toast( PhoneNumber + '手机号,获取不到验证码' )
-                        break
-                    z.sleep( 8 )
-                    print( code )
-                    d( text='请输入验证码' ).click( )
-                    z.input( code )
-                    d( text='下一步', className='android.widget.Button' ).click( )
-                    z.sleep( 3 )
-                    if d( textContains='你操作频率过快' ).exists:
-                        d( text='确定' ).click( )
-                        break
-                    ac += 1
-
                 if d( textContains='看看手机通讯录' ).exists:
                     d( text='是' ).click( )
 
@@ -219,9 +166,8 @@ class WeiXinRegister:
                 n = 0
                 while True:
                     z.sleep( 5 )
-
+                    n = n + 1
                     if d( text='是我的，立刻登录' ).exists:
-                        n = n + 1
                         d( text='是我的，立刻登录' ).click( )
                         if n == 1:
                             z.sleep( 10 )
@@ -229,6 +175,14 @@ class WeiXinRegister:
                         else:
                             z.sleep( 15 )
                             z.heartbeat( )
+
+                    if d( text='下一步' ).exists:
+                        d( text='下一步' ).click( )
+                        z.sleep( 1.5 )
+
+                    while d( text='确认手机号码' ).exists:
+                        d( text='确定' ).click( )
+                    z.sleep( 3 )
 
                     if d( textContains='看看手机通讯录' ).exists:
                         d( text='是' ).click( )
@@ -298,10 +252,10 @@ class WeiXinRegister:
                         d( text='确定' ).click( )
                         break
 
-                    if d( textContains='是否立即验证' ).exists:
+                    while d( textContains='是否立即验证' ).exists:
                         d( text='确定' ).click( )
-                        z.sleep( 10 )
-                        z.heartbeat( )
+                    z.sleep( 10 )
+                    z.heartbeat( )
 
                     if d( text='确认登录' ).exists:
                         if n == 1:
@@ -378,12 +332,12 @@ class WeiXinRegister:
                         for i in range( 1, 6 ):
 
                             if i != 1:
-                                yibushiObj_HTC = d( className='android.widget.RadioButton', descriptionContains='以上都不是',
-                                                    index=6 )
+                                yibushiObj_HTC = d( className='android.widget.RadioButton', descriptionContains='以上都不是')
                                 if not yibushiObj_HTC.exists:
                                     break
 
                             if d( description='请选择你最近一次登录设备的名称' ).exists:
+                                x_value = ''
                                 if d( className='android.widget.RadioButton', index=1 ).exists:
                                     number = random.randint( 1, 5 )
                                     if number == 1:
@@ -422,17 +376,25 @@ class WeiXinRegister:
                                            descriptionContains='下一步' ).click( )  # 下一步
                                         z.sleep( 2 )
                                 else:
-                                    d.click( 410, 540 )
-                                    d.click( 410, 640 )
+                                    if d( className='android.widget.RadioButton', descriptionContains='以上都不是' ).exists:
+                                        d( className='android.widget.RadioButton',
+                                           descriptionContains='以上都不是' ).click( )
+                                        d( className='android.view.View', descriptionContains='下一步' ).click( )  # 下一步
+                                    else:
+                                        d.click( 410, 540 )
+                                        d.click( 410, 640 )
                                     z.sleep( 2 )
-
 
                             elif d( description='请从下面头像中选出两位你的好友' ).exists:
                                 d( className='android.widget.ImageView', description='返回' ).click( )
                                 break
                             else:
-                                d.click( 410, 540 )
-                                d.click( 410, 640 )
+                                if d( className='android.widget.RadioButton', descriptionContains='以上都不是').exists:
+                                    d( className='android.widget.RadioButton', descriptionContains='以上都不是' ).click()
+                                    d( className='android.view.View',descriptionContains='下一步' ).click( )  # 下一步
+                                else:
+                                    d.click( 410, 540 )
+                                    d.click( 410, 640 )
                                 z.sleep( 2 )
 
                         x_04_number = self.repo.GetInformation( information_cate_id, PhoneNumber )
@@ -476,15 +438,14 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A6SK01638")#INNZL7YDLFPBNFN7
-    z = ZDevice("HT4A6SK01638")
+    d = Device("cda0ae8d")#INNZL7YDLFPBNFN7
+    z = ZDevice("cda0ae8d")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     'dingdingdingdingdindigdingdingdingdingdingdingdingdingdingdingdingdignin'
     repo = Repo()
     # repo.RegisterAccount('', 'gemb1225', '13045537833', '109')
-    args = {"repo_information_id": "191", "repo_material_id": "167","time_limit": "120"}  # cate_id是仓库号，发中文问题
-    saveCate = args['repo_information_id']
+    args = {"repo_information_id": "191","time_limit": "120"}  # cate_id是仓库号，发中文问题
     o.action(d, z, args)
 
 
