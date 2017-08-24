@@ -323,16 +323,12 @@ class MobilqqLogin:
                 return "nothing"
         else:
             if not self.WebViewBlankPages( d ) is None:
-<<<<<<< HEAD
-=======
                 z.toast("不是空白页")
->>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
                 self.WebViewPlayCode( d, z )
             else:
                 z.toast( "是空白页" )
                 return "nothing"
 
-<<<<<<< HEAD
         z.sleep(20)
         z.heartbeat()
 
@@ -342,10 +338,8 @@ class MobilqqLogin:
         d.server.adb.cmd( "shell",
                           "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
 
-=======
         z.sleep(5)
         z.heartbeat()
->>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
         loginStatusList = z.qq_getLoginStatus( d )
         if loginStatusList is None:
             z.toast( "登陆新场景，现无法判断登陆状态" )
@@ -356,10 +350,7 @@ class MobilqqLogin:
         else:
             self.repo.BackupInfo( cate_id, 'frozen', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
             z.toast( "卡槽QQ状态异常，跳过此模块" )
-<<<<<<< HEAD
-=======
             return "nothing"
->>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
 
         if d( text='马上绑定' ).exists:
             self.BindAddressBook(z, d, args)
@@ -369,14 +360,8 @@ class MobilqqLogin:
             z.sleep(1.5)
             if d(text='取消').exists:
                 d(text='取消').child()
-<<<<<<< HEAD
 
         return QQNumber
-
-=======
-
-        return QQNumber
->>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
 
 
     def qiehuan(self,d,z,args):
@@ -581,8 +566,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4B7SK00086")
-    z = ZDevice("HT4B7SK00086")
+    d = Device("HT524SK00685")
+    z = ZDevice("HT524SK00685")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "132", "time_limit": "120", "time_limit1": "120", "time_delay": "3"};    #cate_id是仓库号，length是数量
     # z.server.install( )

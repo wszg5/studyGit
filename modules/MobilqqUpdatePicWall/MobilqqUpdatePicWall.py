@@ -49,28 +49,46 @@ class MobilqqUpdatePicWall:
             d(text='关闭').click()
         if d(textContains='匹配').exists:
             d.press.back()
-        z.heartbeat()
         # d(description='快捷入口').click()
         # d( descriptionContains='快捷入口' ).click( )
         # d(text='加好友/群').click()
         z.heartbeat()
         while not d(text='附近的人',className="android.widget.TextView").exists:
-            d(index=2,text="动态",className="android.widget.TextView").click()
+            if d(index=2,text="动态",className="android.widget.TextView").exists:
+               d(index=2,text="动态",className="android.widget.TextView").click()
             z.sleep(1)
+            z.heartbeat()
             if d(index=1,text="附近",className="android.widget.TextView").exists:
+                z.sleep(1)
+                z.heartbeat()
                 d(index=1,text="附近",className="android.widget.TextView").click()
-        d(text='附近的人',className="android.widget.TextView").click()
-        while not d(textContains='等级').exists:
-            z.sleep(2)
+        # d(text='附近的人',className="android.widget.TextView").click()
+        tempnum = 0
+        objtemp = d( index=2, className="android.widget.LinearLayout" ).child( index=0,className="android.widget.LinearLayout",resourceId="com.tencent.mobileqq:id/name" ).child(
+            index="0", className="android.widget.RelativeLayout" ).child(index=0,className="android.widget.ImageView",resourceId="com.tencent.mobileqq:id/icon")
+        while True:
+            if objtemp.exists:
+                z.sleep(1)
+                break
+            else:
+                z.sleep( 2 )
+                if tempnum == 4:
+                    break
+                else:
+                    tempnum = tempnum + 1
         # d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=2).click()
-        d( textContains='等级' ).click()
+        # z.sleep(5)
+        while objtemp.exists:
+            z.sleep(1)
+            z.heartbeat()
+            objtemp.click()
         forwait = 0
         while True:
             if d(text='附近点赞升级啦').exists:
                 d( text='知道了' ).click( )
                 break
             else:
-                z.sleep(2)
+                z.sleep(1)
                 if forwait == 4:
                     break
                 else:
@@ -85,19 +103,18 @@ class MobilqqUpdatePicWall:
             d(text='立即编辑').click()
             z.sleep(2)
 
-        if d( className='android.widget.FrameLayout', index=3 ).child( className='android.widget.ImageView',index=1 ).exists:
-            z.heartbeat( )
-            d( className='android.widget.FrameLayout', index=3 ).child( className='android.widget.ImageView',index=1 ).click( )
-
+        # if d( className='android.widget.FrameLayout', index=3 ).child( className='android.widget.ImageView',index=1 ).exists:
+        #     z.heartbeat( )
+        #     d( className='android.widget.FrameLayout', index=3 ).child( className='android.widget.ImageView',index=1 ).click( )
+        topobj = d( index=0, className="android.widget.LinearLayout" ).child( index=0,resourceId="com.tencent.mobileqq:id/name",className="android.widget.RelativeLayout" ).child(
+            index=1, resourceId="com.tencent.mobileqq:id/name", className="android.widget.RelativeLayout" )
         for m in range( 0, 12 ):
-            if d(className='android.widget.FrameLayout', index=3).child(className='android.widget.ImageView', index=1).exists or d(className="android.widget.FrameLayout",description="添加图片").exists:
-                # if d( className='android.widget.FrameLayout', index=3 ).child( className='android.widget.ImageView',
-                #                                                                index=1 ).exists:
-                #     z.heartbeat()
-                #     d(className='android.widget.FrameLayout', index=3).child(className='android.widget.ImageView', index=1).click()
+            if topobj.exists or d(className="android.widget.FrameLayout",description="添加图片").exists:
                 if d(className="android.widget.FrameLayout",description="添加图片").exists:
                     z.heartbeat()
                     d( className="android.widget.FrameLayout", description="添加图片" ).click()
+                else:
+                    topobj.click( )
                 # for m in range(0,12):
                 z.heartbeat()
                 d(text='从手机相册选择图片',className="android.widget.TextView").click()
@@ -106,6 +123,8 @@ class MobilqqUpdatePicWall:
                     d(className='com.tencent.widget.GridView').child(className='android.widget.RelativeLayout', index=m).click()
                 else:
                     z.toast('手机不足12张图片')
+                    if d(text="取消",resourceId="com.tencent.mobileqq:id/ivTitleBtnRightText").exists:
+                        d(text="取消",resourceId="com.tencent.mobileqq:id/ivTitleBtnRightText").click()
                     break
                 rangee = d(className='android.widget.RelativeLayout', index=0).child(className='android.widget.RelativeLayout',index=1).child(className='android.view.View').info['bounds']
                 x1 = rangee['left']     #缩小图片
@@ -134,6 +153,8 @@ class MobilqqUpdatePicWall:
                             d( className='com.tencent.widget.GridView' ).child( className='android.widget.RelativeLayout',index=a ).click()
                         else:
                             z.toast( '手机不足12张图片' )
+                            if d( text="取消", resourceId="com.tencent.mobileqq:id/ivTitleBtnRightText" ).exists:
+                                d( text="取消", resourceId="com.tencent.mobileqq:id/ivTitleBtnRightText" ).click( )
                             break
         z.sleep(2)
         z.heartbeat()
@@ -360,7 +381,7 @@ class MobilqqUpdatePicWall:
                 z.sleep(1)
                 z.heartbeat()
                 break
-            if d( textContains='资料完整度提升' ).exists:
+            if d( textContains='资料完整度' ).exists:
                 z.sleep( 1 )
                 z.heartbeat( )
                 d(description="关闭",className="android.widget.ImageButton").click()
@@ -380,8 +401,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54VSK01061")
-    z = ZDevice("HT54VSK01061")
+    d = Device("HT4AVSK00885")
+    z = ZDevice("HT4AVSK00885")
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
 
     args = {"repo_name_id":"139","repo_declaration_id":"140","repo_company_id":"141","repo_school_id":"142","time_delay":"3"}    #cate_id是仓库号，length是数量

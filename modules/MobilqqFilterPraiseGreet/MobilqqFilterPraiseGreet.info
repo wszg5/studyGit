@@ -1,13 +1,13 @@
 {
-"id": "MobilqqPraiseII",
-"name":"普通QQ附近的人(点赞+关注+打招呼)",
+"id": "MobilqqFilterPraiseGreet",
+"name":"QQ附近的人(筛选+点赞+打招呼)",
 "cate":"QQ模块",
 "font": "QQ",
 "url": "http://www.bejson.com",
 "version": "1.1",
 "code":"QQ22",
 "icon":"vcard-o",
-"remark":"普通QQ附近的人(点赞+关注+打招呼)",
+"remark":"QQ附近的人(筛选+点赞+打招呼)",
 "setting":[
 	{
 	"id": "prisenum",

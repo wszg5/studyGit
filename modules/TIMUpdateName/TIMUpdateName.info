@@ -1,0 +1,33 @@
+{
+"id": "TIMUpdateName",
+"cate":"其他模块",
+"name":"TIM修改昵称",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"TIM-U-N.2",
+"icon": "vcard-o",
+"remark":"修改昵称",
+"setting":[
+	{
+	"id": "repo_name_id",
+	"name":"QQ修改昵称仓库号",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "repo_key_word",
+	"name":"关键字",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

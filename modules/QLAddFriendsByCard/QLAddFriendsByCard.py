@@ -80,6 +80,7 @@ class QLAddFriendsByCard:
 
             z.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"'%QQnumber)  # qq名片页面
             # z.sleep(5)
+            z.sleep(random.randint(1,3))
             if d(text='QQ轻聊版').exists:
                 z.heartbeat( )
                 d(text='QQ轻聊版').click()
@@ -110,7 +111,7 @@ class QLAddFriendsByCard:
             z.sleep(1)
             d.dump( compressed=False )
             d(text='加好友',className="android.widget.TextView").click()
-            z.sleep(1)
+            z.sleep( random.randint( 1, 3 ) )
             z.heartbeat()
             if d(text='加好友',className="android.widget.TextView").exists:    #拒绝被添加的轻况
                 print("拒绝添加或请求失败")
@@ -128,6 +129,7 @@ class QLAddFriendsByCard:
             if obj.exists:
                 z.sleep( 2 )
                 obj.click( )
+                z.sleep( random.randint( 3, 5 ) )
                 if d( text='添加失败，请勿频繁操作').exists:
                     z.heartbeat( )
                     z.toast( "频繁操作,跳出模块" )
@@ -150,6 +152,7 @@ class QLAddFriendsByCard:
             d(text='下一步',resourceId='com.tencent.qqlite:id/ivTitleBtnRightText').click()
             z.sleep( 1 )
             d(text='发送').click()
+            z.sleep( random.randint( 3, 5 ) )
             if d(  text='添加失败，请勿频繁操作' ).exists:  # 操作过于频繁的情况
                 z.toast("频繁操作,跳出模块")
                 print("频繁操作,跳出模块")

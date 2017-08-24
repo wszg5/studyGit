@@ -1,4 +1,5 @@
 # coding:utf-8
+from __future__ import division
 import colorsys
 
 from PIL import Image
@@ -84,7 +85,7 @@ class QLAddFriendsByTemporarySession:
 
             d.server.adb.cmd( "shell",
                               'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % QQnumber )  # 临时会话  # qq名片页面
-            z.sleep(4)
+            z.sleep( random.randint( 1, 3 ) )
             if d( text='QQ轻聊版' ).exists:
                 z.heartbeat( )
                 d( text='QQ轻聊版' ).click( )
@@ -117,7 +118,7 @@ class QLAddFriendsByTemporarySession:
             z.sleep( 1 )
             d.dump( compressed=False )
             d( text='加为好友', className="android.widget.TextView" ).click( )
-            z.sleep( 1 )
+            z.sleep( random.randint( 1, 3 ) )
             z.heartbeat( )
             if d( text='加为好友', className="android.widget.TextView" ).exists:  # 拒绝被添加的轻况
                 print( "拒绝添加或请求失败" )
@@ -135,6 +136,7 @@ class QLAddFriendsByTemporarySession:
             if obj.exists:
                 z.sleep( 2 )
                 obj.click( )
+                z.sleep( random.randint( 3, 5 ) )
                 if d( text='添加失败，请勿频繁操作' ).exists:
                     z.heartbeat( )
                     z.toast( "频繁操作,跳出模块" )

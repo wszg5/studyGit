@@ -1,4 +1,5 @@
 # coding:utf-8
+from __future__ import division
 from smsCode import smsCode
 from uiautomator import Device
 from Repo import *
@@ -49,8 +50,24 @@ class QlAddFriendsByAddressList:
             z.sleep( 1 )
             d( text='下一步' ).click( )
             z.sleep( 3 )
-            if d( text='下一步' ).exists:  # 操作过于频繁的情况
-                return 'false'
+            z.heartbeat()
+            if d( text='首次使用通讯录相关功能时，需要先验证你的手机号码。' ).exists:  # 操作过于频繁的情况
+                z.toast("请求失败!")
+                x1 = 502 / 540
+                y1 = 279 / 888
+                z.sleep( 1 )
+                z.heartbeat( )
+                d.click( x1 * width, y1 * height )
+                z.sleep( 1 )
+                z.heartbeat( )
+                GetBindNumber = self.scode.GetPhoneNumber( self.scode.QQ_CONTACT_BIND )
+                print( GetBindNumber )
+                d( text="请输入你的手机号码", className="android.widget.EditText" ).set_text( GetBindNumber )
+                d( text='下一步' ).click( )
+                z.sleep( 3 )
+                if d( text='首次使用通讯录相关功能时，需要先验证你的手机号码。' ).exists:
+                    z.toast( "请求失败!停止模块" )
+                    return "return"
             if d( text='确定' ).exists:  # 提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
                 d( text='确定', ).click( )
             z.heartbeat( )
@@ -60,6 +77,7 @@ class QlAddFriendsByAddressList:
                 print( code )
             except :
                 z.toast("取不到验证码")
+                return "false"
             # d( resourceId='com.tencent.tim:id/name', className='android.widget.EditText' ).set_text( code )
             # d(text="请输入短信验证码").set_text(code)
             newStart = 0
@@ -89,13 +107,16 @@ class QlAddFriendsByAddressList:
                     print( circle )
                     return 'false'
             z.heartbeat( )
+            z.sleep(1)
             d( text='下一步' ).click( )
+            z.sleep(3)
             if d(text="“QQ”想访问你的通讯录").exists:
                 while d(text="好",className="android.widget.TextView").exists:
                     d( text="好", className="android.widget.TextView" ).click()
             z.sleep( 2 )
             if d( textContains='没有可匹配的' ).exists:
-                return 'false'
+                z.toast("没有可匹配的,停止模块")
+                return
         return 'true'
 
     def bindPhoneNumber(self, z, d):
@@ -211,9 +232,10 @@ class QlAddFriendsByAddressList:
                 if (args["time_delay"]):
                     z.sleep( int( args["time_delay"] ) )
                 print("操作频繁1")
-                return
-            z.sleep( 3 )
 
+                # return
+            z.sleep( 3 )
+            z.sleep( random.randint( 1, 3 ) )
         #     PhoneNumber = None
         #     j = 0
         #     while PhoneNumber is None:
@@ -254,10 +276,12 @@ class QlAddFriendsByAddressList:
         if d( text="“QQ”想访问你的通讯录" ).exists:
             while d( text="好", className="android.widget.TextView" ).exists:
                 d( text="好", className="android.widget.TextView" ).click( )
+            z.sleep( random.randint( 1, 3 ) )
         # if d( resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText',
         #       index=2 ).exists:  # 检查到尚未 启用通讯录
         if d( text="启用" ).exists:  # 检查到尚未 启用通讯录
             d(text="启用").click()
+            z.sleep( random.randint( 3, 5 ) )
             if not d( textContains='+86' ).exists:
                 d( description='点击选择国家和地区' ).click( )
                 if d( text='中国' ).exists:
@@ -274,11 +298,31 @@ class QlAddFriendsByAddressList:
             z.heartbeat( )
             text = self.Bind( d, z )  # 未开启通讯录的，现绑定通讯录
             z.heartbeat( )
-            if text == 'false':  # 操作过于频繁的情况
+            while text == 'false':  # 操作过于频繁的情况
                 if (args["time_delay"]):
                     z.sleep( int( args["time_delay"] ) )
-                z.toast("操作频繁，稍后再试")
+                # z.toast("操作频繁，稍后再试")
                 print( "操作频繁2" )
+                z.sleep(1)
+                z.heartbeat()
+                if d(text="验证手机号码").exists:
+                    d(text="验证手机号码").click()
+                    z.sleep(1)
+                    z.heartbeat()
+                if d( text='确定' ).exists:  # 提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
+                    d( text="验证手机号" ).click( )
+                    z.sleep(1)
+                    z.heartbeat()
+                x1 = 502 / 540
+                y1 = 279 / 888
+                z.sleep( 1 )
+                z.heartbeat( )
+                d.click( x1 * width, y1 * height )
+                z.sleep( 1 )
+                z.heartbeat( )
+                text = self.Bind(d,z)
+                # return
+            if text== "return":
                 return
             z.sleep( 3 )
         if d( textContains='没有可匹配的' ).exists:
@@ -321,7 +365,7 @@ class QlAddFriendsByAddressList:
                 z.heartbeat()
                 while d(text="通讯录").exists:
                     obj2.click( )
-                z.sleep( 1 )
+                z.sleep( random.randint( 1, 3 ) )
                 obj3= d(index=1,resourceId="com.tencent.qqlite:id/info",className="android.widget.TextView")
                 if obj3.exists:
                     obj3 = obj3.info["text"]
@@ -333,7 +377,7 @@ class QlAddFriendsByAddressList:
                         continue
                 if d( text="加好友").exists:
                     d( text="加好友").click( )
-
+                    z.sleep( random.randint( 1, 3 ) )
                 z.sleep( 1 )
                 z.heartbeat( )
                 if d( text="加好友" ).exists:  # 拒绝被添加的轻况或请求失败
@@ -368,6 +412,7 @@ class QlAddFriendsByAddressList:
                     z.sleep( 2 )
                     while d( text='发送' ).exists :
                         d( text='发送' ).click( )
+                        z.sleep( random.randint( 3, 5 ) )
                     if d( text='添加失败，请勿频繁操作' ).exists:
                         z.heartbeat( )
                         z.toast( "频繁操作,跳出模块" )
@@ -396,6 +441,7 @@ class QlAddFriendsByAddressList:
                 z.sleep( 1 )
                 if d( text='发送' ).exists:
                     d( text='发送' ).click( )
+                    z.sleep( random.randint( 1, 3 ) )
                 if d( text='添加失败，请勿频繁操作' ).exists:  # 操作过于频繁的情况
                     z.toast( "频繁操作,跳出模块" )
                     print( "操作频繁4" )
@@ -404,6 +450,7 @@ class QlAddFriendsByAddressList:
                     for i in range(0,2):
                         if d(text="发送").exists:
                             d(text="发送").click()
+                            z.sleep( random.randint( 1, 3 ) )
                     if d(text="发送").exists:
                         z.toast("请求失败,停止模块")
                         return
@@ -457,8 +504,8 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54VSK01061")
-    z = ZDevice("HT54VSK01061")
+    d = Device("HT524SK00685")
+    z = ZDevice("HT524SK00685")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_material_id": "39", "time_delay": "3", "EndIndex": "8"}  # cate_id是仓库号，length是数量

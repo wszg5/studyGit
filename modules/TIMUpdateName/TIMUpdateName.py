@@ -56,8 +56,6 @@ class TIMUpdateName:
                     break
             break
 
-        repo_signature_id = args["repo_signature_id"]
-        signature= self.repo.GetMaterial(repo_signature_id,0,1)
         repo_name_id = args["repo_name_id"]
         MaterialName = self.repo.GetMaterial( repo_name_id, 0, 1 )
         if len( MaterialName ) == 0:
@@ -98,7 +96,7 @@ class TIMUpdateName:
                 break
             else:  # 发送验证消息
                 d(className="android.view.View",description="删除 按钮").click()
-                z.input(name +" ("+keyWordList[num]+")")
+                z.input(name)
                 z.sleep( 1 )
                 d( text="完成" ).click( )
                 break
@@ -124,5 +122,5 @@ if __name__ == "__main__":
     z.server.install( )
     d.server.adb.cmd( "shell", "ime set com.zunyun.qk/.ZImeService" ).wait( )
     # args = {"repo_name_id": "211", "repo_key_word": "212", "repo_cate_wx_id": "118","repo_cate_qq_id":"132"}
-    args = {"repo_name_id": "211","repo_signature_id":"215", "repo_key_word": "212","time_delay": "3"}
+    args = {"repo_name_id": "211", "repo_key_word": "212","time_delay": "3"}
     o.action( d, z, args )

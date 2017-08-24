@@ -1,16 +1,16 @@
 {
 "id": "MobilqqConcern",
 "cate":"QQ模块",
-"name":"普通QQ关注(我赞的人)",
+"name":"QQ关注(我赞的人)",
 "url": "http://www.bejson.com",
 "version": "1.2",
-"code":"QQ18",
+"code":"QQ-Con-1.0",
 "icon": "vcard-o",
-"remark":"普通QQ关注(我赞的人)",
+"remark":"QQ关注(我赞的人)",
 "setting":[
     {
 	"id": "add_count",
-	"name":"添加好友个数",
+	"name":"关注的个数",
 	"type":"textbox",
 	"defaultValue":"3",
 	"remark":"单位：个"

@@ -26,34 +26,17 @@ class MobilqqConcernII:
                 z.sleep( int( args["time_delay"] ) )
             return
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
         loginStatusList = z.qq_getLoginStatus( d )
         if loginStatusList is None:
             z.toast( "登陆新场景，现无法判断登陆状态" )
             return
         loginStatus = loginStatusList['success']
-        if loginStatus:
-<<<<<<< HEAD
-=======
         if d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists:  # 到了通讯录这步后看号有没有被冻结
->>>>>>> fc75ece82dfa7a15da2e8ec009f8387c3a7d2a50
-=======
->>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
             z.toast( "卡槽QQ状态正常，继续执行" )
         else:
             z.toast( "卡槽QQ状态异常，跳过此模块" )
             return
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
->>>>>>> fc75ece82dfa7a15da2e8ec009f8387c3a7d2a50
-=======
-
->>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
@@ -172,21 +155,6 @@ if __name__ == "__main__":
     args = {"add_count":"1000","time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

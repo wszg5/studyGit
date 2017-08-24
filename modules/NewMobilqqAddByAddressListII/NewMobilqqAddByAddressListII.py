@@ -156,8 +156,6 @@ class NewMobilqqAddByAddressListII:
             z.toast( "卡槽QQ状态异常，跳过此模块" )
             return
 
-
-
         if d(text='绑定手机号码').exists:
             d(text='关闭').click()
             d(text='关闭').click()
@@ -391,8 +389,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("HT524SK00685")
+    z = ZDevice("HT524SK00685")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_material_id": "39", 'gender': "男", 'EndIndex': '5', "time_delay": "3"};  # cate_id是仓库号，length是数量

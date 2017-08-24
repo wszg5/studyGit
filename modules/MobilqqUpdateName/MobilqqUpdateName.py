@@ -1,4 +1,9 @@
 # coding=utf-8
+import colorsys
+import os
+
+from PIL import Image
+
 from smsCode import smsCode
 from uiautomator import Device
 from Repo import *
@@ -123,15 +128,14 @@ class MobilqqUpdateName:
                             "text"] ) < le:
                     t = t + 1
                 else:
-                    d( index=1, resourceId='com.tencent.mobileqq:id/name',
-                       className='android.widget.EditText' ).click( )
+                    d( index=1, resourceId='com.tencent.mobileqq:id/name',className='android.widget.EditText' ).click( )
                     t = 0
                     lenth = len( d( index=1, resourceId='com.tencent.mobileqq:id/name',
                                     className='android.widget.EditText' ).info["text"] )
                     if obj == d( index=1, resourceId='com.tencent.mobileqq:id/name',
                                  className='android.widget.EditText' ).info["text"]:
                         break
-        z.input(name_content +" ("+keyWordList[num]+")")
+        z.input(name_content)
         z.sleep( 1 )
 
         time.sleep( 1 )
@@ -159,6 +163,7 @@ if __name__ == "__main__":
     d.server.adb.cmd( "shell", "ime set com.zunyun.qk/.ZImeService" ).wait( )
     args = {"repo_name_id": "211","repo_key_word": "212"}  # repo_name_id:QQ修改昵称仓库号，birthday_ xxx :年龄范围
     o.action( d, z, args )
-
+    # a = o.WebViewBlankPages(d)
+    # print(a)
 
 

@@ -4,22 +4,81 @@ from Repo import *
 import time, datetime, random
 from zservice import ZDevice
 
-class MobilqqPraiseII:
+class MobilqqFilterPraiseGreet:
     def __init__(self):
         self.repo = Repo()
 
 
     def action(self, d,z,args):
-        z.heartbeat()
-        d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
-        d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-        z.sleep(8)
-        z.heartbeat()
-        d(description='快捷入口').click()
-        d(textContains='加好友').click()
-        d(textContains='附近的人').click()
-        while not d(textContains='等级').exists:
-            z.sleep(2)
+        z.toast( "准备执行QQ附近的人(筛选+点赞+打招呼)" )
+        z.toast( "正在ping网络是否通畅" )
+        z.heartbeat( )
+        i = 0
+        while i < 200:
+            i += 1
+            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            print( ping )
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                z.toast( "网络通畅。开始执行：QQ交友资料修改" )
+                break
+            z.sleep( 2 )
+        if i > 200:
+            z.toast( "网络不通，请检查网络状态" )
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
+            return
+        # self.scode = smsCode( d.server.adb.device_serial( ) )
+        z.heartbeat( )
+        d.server.adb.cmd( "shell", "am force-stop com.tencent.mobileqq" ).communicate( )  # 强制停止
+        d.server.adb.cmd( "shell",
+                          "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
+        z.sleep( 10 )
+        z.heartbeat( )
+        if d( text="消息" ).exists:
+            z.toast( "卡槽状态正常，继续执行" )
+        else:
+            z.toast( "卡槽状态异常，跳过此模块" )
+            return
+
+        str = d.info  # 获取屏幕大小等信息
+        height = str["displayHeight"]
+        width = str["displayWidth"]
+        z.heartbeat( )
+        if d( text='绑定手机号码' ).exists:
+            d( text='关闭' ).click( )
+        if d( textContains='匹配' ).exists:
+            d.press.back( )
+        # d(description='快捷入口').click()
+        # d( descriptionContains='快捷入口' ).click( )
+        # d(text='加好友/群').click()
+        z.heartbeat( )
+        while not d( text='附近的人', className="android.widget.TextView" ).exists:
+            if d( index=2, text="动态", className="android.widget.TextView" ).exists:
+                d( index=2, text="动态", className="android.widget.TextView" ).click( )
+            z.sleep( 1 )
+            z.heartbeat( )
+            if d( index=1, text="附近", className="android.widget.TextView" ).exists:
+                z.sleep( 1 )
+                z.heartbeat( )
+                d( index=1, text="附近", className="android.widget.TextView" ).click( )
+
+        tempnum = 0
+        objtemp = d( index=2, className="android.widget.LinearLayout" ).child( index=0,
+                                                                               className="android.widget.LinearLayout",
+                                                                               resourceId="com.tencent.mobileqq:id/name" ).child(
+            index="0", className="android.widget.RelativeLayout" ).child( index=0, className="android.widget.ImageView",
+                                                                          resourceId="com.tencent.mobileqq:id/icon" )
+        while True:
+            if objtemp.exists:
+                z.sleep( 1 )
+                break
+            else:
+                z.sleep( 2 )
+                if tempnum == 4:
+                    break
+                else:
+                    tempnum = tempnum + 1
+
         getGender = args['gender']
         if getGender !='不限':
             d(resourceId='com.tencent.mobileqq:id/ivTitleBtnRightImage').click()
@@ -90,7 +149,11 @@ class MobilqqPraiseII:
                     d(text='发送').click()
 
 
-                d(text='返回').click()
+                # d(text='返回').click()
+                if d(index=1,resourceId='com.tencent.mobileqq:id/rlCommenTitle',className="android.widget.RelativeLayout").child(index=0,className="android.widget.LinearLayout").child(index=0,className="android.widget.ImageView").exists:
+                    d( index=1, resourceId='com.tencent.mobileqq:id/rlCommenTitle',
+                       className="android.widget.RelativeLayout" ).child( index=0, className="android.widget.LinearLayout" ).child( index=0,
+                                                                                 className="android.widget.ImageView" ).click()
                 i = i+1
                 t = t+1
 
@@ -117,7 +180,7 @@ class MobilqqPraiseII:
 
 
 def getPluginClass():
-    return MobilqqPraiseII
+    return MobilqqFilterPraiseGreet
 
 if __name__ == "__main__":
     import sys
@@ -125,10 +188,10 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT49RSK01046")
-    z = ZDevice("HT49RSK01046")
+    d = Device("HT524SK00685")
+    z = ZDevice("HT524SK00685")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"prisenum":"20","concernnum":"20","textnum":"20","repo_material_id":"39",'gender':"男","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"prisenum":"2","concernnum":"10","textnum":"10","repo_material_id":"40",'gender':"男","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
