@@ -24,6 +24,14 @@
 	"remark":"是否清空通讯录"
 	},
 	{
+	"id": "random_name",
+	"name":"是否使用随机姓名",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"是",
+	"remark":"是否使用随机姓名"
+	},
+	{
 	"id": "number_count",
 	"name":"导入号码个数",
 	"type":"textbox",

@@ -87,7 +87,11 @@ class ImpContactALi:
             pname = ""
             for number in numbers:
                 if number["name"] is None:
-                    pname = number["number"]
+                    random_name = args['random_name']
+                    if random_name == '是':
+                        pname = z.phoneToName( number["number"] )
+                    else:
+                        pname = number["number"]
                 else:
                     pname = number["name"]
                 lines = "%s%s----%s\r" %(lines, pname, number["number"])
@@ -180,6 +184,6 @@ if __name__ == "__main__":
     # d.dump(compressed=False)
 
 
-    args = {"repo_cate_id":"113",'number_count':'50',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"113",'number_count':'50',"random_name":"是","clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

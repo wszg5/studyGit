@@ -39,10 +39,10 @@ class WXAssignSearchHello:
         cate_id = int( args["repo_number_id"] )  # 得到取号码的仓库号
         number_count = int( args['get_number'] )  # 每次取号码个数
         while True:
-            exist_numbers = self.repo.GetNumber( cate_id, 8888, number_count, 'exist' )
+            exist_numbers = self.repo.GetNumber( cate_id, 120, number_count, 'exist', 'NO')
             print( exist_numbers )
             remain = number_count - len( exist_numbers )
-            normal_numbers = self.repo.GetNumber( cate_id, 8888, remain, 'normal' )
+            normal_numbers = self.repo.GetNumber( cate_id, 120, remain, 'normal','NO')
             numbers = exist_numbers + normal_numbers
             if len( numbers ) > 0:
                 break

@@ -458,7 +458,7 @@ if __name__ == "__main__":
     # type = 'qqlite'
     # slot = Slot( serial, type )
     # d.server.adb.cmd( "shell", "pm clear com.tencent.mobileqq" ).communicate( )  # 清除缓存
-    # # slot.clear( "1" )
+    # slot.clear( "1" )
     # for i in range(1,10):
     #     slot.clear(i)
     #     print('已经清除')
