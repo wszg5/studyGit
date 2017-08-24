@@ -15,7 +15,6 @@ class _const:
       filename = os.path.join(base_dir, 'libs/chinese.txt')
       allText = open(filename).read()
       chars = list(allText.decode('utf8'))
-      print(chars[5])
       news_chars = []
       for id in chars:
           if id not in news_chars:
