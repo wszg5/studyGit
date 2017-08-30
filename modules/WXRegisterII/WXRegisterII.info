@@ -9,13 +9,6 @@
 "remark":"微信版本，6.5.4",
 "setting":[
 	{
-	"id": "repo_material_id",
-	"name":"取昵称的素材库",
-	"type":"repo",
-	"source":"material",
-	"top_cate_id":"12"
-	},
-	{
 	"id": "repo_information_id",
 	"name":"保存正常号的资料库",
 	"type":"repo",

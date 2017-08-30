@@ -26,10 +26,6 @@ class WeiXinRegister:
         return genPwd
 
     def action(self, d,z, args):
-        z.heartbeat()
-        Str = d.info  # 获取屏幕大小等信息
-        height = Str["displayHeight"]
-        width = Str["displayWidth"]
         saveCate = args['repo_information_id']
         self.scode = smsCode(d.server.adb.device_serial())
         logger = util.logger
@@ -39,7 +35,7 @@ class WeiXinRegister:
         while True:
 
             nowTime = datetime.datetime.now( ).strftime( "%Y-%m-%d %H:%M:%S" );  # 生成当前时间
-            time_limit = int( args['time_limit'] )
+            time_limit = 120
             serial = d.server.adb.device_serial( )
             self.slot = Slot( serial, self.type )
             slotnum = self.slot.getEmpty( )  # 取空卡槽
@@ -57,18 +53,37 @@ class WeiXinRegister:
                     if not slotObj is None:
                         slotnum = slotObj['id']
                 z.heartbeat( )
+                obj = self.slot.getSlotInfo( slotnum )
+                remark = obj['remark']
+                remarkArr = remark.split( "_" )
+                if len( remarkArr ) == 4:
+                    featureCodeInfo = remarkArr[2]
+                    z.set_serial( "com.tencent.mm", featureCodeInfo )
                 self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
                 d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + slotnum + "号\"").communicate()
                 d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
+                z.sleep(15)
+                z.heartbeat()
+                if d( text='立刻安装' ).exists:
+                    z.toast( "出现更新弹框" )
+                    d( textContains='取消' ).click( )
+                    z.sleep( 1.5 )
+                    d( text='是' ).click( )
+
+                if d( text='发现' ) and d( text='我' ) and d( text='通讯录' ).exists:
+                    z.toast("成功切换"+slotnum+"卡槽")
+                    break
+                else:
+                    self.slot.clear( slotnum )  # 清空改卡槽，并补登
+
             else:
                 d.press.home()
                 d.server.adb.cmd("shell", "pm clear com.tencent.mm").communicate()  # 清除缓存，返回home页面
 
-                while True:
-                    if d( text='微信' ).exists:
-                        d( text='微信' ).click( )
-                        break
-                    d.swipe( width - 20, height / 2, 0, height / 2, 5 )
+                if d( text='微信' ).exists:
+                    d( text='微信' ).click( )
+                else:
+                    z.toast("该页面没有微信，请翻到有微信页面运行")
 
                 while not d( text='注册' ).exists:
                     z.toast( "等待 登录按钮　出现" )
@@ -151,7 +166,8 @@ class WeiXinRegister:
 
                     if d( textContains='如果这不是你本人操作，你的短信内容已经泄露。请检查手机是否被植入木马导致短信被转发。' ).exists:
                         d( text='确定' ).click( )
-                    self.slot.backup( slotnum, str( slotnum ) + '_' + PhoneNumber )  # 卡槽号，手机号
+                    featureCodeInfo = z.get_serial( "com.tencent.mm" )
+                    self.slot.backup( slotnum, str( slotnum ) + '_' + PhoneNumber + "_" + featureCodeInfo )  # 卡槽号，手机号
                     continue
 
                 if d( textContains='当前手机号一个月内已成功注册微信号' ).exists:
@@ -193,14 +209,17 @@ class WeiXinRegister:
                         else:
                             para = {"phoneNumber": PhoneNumber, 'x_05': number_info[0]['x05'], 'x_19': 'WXRegister', 'x_26': '登陆状态YSE',
                                     'x_20':str( slotnum ) + '_' + d.server.adb.device_serial( )}
+                        featureCodeInfo = z.get_serial( "com.tencent.mm" )
                         self.repo.PostInformation( saveCate, para )
-                        self.slot.backup( slotnum, str( slotnum ) + '_' + PhoneNumber )  # 卡槽号，手机号
+                        self.slot.backup( slotnum, str( slotnum ) + '_' + PhoneNumber + "_" + featureCodeInfo)  # 卡槽号，手机号
 
                         z.sleep( 10 )
                         z.heartbeat( )
 
                         if d( textContains='如果这不是你本人操作，你的短信内容已经泄露。请检查手机是否被植入木马导致短信被转发。' ).exists:
                             d( text='确定' ).click( )
+                        break
+                    if d(text='该手机号码尚未被注册，是否立即注册微信？').exists:
                         break
 
                     if d( text='声纹验证' ).exists:
@@ -254,10 +273,10 @@ class WeiXinRegister:
 
                     while d( textContains='是否立即验证' ).exists:
                         d( text='确定' ).click( )
-                    z.sleep( 10 )
+                    z.sleep( 3 )
                     z.heartbeat( )
 
-                    if d( text='确认登录' ).exists:
+                    while d( text='确认登录' ).exists:
                         if n == 1:
                             d( className='android.widget.ImageView', description='返回' ).click( )
                             z.sleep( 10 )
@@ -285,26 +304,24 @@ class WeiXinRegister:
 
                         if d( textContains='看看手机通讯录' ).exists:
                             d( text='是' ).click( )
-                            para = {"phoneNumber": PhoneNumber, 'x_05': 'YES', 'x_19': 'WXRegister',
-                                    'x_20': str( slotnum ) + '_' + d.server.adb.device_serial( ), 'x_21': password, 'x_26': '登陆状态YSE'}
-                            self.repo.PostInformation( saveCate, para )
+
                             z.sleep( 15 )
                             z.heartbeat( )
 
                         if d( textContains='你的操作频繁过快，请稍后重试' ).exists:
                             d( text='确定' ).click( )
-                            para = {"phoneNumber": PhoneNumber, 'x_05': 'YES', 'x_19': 'WXRegister',
-                                    'x_20': str( slotnum ) + '_' +d.server.adb.device_serial( ), 'x_21': password,
-                                    'x_26': '登陆状态YSE'}
-                            self.repo.PostInformation( saveCate, para )
                             z.sleep( 15 )
                             z.heartbeat( )
 
                         if d( textContains='如果这不是你本人操作，你的短信内容已经泄露。请检查手机是否被植入木马导致短信被转发。' ).exists:
                             d( text='确定' ).click( )
 
-                        self.slot.backup( slotnum, str( slotnum ) + '_' + PhoneNumber )  # 卡槽号，手机号
-
+                        para = {"phoneNumber": PhoneNumber, 'x_05': 'YES', 'x_19': 'WXRegister',
+                                'x_20': str( slotnum ) + '_' + d.server.adb.device_serial( ), 'x_21': password,
+                                'x_26': '登陆状态YSE'}
+                        self.repo.PostInformation( saveCate, para )
+                        featureCodeInfo = z.get_serial( "com.tencent.mm" )
+                        self.slot.backup( slotnum, str( slotnum ) + '_' + PhoneNumber + "_" + featureCodeInfo)  # 卡槽号，手机号
                         break
 
                     if d( text='验证身份' ).exists:
@@ -319,6 +336,9 @@ class WeiXinRegister:
                                 para = {"phoneNumber": PhoneNumber, 'x_01': "exist", "x_key": x_value,
                                         'x_19': 'WXRegister'}
                             self.repo.PostInformation( saveCate, para )
+                            featureCodeInfo = z.get_serial( "com.tencent.mm" )
+                            self.slot.backup( slotnum, str( slotnum ) + '_' + PhoneNumber + "_" + featureCodeInfo )  # 卡槽号，手机号
+
                             break
 
                         if d( descriptionContains='验证通过', className='android.view.View' ).exists:
@@ -327,6 +347,8 @@ class WeiXinRegister:
                                 x_value = 'YSE'
                             para = {"phoneNumber": PhoneNumber, 'x_01': "exist", 'x_05': x_value, 'x_19': 'WXRegister'}
                             self.repo.PostInformation( saveCate, para )
+                            featureCodeInfo = z.get_serial( "com.tencent.mm" )
+                            self.slot.backup( slotnum,str( slotnum ) + '_' + PhoneNumber + "_" + featureCodeInfo )  # 卡槽号，手机号
                             break
 
                         for i in range( 1, 6 ):
@@ -423,6 +445,10 @@ class WeiXinRegister:
                         if x_value == '':
                             x_value = 'YSE'
                         para = {"phoneNumber": PhoneNumber, 'x_01': "exist", 'x_05': x_value, 'x_19': 'WXRegister'}
+                        self.repo.PostInformation(saveCate,para)
+                        featureCodeInfo = z.get_serial( "com.tencent.mm" )
+                        self.slot.backup( slotnum, str( slotnum ) + '_' + PhoneNumber + "_" + featureCodeInfo )  # 卡槽号，手机号
+
                 continue
 
 
@@ -438,14 +464,13 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("cda0ae8d")#INNZL7YDLFPBNFN7
-    z = ZDevice("cda0ae8d")
+    d = Device("HT53ASK01833")#INNZL7YDLFPBNFN7
+    z = ZDevice("HT53ASK01833")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    'dingdingdingdingdindigdingdingdingdingdingdingdingdingdingdingdingdignin'
     repo = Repo()
     # repo.RegisterAccount('', 'gemb1225', '13045537833', '109')
-    args = {"repo_information_id": "191","time_limit": "120"}  # cate_id是仓库号，发中文问题
+    args = {"repo_information_id": "191"}  # cate_id是仓库号，发中文问题
     o.action(d, z, args)
 
 

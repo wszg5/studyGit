@@ -137,6 +137,8 @@ class AlipayDepostII:
             if d(textContains='账号不存在').exists:
                 d(text='确定').click()
                 d(description='清空',resourceId='com.alipay.mobile.ui:id/clearButton',className='android.widget.ImageButton',index=0).click()
+                self.repo.uploadPhoneNumber(phoneNumber, int(args["repo_not_exist_id"]))
+                z.toast("不存在号码，入库成功")
                 continue
 
             if d( textContains='频繁' ).exists:
@@ -419,7 +421,6 @@ if __name__ == "__main__":
     o = clazz()
     d = Device("cda0ae8d")
     z = ZDevice("cda0ae8d")
-
     # z.toast("开始重装支付宝APP")
     # z.cmd("shell", "pm uninstall com.eg.android.AlipayGphone")
     # z.cmd("shell", "su -c 'rm -rf /data/data/com.eg.android.AlipayGphone'")
@@ -435,7 +436,7 @@ if __name__ == "__main__":
     #     z.generateSerial()
     # d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
-    args = {"repo_number_id":223,"repo_cate_id":219};    #cate_id是仓库号，length是数量
+    args = {"repo_number_id": "123", "repo_cate_id": "219", "repo_not_exist_id": "226", "repo_exception_id":"227"};    #cate_id是仓库号，length是数量
 
     o.action(d, z,args)
 

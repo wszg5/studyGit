@@ -294,8 +294,10 @@ class TIMSwitchMobileqq:
             remark = obj['remark']
             remarkArr = remark.split( "_" )
             QQnumber = remarkArr[1]
-            self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
-            self.slot.clear( slotnum )  # 清空改卡槽，并补登
+            if d( textContains='身份过期' ).exists:
+                self.repo.BackupInfo( cate_id, 'normal', QQnumber, '', '' )
+            else:
+                self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber            self.slot.clear( slotnum )  # 清空改卡槽，并补登
             z.toast( "卡槽QQ状态异常，补登陆卡槽" )
             self.action( d, z, args )
 
@@ -384,8 +386,11 @@ class TIMSwitchMobileqq:
                 remark = obj['remark']
                 remarkArr = remark.split( "_" )
                 QQnumber = remarkArr[1]
-                self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
-                self.slot.clear( slotnum )  # 清空改卡槽，并补登
+                if d( textContains='身份过期' ).exists:
+                    self.repo.BackupInfo( cate_id, 'normal', QQnumber, '', '' )
+                else:
+                    self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '',
+                                          '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber                self.slot.clear( slotnum )  # 清空改卡槽，并补登
                 z.toast( "卡槽QQ状态异常，补登陆卡槽" )
                 self.action( d, z, args )
 

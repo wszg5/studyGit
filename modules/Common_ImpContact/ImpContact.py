@@ -100,8 +100,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("896b27d3")
-    z = ZDevice("896b27d3")
+    d = Device("cda0ae8d")
+    z = ZDevice("cda0ae8d")
 
     name = z.phoneToName('12345678910')
     phone = z.nameToPhone(name)
@@ -109,7 +109,7 @@ if __name__ == "__main__":
     z.server.install()
 
 
-    slot = Slot('896b27d3', 'mobileqq')
+    slot = Slot('cda0ae8d', 'mobileqq')
     print (slot.getSlots())
     #slot.backup('1', 'slot_1')
     #slot.restore('1')
@@ -130,7 +130,7 @@ if __name__ == "__main__":
 #    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
     z.server.install()
 
-    slot = Slot('FA53CSR02947', 'mobileqq')
+    slot = Slot('cda0ae8d', 'mobileqq')
     print (slot.getSlots())
     slot.backup('21', '22221111')
 

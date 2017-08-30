@@ -31,7 +31,7 @@
 	},
 	{
 	"id": "repo_not_exist_id",
-	"name":"不存在号入库",
+	"name":"未知号入库",
 	"type":"repo",
 	"source":"number",
 	"top_cate_id":"21"
