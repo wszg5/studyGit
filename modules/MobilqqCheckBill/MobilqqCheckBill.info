@@ -1,0 +1,40 @@
+{
+"id": "MobilqqCheckBill",
+"cate":"QQ模块",
+"name":"QQ查话费资料入库",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"QQ-C-B",
+"icon": "vcard-o",
+"remark":"QQ查话费资料入库",
+"setting":[
+	{
+	"id": "repo_number_id",
+	"name":"QQ号码库分类",
+	"type":"repo",
+	"source":"account",
+	"top_cate_id":"1"
+	},
+	{
+	"id": "repo_phone_id",
+	"name":"手机号码库分类",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"21"
+	},
+	{
+    "id": "repo_information_id",
+    "name":"资料库入库",
+    "type":"repo",
+    "source":"information",
+    "top_cate_id":"4"
+    },
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

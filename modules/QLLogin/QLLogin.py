@@ -227,9 +227,8 @@ class QLLogin:
         z.sleep(5)
         z.heartbeat()
 
-        detection_robot = d(index='3', className="android.widget.EditText" )
         not_detection_robot = d(resourceId='com.tencent.qqlite:id/0',index='2', className="android.widget.EditText" )
-        if detection_robot.exists or not_detection_robot.exists:
+        if not_detection_robot.exists:
             playCodeResult = self.LoginPlayCode( d, z )  # 打验证码
         elif d( text='QQ轻聊版', resourceId='com.tencent.qqlite:id/0',className='android.widget.TextView').exists or d( text='启用' ).exists:
             return QQNumber
@@ -278,9 +277,15 @@ class QLLogin:
         d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
         z.sleep(6)
         z.heartbeat()
-        self.slot.restore(slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
         d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
         d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+        obj = self.slot.getSlotInfo( slotnum )
+        remark = obj['remark']
+        remarkArr = remark.split( "_" )
+        if len(remarkArr) == 4:
+            featureCodeInfo = remarkArr[2]
+            z.set_serial( "com.tencent.qqlite", featureCodeInfo )
+        self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
         z.heartbeat()
         z.toast( "正在ping网络是否通畅" )
         while True:
@@ -318,6 +323,7 @@ class QLLogin:
         z.toast("随机生成手机特征码")
 
 
+
         time_limit = int( args['time_limit'] )
         cate_id = args["repo_cate_id"]
         serial = d.server.adb.device_serial( )
@@ -336,22 +342,29 @@ class QLLogin:
                 slotObj = self.slot.getAvailableSlot( time_limit )
                 if not slotObj is None:
                     slotnum = slotObj['id']
-            z.heartbeat( )
-            d.server.adb.cmd( "shell", "pm clear com.tencent.qqlite" ).communicate( )  # 清除缓存
+            z.heartbeat()
+            d.server.adb.cmd("shell", "pm clear com.tencent.qqlite" ).communicate()  # 清除缓存
 
             d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate() #开数据流量
             d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()#开飞行模式
-            z.sleep( 6 )
-            z.heartbeat( )
-            self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
+            z.sleep(6)
+            z.heartbeat()
             d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate() # 关数据流量
             d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()#开飞行模式
 
-            z.heartbeat( )
-            z.toast( "正在ping网络是否通畅" )
+            obj = self.slot.getSlotInfo( slotnum )
+            remark = obj['remark']
+            remarkArr = remark.split( "_" )
+            if len( remarkArr ) == 4:
+                featureCodeInfo = remarkArr[2]
+                z.set_serial( "com.tencent.qqlite", featureCodeInfo )
+            self.slot.restore(slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
+
+            z.heartbeat()
+            z.toast("正在ping网络是否通畅")
             while True:
-                ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
-                print( ping )
+                ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
+                print(ping)
                 if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
                     break
                 z.sleep( 2 )
@@ -411,7 +424,8 @@ class QLLogin:
                 return
             else:
                 z.heartbeat()
-                self.slot.backup( slotnum, str( slotnum ) + '_' + QQnumber )  # 设备信息，卡槽号，QQ号
+                featureCodeInfo = z.get_serial( "com.tencent.qqlite" )
+                self.slot.backup( slotnum, str( slotnum ) + '_' + QQnumber + "_" + featureCodeInfo)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo( cate_id, 'using', QQnumber, serialinfo, '%s_%s_%s' % (
                     d.server.adb.device_serial( ), self.type, slotnum) )  # 仓库号,使用中,QQ号,设备号_卡槽号
 
@@ -429,12 +443,15 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT49YSK00272")
-    z = ZDevice("HT49YSK00272")
+    d = Device("cda0ae8d")
+    z = ZDevice("cda0ae8d")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id": "216", "time_limit": "120", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
+    args = {"repo_cate_id": "217", "time_limit": "2", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
     o.action(d, z, args)
+    # featureCodeInfo = z.get_serial( "com.tencent.qqlite" )
+    # z.set_serial("com.tencent.qqlite",featureCodeInfo)
+    # print(featureCodeInfo)
     # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
     # repo = Repo()
     # serial = d.server.adb.device_serial( )

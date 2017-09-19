@@ -111,15 +111,20 @@ class AlipayDepostII:
 
 
         z.heartbeat()
-        i = 0
-        set1 = set()
-        change = 0
         while True:
             cate_id = int( args["repo_number_id"] )  # 得到取号码的仓库号
-            numbers = self.repo.GetNumber( cate_id, 0, 1)
-            if len(numbers) == 0:
-                z.toast('仓库为空')
-                continue
+            number_count = 1  # 每次取一个号码
+            while True:
+                exist_numbers = self.repo.GetNumber( cate_id, 0, number_count, 'exist' )
+                print( exist_numbers )
+                remain = number_count - len( exist_numbers )
+                normal_numbers = self.repo.GetNumber( cate_id, 0, remain, 'normal' )
+                numbers = exist_numbers + normal_numbers
+                if len( numbers ) > 0:
+                    break
+                d.server.adb.cmd( "shell",
+                                  "am broadcast -a com.zunyun.zime.toast --es msg \"电话号码%s号仓库为空，等待中\"" % cate_id ).communicate( )
+                z.sleep( 30 )
             phoneNumber = numbers[0]['number']
             if d( description='清空', resourceId='com.alipay.mobile.ui:id/clearButton',
                className='android.widget.ImageButton', index=0 ).exists:
@@ -128,17 +133,17 @@ class AlipayDepostII:
             z.input(phoneNumber)
             d(text='下一步').click()
 
-            if d(text='账号不存在，或对方关闭了“通过手机号找到我”隐私开关').exists:
-                z.sleep(1.5)
+            z.sleep( 1.5 )
+            if d(textContains='账号不存在').exists:
                 d(text='确定').click()
                 d(description='清空',resourceId='com.alipay.mobile.ui:id/clearButton',className='android.widget.ImageButton',index=0).click()
                 continue
 
-            if d( text='操作太频繁了，请稍后再试' ).exists:
+            if d( textContains='频繁' ).exists:
                 d( text='确定' ).click( )
                 d( description='清空', resourceId='com.alipay.mobile.ui:id/clearButton',
                    className='android.widget.ImageButton', index=0 ).click( )
-                continue
+                break
 
             if d( textContains='该手机号对应多个支付宝账户，请核实后选择' ).exists:
                 d(className='android.widget.RelativeLayout' ,index=0).click()
@@ -412,8 +417,8 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("916c6fd5")
-    z = ZDevice("916c6fd5")
+    d = Device("cda0ae8d")
+    z = ZDevice("cda0ae8d")
 
     # z.toast("开始重装支付宝APP")
     # z.cmd("shell", "pm uninstall com.eg.android.AlipayGphone")
@@ -423,14 +428,14 @@ if __name__ == "__main__":
 
 
     #z.server.install();
-    z.generateSerial()
+    # z.generateSerial()
     # d.server.adb.cmd("shell", "pm clear com.eg.android.AlipayGphone").communicate()  # 清除缓存
-    if d(textContains='今天操作太频繁了').exists:  # 操作频繁，清空账号信息，重新注册
-        # z.cmd("shell", "pm clear com.eg.android.AlipayGphone")  # 清除缓存
-        z.generateSerial()
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
+    # if d(textContains='今天操作太频繁了').exists:  # 操作频繁，清空账号信息，重新注册
+    #     z.cmd("shell", "pm clear com.eg.android.AlipayGphone")  # 清除缓存
+    #     z.generateSerial()
+    # d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
-    args = {"repo_number_id":44,"repo_cate_id":219};    #cate_id是仓库号，length是数量
+    args = {"repo_number_id":223,"repo_cate_id":219};    #cate_id是仓库号，length是数量
 
     o.action(d, z,args)
 

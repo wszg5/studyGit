@@ -442,8 +442,8 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54VSK01061")
-    z = ZDevice("HT54VSK01061")
+    d = Device("HT524SK00685")
+    z = ZDevice("HT524SK00685")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_material_id": "39", "time_delay": "3", "EndIndex": "8","switch_card":"是"};  # cate_id是仓库号，length是数量

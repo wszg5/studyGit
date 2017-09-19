@@ -21,7 +21,7 @@ class TxyLocationByAddress:
         height = str["displayHeight"]
         width = str["displayWidth"]
         repo_address_id = args["repo_address_id"]
-        address = self.repo.GetNumber( repo_address_id, 60, 1 )
+        address = self.repo.GetNumber( repo_address_id, 60, 1,"normal","NO" )
         if len( address ) == 0:
             d.server.adb.cmd( "shell",
                               "am broadcast -a com.zunyun.zime.toast --es msg \"地址库%s号仓库为空，没有取到消息\"" % repo_address_id ).communicate( )

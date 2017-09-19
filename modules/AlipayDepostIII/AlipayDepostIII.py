@@ -75,6 +75,8 @@ class AlipayDepost:
         d.server.adb.cmd("shell", "am force-stop com.eg.android.AlipayGphone").wait()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.eg.android.AlipayGphone/com.eg.android.AlipayGphone.AlipayLogin").communicate()  # 拉起来
         z.sleep(10)
+        if d( description='关闭', className='android.widget.ImageView' ).exists:
+            d( description='关闭', className='android.widget.ImageView' ).click( )
 
         accountStatus = "正常"
 
@@ -85,7 +87,7 @@ class AlipayDepost:
 
         d(text='新的朋友').click()
         d(text='添加手机联系人').click()
-
+        z.sleep( int( args["contact_wait"] ) )
 
         publicpath = d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=2) \
             .child(className='android.widget.LinearLayout', index=0).child(
@@ -375,10 +377,9 @@ if __name__ == "__main__":
     #     z.generateSerial()
     # d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
-    args = {"repo_number_id":44,"repo_cate_id":219};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"219","contact_wait":"10"};    #cate_id是仓库号，length是数量
 
     o.action(d, z,args)
-
 
 
 

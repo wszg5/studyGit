@@ -62,6 +62,7 @@ class AlipayRegisterII:
             if d(description='请输入手机号/邮箱', className='android.widget.EditText').exists:
                 d(description='请输入手机号/邮箱', className='android.widget.EditText').click()
                 z.input(PhoneNumber)
+                z.sleep(8)
 
 
             if d(description='下一步').exists:
@@ -79,17 +80,30 @@ class AlipayRegisterII:
                         z.toast("获取不到验证码")
                         continue
                     z.input( code )
-                    z.sleep( 6 )
-                    z.input( '13141314abc' )
-                    z.sleep( 1.5 )
-                    d( description='保存新密码' ).click( )
-                    z.sleep( 1.5 )
-                    if d( text='确认' ).exists:
-                        d( text='确认' ).click( )
-                    z.sleep( 10 )
-                    if d( textContains='口碑' ).exists:
-                        z.toast( "成功登陆支付宝" )
-                        break
+                    z.sleep( 16 )
+                    if d( descriptionContains='暂不设置' ).exists:
+                        d( descriptionContains='暂不设置' ).click()
+                        z.sleep( 10 )
+                        if d( textContains='口碑' ).exists:
+                            z.sleep( 5 )
+                            if d( description='关闭', className='android.widget.ImageView' ).exists:
+                                d( description='关闭', className='android.widget.ImageView' ).click( )
+                            z.toast( "成功登陆支付宝" )
+                            break
+                    else:
+                        z.input( '13141314abc' )
+                        z.sleep( 1.5 )
+                        d( description='保存新密码' ).click( )
+                        z.sleep( 1.5 )
+                        if d( text='确认' ).exists:
+                            d( text='确认' ).click( )
+                        z.sleep( 10 )
+                        if d( textContains='口碑' ).exists:
+                            z.sleep( 5 )
+                            if d( description='关闭', className='android.widget.ImageView' ).exists:
+                                d( description='关闭', className='android.widget.ImageView' ).click( )
+                            z.toast( "成功登陆支付宝" )
+                            break
 
                 else:
                     z.toast( "登陆支付宝失败" )
@@ -120,6 +134,8 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").wait()
     args = {"time_delay": "3"};    #cate_id是仓库号，length是数量
     o.action(d, z,args)
+    #  z.cmd( "shell", "am force-stop com.eg.android.AlipayGphone" )  # 强制停止
+    # z.cmd( "shell", "am start -n com.eg.android.AlipayGphone/com.eg.android.AlipayGphone.AlipayLogin" )
     # if d( description='暂不设置，先进入支付宝' ).exists:
     #     d( className='android.widget.EditText', index=0 ).click( )
     #     z.input( '13141314abc' )

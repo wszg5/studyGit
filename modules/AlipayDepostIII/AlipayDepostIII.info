@@ -9,6 +9,13 @@
 "icon":"vcard-o",
 "remark":"支付宝通讯录简存",
 "setting":[
+    {
+	"id": "contact_wait",
+	"name":"点击通讯录后等待",
+	"type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+	},
 	{
 	"id": "repo_cate_id",
 	"name":"回写资料库",

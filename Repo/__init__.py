@@ -70,8 +70,8 @@ class Repo:
 
 
 
-    def GetNumber(self, cateId, interval, limit,status='normal'):
-        path = "/repo_api/number/pick?status=%s&cate_id=%s&interval=%s&limit=%s" % (status,cateId,interval,limit)
+    def GetNumber(self, cateId, interval, limit,status='normal',statusLock = 'YES',number=None,name=None):
+        path = "/repo_api/number/pick?status=%s&cate_id=%s&interval=%s&limit=%s&statusLock=%s&number=%s" % (status,cateId,interval,limit,statusLock,number)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         response = conn.getresponse()
@@ -141,8 +141,8 @@ class Repo:
         conn.request("GET", path)
 
 
-    def savePhonenumberXM(self,phoneNumber, cateid, status):                    #迅码上传失效/有效的手机号
-        path = "/repo_api/check/numberInfo?PhoneNumber=%s&cate_id=%s&status=%s" % (phoneNumber, cateid, status)
+    def savePhonenumberXM(self,phoneNumber, cateid, status,name=None):                    #迅码上传失效/有效的手机号
+        path = "/repo_api/check/numberInfo?PhoneNumber=%s&cate_id=%s&status=%s&name=%s" % (phoneNumber, cateid, status,name)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
 

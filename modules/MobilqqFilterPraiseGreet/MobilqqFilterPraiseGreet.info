@@ -1,15 +1,14 @@
 {
 "id": "MobilqqFilterPraiseGreet",
-"name":"QQ附近的人(筛选+点赞+打招呼)",
 "cate":"QQ模块",
-"font": "QQ",
+"name":"QQ附近的人(筛选+点赞+打招呼)",
 "url": "http://www.bejson.com",
-"version": "1.1",
-"code":"QQ22",
-"icon":"vcard-o",
+"version": "1.0",
+"code":"QQ-F-P-G1.0",
+"icon": "vcard-o",
 "remark":"QQ附近的人(筛选+点赞+打招呼)",
 "setting":[
-	{
+    {
 	"id": "prisenum",
 	"name":"点赞的次数",
 	"type":"textbox",
@@ -45,7 +44,7 @@
 	"defaultValue":"女",
 	"remark":"性别要求"
 	},
-    {
+	{
     "id": "time_delay",
     "name":"延时",
     "type":"textbox",

@@ -325,8 +325,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding( 'utf8' )
     clazz = getPluginClass( )
     o = clazz( )
-    d = Device( "HT54VSK01061" )
-    z = ZDevice( "HT54VSK01061" )
+    d = Device( "HT524SK00685" )
+    z = ZDevice( "HT524SK00685" )
     z.server.install( )
     d.server.adb.cmd( "shell", "ime set com.zunyun.qk/.ZImeService" ).communicate( )
     args = {"repo_number_id": "204", "time_delay": "3"};  # cate_id是仓库号，length是数量

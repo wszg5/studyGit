@@ -126,6 +126,10 @@ class MobilqqFilterPraiseGreet:
                 if t<concernnum:
                     if d(text='关注').exists:
                         d(text='关注').click()
+                        if d( text='关注' ).exists:
+                            d( text='关注' ).click( )
+                            if d( text='关注' ).exists:
+                                z.toast("关注频繁,进行其他操作")
 
                 if t<textnum:
                     d(text='发消息').click()
@@ -192,6 +196,6 @@ if __name__ == "__main__":
     z = ZDevice("HT524SK00685")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"prisenum":"2","concernnum":"10","textnum":"10","repo_material_id":"40",'gender':"男","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"prisenum":"4","concernnum":"4","textnum":"74","repo_material_id":"40",'gender':"男","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

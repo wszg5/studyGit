@@ -122,8 +122,10 @@ class TIMAddFriendByShareCard:
         cate_id1 = args["repo_material_cate_id"]
         add_count = int(args['add_count'])  # 要添加多少人
         switch_card = args["switch_card"]
-        count = 0
-        while count<add_count:            #总人数
+        switch = args["switch"]
+        count = 1
+        num = 0
+        while True:            #总人数
             Material = self.repo.GetMaterial( cate_id1, 0, 1 )
             if len( Material ) == 0:
                 d.server.adb.cmd( "shell",
@@ -146,7 +148,7 @@ class TIMAddFriendByShareCard:
             z.sleep(1)
 
             z.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"'%QQnumber)  # qq名片页面
-            # z.sleep(5)
+            z.sleep( random.randint( 5, 7 ) )
             if d(text='TIM').exists:
                 z.heartbeat( )
                 d(text='TIM').click()
@@ -169,8 +171,9 @@ class TIMAddFriendByShareCard:
                     continue
             z.sleep(1)
             d.dump( compressed=False )
-            d(text='加好友',className="android.widget.Button").click()
-            z.sleep(2)
+            if d(text='加好友',className="android.widget.Button").exists:
+                d(text='加好友',className="android.widget.Button").click()
+            z.sleep(5)
             z.heartbeat()
             if d(text='加好友',className="android.widget.Button").exists:    #拒绝被添加的轻况
                 continue
@@ -190,18 +193,21 @@ class TIMAddFriendByShareCard:
                     z.toast( "频繁操作,跳出模块" )
                     return
                 else:
+                    count = count + 1
                     print( QQnumber + "请求发送成功" )
                 continue
-            d.dump( compressed=False )
-            obj = d(index=3, className='android.widget.EditText', resourceId='com.tencent.tim:id/name' ).info  # 将之前消息框的内容删除        需要发送验证信息
-            obj = obj['text']
-            lenth = len( obj )
-            t = 0
-            while t < lenth:
-                d.press.delete( )
-                t = t + 1
-            time.sleep( 2 )
-            z.input(message)
+
+            if switch=="是":
+                d.dump( compressed=False )
+                obj = d(index=3, className='android.widget.EditText', resourceId='com.tencent.tim:id/name' ).info  # 将之前消息框的内容删除        需要发送验证信息
+                obj = obj['text']
+                lenth = len( obj )
+                t = 0
+                while t < lenth:
+                    d.press.delete( )
+                    t = t + 1
+                time.sleep( 2 )
+                z.input(message)
             # d(index=2,className="android.widget.CompoundButton",resourceId="com.tencent.tim:id/name").click()
             if "是" in switch_card:
                 if d( index=2, className="android.widget.CompoundButton", resourceId="com.tencent.tim:id/name" ).exists:
@@ -210,9 +216,11 @@ class TIMAddFriendByShareCard:
                     if d(text="设置我的名片").exists:
                         d(text="设置我的名片").click()
                         while True:
-                            z.sleep(1)
-                            z.heartbeat()
-                            d(text = "添加我的名片").click()
+                            z.sleep( 3 )
+                            z.heartbeat( )
+                            d.dump( compressed=False )
+                            if d( text="添加我的名片" ).exists:
+                                d( text="添加我的名片" ).click( )
                             d(index=3,resourceId="com.tencent.tim:id/name",className="android.widget.Button").click()
                             z.sleep(2)
                             obj = d( index=0, className="com.tencent.widget.GridView",resourceId="com.tencent.tim:id/photo_list_gv" ).child(
@@ -233,21 +241,26 @@ class TIMAddFriendByShareCard:
                             if d( index=0,resourceId="com.tencent.tim:id/name",className="android.widget.ImageButton" ).exists:
                                 d( index=0, resourceId="com.tencent.tim:id/name", className="android.widget.ImageButton" ).click( )
                                 d(text="退出").click()
-            z.sleep( 1 )
+            z.sleep( 2 )
             z.heartbeat( )
-            d(text='下一步',resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
-            z.sleep( 1 )
-            d(text='发送').click()
+            d.dump( compressed=False )
+            if d(text='下一步',resourceId='com.tencent.tim:id/ivTitleBtnRightText').exists:
+                z.heartbeat()
+                d(text='下一步',resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
+            z.sleep( 2 )
+            if d(text='发送').exists:
+                d(text='发送').click()
+                z.sleep(3)
             if d( resourceId='com.tencent.tim:id/name', text='添加失败，请勿频繁操作' ).exists:  # 操作过于频繁的情况
                 z.toast("频繁操作,跳出模块")
                 return
             print(QQnumber+"请求发送成功")
             z.heartbeat()
-            count = count + 1
             if count == add_count:
                 break
+            count = count + 1
         z.sleep(1)
-
+        z.toast( "模块完成" )
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
 
@@ -261,9 +274,11 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54VSK01061")
-    z = ZDevice("HT54VSK01061")
+    d = Device("HT524SK00685")
+    z = ZDevice("HT524SK00685")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39",'gender':"男","add_count":"3","time_delay":"3","switch_card":"是"}    #cate_id是仓库号，length是数量
-
-    o.action(d, z, args)
+    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39",'gender':"男","add_count":"3","time_delay":"3","switch_card":"","switch":"否"}    #cate_id是仓库号，length是数量
+    try:
+        o.action( d, z, args )
+    except :
+       z.toast("模块异常")

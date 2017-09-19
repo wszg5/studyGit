@@ -3,10 +3,10 @@
     "cate":"基础模块",
     "name": "导入系统通讯录",
     "url": "http://www.bejson.com",
-    "version": "1.1",
+    "version": "1.2",
     "code": "base01",
     "icon":"vcard-o",
-    "remark": "清空通讯录，然后导入通讯录",
+    "remark": "清空通讯录，然后导入通讯录，支持随机姓名",
     "setting": [
 	{
 	"id": "repo_cate_id",
@@ -14,6 +14,14 @@
 	"type":"repo",
 	"source":"number",
 	"top_cate_id":"21"
+	},
+	{
+	"id": "random_name",
+	"name":"是否使用随机姓名",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"是",
+	"remark":"是否使用随机姓名"
 	},
 	{
 	"id": "clear",

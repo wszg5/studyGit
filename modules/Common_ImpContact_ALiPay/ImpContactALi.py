@@ -27,14 +27,36 @@ class ImpContactALi:
         z.cmd("shell", "am start -n com.eg.android.AlipayGphone/com.eg.android.AlipayGphone.AlipayLogin")
         z.sleep(15)
         if d(textContains='口碑').exists:
+            if d( description='关闭', className='android.widget.ImageView' ).exists:
+                d( description='关闭', className='android.widget.ImageView' ).click( )
             return True
         return False
+
+    def CheckAddressBook(self,d, z ):
+        z.toast( "检测通讯录是否正常" )
+        d( description='通讯录' ).click( )
+        if d( text='转到银行卡' ).exists:
+            d( description='返回' ).click( )
+            d( description='通讯录' ).click( )
+
+        d( text='新的朋友' ).click( )
+        d( text='添加手机联系人' ).click( )
+        z.sleep(8)
+
+        if d(textContains='账号违规').exists or d(textContains='该功能暂未对您开放').exists:
+            d.server.adb.cmd( "shell", "pm clear com.eg.android.AlipayGphone" ).communicate( )  # 清除缓存
+            return False
+        return True
 
 
     def action(self, d,z, args):
         z.heartbeat()
         if self.CheckLogined(d, z) :
-            z.toast("检测到已经登录，开始导入")
+            if self.CheckAddressBook( d, z ):
+                z.toast("检测到已经登录，开始导入")
+            else:
+                z.toast( "通讯录异常，结束模块" )
+                return
         else:
             z.toast( "没有检测到登陆帐号，结束运行" )
             return
@@ -65,7 +87,11 @@ class ImpContactALi:
             pname = ""
             for number in numbers:
                 if number["name"] is None:
-                    pname = number["number"]
+                    random_name = args['random_name']
+                    if random_name == '是':
+                        pname = z.phoneToName( number["number"] )
+                    else:
+                        pname = number["number"]
                 else:
                     pname = number["name"]
                 lines = "%s%s----%s\r" %(lines, pname, number["number"])
@@ -111,53 +137,53 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("896b27d3")
-    z = ZDevice("896b27d3")
-    pkg = 'com.tencent.mobileqq'
-    z.server.install()
-
-
-    slot = Slot('896b27d3', 'mobileqq')
-    print (slot.getSlots())
-    #slot.backup('1', 'slot_1')
-    #slot.restore('1')
-    print (z.qq_getLoginStatus(d))
-    z.generate_serial('com.tencent.mobileqq')
-    print(z.get_serial(pkg))
-    info = '{"buildManufacturer":"ZTE","buildModel":"ZTE G720C","buildSerial":"ytz0fad63hkensm","buildVersionRelease":"Android 2.2.3","empty":false,"settingsSecureAndroidId":"wwx31wo6hhxbkrw","telephonyGetDeviceId":"864948416091531","telephonyGetLine1Number":"+8615015541026","telephonyGetNetworkType":"12","telephonyGetSimSerialNumber":"84508614357292636763","telephonyGetSubscriberId":"48313995020377949279","wifiInfoGetMacAddress":"00:03:6C:6B:B2:EA","wifiInfoGetSSID":"TP-ZPBZEBM7"}'
-    z.set_serial(pkg, info)
-    source = '/tmp/xxx.png'
-    d.screenshot(source)
-    width = 540.0
-    height = 960.0
-    p =  { "x1":37/width, "y1":380/height, "x2":502/width, "y2":473/height}
-    z.img_crop(source, p)
-
-    out = d.server.adb.run_cmd('shell', 'ls')
-    z.input("xxx")
-#    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
-    z.server.install()
-
-    slot = Slot('FA53CSR02947', 'mobileqq')
-    print (slot.getSlots())
-    slot.backup('21', '22221111')
-
-    print (slot.getSlots())
-    slot.clear('21')
-
-    z.generateSerial();
-    #z.input("6565wv=1027&k=48KHKLm")
-
-
-    #d.server.adb.cmd("shell", "am", "start", "-a", "zime.clear.contacts").communicate()
-    d.server.adb.cmd("shell", "pm clear com.android.providers.contacts").communicate()
-    #d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").communicate()
-    d.server.adb.cmd("shell", "am", "start", "-n", "com.zunyun.zime/.ImportActivity", "-t", "text/plain", "-d",
-                     "/data/local/tmp/contacts.txt").communicate()
+    d = Device("cda0ae8d")
+    z = ZDevice("cda0ae8d")
+#     pkg = 'com.tencent.mobileqq'
+#     z.server.install()
+#
+#
+#     slot = Slot('cda0ae8d', 'mobileqq')
+#     print (slot.getSlots())
+#     #slot.backup('1', 'slot_1')
+#     #slot.restore('1')
+#     print (z.qq_getLoginStatus(d))
+#     z.generate_serial('com.tencent.mobileqq')
+#     print(z.get_serial(pkg))
+#     info = '{"buildManufacturer":"ZTE","buildModel":"ZTE G720C","buildSerial":"ytz0fad63hkensm","buildVersionRelease":"Android 2.2.3","empty":false,"settingsSecureAndroidId":"wwx31wo6hhxbkrw","telephonyGetDeviceId":"864948416091531","telephonyGetLine1Number":"+8615015541026","telephonyGetNetworkType":"12","telephonyGetSimSerialNumber":"84508614357292636763","telephonyGetSubscriberId":"48313995020377949279","wifiInfoGetMacAddress":"00:03:6C:6B:B2:EA","wifiInfoGetSSID":"TP-ZPBZEBM7"}'
+#     z.set_serial(pkg, info)
+#     source = '/tmp/xxx.png'
+#     d.screenshot(source)
+#     width = 540.0
+#     height = 960.0
+#     p =  { "x1":37/width, "y1":380/height, "x2":502/width, "y2":473/height}
+#     z.img_crop(source, p)
+#
+#     out = d.server.adb.run_cmd('shell', 'ls')
+#     z.input("xxx")
+# #    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
+#     z.server.install()
+#
+#     slot = Slot('FA53CSR02947', 'mobileqq')
+#     print (slot.getSlots())
+#     slot.backup('21', '22221111')
+#
+#     print (slot.getSlots())
+#     slot.clear('21')
+#
+#     z.generateSerial();
+#     #z.input("6565wv=1027&k=48KHKLm")
+#
+#
+#     #d.server.adb.cmd("shell", "am", "start", "-a", "zime.clear.contacts").communicate()
+#     d.server.adb.cmd("shell", "pm clear com.android.providers.contacts").communicate()
+#     #d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").communicate()
+#     d.server.adb.cmd("shell", "am", "start", "-n", "com.zunyun.zime/.ImportActivity", "-t", "text/plain", "-d",
+#                      "/data/local/tmp/contacts.txt").communicate()
 
     # d.dump(compressed=False)
 
 
-    args = {"repo_cate_id":"113",'number_count':'50',"clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"113",'number_count':'50',"random_name":"是","clear":"是","time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

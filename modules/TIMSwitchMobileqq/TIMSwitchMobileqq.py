@@ -19,6 +19,8 @@ class TIMSwitchMobileqq:
 
     def SwitchMobileqq(self, d, z, slotId):
         z.toast("开始切换到普通ＱＱ")
+        z.generate_serial( "com.tencent.mobileqq" )  # 随机生成手机特征码
+        z.toast( "随机生成手机特征码" )
         serial = d.server.adb.device_serial( )
         self.slot = Slot( serial, self.type )
         d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存

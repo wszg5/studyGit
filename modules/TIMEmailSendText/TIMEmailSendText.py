@@ -70,16 +70,27 @@ class TIMEmailSendText:
                 d( text='邮件' ).click( )
                 break
         time.sleep(4)
+        n = 0
         if not d(text="写邮件").exists:
             while d(text='开通QQ邮箱', className='android.widget.Button').exists:
                 z.heartbeat()
                 z.sleep(1)
                 d(text='开通QQ邮箱', className='android.widget.Button').click()
+                if n==3:
+                    z.toast("邮箱开通失败,停止模块")
+                    return
+                else:
+                    n = n + 1
+            if d(text="QQ邮箱").exists:
+                x = 73/540
+                y = 272/888
+                d.click(x*width,y*height)
+
             z.sleep(2)
             z.heartbeat()
             while d(text="跳过",resourceId="com.tencent.tim:id/ivTitleBtnRightText",className="android.widget.TextView").exists:
                 d( text="跳过", resourceId="com.tencent.tim:id/ivTitleBtnRightText", className="android.widget.TextView" ).click()
-        z.sleep(1)
+        z.sleep(3)
         num=0
         while num<count:
             numbers = self.repo.GetNumber( repo_mail_cateId, 120, 1 )
@@ -89,26 +100,26 @@ class TIMEmailSendText:
             d(text="写邮件").click()
             # while not d(text="发送").exists:
             #     z.sleep(2)
-            z.sleep(5)
+            z.sleep(14)
             x1 = 260/540
             y1 = 156/888
             d.click( x1*width, y1*height )  # 点击到收件人
             z.heartbeat()
             z.input(QQEmail+"@qq.com")
             print(QQEmail+"@qq.com")
-            z.sleep(1)
+            z.sleep(2)
             z.heartbeat()
             x2 = 80 / 540
             y2 = 430 / 888
             d.click( x2*width, y2*height )  # 点击到编辑消息处
             z.heartbeat()
             z.input(message.encode('utf-8'))
-            z.sleep(1)
+            z.sleep(2)
             z.heartbeat()
             x3 = 270 / 540
             y3 = 850 / 888
             d.click(x3*width,y3*height)
-            z.sleep(1)
+            z.sleep(5)
             z.heartbeat()
             if num == count:
                 break
@@ -136,8 +147,8 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54VSK01061")
-    z = ZDevice("HT54VSK01061")
+    d = Device("HT524SK00685")
+    z = ZDevice("HT524SK00685")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_mail_cateId": "119", "repo_material_cateId": "39", "time_delay": "3","count":"5"};
 

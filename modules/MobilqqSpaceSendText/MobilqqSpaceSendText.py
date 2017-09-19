@@ -134,8 +134,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding( 'utf8' )
     clazz = getPluginClass( )
     o = clazz( )
-    d = Device( "HT524SK00685" )
-    z = ZDevice( "HT524SK00685" )
+    d = Device( "HT54VSK01061" )
+    z = ZDevice( "HT54VSK01061" )
     z.server.install( )
     d.server.adb.cmd( "shell", "ime set com.zunyun.qk/.ZImeService" ).wait( )
     args = {"time_delay": "3","repo_material_cate_id":"215","type":"文字+图片","count":"3"}  # repo_name_id:QQ修改昵称仓库号，birthday_ xxx :年龄范围
