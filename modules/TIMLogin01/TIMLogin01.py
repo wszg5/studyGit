@@ -259,11 +259,13 @@ class TIMLogin01:
             remark = obj['remark']
             remarkArr = remark.split( "_" )
             QQnumber = remarkArr[1]
-            self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+            if d( textContains='身份过期' ).exists:
+                self.repo.BackupInfo( cate_id, 'normal', QQnumber, '', '' )
+            else:
+                self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
             self.slot.clear( slotnum )  # 清空改卡槽，并补登
             z.toast( "卡槽QQ状态异常，补登陆卡槽" )
             self.action( d, z, args )
-
 
     def action(self,d,z,args):
         z.toast( "正在ping网络是否通畅" )
@@ -345,16 +347,20 @@ class TIMLogin01:
                     z.sleep( 1.5 )
                     if d( text='取消' ).exists:
                         d( text='取消' ).child( )
-                z.toast("卡槽QQ切换成功，继续执行")
+                z.toast( "卡槽QQ切换成功，继续执行" )
             else:
                 obj = self.slot.getSlotInfo( slotnum )
                 remark = obj['remark']
                 remarkArr = remark.split( "_" )
                 QQnumber = remarkArr[1]
-                self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+                if d( textContains='身份过期' ).exists:
+                    self.repo.BackupInfo( cate_id, 'normal', QQnumber, '', '' )
+                else:
+                    self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
                 self.slot.clear( slotnum )  # 清空改卡槽，并补登
                 z.toast( "卡槽QQ状态异常，补登陆卡槽" )
                 self.action( d, z, args )
+
 
         else:  # 有空卡槽的情况
             d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存

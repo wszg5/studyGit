@@ -17,6 +17,7 @@ class TIMSwitchMobileqq:
         self.repo = Repo()
         self.type = 'tim'
 
+
     def SwitchMobileqq(self, d, z, slotId):
         z.toast("开始切换到普通ＱＱ")
         z.generate_serial( "com.tencent.mobileqq" )  # 随机生成手机特征码

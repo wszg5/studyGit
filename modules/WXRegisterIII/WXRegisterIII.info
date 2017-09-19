@@ -1,0 +1,19 @@
+{
+"id": "WeiXinRegister",
+"cate":"微信模块",
+"name":"微信注册(带卡槽)",
+"url": "http://www.bejson.com",
+"version": "1.3",
+"code":"WX-S-06",
+"icon": "vcard-o",
+"remark":"微信版本，6.5.13",
+"setting":[
+	{
+	"id": "repo_information_id",
+	"name":"保存正常号的资料库",
+	"type":"repo",
+	"source":"information",
+	"top_cate_id":"4"
+	},
+]
+}

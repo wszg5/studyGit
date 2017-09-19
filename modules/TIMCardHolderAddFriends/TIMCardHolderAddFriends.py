@@ -43,7 +43,7 @@ class TIMCardHolderAddFriends:
 
     def collectData(self,count):
         d(text='我的名片', className='android.widget.TextView').click()
-        print count
+        print (count)
         for i in range(0,len(count)/3 + 1):
 
             for j in range(0,3):
@@ -53,7 +53,7 @@ class TIMCardHolderAddFriends:
                     d(text='添加手机号', className='android.widget.TextView').click()
                     d(text='添加手机号', className='android.widget.TextView').click()
                 if len(count)>=i*3+j+1:
-                    print count[i * 3 + j]
+                    print (count[i * 3 + j])
                     d(text='填写号码', className='android.widget.EditText', index=j).set_text(count[i * 3 + j])
                 else:
                     break
@@ -86,7 +86,7 @@ class TIMCardHolderAddFriends:
 
 
                 else:
-                    print '结束扫描'
+                    print ('结束扫描')
                     d(text='编辑', className='android.widget.TextView').click()
                     for k in range(0, 3):
                         d(className='android.widget.RelativeLayout', index=4).child(className='android.widget.EditText',index=k).clear_text()

@@ -356,8 +356,10 @@ class QLLogin:
             remark = obj['remark']
             remarkArr = remark.split( "_" )
             if len( remarkArr ) == 4:
-                featureCodeInfo = remarkArr[2]
+                featureCodeInfo = remarkArr[2] + remarkArr[3]
+                print( featureCodeInfo )
                 z.set_serial( "com.tencent.qqlite", featureCodeInfo )
+            z.set_serial( "com.tencent.qqlite", featureCodeInfo )
             self.slot.restore(slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
 
             z.heartbeat()
@@ -425,6 +427,7 @@ class QLLogin:
             else:
                 z.heartbeat()
                 featureCodeInfo = z.get_serial( "com.tencent.qqlite" )
+                print(featureCodeInfo)
                 self.slot.backup( slotnum, str( slotnum ) + '_' + QQnumber + "_" + featureCodeInfo)  # 设备信息，卡槽号，QQ号
                 self.repo.BackupInfo( cate_id, 'using', QQnumber, serialinfo, '%s_%s_%s' % (
                     d.server.adb.device_serial( ), self.type, slotnum) )  # 仓库号,使用中,QQ号,设备号_卡槽号
@@ -443,11 +446,11 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("HT524SK00685")
+    z = ZDevice("HT524SK00685")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id": "217", "time_limit": "2", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
+    args = {"repo_cate_id": "228", "time_limit": "0", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
     o.action(d, z, args)
     # featureCodeInfo = z.get_serial( "com.tencent.qqlite" )
     # z.set_serial("com.tencent.qqlite",featureCodeInfo)
@@ -457,9 +460,10 @@ if __name__ == "__main__":
     # serial = d.server.adb.device_serial( )
     # type = 'qqlite'
     # slot = Slot( serial, type )
-    # d.server.adb.cmd( "shell", "pm clear com.tencent.mobileqq" ).communicate( )  # 清除缓存
     # slot.clear( "1" )
     # for i in range(1,10):
     #     slot.clear(i)
     #     print('已经清除')
     # print('全部清除')
+
+

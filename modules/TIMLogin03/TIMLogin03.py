@@ -129,6 +129,7 @@ class TIMLogin03:
         while d( textContains='正在更新数据' ).exists:
             z.sleep( 2 )
         z.sleep(3)
+        z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
         z.heartbeat( )
         if d(className='android.widget.ImageView',resourceId='com.tencent.tim:id/title',index=1).exists:
             for i in range(0,2):
@@ -246,6 +247,7 @@ class TIMLogin03:
             z.sleep( 2 )
 
         z.sleep( 3 )
+        z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
         z.heartbeat()
         if d(className='android.widget.ImageView',resourceId='com.tencent.tim:id/title',index=1).exists:
             for i in range(0,2):
@@ -304,7 +306,9 @@ class TIMLogin03:
                 if not slotObj is None:
                     slotnum = slotObj['id']
             z.heartbeat( )
-            d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
+            # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
+            # d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止
+
 
             d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate() #开数据流量
             d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()#开飞行模式
@@ -334,6 +338,7 @@ class TIMLogin03:
             while d( textContains='正在更新数据' ).exists:
                 z.sleep( 2 )
             z.sleep( 3 )
+            z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
 
             if d( className='android.widget.ImageView', resourceId='com.tencent.tim:id/title', index=1 ).exists:
                 for i in range( 0, 2 ):
@@ -411,11 +416,11 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("HT49YSK00272")
+    z = ZDevice("HT49YSK00272")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id": "132", "time_limit": "120", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
+    args = {"repo_cate_id": "228", "time_limit": "0", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
     o.action(d, z, args)
     # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
     # d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止

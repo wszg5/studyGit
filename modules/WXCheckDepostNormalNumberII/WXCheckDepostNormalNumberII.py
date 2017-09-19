@@ -19,7 +19,7 @@ class WXCheckDepostNormalNumber:
         logger = util.logger
 
         runLock = int( args['run_lock'] )
-        cateId = args['repo_normal_number_id']
+        cateId = args['repo_can_use_number_id']
         logger.info(cateId)
         cateType = 'information'
         totalList = self.repo.GetNUmberNormalTotal( cateId,cateType )
@@ -44,6 +44,11 @@ class WXCheckDepostNormalNumber:
             while True:
                 if d( text='发现' ) and d( text='我' ) and d( text='通讯录' ).exists:
                     break
+                elif d(text='立刻安装').exists:
+                    z.toast("出现更新弹框")
+                    d(textContains='取消').click()
+                    z.sleep(1.5)
+                    d(text='是').click()
                 else:
                     d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
             d( description='更多功能按钮' ).click( )
@@ -79,31 +84,43 @@ class WXCheckDepostNormalNumber:
                 if d( textContains='操作过于频繁' ).exists:
                     repo_check_frequency_id = args['repo_check_frequency_id']
                     self.repo.uploadPhoneNumber(WXnumber, repo_check_frequency_id )
-                    z.toast('操作过于频繁,模块停止运行')
-                    break
+                    if d( descriptionContains='清除', index=2 ).exists:
+                        d( descriptionContains='清除', index=2 ).click( )
+                    else:
+                        d(resourceId='com.tencent.mm:id/b2q',index=2).click()
+
+                    z.sleep( 1 )
+                    # z.toast('操作过于频繁,模块停止运行')
+                    continue
 
                 z.sleep( 1 )
                 if d( textContains='用户不存在' ).exists:
-                    repo_not_exist_id = args['repo_not_exist_id']
-                    self.repo.uploadPhoneNumber( WXnumber,repo_not_exist_id )
-                    d( descriptionContains='清除', index=2 ).click( )
+                    para = {"phoneNumber": WXnumber, 'x_01': "notExist", 'x_07': '2000-01-01 00:00:00', 'x_19': 'CheckXunMa'}
+                    self.repo.PostInformation( cateId, para )
+                    if d( descriptionContains='清除', index=2 ).exists:
+                        d( descriptionContains='清除', index=2 ).click( )
+                    else:
+                        d(resourceId='com.tencent.mm:id/b2q',index=2).click()
                     z.sleep( 1 )
                     continue
                 if d( textContains='状态异常' ).exists:
                     repo_exception_id = args['repo_exception_id']
                     self.repo.uploadPhoneNumber( WXnumber,repo_exception_id )
-                    d( descriptionContains='清除', index=2 ).click( )
+                    if d( descriptionContains='清除', index=2 ).exists:
+                        d( descriptionContains='清除', index=2 ).click( )
+                    else:
+                        d(resourceId='com.tencent.mm:id/b2q',index=2).click()
                     z.sleep(1)
                     continue
                 z.heartbeat( )
                 if d( text='详细资料' ).exists:
-                    repo_normal_number_id = args['repo_normal_number_id']
-                    para = {"phoneNumber": WXnumber, 'x_01': "exist", 'x_02': '0','x_03': '2000-01-01 00:00:00',
-                            'x_04': '0', 'x_05': '空', 'x_06': '2000-01-01 00:00:00',
-                            'x_19': 'CheckXunMa','x_27': '0', 'x_28': '0'}
-                    self.repo.PostInformation( repo_normal_number_id, para )
+                    para = {"phoneNumber": WXnumber, 'x_01': "normalExist", 'x_07': '2000-01-01 00:00:00', 'x_19': 'CheckXunMa'}
+                    self.repo.PostInformation( cateId, para )
                     d( descriptionContains='返回' ).click( )
-                    d( descriptionContains='清除' ).click( )
+                    if d( descriptionContains='清除', index=2 ).exists:
+                        d( descriptionContains='清除', index=2 ).click( )
+                    else:
+                        d(resourceId='com.tencent.mm:id/b2q',index=2).click()
                     z.sleep( 1 )
         else:
             z.toast( '库内未使用号码大于' + args['run_lock'] + '，模块无法运行' )
@@ -119,9 +136,9 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54VSK01061")
-    z = ZDevice("HT54VSK01061")
-    z.server.install()
+    d = Device("HT4AVSK00885")
+    z = ZDevice("HT4AVSK00885")
+    # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_normal_number_id": "191", 'repo_not_exist_id': '188','repo_exception_id': '189','repo_check_frequency_id': '190',"run_lock": "500", "check_count": "100"}    #cate_id是仓库号，length是数量
+    args = {"repo_can_use_number_id": "210",'repo_exception_id': '189','repo_check_frequency_id': '190', "run_lock": "500", "check_count": "100"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
