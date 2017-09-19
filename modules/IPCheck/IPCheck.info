@@ -1,0 +1,20 @@
+{
+"id": "IPCheck",
+"cate":"其他模块",
+"name":"检测手机IP",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"IP01",
+"icon":"vcard-o",
+"remark":"检测手机IP规定时间内是否重复",
+"setting":[
+{
+    {
+    "id": "time_out",
+    "name":"超时",
+    "type":"textbox",
+    "defaultValue":"5",
+    "remark":"单位：分钟"
+    }
+]
+}

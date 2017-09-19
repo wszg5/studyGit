@@ -70,8 +70,8 @@ class Repo:
 
 
 
-    def GetNumber(self, cateId, interval, limit,status='normal',statusLock = 'YES',number = None):
-        path = "/repo_api/number/pick?status=%s&cate_id=%s&interval=%s&limit=%s&statusLock=%s&number=%s" % (status,cateId,interval,limit,statusLock,number)
+    def GetNumber(self, cateId, interval, limit,status='normal',statusLock = 'YES',number = None,name=None):
+        path = "/repo_api/number/pick?status=%s&cate_id=%s&interval=%s&limit=%s&statusLock=%s&number=%s&name=%s" % (status, cateId, interval, limit, statusLock, number, name)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
         response = conn.getresponse()
