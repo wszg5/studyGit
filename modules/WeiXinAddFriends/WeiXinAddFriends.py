@@ -24,8 +24,9 @@ class WeiXinAddFriends:
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        z.sleep(5)
+        z.sleep(8)
 
+        d(description='更多功能按钮',className='android.widget.RelativeLayout').click()
         d(description='更多功能按钮',className='android.widget.RelativeLayout').click()
         z.sleep(1)
         if d(text='添加朋友').exists:
@@ -53,11 +54,11 @@ class WeiXinAddFriends:
                     return
                 z.sleep(2)
                 if d(textContains='用户不存在').exists:
-                    d(descriptionContains='清除',index=2).click()
+                    d(resourceId='com.tencent.mm:id/b2q',index=2).click()
                     z.sleep(1)
                     continue
                 if d(textContains='状态异常').exists:
-                    d(descriptionContains='清除', index=2).click()
+                    d( resourceId='com.tencent.mm:id/b2q', index=2 ).click( )
                     continue
                 z.heartbeat()
                 gender = args['gender']
@@ -73,11 +74,11 @@ class WeiXinAddFriends:
                         print(Gender)
                         if Gender!=gender:     #看性别是否满足条件
                             d(description='返回').click()
-                            d(descriptionContains='清除').click()
+                            d( resourceId='com.tencent.mm:id/b2q', index=2 ).click( )
                             continue
                     else:
                         d(description='返回').click()
-                        d(descriptionContains='清除').click()
+                        d( resourceId='com.tencent.mm:id/b2q', index=2 ).click( )
                         continue
 
                 z.heartbeat()
@@ -95,7 +96,7 @@ class WeiXinAddFriends:
                     d(text='发送').click()
                     z.heartbeat()
                     d(descriptionContains='返回').click()
-                    d(descriptionContains='清除').click()
+                    d( resourceId='com.tencent.mm:id/b2q', index=2 ).click( )
                     z.sleep(1)
                     account = account+1
                     continue
@@ -113,8 +114,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("8HVSMZKBEQFIBQUW")
-    z = ZDevice("8HVSMZKBEQFIBQUW")
+    d = Device("HT4A1SK02114")
+    z = ZDevice("HT4A1SK02114")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_cate_id": "44", "repo_material_cate_id": "39", "add_count": "3", 'gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量

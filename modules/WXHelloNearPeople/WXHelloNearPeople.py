@@ -71,47 +71,51 @@ class WXHelloNearPeople:
             d(text='查看附近的人').click()
             z.sleep( 3 )
 
-        while True:
-            v1List1 = z.wx_userList()
-            endIndex1 = len(list(json.loads(v1List1)))
-            if endIndex1 < 20:
-                break
+        # while True:
+        #     v1List1 = z.wx_userList()
+        #     endIndex1 = len(list(json.loads(v1List1)))
+        #     if endIndex1 < 20:
+        #         break
+        #
+        #     for j in range(0, endIndex1):
+        #         v1_1 = list(json.loads(v1List1))[j]  # 将字符串改为list样式
+        #         self.repo.uploadPhoneNumber(v1_1, args['repo_number_id'])
 
-            for j in range(0, endIndex1):
-                v1_1 = list(json.loads(v1List1))[j]  # 将字符串改为list样式
-                self.repo.uploadPhoneNumber(v1_1, args['repo_number_id'])
 
-
-        d( descriptionContains='更多' ).click( )
-        if d(text='附近打招呼的人').exists:
-            d(text='附近打招呼的人').click()
-            while True:
-                HolleNearPeople = d(className='android.widget.ListView', index=0).child(className='android.view.View', index=0)
-                if HolleNearPeople.exists:
-                    HolleNearPeople.click()
-                    z.sleep(2)
-                else:
-                    d(descriptionContains='返回', className='android.widget.ImageView').click()
-                    break
-                if d(text='通过验证').exists:
-                    d(text='通过验证').click()
-                    z.sleep(2)
-                    if d( text='完成' ).exists:
-                        d( text='完成' ).click( )
-                        z.sleep( 2 )
-                    d( descriptionContains='返回', className='android.widget.ImageView' ).click( )
-                else:
-                    d(descriptionContains='返回', className='android.widget.ImageView').click()
-                    z.sleep(2)
-                    logging.info("准备长按－－－－－－－－－")
-                    if HolleNearPeople.exists:
-                        HolleNearPeople.long_click()
-                        logging.info("长按中－－－－－－－－－－－")
-                    logging.info( "长按结束－－－－－－－－－－－" )
-                    z.sleep(1.5)
-                    if d(textContains='删除').exists:
-                        d(textContains='删除').click()
-                    continue
+        # d( descriptionContains='更多' ).click( )
+        # if d(text='附近打招呼的人').exists:
+        #     d(text='附近打招呼的人').click()
+        #     while True:
+        #         HolleNearPeople = d(className='android.widget.ListView', index=0).child(className='android.view.View', index=0)
+        #         if HolleNearPeople.exists:
+        #             HolleNearPeople.click()
+        #             z.sleep(2)
+        #         else:
+        #             d(descriptionContains='返回', className='android.widget.ImageView').click()
+        #             break
+        #         if d(text='通过验证').exists:
+        #             d(text='通过验证').click()
+        #             z.sleep(2)
+        #             if d( text='完成' ).exists:
+        #                 d( text='完成' ).click( )
+        #                 z.sleep( 2 )
+        #             d( descriptionContains='返回', className='android.widget.ImageView' ).click()
+        #             z.sleep( 2 )
+        #             if HolleNearPeople.exists:
+        #                 HolleNearPeople.long_click( )
+        #             z.sleep( 1.5 )
+        #             if d( textContains='删除' ).exists:
+        #                 d( textContains='删除' ).click( )
+        #             continue
+        #         else:
+        #             d(descriptionContains='返回', className='android.widget.ImageView').click()
+        #             z.sleep(2)
+        #             if HolleNearPeople.exists:
+        #                 HolleNearPeople.long_click()
+        #             z.sleep(1.5)
+        #             if d(textContains='删除').exists:
+        #                 d(textContains='删除').click()
+        #             continue
 
         d(descriptionContains='更多').click()
         gender = args['gender']
@@ -125,15 +129,15 @@ class WXHelloNearPeople:
             d(text='查看全部').click()
             z.sleep(3)
 
-        while True:
-            v1List = z.wx_userList()
-            endIndex = len(list(json.loads(v1List)))
-            if endIndex < 20:
-                break
-
-            for a in range(0, endIndex):
-                v1 = list(json.loads(v1List))[a]  # 将字符串改为list样式
-                self.repo.uploadPhoneNumber(v1, args['repo_number_id'])
+        # while True:
+        #     v1List = z.wx_userList()
+        #     endIndex = len(list(json.loads(v1List)))
+        #     if endIndex < 20:
+        #         break
+        #
+        #     for a in range(0, endIndex):
+        #         v1 = list(json.loads(v1List))[a]  # 将字符串改为list样式
+        #         self.repo.uploadPhoneNumber(v1, args['repo_number_id'])
 
         z.sleep(8)
         i = 0
@@ -183,12 +187,11 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("36be646")
-    z = ZDevice("36be646")
+    d = Device("HT4AVSK00885")
+    z = ZDevice("HT4AVSK00885")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_material_id": "40","repo_number_id": "205", "hello_count": "10", 'gender': '女', 'run_time': "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "40","repo_number_id": "205", "hello_count": "3", 'gender': '女', 'run_time': "3"}    #cate_id是仓库号，length是数量
     o.action(d, z, args)
-
 

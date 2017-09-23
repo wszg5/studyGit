@@ -8,7 +8,6 @@
 "icon":"vcard-o",
 "remark":"检测手机IP规定时间内是否重复",
 "setting":[
-{
     {
     "id": "time_out",
     "name":"超时",
