@@ -54,6 +54,8 @@ class TIMAppointGroupPullFriends:
                 z.heartbeat( )
                 d( index=0, resourceId='com.tencent.tim:id/head', className="android.widget.ImageView" ).click( )
                 break
+        z.sleep(5)
+        z.heartbeat()
         obj = d(index=0,className="android.widget.LinearLayout").child(index=1,className="android.widget.LinearLayout").child(index=0,className="android.widget.TextView",resourceId="com.tencent.tim:id/info")
         if obj.exists:
             myAccount = obj.info["text"]      #获取自己的账号
@@ -72,8 +74,7 @@ class TIMAppointGroupPullFriends:
         repo_group_id = int( args["repo_group_id"] )  # 得到取号码的仓库号
         numbers = self.repo.GetNumber( repo_group_id, 60, 1000, "normal", "NO" )  # 取出t1条两小时内没有用过的号码
         if len( numbers ) == 0:
-            d.server.adb.cmd( "shell",
-                              "am broadcast -a com.zunyun.zime.toast --es msg \"群号码库%s号仓库中该账号对应的数据取完，等待中\"" % repo_group_id ).communicate( )
+            d.server.adb.cmd( "shell","am broadcast -a com.zunyun.zime.toast --es msg \"群号码库%s号仓库中该账号对应的数据取完，等待中\"" % repo_group_id ).communicate( )
             z.sleep( 10 )
             return
         list = numbers  # 将取出的号码保存到一个新的集合
@@ -85,46 +86,45 @@ class TIMAppointGroupPullFriends:
         z.sleep(3)
         z.heartbeat()
 
-
-        d.server.adb.cmd( "shell",
-                          'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=group&source=qrcode"' % group )  # 群页面
-        z.sleep( 2 )
-        z.heartbeat( )
-        if d( text='TIM' ).exists:
-            d( text='TIM' ).click( )
-            time.sleep( 0.5 )
-            while d( text='仅此一次' ).exists:
-                d( text='仅此一次' ).click( )
-        n = 0
-        flag = False
+        while d(text="返回",resourceId="com.tencent.tim:id/ivTitleBtnLeft").exists:
+            d( text="返回", resourceId="com.tencent.tim:id/ivTitleBtnLeft" ).click()
+            z.sleep(1)
+            z.heartbeat()
         flag2 = False
-        while (not d( text="发消息", className="android.widget.Button" ).exists and not d( text='申请加群' ).exists) or \
-                (d( text="发消息", className="android.widget.Button" ).exists and d( text="QQ电话",
-                                                                                  className="android.widget.Button" ).exists):
-            z.toast( "准备唤醒的群号为" + group )
-            d.server.adb.cmd( "shell",
-                              'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=group&source=qrcode"' % group )  # 群页面
-            z.heartbeat( )
-            z.sleep( 2 )
-            if (not d( text="发消息", className="android.widget.Button" ).exists and not d( text='申请加群' ).exists) or \
-                    (d( text="发消息", className="android.widget.Button" ).exists and d( text="QQ电话",
-                                                                                      className="android.widget.Button" ).exists):
-                if n == 4:
-                    z.toast( "唤醒不出来" )
-                    flag = True
-                    break
-                else:
-                    n = n + 1
-            else:
-                if d( text='TIM' ).exists:
-                    d( text='TIM' ).click( )
-                    time.sleep( 0.5 )
-                    while d( text='仅此一次' ).exists:
-                        d( text='仅此一次' ).click( )
+        while True:
+            if d( index=1, className='android.widget.ImageView' ).exists:
+                z.heartbeat( )
+                d( index=1, className="android.widget.FrameLayout" ).child( index=0,
+                                                                            className="android.widget.RelativeLayout" ).click( )
+            if d( text="加好友" ).exists:  # 由于网速慢或手机卡可能误点
+                d( text="加好友" ).click( )
+                z.heartbeat( )
+                d( text="返回", className="android.widget.TextView" ).click( )
+                d( index=2, className="android.widget.FrameLayout" ).child( index=0,
+                                                                            className="android.widget.RelativeLayout" ).click( )
+            z.sleep( 3 )
+            if d(index=1, description='群和多人聊天 按钮', resourceId='com.tencent.tim:id/name', className="android.widget.RelativeLayout" ).exists:
+                z.heartbeat( )
+                d( text="添加",className="com.tencent.tim:id/ivTitleBtnRightText" ).click( )
+                z.sleep(2)
+                z.heartbeat()
                 break
-        if flag:
-            z.sleep( 1 )
-            return
+        if d(text="我的群",className="android.widget.TextView").exists:
+            d( text="多人聊天", className="android.widget.TextView" ).click()
+            z.sleep(1)
+            z.heartbeat()
+        if d(text="QQ号/手机号/群").exists:
+            d( text="QQ号/手机号/群" ).click()
+            z.sleep(1)
+            z.heartbeat()
+            z.input(group)
+            z.sleep(1)
+            z.heartbeat()
+        if d(text="找群:",className="android.widget.TextView").exists:
+            d( text="找群:", className="android.widget.TextView" ).click()
+            z.sleep(2)
+            z.heartbeat()
+
         if d( text='申请加群' ).exists:
             d( text='申请加群' ).click( )
             z.sleep( 2 )
@@ -132,7 +132,7 @@ class TIMAppointGroupPullFriends:
             if d( text='申请加群' ).exists:
                 # i = i +1
                 z.toast( "无法加群" )
-                self.repo.savePhonenumberXM( group, repo_group_id, "N" )
+                # self.repo.savePhonenumberXM( group, repo_group_id, "N" )
                 return
             z.sleep( 2 )
             if d( text='发送',className="android.widget.TextView").exists:
@@ -141,7 +141,7 @@ class TIMAppointGroupPullFriends:
                 if d( text='发送',className="android.widget.TextView").exists:
                     z.toast("添加失败")
                     z.heartbeat( )
-                    self.repo.savePhonenumberXM( group, repo_group_id, "N" )
+                    # self.repo.savePhonenumberXM( group, repo_group_id, "N" )
                     return
             print( group + "发送成功" )
         elif d(text="发消息").exists:
@@ -153,45 +153,56 @@ class TIMAppointGroupPullFriends:
         z.sleep( 1 )
 
         if flag2 :
-            flag = False
-            d.server.adb.cmd( "shell",
-                              'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=group&source=qrcode"' % group )  # 群页面
-            z.sleep( 2 )
-            z.heartbeat( )
-            if d( text='TIM' ).exists:
-                d( text='TIM' ).click( )
-                time.sleep( 0.5 )
-                while d( text='仅此一次' ).exists:
-                    d( text='仅此一次' ).click( )
-            n = 0
-            flag = False
-            while (not d( text="发消息", className="android.widget.Button" ).exists and not d( text='申请加群' ).exists) :
-                z.toast( "准备唤醒的群号为" + group )
-                d.server.adb.cmd( "shell",
-                                  'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=group&source=qrcode"' % group )  # 群页面
-                z.heartbeat( )
-                z.sleep( 2 )
-                if (not d( text="发消息", className="android.widget.Button" ).exists and not d( text='申请加群' ).exists):
-                    if n == 4:
-                        z.toast( "唤醒不出来" )
-                        flag = True
-                        break
-                    else:
-                        n = n + 1
-                else:
-                    if d( text='TIM' ).exists:
-                        d( text='TIM' ).click( )
-                        time.sleep( 0.5 )
-                        while d( text='仅此一次' ).exists:
-                            d( text='仅此一次' ).click( )
-                    break
-            if flag:
-                z.sleep( 1 )
-                return
+            if d(resourceId="com.tencent.tim:id/ivTitleBtnLeft",description="返回按钮").exists:
+                d( resourceId="com.tencent.tim:id/ivTitleBtnLeft", description="返回按钮" ).click()
+                z.sleep(2)
+                z.heartbeat()
 
-        if d( text='申请加群' ).exists:
-            z.toast("没有加入该群,请稍后操作")
-            return
+            if d(text="取消",resourceId="com.tencent.tim:id/btn_cancel_search").exists:
+                d( text="取消", resourceId="com.tencent.tim:id/btn_cancel_search" ).click()
+                z.sleep(1)
+                z.heartbeat()
+            if d(text="联系人",resourceId="com.tencent.tim:id/ivTitleBtnLeft").exists:
+                d( text="联系人", resourceId="com.tencent.tim:id/ivTitleBtnLeft" ).click()
+                z.sleep(1)
+                z.heartbeat()
+            if d( index=1, description='群和多人聊天 按钮', resourceId='com.tencent.tim:id/name',
+                  className="android.widget.RelativeLayout" ).exists:
+                z.heartbeat( )
+                d( index=1, description='群和多人聊天 按钮', resourceId='com.tencent.tim:id/name',
+                   className="android.widget.RelativeLayout" ).click( )
+                z.sleep( 2 )
+                z.heartbeat( )
+            if d( text="我的群", className="android.widget.TextView" ).exists:
+                d( text="多人聊天", className="android.widget.TextView" ).click( )
+                z.sleep( 1 )
+                z.heartbeat( )
+
+            if d(text="搜索",className="android.widget.TextView").exists:
+                d( text="搜索", className="android.widget.TextView" ).click()
+                z.sleep(1)
+                z.heartbeat()
+                z.input(group)
+                if d( textContains="没有与", resourceId="com.tencent.mobileqq:id/loading",
+                      className="android.widget.TextView" ).exists:
+                    z.toast( "该群号可能不是你的群,结束运行" )
+                    self.repo.savePhonenumberXM( myAccount, repo_group_id, "N", group )
+                    return
+
+                ob =  d(index=0,className="android.widget.RelativeLayout").child(index=0,resourceId="com.tencent.tim:id/image",className="android.widget.ImageView")
+                if ob.exists:
+                    ob.click()
+                    z.sleep(1)
+                    z.heartbeat()
+                else:
+                    z.toast("该QQ群不是你加入的的群了,停止运行")
+                    self.repo.savePhonenumberXM( myAccount, repo_group_id, "N", group )
+                    return
+
+                if d(resourceId="com.tencent.tim:id/ivTitleBtnRightImage",description="群资料卡").exists:
+                    d( resourceId="com.tencent.tim:id/ivTitleBtnRightImage", description="群资料卡" ).click()
+                    z.sleep(3)
+                    z.heartbeat()
 
         obj = d( index=3, className="android.widget.LinearLayout" ).child( description='邀请新成员',
                                                                            className="android.widget.ImageView" )  # 点不到这个，莫名其妙
@@ -230,7 +241,7 @@ class TIMAppointGroupPullFriends:
         while True:
             # obj = d(index=3,className="android.widget.LinearLayout").child(description='邀请新成员',className="android.widget.ImageView")
             repo_qq_id = int( args["repo_qq_id"] )  # 得到取号码的仓库号
-            qq = self.repo.GetNumber( repo_qq_id, 60, 1, "normal", "NO",myAccount.encode( 'utf-8' )  )  # 取出t1条两小时内没有用过的号码
+            qq = self.repo.GetNumber( repo_qq_id, 60, 1, "normal", "NO",None,myAccount.encode( 'utf-8' )  )  # 取出t1条两小时内没有用过的号码
             if len( qq ) == 0:
                 d.server.adb.cmd( "shell",
                                   "am broadcast -a com.zunyun.zime.toast --es msg \"群号码库%s号仓库为空，等待中\"" % repo_qq_id ).communicate( )
@@ -310,8 +321,8 @@ class TIMAppointGroupPullFriends:
             z.heartbeat( )
             if d( textContains="完成", resourceId="com.tencent.tim:id/ivTitleBtnRightText" ).exists:
                 z.toast( "无法拉好友入群" )
-                self.repo.savePhonenumberXM( group, repo_group_id, "N", myAccount )
-            self.repo.savePhonenumberXM( group, repo_group_id, "Y", myAccount )
+                self.repo.savePhonenumberXM( myAccount, repo_group_id, "N", group )
+            self.repo.savePhonenumberXM( myAccount, repo_group_id, "Y", group )
             z.sleep( 1 )
             z.heartbeat( )
             # self.repo.savePhonenumberXM( QQnumber, repo_qq_id, "Y", myAccount )
@@ -332,6 +343,17 @@ if __name__ == "__main__":
     z = ZDevice("HT524SK00685")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_qq_id":"234","repo_group_id":"239","totalNumber":"5","time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_qq_id":"246","repo_group_id":"239","totalNumber":"5","time_delay":"3"}    #cate_id是仓库号，length是数量
     o.action(d, z,args)
-
+    # numbers = Repo().GetNumber( "239", 60, 1000, "normal", "NO" )
+    # if len( numbers ) == 0:
+    #     d.server.adb.cmd( "shell",
+    #                       "am broadcast -a com.zunyun.zime.toast --es msg \"群号码库%s号仓库中该账号对应的数据取完，等待中\"" % "239" ).communicate( )
+    #     z.sleep( 10 )
+    # list = numbers  # 将取出的号码保存到一个新的集合
+    # # print( list )
+    # # z.sleep(15)
+    # num = random.randint( 0, len( list ) - 1 )
+    # group = list[num]['number']
+    # print( group )
+    # z.sleep( 3 )

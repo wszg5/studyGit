@@ -48,15 +48,6 @@ class AlipayCheckNormalNum:
             d( resourceId='com.ali.user.mobile.security.ui:id/loginButton' ).click( )
             z.sleep( 3 )
 
-        if d( text='忘记密码？' ).exists:
-            d( text='忘记密码？' ).click( )
-
-        while not d( text='找回登录密码' ).exists:
-            z.toast( "等待页面出现" )
-            d.dump( compressed=False )
-            z.sleep( 3 )
-        z.sleep(5)
-
         while True:
             number_count = 1  # 每次取一个号码
             exist_numbers = self.repo.GetNumber( repo_number_id, 0, number_count, 'exist' )
@@ -71,16 +62,27 @@ class AlipayCheckNormalNum:
                                   "am broadcast -a com.zunyun.zime.toast --es msg \"电话号码%s号仓库为空，等待中\"" % repo_number_id ).communicate( )
                 break
 
-            if d(className='android.widget.EditText', index=0).exists:
-                d( className='android.widget.EditText', index=0 ).click( )
-                z.input( PhoneNumber )
+            if d( resourceId='com.ali.user.mobile.security.ui:id/userAccountInput' ).exists:
+                d( resourceId='com.ali.user.mobile.security.ui:id/userAccountInput' ).click( )
+            z.input( PhoneNumber )
+
+            if d( text='忘记密码？' ).exists:
+                d( text='忘记密码？' ).click( )
+
+            while not d( text='找回登录密码' ).exists:
+                z.toast( "等待页面出现" )
+                d.dump( compressed=False )
+                z.sleep( 3 )
+                if d(text='加载失败').exists:
+                    d( resourceId='com.alipay.mobile.nebula:id/h5_lv_nav_back_loading' ).click( )
+                    break
+            z.sleep( 5 )
 
             if d( description='下一步' ).exists:
                 d( description='下一步' ).click( )
 
             z.sleep( 3 )
             if d( description='能', className='android.widget.Button' ).exists:
-                d( resourceId='com.alipay.mobile.nebula:id/h5_lv_nav_back_loading' ).click( )
                 self.repo.uploadPhoneNumber( PhoneNumber, repo_normal_id, "N" )
             elif d( text='确认' ).exists:
                 d( text='确认' ).click( )
@@ -88,13 +90,12 @@ class AlipayCheckNormalNum:
             else:
                 self.repo.uploadPhoneNumber( PhoneNumber, repo_not_exist_id, "N" )
             z.toast( "入库成功" )
-            d( className='android.widget.EditText', index=0 ).click( )
-            d( description='清空输入框', className='android.view.View' ).click( )
-
-
+            d( resourceId='com.alipay.mobile.nebula:id/h5_lv_nav_back_loading' ).click( )
+            d( className='android.widget.EditText',resourceId='com.ali.user.mobile.security.ui:id/content').click( )
+            d( description='清空输入内容', resourceId='com.ali.user.mobile.security.ui:id/clearButton').click( )
 
         if (args["time_delay"]):
-            z.sleep(int(args["time_delay"]))
+            z.sleep( int( args["time_delay"] ) )
 
 
 def getPluginClass():

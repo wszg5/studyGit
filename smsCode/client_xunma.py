@@ -182,7 +182,6 @@ class client_xunma:
             time.sleep(3)
             if i==20:
                 self.GetAllWebSms()
-
             code = self.GetCode(number, itemId, length)
             if code is not None:
                 return code

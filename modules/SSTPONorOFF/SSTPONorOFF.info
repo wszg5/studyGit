@@ -1,0 +1,19 @@
+{
+"id": "SSTPONorOFF",
+"cate":"其他模块",
+"name":"一号通开关切换IP",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"SSTP-01",
+"icon":"vcard-o",
+"remark":"一号通开关切换IP",
+"setting":[
+    {
+    "id": "time_delay",
+    "name":"开关间隔时间",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

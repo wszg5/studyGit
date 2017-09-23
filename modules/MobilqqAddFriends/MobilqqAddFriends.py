@@ -47,18 +47,10 @@ class MobilqqAddFriends:
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         z.sleep(5)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
-        loginStatusList = z.qq_getLoginStatus( d )
         if loginStatusList is None:
             z.toast( "登陆新场景，现无法判断登陆状态" )
             return
         loginStatus = loginStatusList['success']
-        if loginStatus:
-<<<<<<< HEAD
-=======
         if d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists:  # 到了通讯录这步后看号有没有被冻结
 >>>>>>> fc75ece82dfa7a15da2e8ec009f8387c3a7d2a50
 =======

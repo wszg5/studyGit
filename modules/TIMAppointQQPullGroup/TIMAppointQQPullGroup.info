@@ -10,7 +10,7 @@
 "setting":[
 	{
 	"id": "repo_group_id",
-	"name":"群号-QQ号",
+	"name":"QQ号-群号",
 	"type":"repo",
 	"source":"number",
 	"top_cate_id":"27"

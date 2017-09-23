@@ -139,7 +139,7 @@ class MobilqqLogin:
                 j += 1
                 PhoneNumber = self.scode.GetPhoneNumber( self.scode.QQ_CONTACT_BIND )  # 获取接码平台手机号码
                 z.heartbeat( )
-                if j == 1:
+                if j == 2:
                     z.toast( '取不到手机号码' )
                     if (args["time_delay"]):
                         z.sleep( int( args["time_delay"] ) )
@@ -343,7 +343,8 @@ class MobilqqLogin:
         loginStatusList = z.qq_getLoginStatus( d )
         if loginStatusList is None:
             z.toast( "登陆新场景，现无法判断登陆状态" )
-            return None
+            loginStatusList = {'success': False}
+
         loginStatus = loginStatusList['success']
         if loginStatus:
             z.toast( "卡槽QQ状态正常，继续执行" )
@@ -406,10 +407,15 @@ class MobilqqLogin:
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         z.sleep(2)
         z.heartbeat()
+        flag = 0
+        if d( textContains='身份过期' ).exists:
+            flag = 1
+
         loginStatusList = z.qq_getLoginStatus( d )
         if loginStatusList is None:
             z.toast( "登陆新场景，现无法判断登陆状态" )
-            return None
+            loginStatusList = {'success': False}
+
         loginStatus = loginStatusList['success']
         if loginStatus:
             z.toast( "卡槽QQ状态正常，继续执行" )
@@ -418,7 +424,10 @@ class MobilqqLogin:
             remark = obj['remark']
             remarkArr = remark.split( "_" )
             QQnumber = remarkArr[1]
-            self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+            if flag == 1:
+                self.repo.BackupInfo( cate_id, 'normal', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+            else:
+                self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
             self.slot.clear( slotnum )  # 清空改卡槽，并补登
             z.toast( "卡槽QQ状态异常，补登陆卡槽" )
             self.action( d, z, args )
@@ -497,10 +506,15 @@ class MobilqqLogin:
 
             z.sleep(2)
             z.heartbeat()
+            flag = 0
+            if d( textContains='身份过期' ).exists:
+                flag = 1
+
             loginStatusList = z.qq_getLoginStatus( d )
             if loginStatusList is None:
                 z.toast( "登陆新场景，现无法判断登陆状态" )
-                return None
+                loginStatusList = {'success': False}
+
             loginStatus = loginStatusList['success']
             if loginStatus:
                 z.toast( "卡槽QQ状态正常，继续执行" )
@@ -509,7 +523,10 @@ class MobilqqLogin:
                 remark = obj['remark']
                 remarkArr = remark.split( "_" )
                 QQnumber = remarkArr[1]
-                self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+                if flag == 1:
+                    self.repo.BackupInfo( cate_id, 'normal', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+                else:
+                    self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
                 self.slot.clear( slotnum )  # 清空改卡槽，并补登
                 z.toast( "卡槽QQ状态异常，补登陆卡槽" )
                 self.action( d, z, args )
@@ -566,12 +583,13 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT524SK00685")
-    z = ZDevice("HT524SK00685")
+    d = Device("HT53ASK01833")
+    z = ZDevice("HT53ASK01833")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "132", "time_limit": "120", "time_limit1": "120", "time_delay": "3"};    #cate_id是仓库号，length是数量
     # z.server.install( )
-    o.action(d, z, args)
+    # o.action(d, z, args)
+    o.BindAddressBook(z,d,args)
 
     # z.server.install()
     # z.generate_serial( "com.tencent.mobileqq" )

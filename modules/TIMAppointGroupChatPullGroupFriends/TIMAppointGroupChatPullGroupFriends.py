@@ -59,6 +59,8 @@ class TIMAppointGroupChatPullGroupFriends:
                 z.heartbeat( )
                 d( index=0, resourceId='com.tencent.tim:id/head', className="android.widget.ImageView" ).click( )
                 break
+        z.sleep( 5 )
+        z.heartbeat( )
         obj = d(index=0,className="android.widget.LinearLayout").child(index=1,className="android.widget.LinearLayout").child(index=0,className="android.widget.TextView",resourceId="com.tencent.tim:id/info")
         if obj.exists:
             myAccount = obj.info["text"]      #获取自己的账号
@@ -201,7 +203,7 @@ class TIMAppointGroupChatPullGroupFriends:
             # obj = d(index=3,className="android.widget.LinearLayout").child(description='邀请新成员',className="android.widget.ImageView")
 
             repo_qq_id = int( args["repo_qq_id"] )  # 得到取号码的仓库号
-            qq = self.repo.GetNumber( repo_qq_id, 60, 1, "normal", "NO", groupNumber )  # 取出t1条两小时内没有用过的号码
+            qq = self.repo.GetNumber( repo_qq_id, 60, 1, "normal", "NO",None, groupNumber )  # 取出t1条两小时内没有用过的号码
             if len( qq ) == 0:
                 d.server.adb.cmd( "shell",
                                   "am broadcast -a com.zunyun.zime.toast --es msg \"群号码库%s号仓库账号为%s没有数据可以再取出来，等待中\"" % repo_qq_id,myAccount.encode( 'utf-8' ) ).communicate( )
@@ -279,7 +281,7 @@ class TIMAppointGroupChatPullGroupFriends:
             if d( textContains="没有与", resourceId="com.tencent.tim:id/loading",
                   className="android.widget.TextView" ).exists:
                 z.toast( "该群号可能不是你的群" )
-                self.repo.savePhonenumberXM( groupNumber, repo_qq_id, "N", myAccount )
+                self.repo.savePhonenumberXM( myAccount, repo_qq_id, "N", groupNumber )
                 # i = i + 1
                 groupNumber = self.getGroupNumber(args,myAccount)
                 objText = d( index=0, className="android.widget.RelativeLayout" ).child(
@@ -320,9 +322,9 @@ class TIMAppointGroupChatPullGroupFriends:
             z.heartbeat( )
             if d( textContains="完成", resourceId="com.tencent.tim:id/ivTitleBtnRightText" ).exists:
                 z.toast( "无法拉好友入群聊,停止模块" )
-                self.repo.savePhonenumberXM( groupNumber, repo_group_id, "N", myAccount )
+                self.repo.savePhonenumberXM( myAccount, repo_group_id, "N", groupNumber )
                 return
-            self.repo.savePhonenumberXM( groupNumber, repo_group_id, "Y", myAccount )
+            self.repo.savePhonenumberXM( myAccount, repo_group_id, "Y", groupNumber )
             z.sleep( 1 )
             z.heartbeat( )
 
@@ -370,7 +372,7 @@ class TIMAppointGroupChatPullGroupFriends:
         # z.sleep(15)
         z.sleep( 1 )
         z.heartbeat( )
-        groupNumber = group[0]['number']
+        groupNumber = group[0]['name']
         print( groupNumber )
         return groupNumber
 def getPluginClass():

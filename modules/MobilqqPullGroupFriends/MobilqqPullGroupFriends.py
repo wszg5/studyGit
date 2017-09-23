@@ -68,7 +68,8 @@ class MobilqqPullGroupFriends:
                 d(text="返回",className="android.widget.TextView").click()
                 d( index=2, className="android.widget.FrameLayout" ).child( index=0,className="android.widget.RelativeLayout" ).click( )
             z.sleep( 3 )
-
+        z.sleep(5)
+        z.heartbeat()
         objText =  d(index=0,className="android.widget.LinearLayout").child(index=0,className="android.widget.LinearLayout").child(index=1,className="android.widget.TextView",resourceId="com.tencent.mobileqq:id/info")
         if objText.exists:
             myAccount = objText.info["text"]
@@ -78,6 +79,16 @@ class MobilqqPullGroupFriends:
         else:
             z.toast( "获取不到自己的账号" )
             return
+
+        if d(text="返回",resourceId="com.tencent.mobileqq:id/ivTitleBtnLeft").exists:
+            d( text="返回", resourceId="com.tencent.mobileqq:id/ivTitleBtnLeft" ).click()
+            z.sleep(1)
+            z.heartbeat()
+
+        if d(description="返回按钮",className="android.view.View").exists:
+            d( description="返回按钮", className="android.view.View" ).click()
+            z.sleep(1)
+            z.heartbeat()
 
         repo_appoint_group_id = int( args["repo_appoint_group_id"] )  # 得到取号码的仓库号
         numbers = self.repo.GetNumber( repo_appoint_group_id, 60, 1000, "normal", "NO")  # 取出t1条两小时内没有用过的号码
@@ -94,47 +105,26 @@ class MobilqqPullGroupFriends:
         print( group )
         z.sleep( 2 )
         z.heartbeat( )
-        z.toast( "准备唤醒的群号为" + group )
-        d.server.adb.cmd( "shell",'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=group&source=qrcode"' % group )  # 群页面
-        z.sleep( 2 )
-        z.heartbeat( )
-        if d( text='QQ' ).exists:
-            d( text='QQ' ).click( )
-            time.sleep( 0.5 )
-            while d( text='仅此一次' ).exists:
-                d( text='仅此一次' ).click( )
-        n = 0
-        flag = False
-        while (not d( text="发消息", className="android.widget.Button" ).exists and not d( text='申请加群' ).exists) or d( text="编辑资料",className="android.widget.Button" ).exists:
-            z.toast( "准备唤醒的群号为" + group )
-            d.server.adb.cmd( "shell",'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=group&source=qrcode"' % group )  # 群页面
-            z.heartbeat( )
-            z.sleep( 2 )
-            if d( text='QQ' ).exists:
-                d( text='QQ' ).click( )
-                time.sleep( 0.5 )
-                while d( text='仅此一次' ).exists:
-                    d( text='仅此一次' ).click( )
-                break
-            if (not d( text="发消息", className="android.widget.Button" ).exists and not d( text='申请加群' ).exists) or d( text="编辑资料",className="android.widget.Button" ).exists:
-                if n == 4:
-                    z.toast( "唤醒不出来" )
-                    flag = True
-                    break
-                else:
-                    n = n + 1
-            else:
-                if d( text='QQ' ).exists:
-                    d( text='QQ' ).click( )
-                    time.sleep( 0.5 )
-                    while d( text='仅此一次' ).exists:
-                        d( text='仅此一次' ).click( )
-                break
-        if flag:
-            z.sleep( 1 )
-            return
 
-        flag2 = False
+        if d(description="快捷入口",className="android.widget.ImageView").exists:
+            d( description="快捷入口", className="android.widget.ImageView" ).click()
+            z.sleep(1)
+            z.heartbeat()
+            if d(text="加好友/群").exists:
+                d( text="加好友/群" ).click()
+                z.sleep(1)
+                z.heartbeat()
+            if d(text="QQ号/手机号/群/公众号").exists:
+                d( text="QQ号/手机号/群/公众号" ).click()
+                z.sleep(1)
+                z.heartbeat()
+                z.input(group)
+                z.sleep(1)
+                if d(text="找群",className="android.widget.TextView").exists:
+                    d( text="找群", className="android.widget.TextView" ).click()
+                    z.sleep(5)
+                    z.heartbeat()
+
         if d(text="申请加群").exists:
             d(text="申请加群").click()
             z.sleep(3)
@@ -157,48 +147,6 @@ class MobilqqPullGroupFriends:
             z.heartbeat()
         elif d( text="发消息", className="android.widget.Button" ).exists:
             pass
-        else:
-            z.toast( "准备唤醒的群号为" + group )
-            d.server.adb.cmd( "shell",
-                              'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=group&source=qrcode"' % group )  # 群页面
-            z.sleep( 2 )
-            z.heartbeat( )
-            if d( text='QQ' ).exists:
-                d( text='QQ' ).click( )
-                time.sleep( 0.5 )
-                while d( text='仅此一次' ).exists:
-                    d( text='仅此一次' ).click( )
-            n = 0
-            flag = False
-            while (not d( text="发消息", className="android.widget.Button" ).exists and not d( text='申请加群' ).exists) :
-                z.toast( "准备唤醒的群号为" + group )
-                d.server.adb.cmd( "shell",
-                                  'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=group&source=qrcode"' % group )  # 群页面
-                z.heartbeat( )
-                z.sleep( 2 )
-                if d( text='QQ' ).exists:
-                    d( text='QQ' ).click( )
-                    time.sleep( 0.5 )
-                    while d( text='仅此一次' ).exists:
-                        d( text='仅此一次' ).click( )
-                    break
-                if (not d( text="发消息", className="android.widget.Button" ).exists and not d( text='申请加群' ).exists):
-                    if n == 4:
-                        z.toast( "唤醒不出来" )
-                        flag = True
-                        break
-                    else:
-                        n = n + 1
-                else:
-                    if d( text='QQ' ).exists:
-                        d( text='QQ' ).click( )
-                        time.sleep( 0.5 )
-                        while d( text='仅此一次' ).exists:
-                            d( text='仅此一次' ).click( )
-                    break
-            if flag:
-                z.sleep( 1 )
-                return
         if d(text="申请加群").exists:
             z.toast("还没有加入该群,请等待")
             return
@@ -244,7 +192,7 @@ class MobilqqPullGroupFriends:
             # obj = d(index=3,className="android.widget.LinearLayout").child(description='邀请新成员',className="android.widget.ImageView")
 
             repo_qq_id = int( args["repo_qq_id"] )  # 得到取号码的仓库号
-            qq = self.repo.GetNumber( repo_qq_id, 60, 1, "normal", "NO", groupNumber )  # 取出t1条两小时内没有用过的号码
+            qq = self.repo.GetNumber( repo_qq_id, 60, 1, "normal", "NO",None, groupNumber )  # 取出t1条两小时内没有用过的号码
             if len( qq ) == 0:
                 # d.server.adb.cmd( "shell",
                 #                   "am broadcast -a com.zunyun.zime.toast --es msg \"群号码库%s号仓库账号为%s没有数据可以再取出来，等待中\"" % repo_qq_id,myAccount.encode( 'utf-8' ) ).communicate( )
@@ -255,7 +203,7 @@ class MobilqqPullGroupFriends:
                     z.sleep(1)
                     z.heartbeat()
                     groupNumber = self.getGroupNumber( args, myAccount )
-                    qq = self.repo.GetNumber( repo_qq_id, 60, 1, "normal", "NO", groupNumber )  # 取出t1条两小时内没有用过的号码
+                    qq = self.repo.GetNumber( repo_qq_id, 60, 1, "normal", "NO",None, groupNumber )  # 取出t1条两小时内没有用过的号码
                     if len( qq ) == 0:
                         z.toast( "该群已经没有数据可取出来了" )
                         return
@@ -415,3 +363,6 @@ if __name__ == "__main__":
 
     args = {"repo_qq_id":"235","repo_group_id":"233","repo_appoint_group_id":"239","totalNumber":"25","time_delay":"3"}    #cate_id是仓库号，length是数量
     o.action(d, z,args)
+    #
+    # Repo().savePhonenumberXM( "605228889", "239", "N" )
+    # z.sleep(1)

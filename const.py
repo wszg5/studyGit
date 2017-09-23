@@ -15,7 +15,6 @@ class _const:
       filename = os.path.join(base_dir, 'libs/chinese.txt')
       allText = open(filename).read()
       chars = list(allText.decode('utf8'))
-      print(chars[5])
       news_chars = []
       for id in chars:
           if id not in news_chars:
@@ -31,9 +30,9 @@ const.RETHINKDB_NAME = 'stf'
 const.REPO_API_IP = '192.168.1.51'
 const.REDIS_SERVER = '192.168.1.11'
 const.MAX_SLOTS_TIM=10
-const.MAX_SLOTS_WECHAT=20
+const.MAX_SLOTS_WECHAT=3
 const.MAX_SLOTS_MOBILEQQ=10
-const.MAX_SLOTS_QQLITE=6
+const.MAX_SLOTS_QQLITE=1
 const.MAX_SLOTS_EIM=20
 const.MAX_SLOTS_TOKEN=201
 const.CHINESE_ARRAY = const.loadChinese()
