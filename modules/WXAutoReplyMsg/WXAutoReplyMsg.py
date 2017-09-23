@@ -52,14 +52,19 @@ class WXAutoReplyMsg:
         j = 0
         while True:
             i = i + 1
-            nearObj = d(className='android.widget.ListView', index=0).child(className='android.widget.LinearLayout', index=i).child(
-                className='android.widget.RelativeLayout',index=0).child(className='android.widget.TextView', index=1)
-            if nearObj.exists:
+            nearObj = d(className='android.widget.RelativeLayout', index=0).child(className='android.widget.TextView',resourceId='com.tencent.mm:id/i4', index=1)
+            newNearObj = d(className='android.widget.RelativeLayout',index=0).child(className='android.widget.TextView', resourceId='com.tencent.mm:id/ie', index=1)
+            if nearObj.exists or newNearObj.exists:
                 if j > int(args['reply_count']):
                     break
-                nearObj.click()
+                if nearObj.exists:
+                    nearObj.click()
+                else:
+                    newNearObj.click()
                 z.sleep(1.5)
                 for i in range( 0, msg_count ):
+                    if d( textContains='(', resourceId='com.tencent.mm:id/gh' ).exists:
+                        break
                     cate_id = args["repo_material_id"]
                     Material = self.repo.GetMaterial( cate_id, 0, 1 )
                     if len(Material) == 0:
@@ -68,7 +73,10 @@ class WXAutoReplyMsg:
                         z.sleep(10)
                         return
                     message = Material[0]['content']  # 取出发送消息的内容
-                    d(className='android.widget.EditText').click()
+                    if d(className='android.widget.EditText').exists:
+                        d(className='android.widget.EditText').click()
+                    else:
+                        break
                     z.input(message)
                     z.sleep(1)
                     d(text='发送').click()
@@ -83,6 +91,7 @@ class WXAutoReplyMsg:
             else:
                 if i > 20:
                     break
+                z.sleep(10)
                 continue
 
         now = datetime.datetime.now( )
@@ -100,10 +109,10 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("36be646")
-    z = ZDevice("36be646")
+    d = Device("HT4A1SK02114")
+    z = ZDevice("HT4A1SK02114")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_material_id": "200", "msg_count": "1","reply_count": "3", "run_time": "1"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "207", "msg_count": "1","reply_count": "3", "run_time": "1"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

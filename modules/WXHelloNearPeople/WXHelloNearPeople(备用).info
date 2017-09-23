@@ -15,11 +15,18 @@
 	"source":"material",
 	"top_cate_id":"12"
 	},
+	{
+	"id": "repo_number_id",
+	"name":"v1值存放库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"23"
+	},
     {
 	"id": "hello_count",
 	"name":"打招呼次数",
 	"type":"textbox",
-	"defaultValue":"3",
+	"defaultValue":"8",
 	"remark":"单位：次"
 	},
 	{

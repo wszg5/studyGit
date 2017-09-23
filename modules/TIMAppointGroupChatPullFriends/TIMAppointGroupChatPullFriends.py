@@ -102,15 +102,33 @@ class TIMAppointGroupChatPullFriends:
         x = 0
         groupNumber = args["groupNumber"]
         while x < groupNumber:
-            nowTime = datetime.datetime.now( ).strftime( "%Y%m%d%H%M%S" )
+            nowTime = datetime.datetime.now( ).strftime( "%Y%m%d%H%M%S" )   #当前时间
             totalList = self.repo.GetInformation( repo_information_id, myAccount )
             if len( totalList ) == 0:
                 z.toast( "%s仓库%s账号可数据为空" % (repo_information_id, myAccount) )
                 return
-            thisTime = totalList[0]["x04"]
-            thisTime = self.getTimeSecond(thisTime)
+            address = totalList[0]["phone_number"]
+            address = address.encode( 'utf-8' )
+            useCount = int( totalList[0]["x03"] )
+            thisTime = totalList[0]["x04"]  # 仓库中数据：时间
+            if useCount >= 5 :
+                if thisTime==None:
+                    para = {"phoneNumber": address, 'x_01': myAccount,
+                            'x_03': "5", 'x_04': nowTime}
+                    self.repo.PostInformation( repo_information_id, para )
+                    continue
+                thisTime = self.getTimeSecond(thisTime)
+                nowTime = self.getTimeSecond(nowTime)
+                if nowTime - thisTime >=4*60*60:
+                    para = {"phoneNumber": address, 'x_01': myAccount,
+                            'x_03': "0", 'x_04': ""}
+                    self.repo.PostInformation( repo_information_id, para )
+                else:
+                    continue
 
-            address = totalList[0]["x02"][1:]
+
+
+            address = totalList[0]["x02"]
             address = address.encode( 'utf-8' )
             print(address)
             d.server.adb.cmd( "shell", 'am start -a android.intent.action.VIEW -d "%s"' % address )
@@ -379,16 +397,9 @@ if __name__ == "__main__":
 
     args = {"repo_qq_id":"234","totalNumber":"10","time_delay":"3","groupNumber":"5","repo_information_id":"253"}    #cate_id是仓库号，length是数量
     # o.action(d, z,args)
-    nowTime = datetime.datetime.now( ).strftime( "%Y%m%d%H%M%S" )
-    timeY = nowTime[6:8]
-    timeH = nowTime[8:10]
-    timem = nowTime[10:12]
-    timem = nowTime[12:]
-    print(nowTime)
-    z.sleep(1)
-    # cateId = "253"
-    # # para = {"phoneNumber": "4558512844", 'x_01': "M1", 'x_02': "www.baidu.com",
-    # #         'x_03': "0", 'x_04': '', 'x_05': '3', 'x_06': ''}
-    # # Repo().PostInformation( cateId, para )
-    # totalList = Repo().GetInformation( cateId )
-    # print(totalList)
+    cateId = "253"
+    # para = {"phoneNumber": "4558512844", 'x_01': "M1", 'x_02': "www.baidu.com",
+    #         'x_03': "0", 'x_04': '', 'x_05': '3', 'x_06': ''}
+    # Repo().PostInformation( cateId, para )
+    totalList = Repo().GetInformation( cateId )
+    print(totalList)

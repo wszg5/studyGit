@@ -6,10 +6,10 @@
 "version": "1.0",
 "code":"WX20",
 "icon": "vcard-o",
-"remark":"微信版本，6.5.4",
+"remark":"微信版本，6.5.13",
 "setting":[
 	{
-	"id": "repo_number_id1",
+	"id": "repo_number_id",
 	"name":"号码库分类",
 	"type":"repo",
 	"source":"number",

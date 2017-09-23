@@ -10,7 +10,7 @@ class WeiXinSentMoments:
         self.repo = Repo()
 
 
-    def action(self, d,z, args):
+    def action(self, d, z, args):
         z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
@@ -25,8 +25,9 @@ class WeiXinSentMoments:
 
         z.heartbeat()
         z.wx_sendtextsns(message)
-        z.input('.')
-        d.press.delete()
+        z.sleep(3)
+        # z.input('.')
+        # d.press.delete()
         d(text='发送').click()
         z.heartbeat()
         if (args["time_delay"]):
@@ -42,12 +43,12 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
+    d = Device("HT4A1SK02114")
+    z = ZDevice("HT4A1SK02114")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_material_id": "48","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "257","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
 

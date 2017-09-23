@@ -58,7 +58,11 @@ class WXAssignSearchHello:
             z.heartbeat( )
             z.sleep( 3 )
             if d( textContains='联系人' ).exists or d( textContains='最常使用' ).exists:
-                d( textContains='微信号:' ).click( )
+                if d(textContains='微信号:').exists:
+                    d( textContains='微信号:' ).click( )
+                else:
+                    d(resourceId='com.tencent.mm:id/jp').click()
+
                 z.sleep( 1 )
                 for i in range( 0, msg_count ):
                     cate_id = args["repo_material_id"]
@@ -72,14 +76,14 @@ class WXAssignSearchHello:
                     d( className='android.widget.EditText' ).click( )
                     z.input( message )
                     z.sleep( 1 )
-                    d( text='发送' ).click( )
+                    d( text='发送' ).click()
                     z.sleep( 5 )
                 d( descriptionContains='返回' ).click( )
-                z.sleep( 1 )
+                z.sleep(1)
                 d( descriptionContains='清除' ).click( )
             else:
                 d( descriptionContains='清除' ).click( )
-                z.sleep( 1.5 )
+                z.sleep(1.5)
 
         now = datetime.datetime.now( )
         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
@@ -96,9 +100,9 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54VSK01061")
-    z = ZDevice("HT54VSK01061")
+    d = Device("HT4A1SK02114")
+    z = ZDevice("HT4A1SK02114")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_number_id": "44", "repo_material_id": "39","msg_count": "1", "get_number": "10", "run_time":"1"}    #cate_id是仓库号，length是数量
+    args = {"repo_number_id": "254", "repo_material_id": "39","msg_count": "1", "get_number": "10", "run_time":"1"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)

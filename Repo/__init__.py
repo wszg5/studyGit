@@ -75,6 +75,20 @@ class Repo:
             return  numbers
         else:
             return []
+
+    def GetTIMInfomation(self, cateId,PhonrNumber,x_key,x_vlaue):    #TIM模块从治疗库获取数据
+        path = "/repo_api/TIMInformation/getInfoByNumAndX?cate_id=%s&PhonrNumber=%s&x_key=%s&x_vlaue=%s" % (cateId,PhonrNumber,x_key,x_vlaue)
+        print('地址是%s'%path)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
+        response = conn.getresponse()
+        if response.status == 200:
+            data = response.read()
+            numbers = json.loads(data)
+            return  numbers
+        else:
+            return []
+
     def GetWXRegisterPhoneNumber(self, cateId):    #微信注册从治疗库获取手机号码
         path = "/repo_api/WXInformation/getPhoneNumber?cate_id=%s" % (cateId)
         print('地址是%s'%path)
