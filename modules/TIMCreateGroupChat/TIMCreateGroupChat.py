@@ -224,8 +224,8 @@ class TIMCreateGroupChat:
                 print( text )
                 z.sleep( 1 )
                 nowTime = datetime.datetime.now( ).strftime( "%Y%m%d%H%M%S" )
-                para = {"phoneNumber": text, 'x_01': name, 'x_02': myAccount,
-                        'x_03': "0",'x_04': "", 'x_05': '3', 'x_06': ''}
+                para = {"phoneNumber": text, 'x_01': myAccount, 'x_02': name,
+                        'x_03': "0",'x_05': '3'}
                 self.repo.PostInformation( repo_address_id, para )
                 z.sleep( 1 )
             if n > totalNumber:
@@ -293,7 +293,7 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"repo_qq_id":"246","totalNumber":"3","time_delay":"3","name":"男","repo_address_id":"253"}    #cate_id是仓库号，length是数量
-    # o.action(d, z,args)
+    o.action(d, z,args)
     # z.cmd( "shell",'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"' % "http://url.cn/58E2Yuz#flyticket" )
     # Repo().uploadPhoneNumber( "448856030", 188 )
     # d.server.adb.cmd( "shell",
@@ -310,9 +310,9 @@ if __name__ == "__main__":
     # a = a.replace("#","%23")
     # print ahttp://url.cn/5A2br6W#flyticket
     # z.sleep(1)http://url.cn/5A2br6W#flyticket
-    para = {"phoneNumber": "http://url.cn/5A2br6W#flyticket","x_01":"44558544"}
-    Repo().PostInformation( "253", para )
-    z.sleep(1)
+    # para = {"phoneNumber": "http://url.cn/5A2br6W#flyticket1","x_20":"455455456"}
+    # Repo().PostInformation( "253", para )
+    # z.sleep(1)
 
 
 

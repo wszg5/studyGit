@@ -26,6 +26,28 @@ class Repo:
             print ("发布失败\^0^/")
             # 关闭连接
         conn.close();
+
+
+    def GetTIMInfomation(self, cateId,data):    #TIM模块从治疗库获取数据
+        data["cateId"] = cateId
+        path = "/repo_api/TIMInformation/getInfoByNumAndX"
+        headers = {"Content-Type": "application/x-www-form-urlencoded",
+                   "Connection": "Keep-Alive"};
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        params = urllib.urlencode( data )
+        conn.request(method="POST", url=path, body=params, headers=headers)
+        response = conn.getresponse()
+
+        if response.status == 200:
+            data = response.read()
+            numbers = json.loads(data)
+            return  numbers
+        else:
+            return []
+
+
+
+
     def PostStatus(self,cateId,status,Number):           #仓库号，状态，QQ号，备注设备id_卡槽id
         path = "/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s" % (cateId,status,Number)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
@@ -76,18 +98,18 @@ class Repo:
         else:
             return []
 
-    def GetTIMInfomation(self, cateId,PhonrNumber,x_key,x_vlaue):    #TIM模块从治疗库获取数据
-        path = "/repo_api/TIMInformation/getInfoByNumAndX?cate_id=%s&PhonrNumber=%s&x_key=%s&x_vlaue=%s" % (cateId,PhonrNumber,x_key,x_vlaue)
-        print('地址是%s'%path)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET", path)
-        response = conn.getresponse()
-        if response.status == 200:
-            data = response.read()
-            numbers = json.loads(data)
-            return  numbers
-        else:
-            return []
+    # def GetTIMInfomation(self, cateId,PhonrNumber,x_key,x_vlaue):    #TIM模块从治疗库获取数据
+    #     path = "/repo_api/TIMInformation/getInfoByNumAndX?cate_id=%s&PhonrNumber=%s&x_key=%s&x_vlaue=%s" % (cateId,PhonrNumber,x_key,x_vlaue)
+    #     print('地址是%s'%path)
+    #     conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+    #     conn.request("GET", path)
+    #     response = conn.getresponse()
+    #     if response.status == 200:
+    #         data = response.read()
+    #         numbers = json.loads(data)
+    #         return  numbers
+    #     else:
+    #         return []
 
     def GetWXRegisterPhoneNumber(self, cateId):    #微信注册从治疗库获取手机号码
         path = "/repo_api/WXInformation/getPhoneNumber?cate_id=%s" % (cateId)

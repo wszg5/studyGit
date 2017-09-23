@@ -100,7 +100,10 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_material_id": "258",'set_time':'3',"time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
-
+    # repo = Repo()
+    # para = {"PhoneNumber": "http://url.cn/5A2br6W#flyticket", "x_key": "x_01", "x_value": "448856030"}
+    # list = repo.GetTIMInfomation("253",para)
+    # print(list)
 
 
 

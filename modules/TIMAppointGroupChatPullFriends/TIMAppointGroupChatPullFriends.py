@@ -391,15 +391,19 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT524SK00685")
-    z = ZDevice("HT524SK00685")
+    d = Device("HT49YSK00272")
+    z = ZDevice("HT49YSK00272")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"repo_qq_id":"234","totalNumber":"10","time_delay":"3","groupNumber":"5","repo_information_id":"253"}    #cate_id是仓库号，length是数量
     # o.action(d, z,args)
-    cateId = "253"
+    # cateId = "253"
     # para = {"phoneNumber": "4558512844", 'x_01': "M1", 'x_02': "www.baidu.com",
     #         'x_03': "0", 'x_04': '', 'x_05': '3', 'x_06': ''}
     # Repo().PostInformation( cateId, para )
-    totalList = Repo().GetInformation( cateId )
-    print(totalList)
+    # totalList = Repo().GetInformation( cateId )
+    # print(totalList)
+    para = {"x_01": "448805793"}
+    x = Repo( ).GetTIMInfomation( "253", para )
+    print x
+    z.sleep(1)
