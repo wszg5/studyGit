@@ -16,10 +16,24 @@
     "top_cate_id":"27"
     },
     {
-	"id": "totalNumber",
-	"name":"拉好友次数",
+    "id": "repo_information_id",
+    "name":"群聊地址",
+    "type":"repo",
+    "source":"information",
+    "top_cate_id":"4"
+    },
+    {
+	"id": "groupNumber",
+	"name":"拉群聊个数",
 	"type":"textbox",
-	"defaultValue":"100",
+	"defaultValue":"5",
+	"remark":"单位：个"
+	},
+    {
+	"id": "totalNumber",
+	"name":"每个群聊拉好友个数",
+	"type":"textbox",
+	"defaultValue":"15",
 	"remark":"单位：个"
 	},
     {

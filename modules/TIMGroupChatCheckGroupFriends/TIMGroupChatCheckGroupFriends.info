@@ -4,20 +4,27 @@
 "name":"TIM群聊检存群聊成员",
 "url": "http://www.bejson.com",
 "version": "1.1",
-"code":"TIM-CGC1.0",
+"code":"TIM-GCCGF1.0",
 "icon": "vcard-o",
 "remark":"TIM群聊检存群聊成员",
 "setting":[
 	{
-    "id": "repo_qq_id",
-    "name":"QQ好友号-QQ号",
+    "id": "repo_info_id",
+    "name":"群聊地址",
     "type":"repo",
-    "source":"number",
-    "top_cate_id":"27"
+    "source":"information",
+    "top_cate_id":"4"
+    },
+    {
+    "id": "repo_group_id",
+    "name":"群聊地址含群聊成员",
+    "type":"repo",
+    "source":"information",
+    "top_cate_id":"4"
     },
     {
 	"id": "totalNumber",
-	"name":"创建群聊个数",
+	"name":"检存群聊个数",
 	"type":"textbox",
 	"defaultValue":"10 ",
 	"remark":"单位：个"
@@ -29,13 +36,6 @@
     "type":"textbox",
     "defaultValue":"3",
     "remark":"单位：秒"
-    },
-    {
-	"id": "name",
-	"name":"命名规则",
-	"type":"select",
-	"list":{"男":"男","女":"女","不限":"不限"},
-	"defaultValue":"男"
-	}
+    }
 ]
 }

@@ -44,6 +44,7 @@ class TIMCreateGroupChat:
         width = str1["displayWidth"]
         totalNumber = int( args['totalNumber'] )  # 要给多少人发消息
         repo_address_id = args["repo_address_id"]
+        n = 0
         while True:
             if d( index=1, className='android.widget.ImageView' ).exists:
                 z.heartbeat( )
@@ -85,8 +86,8 @@ class TIMCreateGroupChat:
             nameGender = "W"
         else:
             nameGender = "B"
-        n = 0
         repo_qq_id = args["repo_qq_id"]
+        x = 0
         while n < totalNumber:
             if d( index=0, resourceId="com.tencent.tim:id/ivTitleBtnRightImage",
                   className="android.widget.ImageView" ).exists:
@@ -99,9 +100,12 @@ class TIMCreateGroupChat:
                 z.sleep( 1 )
                 z.heartbeat( )
             while num<2:
-                QQnumber = self.getFriends(z,repo_qq_id,myAccount)
+                QQnumber = self.getFriends(z,repo_qq_id,myAccount,x)
                 if not QQnumber:
                     return
+                if QQnumber == "x":
+                    x = 0
+                    QQnumber = self.getFriends( z, repo_qq_id, myAccount, x )
                 if d(text="搜索",className="android.widget.EditText").exists:
                     d( text="搜索", className="android.widget.EditText" ).click()
                     z.sleep(1)
@@ -121,10 +125,11 @@ class TIMCreateGroupChat:
                             while m < lenth:
                                 d.press.delete( )
                                 m = m + 1
+                            x = x + 1
                             continue
                     if d(text="已选择",className="android.widget.TextView").exists:
                         z.toast("已选择")
-                        self.repo.savePhonenumberXM( QQnumber, repo_qq_id, "Y", myAccount )
+                        # self.repo.savePhonenumberXM( QQnumber, repo_qq_id, "Y", myAccount )
                         objText = d( index=0, className="android.widget.RelativeLayout" ).child(
                             className="android.widget.EditText" )
                         if objText.exists:
@@ -134,6 +139,7 @@ class TIMCreateGroupChat:
                             while m < lenth:
                                 d.press.delete( )
                                 m = m + 1
+                            x = x + 1
                             continue
 
                     # obj = d( index=0, className="android.widget.AbsListView" ).child( index=1,className="android.widget.RelativeLayout",resourceId="com.tencent.tim:id/group_item_layout" )
@@ -144,8 +150,9 @@ class TIMCreateGroupChat:
                         # if obj.exists:
                         #     obj.click( )
                         z.heartbeat( )
-                        self.repo.savePhonenumberXM( QQnumber, repo_qq_id, "Y", myAccount )
+                        # self.repo.savePhonenumberXM( QQnumber, repo_qq_id, "Y", myAccount )
                         num = num + 1
+                        x = x + 1
 
             if d(textContains="发起",resourceId="com.tencent.tim:id/ivTitleBtnRightText").exists:
                 z.heartbeat()
@@ -203,7 +210,14 @@ class TIMCreateGroupChat:
                 z.sleep( 1 )
                 obj.long_click( )
                 z.sleep( 1 )
-                d.click( 79/540 * width, 695/888 * height)
+                d.click( 66 / 720 * width, 1084 / 1280 * height )
+                d.dump( compressed=False )
+                obj2 = obj.info["text"].encode( 'utf-8' )
+                if obj2 == "":
+                    z.sleep( 1 )
+                    obj.long_click( )
+                    z.sleep( 1 )
+                    d.click( 79/540 * width, 695/888 * height)
                 z.sleep(1)
                 z.heartbeat()
             if d( text="发送", resourceId="com.tencent.tim:id/fun_btn" ).exists:
@@ -225,7 +239,7 @@ class TIMCreateGroupChat:
                 z.sleep( 1 )
                 nowTime = datetime.datetime.now( ).strftime( "%Y%m%d%H%M%S" )
                 para = {"phoneNumber": text, 'x_01': myAccount, 'x_02': name,
-                        'x_03': "0",'x_05': '3'}
+                        'x_03': "0",'x_05': '3','x_06': 'normal'}
                 self.repo.PostInformation( repo_address_id, para )
                 z.sleep( 1 )
             if n > totalNumber:
@@ -261,8 +275,8 @@ class TIMCreateGroupChat:
                 break
 
 
-    def getFriends(self,z,repo_qq_id,myAccount):
-        qq = self.repo.GetNumber( repo_qq_id, 60, 1, "normal", "NO", None,
+    def getFriends(self,z,repo_qq_id,myAccount,x):
+        qq = self.repo.GetNumber( repo_qq_id, 60, 1000, "normal", "NO", None,
                                   myAccount.encode( 'utf-8' ) )  # 取出t1条两小时内没有用过的号码
         if len( qq ) == 0:
             # d.server.adb.cmd( "shell","am broadcast -a com.zunyun.zime.toast --es msg \"群号码库%s号仓库为空，等待中\"" % repo_qq_id ).communicate( )
@@ -273,8 +287,14 @@ class TIMCreateGroupChat:
         # z.sleep(15)
         z.sleep(1)
         z.heartbeat( )
-        QQnumber = qq[0]['number']
-        print( QQnumber )
+        # num = random.randint(0,len(qq)-1)
+        if x<=len(qq)-1:
+            QQnumber = qq[x]['number']
+        else:
+            x = 0
+            QQnumber = qq[x]['number']
+            print(QQnumber)
+            return "x"
         return QQnumber
 
 
@@ -288,11 +308,11 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT524SK00685")
-    z = ZDevice("HT524SK00685")
+    d = Device("cda0ae8d")
+    z = ZDevice("cda0ae8d")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_qq_id":"246","totalNumber":"3","time_delay":"3","name":"男","repo_address_id":"253"}    #cate_id是仓库号，length是数量
+    args = {"repo_qq_id":"246","totalNumber":"10","time_delay":"3","name":"男","repo_address_id":"253"}    #cate_id是仓库号，length是数量
     o.action(d, z,args)
     # z.cmd( "shell",'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"' % "http://url.cn/58E2Yuz#flyticket" )
     # Repo().uploadPhoneNumber( "448856030", 188 )
@@ -313,6 +333,26 @@ if __name__ == "__main__":
     # para = {"phoneNumber": "http://url.cn/5A2br6W#flyticket1","x_20":"455455456"}
     # Repo().PostInformation( "253", para )
     # z.sleep(1)
+
+    # str1 = d.info  # 获取屏幕大小等信息
+    # height = str1["displayHeight"]
+    # width = str1["displayWidth"]
+    #
+    #
+    #
+    # obj = d( text="发送", resourceId="com.tencent.tim:id/fun_btn" ).left( index=0, resourceId="com.tencent.tim:id/input",
+    #                                                                     className="android.widget.EditText" )
+    # if obj.exists:
+    #     # obj.click( )
+    #     obj2 = obj.info["text"].encode('utf-8')
+    #     if obj2=="":
+    #         obj2 = ""
+    #     z.sleep( 1 )
+    #     obj.long_click( )
+    #     z.sleep( 1 )
+    #     d.click( 66 / 720 * width, 1084 / 1280 * height )
+    #     z.sleep( 1 )
+    #     z.heartbeat( )
 
 
 

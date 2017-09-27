@@ -384,12 +384,10 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"repo_group_id":"249","repo_qq_id":"248","totalNumber":"12","time_delay":"3"}    #cate_id是仓库号，length是数量
-    o.action(d, z,args)
+    # o.action(d, z,args)
     # Repo( ).savePhonenumberXM( "605228889", "239", "normal","1" )
     # z.sleep( 1 )
-    # z.cmd( "shell",
-    #        'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"' % "448835272" )  # qq名片页面
-    # z.sleep(1)
+
     # count = count + 1
     # Repo().savePhonenumberXM(QQnumber,"248","normal",count)
     # Repo( ).savePhonenumberXM( count, "246", "Y", QQnumber )

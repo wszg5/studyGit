@@ -113,6 +113,14 @@ class TIMGroupSendText:
                 d( text="发消息" ).click()
                 z.sleep(2)
                 z.heartbeat()
+                if d( text="我知道了" ).exists:
+                    d( text="我知道了" ).click( )
+                    z.sleep( 1 )
+                    z.heartbeat( )
+                    if d( text="我知道了" ).exists:
+                        d( text="我知道了" ).click( )
+                        z.sleep( 1 )
+                        z.heartbeat( )
                 obj = d( text="发送", resourceId="com.tencent.tim:id/fun_btn" ).left( index=0,resourceId="com.tencent.tim:id/input",className="android.widget.EditText" )
                 if obj.exists:
                     obj.click( )

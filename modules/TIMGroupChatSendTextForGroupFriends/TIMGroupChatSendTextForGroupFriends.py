@@ -8,6 +8,14 @@ class TIMGroupChatSendTextForGroupFriends:
     def __init__(self):
         self.repo = Repo()
 
+    def getTimeSecond(self, thisTime):
+        thistimeD = int( thisTime[6:8] )
+        thistimeH = int( thisTime[8:10] )
+        thistimeM = int( thisTime[10:12] )
+        thistimeS = int( thisTime[12:] )
+        second = thistimeD * 24 * 60 * 60 + thistimeH * 60 * 60 + thistimeM * 60 + thistimeS
+        return second
+
     def action(self, d,z, args):
         z.toast( "TIM群聊发消息" )
         z.toast( "正在ping网络是否通畅" )
@@ -80,51 +88,122 @@ class TIMGroupChatSendTextForGroupFriends:
             return
         message = Material[0]['content']
         n = 0
-        group_number = int(args["group_number"])
+        # group_number = int(args["group_number"])
         while n<totalNumber:
-            totalList = self.repo.GetInformation( repo_group_id, myAccount )
-            if len( totalList ) == 0:
-                z.toast( "%s仓库%s账号可数据为空" % (repo_group_id, myAccount) )
-                return
-            address = totalList[0]["x02"][1:]
-            address = address.encode( 'utf-8' )
-            print( address )
-            d.server.adb.cmd( "shell", 'am start -a android.intent.action.VIEW -d "%s"'%address )
-            z.sleep(3)
-            if d(text="仅此一次").exists:
-                d(text="仅此一次" ).click()
-                z.sleep(2)
-                z.heartbeat()
-            if d(text="打开",className="android.widget.TextView").exists:
-                d( text="打开", className="android.widget.TextView" ).click()
-                z.sleep(2)
-                z.heartbeat()
+            nowTime = datetime.datetime.now( ).strftime( "%Y%m%d%H%M%S" )  # 当前时间
 
-            if d(text="TIM").exists:
-                d(text="TIM" ).click()
-                z.sleep(2)
-                z.heartbeat()
-                if d( text="仅此一次" ).exists:
+            para = {"x_key": "", "x_value": ""}
+            totalList = Repo( ).GetTIMInfomation( repo_group_id, para )
+
+            if len( totalList ) == 0:
+                z.toast( "%s仓库可用数据为空" % repo_group_id )
+                return
+            num = random.randint( 0, len( totalList ) - 1 )
+            address = totalList[num]["phonenumber"]
+            address = address.encode( 'utf-8' )
+            name = totalList[num]["x02"]
+            if totalList[num]["x03"] == None:
+                useCount = 0
+            else:
+                useCount = int( totalList[num]["x03"] )
+            thisTime = totalList[num]["x04"]  # 仓库中数据：时间
+            if useCount >= 5:
+                if thisTime == None:
+                    para = {"phoneNumber": address, 'x_01': myAccount,
+                            'x_03': useCount, 'x_04': nowTime}
+                    z.toast( "该地址已被超过五人使用,3小时候后才可被使用" )
+                    self.repo.PostInformation( repo_group_id, para )
+                    continue
+                thisTime = self.getTimeSecond( thisTime )
+                nowTime = self.getTimeSecond( nowTime )
+                if nowTime - thisTime >= 3 * 60 * 60:
+                    para = {"phoneNumber": address, 'x_01': myAccount,
+                            'x_03': "0"}
+                    self.repo.PostInformation( repo_group_id, para )
+                else:
+                    continue
+            print(address)
+            d.server.adb.cmd( "shell", 'am start -a android.intent.action.VIEW -d "%s"' % address )
+            z.sleep( 2 )
+            a = 0
+            while not d( text="加入多人聊天", className="android.widget.Button" ).exists:
+                if d( text="UC浏览器", className="android.widget.TextView" ).exists:
+                    d( text="UC浏览器", className="android.widget.TextView" ).click( )
+                    z.sleep( 5 )
+                if d( text="仅此一次" ).exists and (not d( text="TIM" ).exists):
                     d( text="仅此一次" ).click( )
                     z.sleep( 2 )
                     z.heartbeat( )
-
-            if d(text="加入多人聊天",className="android.widget.Button").exists:
-                d( text="加入多人聊天",className="android.widget.Button").click()
-                z.sleep(2)
-                z.heartbeat()
-                z.input(message)
-                z.sleep(2)
-            x = 0
-            while x<group_number:
-                totalList = self.repo.GetInformation( repo_group_id, myAccount )
-                if len( totalList ) == 0:
-                    z.toast( "%s仓库%s账号可数据为空" % (repo_group_id, myAccount) )
+                if d( text="打开", className="android.widget.TextView" ).exists:
+                    d( text="打开", className="android.widget.TextView" ).click( )
+                    z.sleep( 3 )
+                    z.heartbeat( )
+                if d( text="始终允许", className="android.widget.TextView" ).exists:
+                    d( text="始终允许", className="android.widget.TextView" ).click( )
+                    z.sleep( 2 )
+                    z.heartbeat( )
+                if d( text="TIM" ).exists:
+                    d( text="TIM" ).click( )
+                    z.sleep( 2 )
+                    z.heartbeat( )
+                    if d( text="仅此一次" ).exists:
+                        d( text="仅此一次" ).click( )
+                        z.sleep( 2 )
+                        z.heartbeat( )
+                a = a + 1
+                if a == 4:
+                    z.toast( "浏览器加载不出来" )
                     return
-                address = totalList[0]["x02"][1:]
+
+            if d( text="加入多人聊天", className="android.widget.Button" ).exists:
+                d( text="加入多人聊天", className="android.widget.Button" ).click( )
+                z.sleep( 2 )
+                z.heartbeat( )
+            else:
+                z.toast( "浏览器加载不出来" )
+                return
+            x = 0
+            y = 0
+            while True:
+
+                nowTime = datetime.datetime.now( ).strftime( "%Y%m%d%H%M%S" )  # 当前时间
+                para = {"phoneNumber":address,"x_key": "x_02", "x_value": name}
+                totalList = Repo( ).GetTIMInfomation( repo_group_id, para )
+                if len( totalList ) == 0:
+                    z.toast( "%s仓库可用数据为空" % repo_group_id )
+                    break
+                if y == len(totalList):
+                    para = {"phoneNumber": address, 'x_01': myAccount,"x_20":number,
+                            'x_03': useCount + 1}
+                    self.repo.PostInformation( repo_group_id, para )
+                    break
+                # num = random.randint( 0, len( totalList ) - 1 )
+                address = totalList[y]["phonenumber"]
                 address = address.encode( 'utf-8' )
+                if totalList[y]["x03"] == None:
+                    useCount = 0
+                else:
+                    useCount = int( totalList[y]["x03"] )
+                thisTime = totalList[y]["x04"]  # 仓库中数据：时间
+                if useCount >= 5:
+                    if thisTime == None:
+                        para = {"phoneNumber": address, 'x_01': myAccount,
+                                'x_03': useCount, 'x_04': nowTime}
+                        z.toast( "该地址已被超过五人使用,3小时候后才可被使用" )
+                        self.repo.PostInformation( repo_group_id, para )
+                        y = y + 1
+                        continue
+                    thisTime = self.getTimeSecond( thisTime )
+                    nowTime = self.getTimeSecond( nowTime )
+                    if nowTime - thisTime >= 3 * 60 * 60:
+                        para = {"phoneNumber": address, 'x_01': myAccount,
+                                'x_03': "0"}
+                        self.repo.PostInformation( repo_group_id, para )
+                    else:
+                        y = y + 1
+                        continue
                 print(address)
-                number = totalList[0]["x05"]
+                number = totalList[0]["x20"]
                 if d(description="QQ电话",resourceId="com.tencent.tim:id/ivTitleBtnRightCall").exists:
                     d( description="QQ电话", resourceId="com.tencent.tim:id/ivTitleBtnRightCall" ).click()
                     z.sleep(1)
@@ -163,7 +242,7 @@ class TIMGroupChatSendTextForGroupFriends:
                 if d( text="发送", resourceId="com.tencent.tim:id/fun_btn" ).exists:
                     d( text="发送", resourceId="com.tencent.tim:id/fun_btn" ).click( )
                     z.sleep( 1 )
-                    n = n + 1
+                    y = y + 1
                 if d(resourceId="com.tencent.tim:id/ivTitleBtnLeft",text="返回").exists:
                     d( resourceId="com.tencent.tim:id/ivTitleBtnLeft", text="返回" ).click()
                     z.sleep(1)
@@ -171,7 +250,7 @@ class TIMGroupChatSendTextForGroupFriends:
                     d( resourceId="com.tencent.tim:id/ib_clear_text", description="清空" ).click( )
                     z.sleep( 1 )
                     z.heartbeat( )
-
+            n = n + 1
         z.toast("模块完成")
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
@@ -189,18 +268,10 @@ if __name__ == "__main__":
     z = ZDevice("HT524SK00685")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_meg_id":"40","repo_group_id":"253","totalNumber":"5","time_delay":"3","group_number":"10"}    #cate_id是仓库号，length是数量
+    args = {"repo_meg_id":"40","repo_group_id":"256","totalNumber":"5","time_delay":"3","group_number":"10"}    #cate_id是仓库号，length是数量
     o.action(d, z,args)
-    # repo_group_id = args["repo_group_id"]
-    # myAccount = "448856030"
-    # totalList = Repo().GetInformation( repo_group_id, myAccount )
-    # if len( totalList ) == 0:
-    #     z.toast( "%s仓库%s账号可数据为空" % (repo_group_id, myAccount) )
-    # address = totalList[0]["x02"][1:]
-    # address = address.encode( 'utf-8' )
-    # print( address )
-    # # d.server.adb.cmd( "shell", "am start -a android.intent.action.VIEW -d 'http://url.cn/58E2Yuz#flyticket'" )
+    #
+    # para = {"phoneNumber": "http://url.cn/5AfooBi#flyticket", "x_key": "x_02", "x_value": "M8"}
+    # totalList = Repo( ).GetTIMInfomation( "253", para )
+    # x = Repo().GetInformation("253","http://url.cn/5AfooBi#flyticket")
     # z.sleep(1)
-    # print("am start -a android.intent.action.VIEW -d '%s'" %address)
-    # d.server.adb.cmd( "shell", "am start -a android.intent.action.VIEW -d 'http://url.cn/5Br4GP2#flyticket'" )
-    # z.sleep( 1 )
