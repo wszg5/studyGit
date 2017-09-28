@@ -48,8 +48,13 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
+<<<<<<< HEAD
+    d = Device("HT53ASK00088")
+    z = ZDevice("HT53ASK00088")
+=======
     d = Device("9ef40375")
     z = ZDevice("9ef40375")
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d(className='android.widget.EditText').set_text('2375714387@qq.com')

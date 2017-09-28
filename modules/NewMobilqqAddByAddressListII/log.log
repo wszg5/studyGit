@@ -419,7 +419,16 @@
 [2017-08-01 12:08:37] [INFO] 收到消息：MSG&7581&17165434996&【腾讯科技】7928 (手机QQ短信验证码，正在启用通讯录功能。为了保证帐号安全，请勿向他人泄漏。如非本人操作，请忽略。）[End]
 [2017-08-01 12:08:37] [INFO] 切分消息：MSG&7581&17165434996&【腾讯科技】7928 (手机QQ短信验证码，正在启用通讯录功能。为了保证帐号安全，请勿向他人泄漏。如非本人操作，请忽略。）
 [2017-08-01 12:08:37] [INFO] KEY: verify_code_7581_17165434996, Code: 7928
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
 [2017-08-03 10:22:35] [INFO] UNKNOW ACTIVITY:   ACTIVITY com.tencent.mobileqq/.activity.phone.BindNumberActivity 4273e4a0 pid=9555
 
 [2017-08-03 10:22:57] [INFO] UNKNOW ACTIVITY:   ACTIVITY com.tencent.mobileqq/.activity.phone.BindNumberActivity 4273e4a0 pid=9555
 
+<<<<<<< HEAD
+=======
+>>>>>>> fc75ece82dfa7a15da2e8ec009f8387c3a7d2a50
+=======
+>>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16

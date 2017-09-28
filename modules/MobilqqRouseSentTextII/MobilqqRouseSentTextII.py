@@ -10,8 +10,10 @@ class MobilqqRouseSentTextII:
 
     def action(self, d,z, args):
         z.heartbeat()
-        d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
-        d.server.adb.cmd("shell",  "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
+        d.server.adb.cmd( "shell", "am force-stop com.tencent.mobileqq" ).communicate( )  # 强制停止
+        d.server.adb.cmd( "shell",
+                          "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
+        z.sleep( 8 )
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
 
         cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
@@ -38,8 +40,7 @@ class MobilqqRouseSentTextII:
             QQnumber = list[i]['number']
             z.sleep(1)
             z.heartbeat()
-            d.server.adb.cmd("shell",
-                             'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=crm\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % QQnumber)  # 临时会话
+            d.server.adb.cmd("shell",'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=crm\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % QQnumber)  # 临时会话
             z.sleep(2)
             z.heartbeat()
             if d(text='QQ').exists:
@@ -77,8 +78,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT52ESK00321")
-    z = ZDevice("HT52ESK00321")
+    d = Device("HT54VSK01061")
+    z = ZDevice("HT54VSK01061")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","totalNumber":"20","time_delay":"3"};    #cate_id是仓库号，length是数量
 

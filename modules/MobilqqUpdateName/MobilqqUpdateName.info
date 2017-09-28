@@ -1,0 +1,26 @@
+{
+"id": "QQUpdateName",
+"cate":"QQ模块",
+"name":"修改QQ昵称(关键词)",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQ-UN-1.1",
+"icon": "vcard-o",
+"remark":"修改QQ昵称(关键词)",
+"setting":[
+{
+	"id": "repo_key_word",
+	"name":"关键字",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "repo_name_id",
+	"name":"QQ修改昵称仓库号",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	}
+]
+}

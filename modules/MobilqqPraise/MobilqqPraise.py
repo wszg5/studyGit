@@ -7,7 +7,6 @@ import re
 class MobilqqPraise:
     def __init__(self):
         self.repo = Repo()
-
     def action(self, d,z,args):
         z.toast( "正在ping网络是否通畅" )
         z.heartbeat( )
@@ -28,7 +27,6 @@ class MobilqqPraise:
         z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
-
         loginStatusList = z.qq_getLoginStatus( d )
         if loginStatusList is None:
             z.toast( "登陆新场景，现无法判断登陆状态" )
@@ -39,12 +37,9 @@ class MobilqqPraise:
         else:
             z.toast( "卡槽QQ状态异常，跳过此模块" )
             return
-
         z.sleep(8)
-
         add_count = int(args['add_count'])  # 要添加多少人
         repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
-
         z.heartbeat()
         t = 0
         tect = 0
@@ -79,7 +74,6 @@ class MobilqqPraise:
                             z.sleep(1)
                             allnum1 = d(descriptionContains='赞').info['contentDescription']
                             allnum1 = re.findall(r'\d', allnum1)
-
                             # print(allnum1)
                             if allnum==allnum1 and k==0:
                                 if tect==1:
@@ -100,14 +94,11 @@ class MobilqqPraise:
                 break
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
-
-
 def getPluginClass():
     import sys
     reload(sys)
     sys.setdefaultencoding('utf8')
     return MobilqqPraise
-
 if __name__ == "__main__":
     import sys
     reload(sys)
@@ -118,5 +109,4 @@ if __name__ == "__main__":
     z = ZDevice("cda0ae8d")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_cate_id":"119","add_count":"16","time_delay":"3"};    #cate_id是仓库号，length是数量
-
     o.action(d,z, args)

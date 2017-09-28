@@ -30,6 +30,9 @@ class MobilqqLogin:
         W_H = width / height
         screenScale = round( W_H, 2 )
 
+        W_H = width / height
+        screenScale = round( W_H, 2 )
+
         base_dir = os.path.abspath( os.path.join( os.path.dirname( __file__ ), os.path.pardir, "tmp" ) )
         if not os.path.isdir( base_dir ):
             os.mkdir( base_dir )
@@ -45,6 +48,11 @@ class MobilqqLogin:
             top = 490
             right = 210
             bottom = 510
+
+        left = width * 7 / 135  # 验证码的位置信息
+        top = height * 245 / 444
+        right = width * 51 / 54
+        bottom = height * 275 / 444
 
 
         d.screenshot( sourcePng )  # 截取整个输入验证码时的屏幕
@@ -157,6 +165,7 @@ class MobilqqLogin:
                 d(text='下一步').click()
                 z.sleep(3)
 
+            e = 0
             while d( text='正在发送请求' ).exists:
                 z.sleep( 2 )
             z.sleep(10)
@@ -221,6 +230,8 @@ class MobilqqLogin:
                           "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
         while d( textContains='正在更新数据' ).exists:
             z.sleep( 2 )
+
+        z.sleep( 6 )
         z.sleep(20)
         z.heartbeat( )
         d.dump(compressed=False)
@@ -243,6 +254,7 @@ class MobilqqLogin:
         z.sleep(1)
         while d(text='登录中').exists:
             z.sleep(2)
+        z.sleep(30)
         z.sleep(20)
         z.heartbeat()
         detection_robot = d(index='3', className="android.widget.EditText")
@@ -316,6 +328,15 @@ class MobilqqLogin:
             else:
                 z.toast( "是空白页" )
                 return "nothing"
+
+        z.sleep(20)
+        z.heartbeat()
+
+        z.toast( "强制停止，拉起" )
+        d.server.adb.cmd( "shell", "am force-stop com.tencent.mobileqq" ).communicate( )  # 强制停止
+        z.sleep( 1 )
+        d.server.adb.cmd( "shell",
+                          "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
 
         z.sleep(5)
         z.heartbeat()

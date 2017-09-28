@@ -1,0 +1,54 @@
+[2017-07-02 16:58:31] [INFO] itemcode_2251
+[2017-07-02 16:58:31] [INFO] token_4NVOjAmRANMimgZR3mUHdqHGsdCew178
+[2017-07-02 16:58:51] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 80, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 557, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+gaierror: [Errno -3] Temporary failure in name resolution
+
+[2017-07-02 16:58:51] [INFO] itemcode_2251
+[2017-07-02 16:58:51] [INFO] token_4NVOjAmRANMimgZR3mUHdqHGsdCew178
+[2017-07-02 16:59:02] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-07-02 17:00:09] [INFO] itemcode_2251
+[2017-07-02 17:00:09] [INFO] token_4NVOjAmRANMimgZR3mUHdqHGsdCew178
+[2017-07-02 17:00:09] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-07-02 17:00:14] [INFO] itemcode_2251
+[2017-07-02 17:00:14] [INFO] token_NFqVyoFlvouUNQJFg58XfabFwdPh5v54
+[2017-07-02 17:00:16] [INFO] ===XUNMA RESTURN:17084163469;
+[2017-07-02 17:03:30] [INFO] itemcode_2251
+[2017-07-02 17:03:30] [INFO] token_NFqVyoFlvouUNQJFg58XfabFwdPh5v54
+[2017-07-02 17:03:30] [INFO] ===XUNMA RESTURN:17085163734;
+[2017-07-02 17:07:25] [INFO] itemcode_2251
+[2017-07-02 17:07:25] [INFO] token_NFqVyoFlvouUNQJFg58XfabFwdPh5v54
+[2017-07-02 17:07:41] [INFO] ===XUNMA RESTURN:13270711724;
+[2017-07-02 17:12:18] [INFO] itemcode_2251
+[2017-07-02 17:12:18] [INFO] token_NFqVyoFlvouUNQJFg58XfabFwdPh5v54
+[2017-07-02 17:12:23] [INFO] ===XUNMA RESTURN:13094702189;
+[2017-07-02 17:18:04] [INFO] itemcode_2251
+[2017-07-02 17:18:04] [INFO] token_NFqVyoFlvouUNQJFg58XfabFwdPh5v54
+[2017-07-02 17:18:04] [INFO] ===XUNMA RESTURN:15889224238;
+[2017-07-02 17:48:46] [INFO] itemcode_2251
+[2017-07-02 17:48:46] [INFO] token_NFqVyoFlvouUNQJFg58XfabFwdPh5v54
+[2017-07-02 17:48:46] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-07-02 17:48:50] [INFO] itemcode_2251
+[2017-07-02 17:48:50] [INFO] token_SmA0JoqgUM3mRhgzNzbWH5mr5xQiM957
+[2017-07-02 17:48:50] [INFO] ===XUNMA RESTURN:15544728280;
+[2017-07-02 17:50:59] [INFO] itemcode_2251
+[2017-07-02 17:50:59] [INFO] token_SmA0JoqgUM3mRhgzNzbWH5mr5xQiM957
+[2017-07-02 17:50:59] [INFO] ===XUNMA RESTURN:17159164201;
+[2017-07-02 17:52:48] [INFO] itemcode_2251
+[2017-07-02 17:52:48] [INFO] token_SmA0JoqgUM3mRhgzNzbWH5mr5xQiM957
+[2017-07-02 17:52:48] [INFO] ===XUNMA RESTURN:17085166034;

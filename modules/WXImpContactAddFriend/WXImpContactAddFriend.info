@@ -1,10 +1,19 @@
 {
+<<<<<<< HEAD
+    "id": "WXImpContact",
+    "cate":"微信模块",
+    "name": "导入系统通讯录(微信专用)",
+    "url": "http://www.bejson.com",
+    "version": "1.1",
+    "code": "WX-T-02",
+=======
     "id": "WXImpContactAddFriend",
     "cate":"微信模块",
     "name": "微信通讯录加好友+导入（尊云专用）",
     "url": "http://www.bejson.com",
     "version": "1.1",
     "code": "WX-D-T2",
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
     "icon":"vcard-o",
     "remark": "导入系统通讯录(微信专用)",
     "setting": [
@@ -20,7 +29,11 @@
 	"name":"运行该模块的时间间隔",
 	"type":"textbox",
 	"defaultValue":"3",
+<<<<<<< HEAD
+	"remark":"单位：分钟"
+=======
 	"remark":"单位：小时"
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
 	},
 	{
 	"id": "number_count",
@@ -33,10 +46,17 @@
 	"id": "import_time_delay",
 	"name":"导入号码结束延时",
 	"type":"textbox",
+<<<<<<< HEAD
+	"defaultValue":"3",
+	"remark":"单位：秒"
+	},
+		{
+=======
 	"defaultValue":"30",
 	"remark":"单位：秒"
 	},
 	{
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
 	"id": "repo_material_id",
 	"name":"发送验证消息仓库",
 	"type":"repo",
@@ -62,6 +82,19 @@
 	"id": "EndIndex",
 	"name":"加好友数目（双向）",
 	"type":"textbox",
+<<<<<<< HEAD
+	"defaultValue":"4",
+	"remark":"单位：个"
+	},
+   {
+    "id": "time_delay",
+    "name":"加完好友结束延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+    ]
+=======
 	"defaultValue":"3",
 	"remark":"单位：个"
 	},
@@ -73,4 +106,5 @@
     "remark":"单位：秒"
     }
   ]
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
 }

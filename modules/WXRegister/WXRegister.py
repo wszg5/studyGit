@@ -58,11 +58,13 @@ class WeiXinRegister:
             name = Material[0]['content']  # 从素材库取出的要发的材料
             z.input(name)       #name
 
-            if not d(text='中国').exists:
-                d(text='国家/地区').click()
-                d(className='android.support.v7.widget.LinearLayoutCompat', index=1).click()
-                z.input('中')
-                d(text='中国').click()
+
+            if not d( text='中国' ).exists:
+                d( text='国家/地区' ).click( )
+                d( className='android.support.v7.widget.LinearLayoutCompat', index=1 ).click( )
+                z.input( '中' )
+                d( text='中国' ).click( )
+
 
             d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout', index=2).child(
                 className='android.widget.EditText', index=1).click()
@@ -83,6 +85,7 @@ class WeiXinRegister:
             number = numbers[0]['phonenumber']
 
             PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER,number)#获取接码平台手机号码
+            # PhoneNumber = '13829507040'
 
 
             if PhoneNumber is None:
@@ -112,6 +115,7 @@ class WeiXinRegister:
                 d( text='确定' ).click()
                 break
 
+
             if d(textContains='相同手机号不可频繁重复注册微信帐号').exists:
                 para = {"phoneNumber": PhoneNumber, 'x_03': nowTime, 'x_19': 'WXRegister'}
                 self.repo.PostInformation( saveCate, para )
@@ -120,6 +124,7 @@ class WeiXinRegister:
 
             d( text='确定' ).click()
             z.sleep(3)
+
 
             if d(textContains='正在验证').exists:
                 z.sleep(35)
@@ -133,6 +138,10 @@ class WeiXinRegister:
                 continue
             z.heartbeat()
             print('验证码：'+code)
+            logger.info(numbers)
+            logger.info('我是numbers------------------------------------------------')
+            logger.info(numbers[0]['x02'])
+            logger.info('我是numbers[0][x02]－－－－－－－－－－－－－－－－－－－－－－')
             x_02 = int( numbers[0]['x02'] ) + 1
             para = {"phoneNumber": PhoneNumber, 'x_02': x_02, 'x_19': 'WXRegister'}
             self.repo.PostInformation( saveCate, para )
@@ -207,6 +216,10 @@ class WeiXinRegister:
                 if d( textContains='看看手机通讯录' ).exists:
                     d( text='是' ).click()
                     number_info = self.repo.GetInformation(saveCate,PhoneNumber)
+
+                    logger.info(number_info)
+                    logger.info('number_info--------------------------------------------')
+
                     if number_info[0]['x05'] is None:
                         para = {"phoneNumber": PhoneNumber, 'x_05': 'YES', 'x_19': 'WXRegister', 'x_26': '登陆状态YSE','x_20': d.server.adb.device_serial( )}
                     else:
@@ -280,6 +293,9 @@ class WeiXinRegister:
 
 
                 if d(text='确认登录').exists:
+
+                    self.repo.DeleteInformation( saveCate, PhoneNumber )
+
                     if n==1:
                         self.repo.DeleteInformation( saveCate, PhoneNumber )
                     else:
@@ -370,8 +386,18 @@ class WeiXinRegister:
                                         'contentDescription'].replace('\n\n','')
 
                                     data = {'cate_id': saveCate, 'phoneNumber': PhoneNumber, 'x_07': x0_val,'x_08': x1_val, 'x_09': x2_val, 'x_10': x3_val, 'x_11': x4_val}
+                                    logger.info(data)
+                                    logger.info('data----------------------------------------------------')
+                                    trues = repo.GetTrueAnswer(data)
+                                    logger.info( trues )
+                                    logger.info( 'trues----------------------------------------------------' )
+                                    true = trues[0]['x07']
+                                    logger.info( true )
+                                    logger.info( 'true----------------------------------------------------' )
+
                                     trues = repo.GetTrueAnswer(data)
                                     true = trues[0]['x07']
+
 
                                     if true == x0_val:
                                         x_value = x0_val
@@ -460,6 +486,9 @@ class WeiXinRegister:
                             z.sleep( 2 )
 
                     x_04_number = self.repo.GetInformation( information_cate_id, PhoneNumber )
+                    logger.info(PhoneNumber)
+                    logger.info(x_04_number)
+                    logger.info('我是x_04_number--------------------------------------------------------')
                     x_04 = int( x_04_number[0]['x04'] ) + 1
                     para = {"phoneNumber": PhoneNumber, 'x_04': x_04, 'x_19': 'WXRegister'}
                     self.repo.PostInformation( saveCate, para )
@@ -501,7 +530,6 @@ if __name__ == "__main__":
     import sys
     reload( sys )
     sys.setdefaultencoding( 'utf8' )
-
     clazz = getPluginClass()
     o = clazz()
     d = Device("HT53ASK00766")#INNZL7YDLFPBNFN7

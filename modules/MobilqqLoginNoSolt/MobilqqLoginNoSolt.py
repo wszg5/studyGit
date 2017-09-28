@@ -148,7 +148,7 @@ class MobilqqLoginNoSolt:
         z.heartbeat()
         while True:
             ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
-            print(ping)
+            # print(ping)
             if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
                 break
             z.sleep(2)
@@ -169,14 +169,14 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4AYSK00084")
-    z = ZDevice("HT4AYSK00084")
+    d = Device("HT54VSK01061")
+    z = ZDevice("HT54VSK01061")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
     # slot.restore(d, 9)
 
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"143","time_limit":"1","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"132","time_limit":"1","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

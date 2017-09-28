@@ -1,0 +1,47 @@
+{
+"id": "MobilqqUpdatePicWall",
+"cate":"QQ模块",
+"name":"QQ交友资料修改",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"QQ-UPW.0.0",
+"icon":"vcard-o",
+"remark":"QQ交友资料修改",
+"setting":[
+{
+"id": "repo_name_id",
+"name":"交友昵称库",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
+{
+"id": "repo_declaration_id",
+"name":"交友宣言库",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
+{
+"id": "repo_company_id",
+"name":"公司名称库",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
+{
+"id": "repo_school_id",
+"name":"学校名称库",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
+{
+"id": "time_delay",
+"name":"延时",
+"type":"textbox",
+"defaultValue":"3",
+"remark":"单位：秒"
+}
+]
+}

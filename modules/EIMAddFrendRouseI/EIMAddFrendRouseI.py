@@ -77,8 +77,8 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4BLSK00255")
-    z = ZDevice("HT4BLSK00255")
+    d = Device("36be646")
+    z = ZDevice("36be646")
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
     z.server.install()
     z.server.start()

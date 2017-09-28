@@ -224,6 +224,11 @@ class MobilqqLogin:
             z.sleep( 2 )
         z.sleep(20)
         z.heartbeat( )
+<<<<<<< HEAD
+        if d(text="身份过期").exists:
+            d(text="确定").click( )
+=======
+>>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
         d.dump(compressed=False)
         d( text='登 录' ).click( )
         z.sleep( 1 )
@@ -616,8 +621,13 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
+<<<<<<< HEAD
+    d = Device("HT54VSK01061")
+    z = ZDevice("HT54VSK01061")
+=======
     d = Device("cda0ae8d")
     z = ZDevice("cda0ae8d")
+>>>>>>> 4c63157369407566d32873cd3a6c7eb95f22cf16
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "132", "time_limit": "120", "time_limit1": "120", "time_delay": "3"};    #cate_id是仓库号，length是数量
     # z.server.install( )

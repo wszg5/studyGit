@@ -20,7 +20,11 @@ class WXNormalDetection:
 
         if d(text='登录').exists and d(text='忘记密码').exists and d(text='更多').exists:
             saveCate = args['repo_information_id']
+<<<<<<< HEAD
+            para = {'x_19': 'WXRegister','x_20': d.server.adb.device_serial(),'x_26': '登陆状态NO'}
+=======
             para = {'x_19': 'WXRegister','x_20': d.server.adb.device_serial(), 'x_26': '登陆状态NO'}
+>>>>>>> 4f8b0320924cdec0c1af6b7232a487497204d8f8
             self.repo.PostInformation(saveCate, para)
             z.toast('该设备微信不在登录')
         else:

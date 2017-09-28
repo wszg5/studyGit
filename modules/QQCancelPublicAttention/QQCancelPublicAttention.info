@@ -1,0 +1,14 @@
+{
+"id": "QQCancelPublicAttention",
+"name":"QQ取消公众号关注",
+"cate":"QQ模块",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"font": "qq",
+"url": "http://www.bejson.com",
+"code":"QQ-C-1.0",
+"icon":"vcard-o",
+"remark":"QQ取消公众号关注",
+"setting":[
+]
+}

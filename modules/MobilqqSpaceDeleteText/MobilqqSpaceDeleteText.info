@@ -1,0 +1,20 @@
+{
+"id": "MobilqqSpaceDeleteText",
+"name":"QQ空间删除所有说说",
+"cate":"QQ模块",
+"font": "qq",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"QQ-S-D1.0",
+"icon":"vcard-o",
+"remark":"QQ空间删除所有说说",
+"setting":[
+	{
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

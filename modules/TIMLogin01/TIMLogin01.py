@@ -408,7 +408,28 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
+    d = Device("HT54VSK01061")
+    z = ZDevice("HT54VSK01061")
 
+<<<<<<< HEAD
+    # slot = slot('tim')
+
+    # slot.restore(d, 1)  # 有２小时没用过的卡槽情况，切换卡槽
+
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+    args = {"repo_cate_id":"64","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    # util.doInThread(runwatch, d, 0, t_setDaemon=True)
+
+    o.action(d,z, args)
+    # d.server.adb.cmd("shell", "pm clear com.taojin.dungeon.sy37").communicate()  # 清除缓存
+    # d.server.adb.cmd("shell","am start -n com.taojin.dungeon.sy37/com.taojin.dungeon.MySplashActivity").communicate()  # 拉起来
+
+    # while 1:
+    #     time.sleep(0.44)
+    #     d.click(100,150)
+    #     d.click(270, 484)
+
+=======
     d = Device("HT49YSK00272")
     z = ZDevice("HT49YSK00272")
 
@@ -428,3 +449,4 @@ if __name__ == "__main__":
 
     # FriendsTotalObj = d( resourceId='com.tencent.tim:id/contact_count', className='android.view.View' ).info['text']
     # print(FriendsTotalObj)
+>>>>>>> 7e308302e8f6dc89553b6a07f641d4435655ab1c

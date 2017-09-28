@@ -1,0 +1,26 @@
+{
+"id": "TIMAddressListSendText",
+"cate":"其他模块",
+"name":"TIM通讯录群发消息",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"TIM-GALST1.0",
+"icon": "vcard-o",
+"remark":"TIM通讯录群发消息",
+"setting":[
+	{
+    "id": "repo_meg_id",
+    "name":"发消息素材",
+    "type":"repo",
+    "source":"material",
+    "top_cate_id":"12"
+    },
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

@@ -1,0 +1,26 @@
+{
+"id": "WeiXinCloseUnnecessary",
+"cate":"微信模块",
+"name":"微信关闭不必要的功能",
+"url": "http://www.bejson.com",
+"version": "1.2",
+"code":"WX-S-02",
+"icon": "vcard-o",
+"remark":"微信版本，6.5.4",
+"setting":[
+	{
+	"id": "repo_material_id",
+	"name":"取呢称的素材库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "repo_information_id",
+	"name":"保存正常号的资料库",
+	"type":"repo",
+	"source":"information",
+	"top_cate_id":"4"
+	}
+]
+}

@@ -13,7 +13,7 @@ class TIMAddFriends05:
 
     def action(self, d, z, args):
         add_count = int(args['add_count'])  # 要添加多少人
-        repo_number_cate_id = int(args["repo_number_id"])  # 得到取号码的仓库号
+        repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
         numbers = self.repo.GetNumber(repo_number_cate_id, 0, add_count)  # 取出totalNumber条两小时内没有用过的号码
         print(len(numbers))
         if len(numbers) == 0:
@@ -84,13 +84,13 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT529SK00384")
+    d = Device("36be646")
     # material=u'有空聊聊吗'
-    z = ZDevice("HT529SK00384")
+    z = ZDevice("36be646")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     # d(resourceId='com.tencent.tim:id/name', className='android.widget.EditText').click()  # 要发的消息
     # z.input('豆腐坊')
 
-    args = {"repo_number_cate_id": "43", "repo_material_cate_id": "36", "add_count": "9",
+    args = {"repo_number_cate_id": "119", "repo_material_cate_id": "39", "add_count": "5",
             "time_delay": "3"};  # cate_id是仓库号，length是数量
     o.action(d, z, args)

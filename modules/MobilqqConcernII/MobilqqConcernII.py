@@ -31,7 +31,7 @@ class MobilqqConcernII:
             z.toast( "登陆新场景，现无法判断登陆状态" )
             return
         loginStatus = loginStatusList['success']
-        if loginStatus:
+        if d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists:  # 到了通讯录这步后看号有没有被冻结
             z.toast( "卡槽QQ状态正常，继续执行" )
         else:
             z.toast( "卡槽QQ状态异常，跳过此模块" )
@@ -155,21 +155,6 @@ if __name__ == "__main__":
     args = {"add_count":"1000","time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

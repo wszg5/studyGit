@@ -8,8 +8,8 @@ import traceback
 import urllib
 import urllib2
 
-from BeautifulSoup import BeautifulSoup
-
+# from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 from imageCode import imageCode
 from zcache import cache
 import util
@@ -111,7 +111,8 @@ class client_xunma:
                     cache.addSet(key, number)
             return self.GetPhoneNumber(itemId, phoneNum,round)
         else:
-            data = response.read().decode('GBK')
+            # data = response.read().decode('GBK')
+            data = response.read( ).decode( 'UTF-8' )
             self.logger.info("===Failed XUNMA RESTURN:%s" % data)
             return self.GetPhoneNumber(itemId, phoneNum,round)
 

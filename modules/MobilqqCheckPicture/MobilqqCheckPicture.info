@@ -1,0 +1,20 @@
+{
+"id": "MobilqqCheckPicture",
+"cate":"QQ模块",
+"name":"QQ交友资料图片检测修改",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"QQ-CP1.0.0",
+"icon":"vcard-o",
+"remark":"QQ交友资料图片检测修改",
+"setting":[
+
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

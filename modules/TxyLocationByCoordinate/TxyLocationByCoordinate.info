@@ -1,0 +1,33 @@
+{
+"id": "TxyLocationByCoordinate",
+"cate":"其他模块",
+"name":"天下游模拟定位(坐标)",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"TXY-C1.0",
+"icon":"vcard-o",
+"remark":"天下游模拟定位(坐标)",
+"setting":[
+	{
+	"id": "repo_address_id",
+	"name":"坐标仓库号",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"25"
+	},
+	{
+    "id": "time",
+    "name":"坐标仓库取值间隔",
+    "type":"textbox",
+    "defaultValue":"60",
+    "remark":"单位：分钟"
+    },
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

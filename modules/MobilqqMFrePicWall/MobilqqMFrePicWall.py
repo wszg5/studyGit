@@ -23,12 +23,14 @@ class MobilqqPicWall:
         if d(textContains='匹配').exists:
             d.press.back()
         z.heartbeat()
-        d(description='快捷入口').click()
-        d(textContains='加好友').click()
+        # d(description='快捷入口').click()
+        d( descriptionContains='快捷入口' ).click( )
+        d(text='加好友/群').click()
         d(textContains='附近的人').click()
         while not d(textContains='等级').exists:
             z.sleep(2)
-        d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=2).click()
+        # d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=2).click()
+        d( textContains='等级' ).click()
         forwait = 0
         while True:
             if d(text='附近点赞升级啦').exists:
@@ -52,7 +54,7 @@ class MobilqqPicWall:
             d(className='android.widget.FrameLayout', index=3).child(className='android.widget.ImageView', index=1).click()
             for m in range(0,12):
                 z.heartbeat()
-                d(textContains='从手机相册选择').click()
+                d(text='从手机相册选择选择照片').click()
                 time.sleep(2)
                 if d(className='com.tencent.widget.GridView').child(className='android.widget.RelativeLayout',index=m).exists:
                     d(className='com.tencent.widget.GridView').child(className='android.widget.RelativeLayout', index=m).click()
@@ -66,7 +68,7 @@ class MobilqqPicWall:
                 y2 = rangee['bottom']
                 print(rangee)
                 d(className='android.view.View').gesture((x1, y1), (x1, y1)).to((x2, y2), (x2, y2))
-                d(text='确定').click()
+                d(text='完成').click()
                 if m<=10:
                     seconds = 15
                     while seconds > 0:
@@ -342,8 +344,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("HT54VSK01061")
+    z = ZDevice("HT54VSK01061")
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
 
     # for a in range( 6, 12 ):
