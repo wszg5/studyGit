@@ -16,6 +16,13 @@
 	"source":"material",
 	"top_cate_id":"14"
 	},
+	   {
+    "id": "run_time",
+    "name":"模块运行度量值",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：时"
+    },
     {
     "id": "time_delay",
     "name":"延时",

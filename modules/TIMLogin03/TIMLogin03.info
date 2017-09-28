@@ -16,6 +16,13 @@
 "top_cate_id":"1"
 },
 {
+"id": "time_out",
+"name":"超时",
+"type":"textbox",
+"defaultValue":"5",
+"remark":"单位：分钟"
+},
+{
 "id": "time_limit",
 "name":"QQ卡槽提取间隔（单位分钟）",
 "type":"textbox",

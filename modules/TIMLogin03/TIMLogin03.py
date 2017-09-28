@@ -1,5 +1,5 @@
 # coding:utf-8
-
+import logging
 from PIL import Image
 from imageCode import imageCode
 from smsCode import smsCode
@@ -9,6 +9,7 @@ import util
 from Repo import *
 import time, datetime, random
 from slot import Slot
+from zcache import cache
 from zservice import ZDevice
 
 class TIMLogin03:
@@ -16,6 +17,47 @@ class TIMLogin03:
     def __init__(self):
         self.repo = Repo()
         self.type = 'tim'
+
+    def IPCheckRepitition(self, z, d, args):
+        z.toast("正在检测IP...")
+        while True:
+            # 开关飞行模式
+            d.server.adb.cmd( "shell", "settings put global airplane_mode_on 1" ).communicate( )
+            d.server.adb.cmd( "shell",
+                              "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" ).communicate( )
+            z.sleep( 6 )
+            d.server.adb.cmd( "shell", "settings put global airplane_mode_on 0" ).communicate( )
+            d.server.adb.cmd( "shell",
+                              "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false" ).communicate( )
+
+            t = 0
+            while t < 3:
+                ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+                print( ping )
+                if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                    break
+                z.sleep( 10 )
+                t = t + 1
+            if t >= 3:
+                z.toast("网络无法ping通，重新开关飞行模式")
+                continue
+
+            # 获取手机IP
+            IPList = d.server.adb.cmd( "shell", "curl http://ipecho.net/plain" ).communicate( )
+            IP = IPList[0]
+            print( IP )
+
+            # IP添加到缓存
+            ip = cache.get( IP )
+            print( ip )
+            if ip is None:
+                timeoutStr = args['time_out']
+                timeout = int( timeoutStr ) * 60
+                cache.set( IP, IP, timeout )
+                z.toast("IP检测完成")
+                break
+            else:
+                continue
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
@@ -221,21 +263,27 @@ class TIMLogin03:
         z.heartbeat()
         d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate()  # 清除缓存
 
-        d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
-        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-        z.sleep(6)
-        z.heartbeat()
-        self.slot.restore(slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-        d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
-        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
-        z.heartbeat()
-        z.toast( "正在ping网络是否通畅" )
-        while True:
-            ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
-            print(ping)
-            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-                break
-            z.sleep(2)
+        # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+        # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+        # z.sleep(6)
+        # z.heartbeat()
+        # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+        # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+        # z.heartbeat()
+        # z.toast( "正在ping网络是否通畅" )
+        # while True:
+        #     ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
+        #     print(ping)
+        #     if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+        #         break
+        #     z.sleep(2)
+
+        try:
+            self.IPCheckRepitition(z, d, args)
+        except:
+            z.toast("IP检测出错了，请查找问题")
+
+        self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
 
         d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + str(slotnum) + "号\"").communicate()
         z.sleep(2)
@@ -310,22 +358,28 @@ class TIMLogin03:
             # d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止
 
 
-            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate() #开数据流量
-            d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()#开飞行模式
-            z.sleep( 6 )
-            z.heartbeat( )
-            self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate() # 关数据流量
-            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()#开飞行模式
+            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate() #开数据流量
+            # d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()#开飞行模式
+            # z.sleep( 6 )
+            # z.heartbeat( )
+            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate() # 关数据流量
+            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()#开飞行模式
+            #
+            # z.heartbeat( )
+            # z.toast( "正在ping网络是否通畅" )
+            # while True:
+            #     ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            #     print( ping )
+            #     if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+            #         break
+            #     z.sleep( 2 )
 
-            z.heartbeat( )
-            z.toast( "正在ping网络是否通畅" )
-            while True:
-                ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
-                print( ping )
-                if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-                    break
-                z.sleep( 2 )
+            try:
+                self.IPCheckRepitition(z, d, args)
+            except:
+                z.toast( "IP检测出错了，请查找问题" )
+
+            self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
 
             d.server.adb.cmd( "shell",
                               "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + slotnum + "号\"" ).communicate( )
@@ -371,19 +425,26 @@ class TIMLogin03:
         else:  # 有空卡槽的情况
             d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
 
-            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
-            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-            z.sleep(3)
-            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
-            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
-            z.heartbeat( )
-            z.toast( "正在ping网络是否通畅" )
-            while True:
-                ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
-                print( ping )
-                if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-                    break
-                z.sleep( 2 )
+            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+            # z.sleep(3)
+            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+            # z.heartbeat( )
+            # z.toast( "正在ping网络是否通畅" )
+            # while True:
+            #     ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            #     print( ping )
+            #     if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+            #         break
+            #     z.sleep( 2 )
+
+            try:
+                self.IPCheckRepitition(z , d, args)
+            except:
+                logging.exception( "exception" )
+                z.toast( "IP检测出错了，请查找问题" )
+
             serialinfo = d.server.adb.device_serial( )
             # print('登陆时的serial%s'%serialinfo)
             z.heartbeat( )
@@ -416,11 +477,11 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT49YSK00272")
-    z = ZDevice("HT49YSK00272")
+    d = Device("HT4AVSK00885")
+    z = ZDevice("HT4AVSK00885")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id": "228", "time_limit": "0", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
+    args = {"repo_cate_id": "228","time_limit": "0", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
     o.action(d, z, args)
     # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
     # d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止

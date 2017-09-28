@@ -31,9 +31,14 @@ class WXAssignSearchHello:
         msg_count = int(args['msg_count'])
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        z.sleep(5)
+        z.sleep(2)
 
-        d(description='搜索',className='android.widget.TextView').click()
+        while not d(description='搜索',className='android.widget.TextView').exists:
+            z.toast("等待进入微信")
+            z.sleep(3)
+
+        z.sleep(3)
+        d( description='搜索', className='android.widget.TextView' ).click( )
         z.sleep(1)
 
         cate_id = int( args["repo_number_id"] )  # 得到取号码的仓库号
@@ -100,8 +105,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A1SK02114")
-    z = ZDevice("HT4A1SK02114")
+    d = Device("HT4AVSK00885")
+    z = ZDevice("HT4AVSK00885")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_id": "254", "repo_material_id": "39","msg_count": "1", "get_number": "10", "run_time":"1"}    #cate_id是仓库号，length是数量

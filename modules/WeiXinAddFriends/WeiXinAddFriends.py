@@ -1,16 +1,26 @@
 # coding:utf-8
+import datetime
+import os
+
 from uiautomator import Device
 from Repo import *
-import time, datetime, random
 from zservice import ZDevice
 
 class WeiXinAddFriends:
 
     def __init__(self):
         self.repo = Repo()
+        self.mid = os.path.realpath( __file__ )
 
 
     def action(self, d,z, args):
+        run_time = float( args['run_time'] ) * 60
+        run_interval = z.getModuleRunInterval( self.mid )
+        if run_interval is not None and run_interval < run_time:
+            z.toast( u'锁定时间还差:%d分钟' % int( run_time - run_interval ) )
+            z.sleep( 2 )
+            return
+
         z.heartbeat()
         add_count = int(args['add_count'])
 
@@ -26,7 +36,6 @@ class WeiXinAddFriends:
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
         z.sleep(8)
 
-        d(description='更多功能按钮',className='android.widget.RelativeLayout').click()
         d(description='更多功能按钮',className='android.widget.RelativeLayout').click()
         z.sleep(1)
         if d(text='添加朋友').exists:
@@ -54,11 +63,17 @@ class WeiXinAddFriends:
                     return
                 z.sleep(2)
                 if d(textContains='用户不存在').exists:
-                    d(resourceId='com.tencent.mm:id/b2q',index=2).click()
+                    if d(descriptionContains='清除').exists:
+                        d(descriptionContains='清除').click()
+                    else:
+                        d( resourceId='com.tencent.mm:id/b2q', index=2 ).click( )
                     z.sleep(1)
                     continue
                 if d(textContains='状态异常').exists:
-                    d( resourceId='com.tencent.mm:id/b2q', index=2 ).click( )
+                    if d(descriptionContains='清除').exists:
+                        d(descriptionContains='清除').click()
+                    else:
+                        d( resourceId='com.tencent.mm:id/b2q', index=2 ).click( )
                     continue
                 z.heartbeat()
                 gender = args['gender']
@@ -74,11 +89,17 @@ class WeiXinAddFriends:
                         print(Gender)
                         if Gender!=gender:     #看性别是否满足条件
                             d(description='返回').click()
-                            d( resourceId='com.tencent.mm:id/b2q', index=2 ).click( )
+                            if d( descriptionContains='清除' ).exists:
+                                d( descriptionContains='清除' ).click( )
+                            else:
+                                d( resourceId='com.tencent.mm:id/b2q', index=2 ).click( )
                             continue
                     else:
                         d(description='返回').click()
-                        d( resourceId='com.tencent.mm:id/b2q', index=2 ).click( )
+                        if d( descriptionContains='清除' ).exists:
+                            d( descriptionContains='清除' ).click( )
+                        else:
+                            d( resourceId='com.tencent.mm:id/b2q', index=2 ).click( )
                         continue
 
                 z.heartbeat()
@@ -96,12 +117,21 @@ class WeiXinAddFriends:
                     d(text='发送').click()
                     z.heartbeat()
                     d(descriptionContains='返回').click()
-                    d( resourceId='com.tencent.mm:id/b2q', index=2 ).click( )
+                    if d(descriptionContains='清除').exists:
+                        d(descriptionContains='清除').click()
+                    else:
+                        d( resourceId='com.tencent.mm:id/b2q', index=2 ).click( )
                     z.sleep(1)
                     account = account+1
                     continue
             else:
                 break
+
+        now = datetime.datetime.now( )
+        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+        z.setModuleLastRun( self.mid )
+        z.toast( '模块结束，保存的时间是%s' % nowtime )
+
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
 
@@ -118,5 +148,5 @@ if __name__ == "__main__":
     z = ZDevice("HT4A1SK02114")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_number_cate_id": "44", "repo_material_cate_id": "39", "add_count": "3", 'gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id": "44", "repo_material_cate_id": "39", 'run_time': '1', "add_count": "3", 'gender':"女","time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
