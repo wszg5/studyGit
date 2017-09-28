@@ -181,17 +181,25 @@ class TIMGroupChatCheckGroupFriends:
                     # obj = d( index=0, className="android.widget.LinearLayout" ).child( index=1,
                     #                                                                    className="android.widget.RelativeLayout" ).child(
                     #     index=1, className="android.widget.TextView" )
-                    obj = d( text="帐号", className="android.widget.TextView" ).down( index=1,
-                                                                                    className="android.widget.TextView" )
+                    obj = d( text="帐号", className="android.widget.TextView" ).down( index=1, className="android.widget.TextView" )
                     if obj.exists:
-                        thisAccount = obj.info["text"]  # 获取的账号
+                        thisAccount = obj.info["text"].encode('utf-8')  # 获取的账号
+                        if thisAccount=="未填写":
+                            d.dump( compressed=False )
+                            obj = d( text="帐号", className="android.widget.TextView" ).down( index=1,className="android.widget.TextView" )
+                            if obj.exists:
+                                thisAccount = obj.info["text"].encode( 'utf-8' )  # 获取的账号
+                                if thisAccount == "未填写":
+                                    z.toast("获取不到账号")
+                                    i = i + 1
+                                    continue
                         z.sleep( 1 )
+                        z.toast("获得的帐号:"+thisAccount)
                         if thisAccount not in peopleList:
                             peopleList.append(thisAccount)
                             para = {"phoneNumber": address, 'x_01': myAccount,'x_02':name,'x_03': "0",
                                     'x_06': 'normal','x_20': thisAccount}
                             self.repo.PostInformation( repo_group_id, para )
-                        z.sleep( 1 )
                         z.sleep( 2 )
                         z.heartbeat( )
                         if d(text="返回",resourceId="com.tencent.tim:id/ivTitleBtnLeft").exists:

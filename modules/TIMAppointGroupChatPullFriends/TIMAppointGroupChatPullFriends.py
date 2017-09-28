@@ -60,10 +60,9 @@ class TIMAppointGroupChatPullFriends:
         repo_information_id = args["repo_information_id"]
         totalNumber = int( args['totalNumber'] )  # 要给多少人发消息
         while True:
-            if d( index=1, className='android.widget.ImageView' ).exists:
+            if d( index=2, className="android.widget.FrameLayout" ).child( index=0,className="android.widget.RelativeLayout" ).exists:
                 z.heartbeat( )
-                d( index=2, className="android.widget.FrameLayout" ).child( index=0,
-                                                                            className="android.widget.RelativeLayout" ).click( )
+                d( index=2, className="android.widget.FrameLayout" ).child( index=0,className="android.widget.RelativeLayout" ).click( )
             if d( text="加好友" ).exists:  # 由于网速慢或手机卡可能误点
                 d( text="加好友" ).click( )
                 z.heartbeat( )
@@ -303,10 +302,13 @@ class TIMAppointGroupChatPullFriends:
     def pullFriends(self, d, z, args, myAccount, totalNumber):
         count = 0
         x = 0
+        i = 0
+        qqList = []
+        flag = True
         while True:
             # obj = d(index=3,className="android.widget.LinearLayout").child(description='邀请新成员',className="android.widget.ImageView")
             repo_qq_id = int( args["repo_qq_id"] )  # 得到取号码的仓库号
-            qq = self.repo.GetNumber( repo_qq_id, 60, 1, "normal", "NO", None,
+            qq = self.repo.GetNumber( repo_qq_id, 60, 1000, "normal", "NO", None,
                                       myAccount.encode( 'utf-8' ) )  # 取出t1条两小时内没有用过的号码
             if len( qq ) == 0:
                 d.server.adb.cmd( "shell",
@@ -321,17 +323,20 @@ class TIMAppointGroupChatPullFriends:
             # list = numbers  # 将取出的号码保存到一个新的集合
             # print( list )
             # z.sleep(15)
-            z.sleep( 1 )
+            if i >len(qq)-1:
+                break
+            # z.sleep( 1 )
             z.heartbeat( )
-            QQnumber = qq[0]['number']
+            QQnumber = qq[i]['number'].encode('utf-8')
             print(QQnumber)
-
             if d( text="搜索", className="android.widget.EditText" ).exists:
-                d( text="搜索", className="android.widget.EditText" ).click( )
-                z.sleep( 2 )
-                z.heartbeat( )
+                if flag:
+                    d( text="搜索", className="android.widget.EditText" ).click( )
+                    flag = False
+                    z.sleep( 0.5 )
+                    z.heartbeat( )
                 z.input( QQnumber )
-                z.sleep( 2 )
+                z.sleep( 0.5 )
             breakA = False
             while d( text="已加入", className="android.widget.TextView" ).exists or d( text="已选择",
                                                                                     className="android.widget.TextView" ).exists:
@@ -350,8 +355,8 @@ class TIMAppointGroupChatPullFriends:
                 z.sleep( 1 )
                 break
             if breakA:
-                # i = i + 1
-                self.repo.savePhonenumberXM( QQnumber, repo_qq_id, "Y", myAccount )
+                i = i + 1
+                # self.repo.savePhonenumberXM( QQnumber, repo_qq_id, "Y", myAccount )
                 continue
             # d.dump( compressed=False )
             if d( textContains="没有与", resourceId="com.tencent.tim:id/loading",
@@ -367,7 +372,7 @@ class TIMAppointGroupChatPullFriends:
                     while m < lenth:
                         d.press.delete( )
                         m = m + 1
-                # i = i + 1
+                i = i + 1
                 continue
             # obj = d( index=0, className="android.widget.AbsListView" ).child( index=1,
             #                                                                   className="android.widget.RelativeLayout",
@@ -375,21 +380,24 @@ class TIMAppointGroupChatPullFriends:
             obj = d( text="从群聊中选择" )
             if obj.exists:
                 obj.click( )
-                z.sleep( 2 )
+                z.sleep( 1 )
                 z.heartbeat( )
                 # if obj.exists:
                 #     z.toast("已达上线")
                 #     z.sleep( 2 )
                 #     z.heartbeat( )
                 #     break
-                self.repo.savePhonenumberXM( QQnumber, repo_qq_id, "Y", myAccount )
+                # self.repo.savePhonenumberXM( QQnumber, repo_qq_id, "Y", myAccount )
+                i = i + 1
+                if QQnumber not in qqList:
+                    qqList.append( QQnumber )
                 count = count + 1
                 if count >= totalNumber:
                     break
             else:
                 z.toast( "该QQ号可能不是你的好友" )
                 self.repo.savePhonenumberXM( QQnumber, repo_qq_id, "N", myAccount )
-                # i = i + 1
+                i = i + 1
                 continue
         if d( textContains="完成", resourceId="com.tencent.tim:id/ivTitleBtnRightText" ).exists:
             d( textContains="完成", resourceId="com.tencent.tim:id/ivTitleBtnRightText" ).click( )
@@ -398,35 +406,11 @@ class TIMAppointGroupChatPullFriends:
             if d( textContains="完成", resourceId="com.tencent.tim:id/ivTitleBtnRightText" ).exists:
                 z.toast( "无法拉好友入群聊,停止模块" )
                 return
+            for i in range( len( qqList ) ):
+                self.repo.savePhonenumberXM( qqList[i], repo_qq_id, "Y", myAccount )
             z.sleep( 1 )
             z.heartbeat( )
             return count
-
-            # def getIntoGroup(self,d,z):
-            #     while True:
-            #         if d( index=1, className='android.widget.ImageView' ).exists:
-            #             z.heartbeat( )
-            #             d( index=1, className="android.widget.FrameLayout" ).child( index=0,
-            #                                                                         className="android.widget.RelativeLayout" ).click( )
-            #         if d( text="加好友" ).exists:  # 由于网速慢或手机卡可能误点
-            #             d( text="加好友" ).click( )
-            #             z.heartbeat( )
-            #             d( text="返回", className="android.widget.TextView" ).click( )
-            #             d( index=2, className="android.widget.FrameLayout" ).child( index=0,
-            #                                                                         className="android.widget.RelativeLayout" ).click( )
-            #         z.sleep( 3 )
-            #         if d(index=1, description='群和多人聊天 按钮', resourceId='com.tencent.tim:id/name', className="android.widget.RelativeLayout" ).exists:
-            #             z.heartbeat( )
-            #             d( index=1, description='群和多人聊天 按钮', resourceId='com.tencent.tim:id/name',
-            #                className="android.widget.RelativeLayout" ).click( )
-            #             z.sleep(2)
-            #             z.heartbeat()
-            #             break
-            #
-            #     if d(text="多人聊天",className="android.widget.TextView").exists:
-            #         d( text="多人聊天", className="android.widget.TextView" ).click()
-            #         z.sleep(1)
-            #         z.heartbeat()
 
 
 def getPluginClass():
@@ -440,8 +424,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding( 'utf8' )
     clazz = getPluginClass( )
     o = clazz( )
-    d = Device( "HT524SK00685" )
-    z = ZDevice( "HT524SK00685" )
+    d = Device( "cda0ae8d" )
+    z = ZDevice( "cda0ae8d" )
     d.server.adb.cmd( "shell", "ime set com.zunyun.qk/.ZImeService" ).communicate( )
 
     args = {"repo_qq_id": "246", "totalNumber": "10", "time_delay": "3", "groupNumber": "5",

@@ -72,15 +72,16 @@ class TIMGroupSendText:
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
         repo_meg_id = args["repo_meg_id"]
         repo_group_id = int( args["repo_group_id"] )  # 得到取号码的仓库号
-        Material = self.repo.GetMaterial( repo_meg_id, 0, 1 )
-        if len( Material ) == 0:
-            d.server.adb.cmd( "shell",
-                              "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % repo_group_id ).communicate( )
-            z.sleep( 10 )
-            return
-        message = Material[0]['content']
+
         n = 0
         while n<totalNumber:
+            Material = self.repo.GetMaterial( repo_meg_id, 0, 1 )
+            if len( Material ) == 0:
+                d.server.adb.cmd( "shell",
+                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % repo_group_id ).communicate( )
+                z.sleep( 10 )
+                return
+            message = Material[0]['content']
             numbers = self.repo.GetNumber( repo_group_id, 60, 1000, "normal", "NO",myAccount )  # 取出t1条两小时内没有用过的号码
             if len( numbers ) == 0:
                 d.server.adb.cmd( "shell","am broadcast -a com.zunyun.zime.toast --es msg \"群号码库%s号仓库中该账号对应的数据取完，等待中\"" % repo_group_id ).communicate( )

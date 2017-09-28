@@ -80,15 +80,16 @@ class TIMGroupChatSendText:
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
         repo_meg_id = args["repo_meg_id"]
         repo_group_id = int( args["repo_group_id"] )  # 得到取号码的仓库号
-        Material = self.repo.GetMaterial( repo_meg_id, 0, 1 )
-        if len( Material ) == 0:
-            d.server.adb.cmd( "shell",
-                              "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % repo_group_id ).communicate( )
-            z.sleep( 10 )
-            return
-        message = Material[0]['content']
+
         n = 0
         while n<totalNumber:
+            Material = self.repo.GetMaterial( repo_meg_id, 0, 1 )
+            if len( Material ) == 0:
+                d.server.adb.cmd( "shell",
+                                  "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % repo_group_id ).communicate( )
+                z.sleep( 10 )
+                return
+            message = Material[0]['content']
             nowTime = datetime.datetime.now( ).strftime( "%Y%m%d%H%M%S" )  # 当前时间
 
             para = {"x_key": "", "x_value": ""}
