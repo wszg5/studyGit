@@ -308,7 +308,7 @@ class TIMAppointGroupChatPullFriends:
         while True:
             # obj = d(index=3,className="android.widget.LinearLayout").child(description='邀请新成员',className="android.widget.ImageView")
             repo_qq_id = int( args["repo_qq_id"] )  # 得到取号码的仓库号
-            qq = self.repo.GetNumber( repo_qq_id, 60, 1000, "normal", "NO", None,
+            qq = self.repo.GetNumber( repo_qq_id, 60, 2000, "normal", "NO", None,
                                       myAccount.encode( 'utf-8' ) )  # 取出t1条两小时内没有用过的号码
             if len( qq ) == 0:
                 d.server.adb.cmd( "shell",

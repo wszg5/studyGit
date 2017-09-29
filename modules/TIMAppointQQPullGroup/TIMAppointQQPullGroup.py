@@ -384,7 +384,7 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"repo_group_id":"249","repo_qq_id":"248","totalNumber":"12","time_delay":"3"}    #cate_id是仓库号，length是数量
-    # o.action(d, z,args)
+    o.action(d, z,args)
     # Repo( ).savePhonenumberXM( "605228889", "239", "normal","1" )
     # z.sleep( 1 )
 

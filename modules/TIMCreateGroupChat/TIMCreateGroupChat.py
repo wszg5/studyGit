@@ -109,11 +109,18 @@ class TIMCreateGroupChat:
                 z.sleep( 0.5 )
                 if d( textContains="没有与", resourceId="com.tencent.tim:id/loading" ).exists:
                     d.press.delete( )
-                    z.sleep(0.5)
-                    x = x + 1
+                    z.sleep( 0.5 )
+                    if x == 9:
+                        x = 0
+                    else:
+                        x = x + 1
                     continue
-                obj1 = d(index=0, resourceId="com.tencent.tim:id/result_layout" ).child( index=0,className="android.widget.AbsListView" ).child( index=0, className="android.widget.RelativeLayout" )
-                obj2 = d(index=0, resourceId="com.tencent.tim:id/result_layout" ).child( index=0,className="android.widget.AbsListView" ).child( index=1, className="android.widget.RelativeLayout" )
+                obj1 = d( index=0, resourceId="com.tencent.tim:id/result_layout" ).child( index=0,
+                                                                                          className="android.widget.AbsListView" ).child(
+                    index=0, className="android.widget.RelativeLayout" )
+                obj2 = d( index=0, resourceId="com.tencent.tim:id/result_layout" ).child( index=0,
+                                                                                          className="android.widget.AbsListView" ).child(
+                    index=1, className="android.widget.RelativeLayout" )
                 if obj1.exists and obj2.exists:
                     obj1.click( )
                     y = y + 1
@@ -124,18 +131,21 @@ class TIMCreateGroupChat:
                         y = y + 1
                     else:
                         d.press.delete( )
-                if d(text="已选择",className="android.widget.TextView").exists:
-                    x = x + 1
+                if d( text="已选择", className="android.widget.TextView" ).exists:
+                    if x == 9:
+                        x = 0
+                    else:
+                        x = x + 1
                     continue
                 if obj1.exists:
                     obj1.click( )
                     y = y + 1
-                if x == 9:
-                    x = 0
-                x = x + 1
-
+                    if x == 9:
+                        x = 0
+                    else:
+                        x = x + 1
             if y < 2:
-                z.toast("好友不足2个,无法创建群聊,停止模块")
+                z.toast( "好友不足2个,无法创建群聊,停止模块" )
                 return
             if d(textContains="发起",resourceId="com.tencent.tim:id/ivTitleBtnRightText").exists:
                 z.heartbeat()
@@ -289,4 +299,5 @@ if __name__ == "__main__":
     # z.sleep(1)http://url.cn/5A2br6W#flyticket
     # para = {"phoneNumber": "http://url.cn/5A2br6W#flyticket1","x_20":"455455456"}
     # Repo().PostInformation( "253", para )
-    # z.sleep(1)
+
+

@@ -173,28 +173,62 @@ class TIMGroupChatCheckGroupFriends:
                             'x_03': useCount + 1}
                     self.repo.PostInformation( repo_info_id, para )
                     break
+                z.sleep(0.5)
+                d.dump( compressed=False )
                 obj = d(index=1,className="android.widget.GridView").child(index=i,className="android.widget.RelativeLayout")
                 if obj.exists:
                     obj.click()
-                    z.sleep(2)
+                    z.sleep(3)
                     z.heartbeat()
                     # obj = d( index=0, className="android.widget.LinearLayout" ).child( index=1,
                     #                                                                    className="android.widget.RelativeLayout" ).child(
                     #     index=1, className="android.widget.TextView" )
-                    obj = d( text="帐号", className="android.widget.TextView" ).down( index=1, className="android.widget.TextView" )
+                    d.dump( compressed=False )
+                    # obj = d( text="帐号", className="android.widget.TextView" ).down( index=1 )
+                    obj = d( index=0, className="android.widget.LinearLayout" ).child( index=1,
+                                                                                       className="android.widget.LinearLayout" ).child(
+                        index=0, className="android.widget.TextView", resourceId="com.tencent.tim:id/info" )
+                    if obj.exists:
+                        thisAccount = obj.info["text"].encode( 'utf-8' )  # 获取的账号
+                        try:
+                            thisAccount = int( thisAccount )
+                        except:
+                            i = i + 1
+                            if d( text="返回", resourceId="com.tencent.tim:id/ivTitleBtnLeft" ).exists:
+                                d( text="返回", resourceId="com.tencent.tim:id/ivTitleBtnLeft" ).click( )
+                            continue
+                    else:
+                        if d(text="帐号", className="android.widget.TextView").exists:
+                            obj = d( text="帐号", className="android.widget.TextView" ).down( index=1 )
+                            z.sleep(0.5)
+                        else:
+                            d.swipe( width / 2, height * 5 / 6, width / 2, height / 6 )
+                            d.dump( compressed=False )
+                            if d( text="帐号", className="android.widget.TextView" ).exists:
+                                obj = d( text="帐号", className="android.widget.TextView" ).down( index=1 )
+                                z.sleep( 0.5 )
+                            else:
+                                z.toast( "获取不到账号" )
+
                     if obj.exists:
                         thisAccount = obj.info["text"].encode('utf-8')  # 获取的账号
-                        if thisAccount=="未填写":
+                        try :
+                            thisAccount = int(thisAccount)
+                        except:
                             d.dump( compressed=False )
                             obj = d( text="帐号", className="android.widget.TextView" ).down( index=1,className="android.widget.TextView" )
                             if obj.exists:
                                 thisAccount = obj.info["text"].encode( 'utf-8' )  # 获取的账号
-                                if thisAccount == "未填写":
-                                    z.toast("获取不到账号")
+                                try:
+                                    thisAccount = int( thisAccount )
+                                except:
                                     i = i + 1
+                                    if d( text="返回", resourceId="com.tencent.tim:id/ivTitleBtnLeft" ).exists:
+                                        d( text="返回", resourceId="com.tencent.tim:id/ivTitleBtnLeft" ).click( )
                                     continue
                         z.sleep( 1 )
-                        z.toast("获得的帐号:"+thisAccount)
+                        # thisAccount = str(thisAccount)
+                        z.toast("获得的帐号:%d"%thisAccount)
                         if thisAccount not in peopleList:
                             peopleList.append(thisAccount)
                             para = {"phoneNumber": address, 'x_01': myAccount,'x_02':name,'x_03': "0",
@@ -243,3 +277,7 @@ if __name__ == "__main__":
     # print("am start -a android.intent.action.VIEW -d '%s'" %address)
     # d.server.adb.cmd( "shell", "am start -a android.intent.action.VIEW -d 'http://url.cn/5Br4GP2#flyticket'" )
     # z.sleep( 1 )
+    # para = {"phoneNumber": "www.baidu.com", 'x_01': "444455552", 'x_02': "MX", 'x_03': "0",
+    #         'x_06': 'normal', 'x_20': "4455886644"}
+    # Repo().PostInformation( "256", para )
+    # z.sleep(1)

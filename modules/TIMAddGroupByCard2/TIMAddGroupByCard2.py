@@ -9,7 +9,7 @@ class TIMAddGroupByCard2:
         self.repo = Repo()
 
     def action(self, d,z, args):
-        z.toast( "TIM唤醒加群" )
+        z.toast( "TIM唤醒加群降速版" )
         z.toast( "正在ping网络是否通畅" )
         z.heartbeat( )
         i = 0
@@ -18,7 +18,7 @@ class TIMAddGroupByCard2:
             ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
             print( ping )
             if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-                z.toast( "网络通畅。开始执行：TIM唤醒加群" )
+                z.toast( "网络通畅。开始执行：TIM唤醒加群降速版" )
                 break
             z.sleep( 2 )
         if i > 200:
@@ -83,7 +83,8 @@ class TIMAddGroupByCard2:
             z.toast("准备唤醒的群号为"+QQnumber)
             z.sleep(3)
             z.heartbeat()
-            d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=group&source=qrcode"'%QQnumber )  # 群页面
+            d.server.adb.cmd( "shell",
+                              'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=group"' % QQnumber )  # 群页面
             z.sleep(7)
             z.heartbeat()
             if d(text='TIM').exists:
