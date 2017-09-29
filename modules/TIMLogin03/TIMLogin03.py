@@ -25,20 +25,20 @@ class TIMLogin03:
             d.server.adb.cmd( "shell", "settings put global airplane_mode_on 1" ).communicate( )
             d.server.adb.cmd( "shell",
                               "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" ).communicate( )
-            z.sleep( 6 )
+            z.sleep( 3 )
             d.server.adb.cmd( "shell", "settings put global airplane_mode_on 0" ).communicate( )
             d.server.adb.cmd( "shell",
                               "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false" ).communicate( )
 
             t = 0
-            while t < 3:
+            while t < 6:
                 ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
                 print( ping )
                 if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
                     break
                 z.sleep( 10 )
                 t = t + 1
-            if t >= 3:
+            if t >= 6:
                 z.toast("网络无法ping通，重新开关飞行模式")
                 continue
 
@@ -335,25 +335,25 @@ class TIMLogin03:
         z.toast("随机生成手机特征码")
 
 
-        time_limit = int( args['time_limit'] )
+        time_limit = int(args['time_limit'])
         cate_id = args["repo_cate_id"]
-        serial = d.server.adb.device_serial( )
-        self.slot = Slot( serial, self.type )
-        slotnum = self.slot.getEmpty( )  # 取空卡槽
+        serial = d.server.adb.device_serial()
+        self.slot = Slot(serial, self.type)
+        slotnum = self.slot.getEmpty()  # 取空卡槽
         if slotnum == 0:  # 没有空卡槽的话
-            slotObj = self.slot.getAvailableSlot( time_limit )  # 取空卡槽，取２小时没用过的卡槽
+            slotObj = self.slot.getAvailableSlot(time_limit)  # 取空卡槽，取２小时没用过的卡槽
             if not slotObj is None:
                 slotnum = slotObj['id']
-            print( slotnum )
+            print(slotnum)
             while slotObj is None:  # 2小时没用过的卡槽也为没有的情况
                 d.server.adb.cmd( "shell",
                                   "am broadcast -a com.zunyun.zime.toast --es msg \"QQ卡槽全满，无间隔时间段未用\"" ).communicate( )
-                z.heartbeat( )
-                z.sleep( 10 )
-                slotObj = self.slot.getAvailableSlot( time_limit )
+                z.heartbeat()
+                z.sleep(10)
+                slotObj = self.slot.getAvailableSlot(time_limit)
                 if not slotObj is None:
                     slotnum = slotObj['id']
-            z.heartbeat( )
+            z.heartbeat()
             # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
             # d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止
 
@@ -481,7 +481,7 @@ if __name__ == "__main__":
     z = ZDevice("HT4AVSK00885")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id": "228","time_limit": "0", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
+    args = {"repo_cate_id": "228","time_out":"120","time_limit": "0", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
     o.action(d, z, args)
     # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
     # d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止

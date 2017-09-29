@@ -1,7 +1,6 @@
 # coding:utf-8
 import httplib, json
 import urllib
-import urllib2
 from const import const
 class Repo:
     def __init__(self):

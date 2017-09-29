@@ -677,7 +677,7 @@ class ZRemoteDevice(object):
             try:
                 pic = requests.get(v, timeout=10)
             except requests.exceptions.ConnectionError:
-                print '【错误】当前图片无法下载'
+                print ('【错误】当前图片无法下载')
                 continue
             string = '/tmp/%s.jpg' %  uuid.uuid1()
             print(string)
@@ -711,7 +711,7 @@ class ZRemoteDevice(object):
             try:
                 pic = requests.get(v, timeout=10)
             except requests.exceptions.ConnectionError:
-                print '【错误】当前图片无法下载'
+                print ('【错误】当前图片无法下载')
                 continue
             string = '/tmp/%s.%s' %  (uuid.uuid1(),form)
             fp = open(string, 'wb')
@@ -754,7 +754,7 @@ class ZRemoteDevice(object):
         try:
             pic = requests.get(img, timeout=10)
         except requests.exceptions.ConnectionError:
-            print '【错误】当前图片无法下载'
+            print ('【错误】当前图片无法下载')
             return None
         string = '/tmp/%s.jpg' % uuid.uuid1()
         fp = open(string, 'wb')
@@ -772,7 +772,7 @@ class ZRemoteDevice(object):
     def img_crop(self, sourcePng, point):
         from PIL import Image
         img = Image.open(sourcePng)
-        print img.size
+        print (img.size)
         left = int(point["x1"] * img.size[0])
         top = int(point["y1"] * img.size[1])
         right = int(point["x2"] * img.size[0])
