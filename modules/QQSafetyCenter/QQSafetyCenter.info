@@ -1,0 +1,33 @@
+{
+"id": "QQSafetyCenter",
+"cate":"其他模块",
+"name":"QQ安全中心登陆(有卡槽)",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQ-SCL-01",
+"icon":"vcard-o",
+"remark":"QQ安全中心登陆(有卡槽)",
+"setting":[
+{
+"id": "material_id",
+"name":"消息",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
+{
+"id": "number_id",
+"name":"爱奇艺登录QQ号码库",
+"type":"repo",
+"source":"account",
+"top_cate_id":"1"
+},
+{
+"id": "time_delay",
+"name":"延时",
+"type":"textbox",
+"defaultValue":"1",
+"remark":"单位：秒"
+}
+]
+}

@@ -77,7 +77,7 @@ class client_hellotrue:
             response = conn.getresponse()
         except Exception as e:
             self.logger.info(e.message)
-            return self.GetPhoneNumber(itemId, round)
+            return self.GetPhoneNumber(itemId, phoneNum, round)
 
 
         if response.status == 200:
@@ -89,7 +89,7 @@ class client_hellotrue:
                 cache.addSet(key, data[1])
             else:
                 time.sleep(3)
-        return self.GetPhoneNumber(itemId, round)
+        return self.GetPhoneNumber(itemId, phoneNum, round)
 
     def ReleasePhone(self, phoneNumber, itemId):
         token = self.GetToken()

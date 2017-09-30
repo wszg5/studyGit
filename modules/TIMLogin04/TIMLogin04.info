@@ -1,12 +1,12 @@
 {
-"id": "TIMLogin01",
+"id": "TIMLogin04",
 "cate":"其他模块",
-"name":"TIM登录(有卡槽,不带飞行模式)",
+"name":"TIM登录(有卡槽,开关飞行模式,无IP检测)",
 "url": "http://www.bejson.com",
-"version": "1.3",
-"code":"TIM01.3",
+"version": "1.1",
+"code":"TIM01.3.1",
 "icon":"vcard-o",
-"remark":"TIM登录(有卡槽,不带飞行模式)",
+"remark":"TIM登录(有卡槽,开关飞行模式,无IP检测)",
 "setting":[
 {
 "id": "repo_cate_id",

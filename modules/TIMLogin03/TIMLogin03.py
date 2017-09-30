@@ -477,8 +477,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4AVSK00885")
-    z = ZDevice("HT4AVSK00885")
+    d = Device("ec244f8")
+    z = ZDevice("ec244f8")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "228","time_out":"120","time_limit": "0", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
