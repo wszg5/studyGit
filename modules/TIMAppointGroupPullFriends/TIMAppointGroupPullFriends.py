@@ -33,11 +33,22 @@ class TIMAppointGroupPullFriends:
                           "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
         z.sleep( 10 )
         z.heartbeat( )
-        if d( text="消息" ).exists:
+        if d( text="消息", resourceId="com.tencent.tim:id/ivTitleName" ).exists:
             z.toast( "登录状态正常，继续执行" )
         else:
-            z.toast( "登录状态异常，跳过此模块" )
-            return
+            if d( text="关闭", resourceId="com.tencent.tim:id/ivTitleBtnLeftButton" ).exists:
+                d( text="关闭", resourceId="com.tencent.tim:id/ivTitleBtnLeftButton" ).click( )
+                z.sleep( 1 )
+            elif d( text="消息", className="android.widget.TextView" ).exists and d( text="马上绑定",className="android.widget.Button" ).exists:
+                d( text="消息", className="android.widget.TextView" ).click( )
+                z.sleep( 1 )
+            elif d( text="返回" ).exists:
+                d( text="返回" ).click( )
+                z.sleep( 1 )
+
+            else:
+                z.toast( "登录状态异常，跳过此模块" )
+                return
         while True:
             if d( index=1, className='android.widget.ImageView' ).exists:
                 z.heartbeat( )
@@ -56,14 +67,23 @@ class TIMAppointGroupPullFriends:
                 break
         z.sleep(5)
         z.heartbeat()
-        obj = d(index=0,className="android.widget.LinearLayout").child(index=1,className="android.widget.LinearLayout").child(index=0,className="android.widget.TextView",resourceId="com.tencent.tim:id/info")
-        if obj.exists:
-            myAccount = obj.info["text"]      #获取自己的账号
-            z.toast("获取自己的账号")
-            z.sleep(2)
-            z.heartbeat()
+        for num in range(0,6):
+            obj = d(index=0,className="android.widget.LinearLayout").child(index=1,className="android.widget.LinearLayout").child(index=0,className="android.widget.TextView",resourceId="com.tencent.tim:id/info")
+            if obj.exists:
+                myAccount = obj.info["text"]      #获取自己的账号
+                z.toast("获取自己的账号")
+                z.sleep(2)
+                z.heartbeat()
+                break
+            else:
+                z.toast("获取不到自己的账号再试一次")
+                z.sleep(2)
+                d.dump( compressed=False )
+                while d( text="返回", className="android.widget.TextView" ).exists:
+                    d( text="返回", className="android.widget.TextView" ).click( )
+
         else:
-            z.toast("获取不到自己的账号")
+            z.toast("都尝试6次,真的获取获取不到自己的账号,停止模块")
             return
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息

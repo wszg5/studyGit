@@ -33,11 +33,22 @@ class TIMCreateGroupChat:
         d.server.adb.cmd( "shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
         z.sleep( 10 )
         z.heartbeat( )
-        if d( text="消息" ).exists:
+        if d( text="消息", resourceId="com.tencent.tim:id/ivTitleName" ).exists:
             z.toast( "登录状态正常，继续执行" )
         else:
-            z.toast( "登录状态异常，跳过此模块" )
-            return
+            if d( text="关闭", resourceId="com.tencent.tim:id/ivTitleBtnLeftButton" ).exists:
+                d( text="关闭", resourceId="com.tencent.tim:id/ivTitleBtnLeftButton" ).click( )
+                z.sleep( 1 )
+            elif d( text="消息", className="android.widget.TextView" ).exists and d( text="马上绑定",className="android.widget.Button" ).exists:
+                d( text="消息", className="android.widget.TextView" ).click( )
+                z.sleep( 1 )
+            elif d( text="返回" ).exists:
+                d( text="返回" ).click( )
+                z.sleep( 1 )
+
+            else:
+                z.toast( "登录状态异常，跳过此模块" )
+                return
         z.heartbeat( )
         str1 = d.info  # 获取屏幕大小等信息
         height = str1["displayHeight"]
@@ -63,14 +74,25 @@ class TIMCreateGroupChat:
                 break
         z.sleep( 5 )
         z.heartbeat( )
-        obj = d(index=0,className="android.widget.LinearLayout").child(index=1,className="android.widget.LinearLayout").child(index=0,className="android.widget.TextView",resourceId="com.tencent.tim:id/info")
-        if obj.exists:
-            myAccount = obj.info["text"]      #获取自己的账号
-            z.toast("获取自己的账号")
-            z.sleep(2)
-            z.heartbeat()
+        for num in range(0,6):
+            obj = d(index=0,className="android.widget.LinearLayout").child(index=1,className="android.widget.LinearLayout").child(index=0,className="android.widget.TextView",resourceId="com.tencent.tim:id/info")
+            if obj.exists:
+                myAccount = obj.info["text"]      #获取自己的账号
+                z.toast("获取自己的账号")
+                z.sleep(2)
+                z.heartbeat()
+                while d( text="返回", className="android.widget.TextView" ).exists:
+                    d( text="返回", className="android.widget.TextView" ).click( )
+                break
+            else:
+                z.toast("获取不到自己的账号再试一次")
+                z.sleep(2)
+                d.dump( compressed=False )
+                while d( text="返回", className="android.widget.TextView" ).exists:
+                    d( text="返回", className="android.widget.TextView" ).click( )
+
         else:
-            z.toast("获取不到自己的账号")
+            z.toast("都尝试6次,真的获取获取不到自己的账号,停止模块")
             return
         while d(text="返回",resourceId="com.tencent.tim:id/ivTitleBtnLeft").exists:
             d( text="返回", resourceId="com.tencent.tim:id/ivTitleBtnLeft" ).click()
@@ -132,6 +154,7 @@ class TIMCreateGroupChat:
                     else:
                         d.press.delete( )
                 if d( text="已选择", className="android.widget.TextView" ).exists:
+                    d.press.delete()
                     if x == 9:
                         x = 0
                     else:
@@ -275,17 +298,20 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("HT524SK00685")
+    z = ZDevice("HT524SK00685")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"totalNumber":"10","time_delay":"3","name":"男","repo_address_id":"253"}    #cate_id是仓库号，length是数量
-    o.action(d, z,args)
-    # z.cmd( "shell",'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"' % "http://url.cn/58E2Yuz#flyticket" )
+    # o.action(d, z,args)
+
+
+    z.cmd( "shell",'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"' % "http://url.cn/58E2Yuz#flyticket" )
+    z.sleep(1)
     # Repo().uploadPhoneNumber( "448856030", 188 )
-    # d.server.adb.cmd( "shell",
-    #                   'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % "QQ" )
-    # d.server.adb.cmd( "shell",'am start -a android.intent.action.VIEW -d "http://url.cn/58E2Yuz#flyticket"')
+    # d.server.adb.cmd( "shell",'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&version=1\&src_type=web\&web_src=http:://114.qq.com"' )
+    # for i in range(0,5):
+        # d.server.adb.cmd( "shell",'am start -a android.intent.action.VIEW -d "http://url.cn/58E2Yuz#flyticket&mqqapi"')
     # z.sleep(1)
     # para = {"phoneNumber": text, 'x_01': name, 'x_02': myAccount,
     #         'x_03': "0", 'x_04': "", 'x_05': '3', 'x_06': ''}
@@ -299,5 +325,6 @@ if __name__ == "__main__":
     # z.sleep(1)http://url.cn/5A2br6W#flyticket
     # para = {"phoneNumber": "http://url.cn/5A2br6W#flyticket1","x_20":"455455456"}
     # Repo().PostInformation( "253", para )
+    z.sleep(1)
 
 

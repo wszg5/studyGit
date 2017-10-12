@@ -1,0 +1,19 @@
+{
+"id": "SendText",
+"cate":"其他模块",
+"name":"短信发消息",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"sendText",
+"icon": "vcard-o",
+"remark":"短信发消息",
+"setting":[
+    {
+    "id": "count",
+    "name":"消息数量",
+    "type":"textbox",
+    "defaultValue":"10",
+    "remark":"单位：个"
+    }
+]
+}

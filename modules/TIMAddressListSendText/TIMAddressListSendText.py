@@ -163,11 +163,23 @@ class TIMAddressCheckDeposit:
         d.server.adb.cmd( "shell","am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
         z.sleep( 10 )
         z.heartbeat( )
-        if d(text="消息").exists:
-            z.toast( "卡槽TIM状态正常，继续执行" )
+        if d( text="消息", resourceId="com.tencent.tim:id/ivTitleName" ).exists:
+            z.toast( "登录状态正常，继续执行" )
         else:
-            z.toast( "卡槽TIM状态异常，跳过此模块" )
-            return
+            if d( text="关闭", resourceId="com.tencent.tim:id/ivTitleBtnLeftButton" ).exists:
+                d( text="关闭", resourceId="com.tencent.tim:id/ivTitleBtnLeftButton" ).click( )
+                z.sleep( 1 )
+            elif d( text="消息", className="android.widget.TextView" ).exists and d( text="马上绑定",
+                                                                                  className="android.widget.Button" ).exists:
+                d( text="消息", className="android.widget.TextView" ).click( )
+                z.sleep( 1 )
+            elif d( text="返回" ).exists:
+                d( text="返回" ).click( )
+                z.sleep( 1 )
+
+            else:
+                z.toast( "登录状态异常，跳过此模块" )
+                return
         repo_meg_id = args["repo_meg_id"]
         # Material = self.repo.GetMaterial( repo_meg_id, 0, 1 )
         # if len( Material ) == 0:

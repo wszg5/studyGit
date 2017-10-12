@@ -1,0 +1,26 @@
+{
+"id": "TIMCheckGroupGroupChat",
+"cate":"其他模块",
+"name":"TIM检存群聊",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"TIM-CGGC1.0",
+"icon": "vcard-o",
+"remark":"TIM检存群聊",
+"setting":[
+	{
+    "id": "repo_info_id",
+    "name":"群聊地址",
+    "type":"repo",
+    "source":"information",
+    "top_cate_id":"4"
+    },
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}
