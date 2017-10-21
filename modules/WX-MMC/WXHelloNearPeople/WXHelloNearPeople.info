@@ -1,0 +1,41 @@
+{
+"id": "WXHelloNearPeople",
+"cate":"微信模块",
+"name":"微信附近人打招呼（尊云专用）",
+"url": "http://www.bejson.com",
+"version": "1.2.1",
+"code":"WX-D-T3",
+"icon": "vcard-o",
+"remark":"微信版本6.5.4",
+"setting":[
+	{
+	"id": "repo_material_id",
+	"name":"发消息素材库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+    {
+	"id": "hello_count",
+	"name":"打招呼次数",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：次"
+	},
+	{
+	"id": "gender",
+	"name":"性别",
+	"type":"select",
+	"list":{"男":"男","女":"女","不限":"不限"},
+	"defaultValue":"不限",
+	"remark":"性别要求"
+	},
+    {
+    "id": "run_time",
+    "name":"模块运行时间间隔",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：时"
+    }
+]
+}

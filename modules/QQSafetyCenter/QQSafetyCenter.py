@@ -73,7 +73,7 @@ class QQSafetyCenter:
         return code
 
 
-    def CaseOne(self, d, z, QQNumber,QQPassword): #登录情况一：手机上有ｑｑ登录或提示历史登陆过的帐号直接登陆
+    def CaseOne(self, d, z, QQNumber,QQPassword):  # 登录情况一：手机上有ｑｑ登录或提示历史登陆过的帐号直接登陆
 
         if d(text='切换帐号').exists and d(text='添加帐号').exists:
             if d(resourceId='com.tencent.mobileqq:id/name',index=0).exists:
@@ -123,13 +123,8 @@ class QQSafetyCenter:
     def Login(self, d, z, args): #登录方法
         self.scode = smsCode( d.server.adb.device_serial( ) )
         d.server.adb.cmd( "shell", "pm clear com.tencent.token" ).communicate( )  # 清除缓存
-        if d( text='QQ安全中心' ).exists:
-            d( text='QQ安全中心' ).click( )
-            z.sleep( 6 )
-        else:
-            z.toast( "请返回有ＱＱ安全中心的主页面，再运行" )
-            d.server.adb.cmd( "shell", "pm clear com.tencent.token" ).communicate( )  # 清除缓存
-            return
+        d.server.adb.cmd( "shell", "am start -n com.tencent.token/.ui.LogoActivity" ).communicate( )  # 拉起来
+        z.sleep(6)
 
         if d( resourceId='com.tencent.token:id/account_bind_qqface' ).exists:
             d( resourceId='com.tencent.token:id/account_bind_qqface' ).click( )
@@ -157,6 +152,8 @@ class QQSafetyCenter:
 
         QQNumber = numbers[0]['number']  # 即将登陆的QQ号
         QQPassword = numbers[0]['password']
+        # QQNumber = '3518608471'
+        # QQPassword = 'uxpm6521'
         z.sleep( 1 )
 
         if d( text='切换帐号' ).exists:
@@ -179,6 +176,7 @@ class QQSafetyCenter:
             info = numbers[0]['qqtoken']
             infoArray = info.split( '----' )
             number = infoArray[6]
+            # number = "14773454349"
             try:
                 PhoneNumber = self.scode.GetPhoneNumber( self.scode.QQ_TOKEN_BIND, number )  # 获取接码平台手机号码
             except:
@@ -202,15 +200,24 @@ class QQSafetyCenter:
                 self.scode.defriendPhoneNumber( PhoneNumber, self.scode.QQ_TOKEN_BIND )
                 return "again"
 
-            z.input( code )
+            if d(resourceId='com.tencent.token:id/sms_code').exists: #点击输入框输入验证码
+                d( resourceId='com.tencent.token:id/sms_code' ).click()
+                z.input( code )
+
             if d( text='下一步' ).exists:
                 d( text='下一步' ).click( )
                 z.sleep(5)
 
             if d(text='开启安全之旅').exists:
                 d(text='开启安全之旅').click()
+                return QQNumber
 
-            return QQNumber
+            if d(textContains='绑定QQ失败').exists:
+                return "again"
+
+        elif d(text='登录失败').exists:
+            return "again"
+
 
 
     def QieHuanSolt(self, d, z, args): # 卡槽切换方法
@@ -228,13 +235,14 @@ class QQSafetyCenter:
             if not slotObj is None:
                 slotnum = slotObj['id']
 
+        d.server.adb.cmd( "shell", "pm clear com.tencent.token" ).communicate( )  # 清除缓存
         d.server.adb.cmd( "shell", "am broadcast -a com.zunyun.zime.toast --es msg \"正在切换到" + slotnum + "号卡槽...\"" ).communicate( )
-        self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-        d.server.adb.cmd( "shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + slotnum + "号\"" ).communicate( )
 
-        if d( text='QQ安全中心' ).exists:
-            d( text='QQ安全中心' ).click( )
-            z.sleep( 6 )
+        self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
+
+        d.server.adb.cmd( "shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + slotnum + "号\"" ).communicate( )
+        d.server.adb.cmd( "shell", "am start -n com.tencent.token/.ui.LogoActivity" ).communicate( )  # 拉起来
+        z.sleep( 10 )
 
         if d(text='欢迎来到安全中心').exists:
             return "fail"
@@ -302,11 +310,11 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("c0e5994f")
+    z = ZDevice("c0e5994f")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").communicate()    #打开android设置页面
-    args = {"repo_cate_id": "218","time_limit":"120", "time_limit_slot":"2", "time_delay": "1"};
+    args = {"repo_cate_id": "261","time_limit":"120", "time_limit_slot":"2", "time_delay": "3"};
     o.action(d, z, args)
     # repo = Repo()
     # cate_id = args["repo_cate_id"]
@@ -316,3 +324,4 @@ if __name__ == "__main__":
     # infoArray = info.split( '----' )
     # print(infoArray)
     # d.server.adb.cmd("shell", "am start -n com.tencent.token/com.tencent.token.MainActivity").communicate()  # 拉起来
+    # d.server.adb.cmd("shell", "am start -n com.tencent.token/.ui.LogoActivity").communicate()  # 拉起来

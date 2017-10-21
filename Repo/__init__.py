@@ -1,6 +1,10 @@
 # coding:utf-8
 import httplib, json
 import urllib
+import time, datetime
+
+import logging
+
 from const import const
 class Repo:
     def __init__(self):
@@ -97,19 +101,6 @@ class Repo:
         else:
             return []
 
-    # def GetTIMInfomation(self, cateId,PhonrNumber,x_key,x_vlaue):    #TIM模块从治疗库获取数据
-    #     path = "/repo_api/TIMInformation/getInfoByNumAndX?cate_id=%s&PhonrNumber=%s&x_key=%s&x_vlaue=%s" % (cateId,PhonrNumber,x_key,x_vlaue)
-    #     print('地址是%s'%path)
-    #     conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-    #     conn.request("GET", path)
-    #     response = conn.getresponse()
-    #     if response.status == 200:
-    #         data = response.read()
-    #         numbers = json.loads(data)
-    #         return  numbers
-    #     else:
-    #         return []
-
     def GetWXRegisterPhoneNumber(self, cateId):    #微信注册从治疗库获取手机号码
         path = "/repo_api/WXInformation/getPhoneNumber?cate_id=%s" % (cateId)
         print('地址是%s'%path)
@@ -134,22 +125,31 @@ class Repo:
             return  numbers
         else:
             return []
-    def BackupInfo(self,cateId,status,Number,IMEI,remark):           #仓库号，状态，QQ号，备注设备id_卡槽id
+    def BackupInfo(self,cateId,status,Number,IMEI,remark):  #仓库号，状态，QQ号，备注设备id_卡槽id
         path = "/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&IMEI=%s&cardslot=%s" % (cateId,status,Number,IMEI,remark)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET",path)
+
     def RegisterAccount(self,qqNumber,password,phoneNumber, numberCateId):
         path = "/repo_api/register/numberInfo?QQNumber=%s&QQPassword=%s&PhoneNumber=%s&cate_id=%s" % (qqNumber,password,phoneNumber,numberCateId)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET",path)
+
     def uploadPhoneNumber(self, phoneNumber, numberCateId,guolv='N'):
         path = "/repo_api/screen/numberInfo?PhoneNumber=%s&cate_id=%s&guolv=%s" % (phoneNumber, numberCateId,guolv)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
+
+    def uploadNumberALiPay(self, phoneNumber, numberCateId,status):  # 支付宝检测手机号模块专用接口
+        path = "/repo_api/checkalipay/updateNumberInfo?PhoneNumber=%s&cate_id=%s&status=%s" % (phoneNumber, numberCateId,status)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
+
     def savePhonenumberXM(self,phoneNumber, cateid, status, name=None):                    #迅码上传失效/有效的手机号
         path = "/repo_api/check/numberInfo?PhoneNumber=%s&cate_id=%s&status=%s&name=%s" % (phoneNumber, cateid, status,name)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
+
     def GetInformation(self, cateId,phoneNumber=''):
         path = "/repo_api/WXInformation/getPhoneNumber?cate_id=%s&phoneNumber=%s" % (cateId, phoneNumber)
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
@@ -161,6 +161,7 @@ class Repo:
             return numbers
         else:
             return []
+
     def GetInformationByDevice(self, cateId,deviceId=''):
         path = "/repo_api/WXInformation/getDeviceInfo?cate_id=%s&device_id=%s" % (cateId, deviceId)
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
@@ -172,6 +173,7 @@ class Repo:
             return numbers
         else:
             return []
+
     def GetTrueAnswer(self, data):
         path = "/repo_api/WXInformation/getTrueAnswer"
         headers = {"Content-Type": "application/x-www-form-urlencoded",
@@ -187,6 +189,7 @@ class Repo:
             return numbers
         else:
             return []
+
     def GetNUmberNormalTotal(self, cateId,cateType='number'):
         path = "/repo_api/number/GetStatusTotal?cate_id=%s&cate_type=%s" % (cateId,cateType)
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
@@ -198,10 +201,40 @@ class Repo:
             return numbers
         else:
             return []
+
     def DeleteInformation(self, cateId, phoneNumber):
         path = "/repo_api/WXInformation/DelInformation?cate_id=%s&phoneNumber=%s" % (cateId, phoneNumber)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET", path)
+
+    def timeCompare(self, start_time, stop_time):
+        nowtime = datetime.datetime.now( ).strftime( '%H:%M' )  # 将日期转化为字符串 datetime => string
+        if start_time == "" or stop_time == "":
+            return False
+
+        if not ":" in start_time:
+            start_time = start_time + ":00"
+
+        if not ":" in stop_time:
+            stop_time = stop_time + ":00"
+
+        if time.strptime( start_time, '%H:%M' ) < time.strptime( stop_time, '%H:%M' ):
+
+            if time.strptime( start_time, '%H:%M' ) < time.strptime( nowtime, '%H:%M' ) < time.strptime( stop_time,
+                                                                                                         '%H:%M' ):
+                return True
+            else:
+                return False
+
+        else:
+            if time.strptime( start_time, '%H:%M' ) < time.strptime( nowtime, '%H:%M' ) < time.strptime( "23:59",
+                                                                                                         '%H:%M' ) or time.strptime(
+                "00:00", '%H:%M') < time.strptime( nowtime, '%H:%M') < time.strptime( stop_time, '%H:%M' ):
+                return True
+            else:
+                return False
+
+
 if __name__ == '__main__':
     repo = Repo()
     # result = repo.PostInformation({"aaa":"aa"})

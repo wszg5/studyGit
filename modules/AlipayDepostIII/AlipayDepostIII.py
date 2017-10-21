@@ -1,4 +1,5 @@
 # coding:utf-8
+import logging
 from PIL.ImageShow import show
 from uiautomator import Device
 from Repo import *
@@ -9,7 +10,7 @@ from PIL import Image
 import colorsys
 from Inventory import *
 
-class AlipayDepost:
+class AlipayDepostIII:
     def __init__(self):
         self.repo = Repo()
 
@@ -65,8 +66,123 @@ class AlipayDepost:
             # print(dominant_color)
             return dominant_color
 
+    def CheckLogined(self,d, z ):
+        z.toast( "检测是否已有支付宝帐号登录" )
+        z.cmd("shell", "am force-stop com.eg.android.AlipayGphone")  # 强制停止
+        z.cmd("shell", "am start -n com.eg.android.AlipayGphone/com.eg.android.AlipayGphone.AlipayLogin")
+        z.sleep(15)
+        if d(textContains='口碑').exists:
+            if d( description='关闭', className='android.widget.ImageView' ).exists:
+                d( description='关闭', className='android.widget.ImageView' ).click( )
+            return True
+        return False
 
-    def action(self, d,z, args):
+    def CheckAddressBook(self,d, z ):
+        z.toast( "检测通讯录是否正常" )
+        d( description='通讯录' ).click( )
+        if d( text='转到银行卡' ).exists:
+            d( description='返回' ).click( )
+            d( description='通讯录' ).click( )
+
+        d( text='新的朋友' ).click( )
+        d( text='添加手机联系人' ).click( )
+        z.sleep(8)
+
+        if d(textContains='账号违规').exists or d(textContains='该功能暂未对您开放').exists:
+            d.server.adb.cmd( "shell", "pm clear com.eg.android.AlipayGphone" ).communicate( )  # 清除缓存
+            return False
+        return True
+
+
+    def impContact(self, d, z, args):
+        z.heartbeat()
+        if self.CheckLogined(d, z) :
+            if self.CheckAddressBook( d, z ):
+                z.toast("检测到已经登录，开始导入")
+            else:
+                z.toast( "通讯录异常，结束模块" )
+                return
+        else:
+            z.toast( "没有检测到登陆帐号，结束运行" )
+            return
+
+
+        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir, "tmp"))
+        if not os.path.isdir(base_dir):
+            os.mkdir(base_dir)
+        filename = os.path.join(base_dir, "%s.txt"%(self.GetUnique()) )
+
+        number_count = int(args['number_count'])
+        cate_id = args["repo_cate_id"]
+        intervalTime = int(args["intervalTime"])
+        while True:
+            exist_numbers = self.repo.GetNumber(cate_id, intervalTime, number_count, 'exist', 'NO')
+            print(exist_numbers)
+            remain = number_count - len(exist_numbers)
+            unknown_numbers = self.repo.GetNumber(cate_id, intervalTime, remain, 'unknown', 'NO')
+            numbers = exist_numbers + unknown_numbers
+            if len(numbers)> 0:
+                break
+            else:
+                normal_numbers = self.repo.GetNumber( cate_id, intervalTime, number_count, 'normal', 'NO')
+                if len( normal_numbers ) == 0:
+                    d.server.adb.cmd( "shell",
+                                      "am broadcast -a com.zunyun.zime.toast --es msg \"电话号码%s号仓库为空，等待中\"" % cate_id ).communicate( )
+                else:
+                    numbers = normal_numbers
+                    break
+
+            d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"电话号码%s号仓库为空，等待中\""%cate_id).communicate()
+            z.sleep(10)
+            z.heartbeat()
+
+        if numbers:
+            file_object = open(filename, 'w')
+            lines = ""
+            pname = ""
+            for number in numbers:
+                if number["name"] is None:
+                    random_name = args['random_name']
+                    if random_name == '是':
+                        pname = z.phoneToName( number["number"] )
+                        number["name"] = pname
+                    else:
+                        pname = number["number"]
+                else:
+                    pname = number["name"]
+                lines = "%s%s----%s\r" %(lines, pname, number["number"])
+
+            file_object.writelines(lines)
+            file_object.close()
+            isclear = args['clear']
+            if isclear=='是':
+                d.server.adb.cmd("shell", "pm clear com.android.providers.contacts").communicate()
+
+            #d.server.adb.cmd("shell", "am", "start", "-a", "zime.clear.contacts").communicate()
+            d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").communicate()
+            d.server.adb.cmd("shell", "am", "start", "-n", "com.zunyun.zime/.ImportActivity", "-t", "text/plain", "-d",
+                             "file:////data/local/tmp/contacts.txt").communicate()
+
+
+            #d.server.adb.cmd("shell", "am broadcast -a com.zunyun.import.contact --es file \"file:///data/local/tmp/contacts.txt\"").communicate()
+            os.remove(filename)
+
+            out = d.server.adb.cmd("shell",
+                               "dumpsys activity top  | grep ACTIVITY").communicate()[0].decode('utf-8')
+            while out.find("com.zunyun.zime/.ImportActivity") > -1:
+                z.heartbeat()
+                out = d.server.adb.cmd("shell",
+                                   "dumpsys activity top  | grep ACTIVITY").communicate()[0].decode('utf-8')
+                z.sleep(5)
+
+        return numbers
+
+
+
+    def action(self, d, z, args):
+
+        numbers = self.impContact(d, z, args)
+
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
@@ -128,186 +244,222 @@ class AlipayDepost:
                     d(resourceId='com.alipay.mobile.contactsapp:id/head_icon').click()
                     accountCount = '一对多'
 
-                path = d(className='android.widget.ListView').child(className='android.widget.FrameLayout',index=0).child(className='android.widget.ImageView',index=2)
-                getinfo = self.Gender(d, path)
-                if getinfo == None:
-                    rank = '非会员'
-                    # print('不是会员')
-                elif getinfo[2] > 200:  # (68, 164, 238)蓝色大众会员  (140, 142, 185)黑色砖石会员  (255, 197, 30)黄金会员
-                    rank = '大众会员'
-                elif getinfo[0] > 200:
-                    rank = '黄金会员'
-                else:
-                    rank = '钻石会员'
-                # print('=====================================%s==================================================='%rank)
-                if d(className='android.widget.ListView').child(className='android.widget.FrameLayout').child(className='android.widget.TextView',index=0).exists:
-                    nickname = d(className='android.widget.ListView').child(className='android.widget.FrameLayout').child(className='android.widget.TextView',index=0).info['text']   #要保存的昵称
-                else:
-                    nickname = '空'
-                # print('=============================%s=============================================================='%nickname)
-
-                z.heartbeat()
-                if d(text='支付宝账户').exists:
-                    for t in range(0, 14):
-                        if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='支付宝账户').exists:
-                            break
-                    account = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.widget.TextView',
-                                                                                   index=1).info['text']
-                else:
-                    account = '空'
-                z.heartbeat()
-
-                # print('================================%s============================================================='%account)
-
-                if d(text='真实姓名').exists:
-                    path = publicpath.child(className='android.widget.LinearLayout', index=1).child(
-                        className='android.widget.TextView', index='1')
-                    getinfo = self.Gender(d,path)
-                    if getinfo[0]>200:
-                        gender = '女'           #要保存的性别和是否认证
-                        identity = '已实名'
-                    elif getinfo[2]>200:
-                        gender = '男'
-                        identity = '已实名'
+                try:
+                    path = d( className='android.widget.ListView' ).child( className='android.widget.FrameLayout',
+                                                                           index=0 ).child(
+                        className='android.widget.ImageView', index=2 )
+                    getinfo = self.Gender( d, path )
+                    if getinfo == None:
+                        rank = '非会员'
+                        # print('不是会员')
+                    elif getinfo[2] > 200:  # (68, 164, 238)蓝色大众会员  (140, 142, 185)黑色砖石会员  (255, 197, 30)黄金会员
+                        rank = '大众会员'
+                    elif getinfo[0] > 200:
+                        rank = '黄金会员'
+                    elif getinfo[0] == 140 and getinfo[1] == 142 and getinfo[2] == 185:
+                        rank = '白金会员'
                     else:
-                        gender = '无'
-                        identity = '未实名'
-                # print('==========================%s==============%s======================================================'%(gender,identity))
-
-                if identity=='已实名':
-                    d(text='转账').click()
-                    if d(textContains='对方账户存在异常').exists:
-                        accountStatus = "异常"
-                        d(text='确定').click()
+                        rank = '钻石会员'
+                    # print('=====================================%s==================================================='%rank)
+                    if d( className='android.widget.ListView' ).child( className='android.widget.FrameLayout' ).child(
+                            className='android.widget.TextView', index=0 ).exists:
+                        nickname = \
+                        d( className='android.widget.ListView' ).child( className='android.widget.FrameLayout' ).child(
+                            className='android.widget.TextView', index=0 ).info['text']  # 要保存的昵称
                     else:
-                        realnameStr = \
-                            d( className='android.widget.ScrollView' ).child( className='android.widget.LinearLayout',
-                                                                              index=0 ).child(
-                                className='android.widget.RelativeLayout', index=1 ).child(
-                                className='android.widget.TextView' ).info['text']
+                        nickname = '空'
+                    # print('=============================%s=============================================================='%nickname)
 
-                        a = realnameStr.find( '（' )
-                        b = realnameStr.find( '）' )
-                        realname = realnameStr[a + 2:b]
-                        # realname = d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=0).child(className='android.widget.RelativeLayout',index=1).child(className='android.widget.TextView').info['text']
-                        if d(textContains='对方长时间未使用支付宝').exists:
-                            accountStatus = "非常用"
+                    z.heartbeat( )
+                    if d( text='支付宝账户' ).exists:
+                        for t in range( 0, 14 ):
+                            if publicpath.child( className='android.widget.LinearLayout', index=t ).child(
+                                    text='支付宝账户' ).exists:
+                                break
+                        account = publicpath.child( className='android.widget.LinearLayout', index=t ).child(
+                            className='android.widget.TextView',
+                            index=1 ).info['text']
+                    else:
+                        account = '空'
+                    z.heartbeat( )
+
+                    # print('================================%s============================================================='%account)
+
+                    if d( text='真实姓名' ).exists:
+                        path = publicpath.child( className='android.widget.LinearLayout', index=1 ).child(
+                            className='android.widget.TextView', index='1' )
+                        getinfo = self.Gender( d, path )
+                        if getinfo[0] > 200:
+                            gender = '女'  # 要保存的性别和是否认证
+                            identity = '已实名'
+                        elif getinfo[2] > 200:
+                            gender = '男'
+                            identity = '已实名'
                         else:
-                            accountStatus = "常用"
+                            gender = '无'
+                            identity = '未实名'
+                    # print('==========================%s==============%s======================================================'%(gender,identity))
 
-                        d(description='返回').click()
-                else:
-                    realname = '无'
-                # print('=========================%s====================================================================='%realname)
-
-
-                if d(text='显示更多').exists:
-                    d(text='显示更多').click()
-                    z.sleep(1)
-                    if not d(text='收起').exists:
-                        d.swipe(width / 2, height * 3 / 4, width / 2, height / 3)
-
-                z.heartbeat()
-                if d(text='地区').exists:
-                    area = publicpath.child(className='android.widget.LinearLayout',index=2).child(className='android.widget.TextView',index='1').info['text']
-                else:
-                    area = '空'
-                # print('=========================%s====================================================================='%area)
-
-                if d(text='星座').exists:    #星座
-                    zodiac = d(textContains='座',index=1).info['text']
-                else:
-                    zodiac = '空'
-
-                # print('=============================%s================================================================='%zodiac)
-
-
-                if d(text='年龄').exists:
-                    for t in range(1, 14):
-                        if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='年龄').exists:
-                            break
-                    age = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.widget.TextView',
-                                                                                   index=1).info['text']
-                else:
-                    age = '空'
-                # print('=================================%s============================================================='%age)
-
-                if d(text='身高').exists:
-                    for t in range(1, 14):
-                        if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='身高').exists:
-                            break
-                    tall = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.widget.TextView',
-                                                                                   index=1).info['text']
-                else:
-                    tall = '空'
-                # print('==========================%s===================================================================='%tall)
-
-                if d(text='体重').exists:
-                    for t in range(1, 14):
-                        if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='体重').exists:
-                            break
-                    weight = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.widget.TextView',
-                                                                                   index=1).info['text']
-                else:
-                    weight = '空'
-                # print('=============================%s================================================================='%weight)
-                z.heartbeat()
-                if d(text='职业').exists:
-                    for t in range(1, 14):
-                        if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='职业').exists:
-                            break
-                    carrer = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.widget.TextView',
-                                                                                   index=1).info['text']
-                else:
-                    carrer = '空'
-                # print('=============================%s================================================================='%carrer)
-                z.heartbeat()
-                if d(text='收入').exists:
-                    for t in range(1, 14):
-                        if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='收入').exists:
-                            break
-                    income = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.widget.TextView',
-                                                                                   index=1).info['text']
-                else:
-                    income = '空'
-                # print('===============================%s==============================================================='%income)
-
-                if d(text='兴趣爱好').exists:
-                    for t in range(1, 14):
-                        if publicpath.child(className='android.widget.LinearLayout', index=t).child(text='兴趣爱好').exists:
-                            break
-                    idexx = 0
-                    taste = []    #将所有兴趣保存到集合里
-                    z.heartbeat()
-                    while True:
-                        interest = publicpath.child(className='android.widget.LinearLayout', index=t).child(className='android.view.View').child(className='android.widget.TextView',
-                                                                           index=idexx)
-                        if interest.exists:
-                            hobby = interest.info['text']
-                            taste.append(hobby)
-                            idexx = idexx+1
+                    if identity == '已实名':
+                        d( text='转账' ).click( )
+                        if d( textContains='对方账户存在异常' ).exists:
+                            accountStatus = "异常"
+                            d( text='确定' ).click( )
                         else:
-                            break
-                else:
-                    taste = []
-                # print(taste)
-                z.heartbeat()
-                para = {"phoneNumber":phoneNumber,
-                        "x_11":nickname,
-                        "x_12":realname,"x_13":gender,
-                        "x_14":area,"x_15":age,
-                        "x_16":accountStatus,
-                        "x_17":accountCount,
-                        "x_01":"AliPay","x_02":rank,
-                        "x_03":account,"x_04":zodiac,
-                        "x_05":identity,"x_06":tall,
-                        "x_07":weight,"x_08":carrer,
-                        "x_09":income,"x_10":taste}
-                self.repo.PostInformation(args["repo_cate_id"], para)
-                z.toast("%s入库完成" % phoneNumber)
+                            realnameStr = \
+                                d( className='android.widget.ScrollView' ).child(
+                                    className='android.widget.LinearLayout',
+                                    resourceId='com.alipay.mobile.transferapp:id/tf_receive_area' ).child(
+                                    className='android.widget.TextView' ).info['text']
 
-                i = i+1
-                d(description = '返回').click()
+                            a = realnameStr.find( '（' )
+                            b = realnameStr.find( '）' )
+                            if a != -1 and b != -1:
+                                realname = realnameStr[a + 2:b]
+                            else:
+                                realname = realnameStr
+                            # realname = d(className='android.widget.ScrollView').child(className='android.widget.LinearLayout',index=0).child(className='android.widget.RelativeLayout',index=1).child(className='android.widget.TextView').info['text']
+                            if d( textContains='对方长时间未使用支付宝' ).exists:
+                                accountStatus = "非常用"
+                            else:
+                                accountStatus = "常用"
+
+                            d( description='返回' ).click( )
+                    else:
+                        realname = '无'
+                    # print('=========================%s====================================================================='%realname)
+
+
+                    if d( text='显示更多' ).exists:
+                        d( text='显示更多' ).click( )
+                        z.sleep( 1 )
+                        if not d( text='收起' ).exists:
+                            d.swipe( width / 2, height * 3 / 4, width / 2, height / 3 )
+
+                    z.heartbeat( )
+                    if d( text='地区' ).exists:
+                        area = publicpath.child( className='android.widget.LinearLayout', index=2 ).child(
+                            className='android.widget.TextView', index='1' ).info['text']
+                    else:
+                        area = '空'
+                    # print('=========================%s====================================================================='%area)
+
+                    if d( text='星座' ).exists:  # 星座
+                        zodiac = d( textContains='座', index=1 ).info['text']
+                    else:
+                        zodiac = '空'
+
+                    # print('=============================%s================================================================='%zodiac)
+
+
+                    if d( text='年龄' ).exists:
+                        for t in range( 1, 14 ):
+                            if publicpath.child( className='android.widget.LinearLayout', index=t ).child(
+                                    text='年龄' ).exists:
+                                break
+                        age = publicpath.child( className='android.widget.LinearLayout', index=t ).child(
+                            className='android.widget.TextView',
+                            index=1 ).info['text']
+                    else:
+                        age = '空'
+                    # print('=================================%s============================================================='%age)
+
+                    if d( text='身高' ).exists:
+                        for t in range( 1, 14 ):
+                            if publicpath.child( className='android.widget.LinearLayout', index=t ).child(
+                                    text='身高' ).exists:
+                                break
+                        tall = publicpath.child( className='android.widget.LinearLayout', index=t ).child(
+                            className='android.widget.TextView',
+                            index=1 ).info['text']
+                    else:
+                        tall = '空'
+                    # print('==========================%s===================================================================='%tall)
+
+                    if d( text='体重' ).exists:
+                        for t in range( 1, 14 ):
+                            if publicpath.child( className='android.widget.LinearLayout', index=t ).child(
+                                    text='体重' ).exists:
+                                break
+                        weight = publicpath.child( className='android.widget.LinearLayout', index=t ).child(
+                            className='android.widget.TextView',
+                            index=1 ).info['text']
+                    else:
+                        weight = '空'
+                    # print('=============================%s================================================================='%weight)
+                    z.heartbeat( )
+                    if d( text='职业' ).exists:
+                        for t in range( 1, 14 ):
+                            if publicpath.child( className='android.widget.LinearLayout', index=t ).child(
+                                    text='职业' ).exists:
+                                break
+                        carrer = publicpath.child( className='android.widget.LinearLayout', index=t ).child(
+                            className='android.widget.TextView',
+                            index=1 ).info['text']
+                    else:
+                        carrer = '空'
+                    # print('=============================%s================================================================='%carrer)
+                    z.heartbeat( )
+                    if d( text='收入' ).exists:
+                        for t in range( 1, 14 ):
+                            if publicpath.child( className='android.widget.LinearLayout', index=t ).child(
+                                    text='收入' ).exists:
+                                break
+                        income = publicpath.child( className='android.widget.LinearLayout', index=t ).child(
+                            className='android.widget.TextView',
+                            index=1 ).info['text']
+                    else:
+                        income = '空'
+                    # print('===============================%s==============================================================='%income)
+
+                    if d( text='兴趣爱好' ).exists:
+                        for t in range( 1, 14 ):
+                            if publicpath.child( className='android.widget.LinearLayout', index=t ).child(
+                                    text='兴趣爱好' ).exists:
+                                break
+                        idexx = 0
+                        taste = []  # 将所有兴趣保存到集合里
+                        z.heartbeat( )
+                        while True:
+                            interest = publicpath.child( className='android.widget.LinearLayout', index=t ).child(
+                                className='android.view.View' ).child( className='android.widget.TextView',
+                                                                       index=idexx )
+                            if interest.exists:
+                                hobby = interest.info['text']
+                                taste.append( hobby )
+                                idexx = idexx + 1
+                            else:
+                                break
+                    else:
+                        taste = []
+                    # print(taste)
+                    z.heartbeat( )
+                    para = {"phoneNumber": phoneNumber,
+                            "x_11": nickname,
+                            "x_12": realname, "x_13": gender,
+                            "x_14": area, "x_15": age,
+                            "x_16": accountStatus,
+                            "x_17": accountCount,
+                            "x_01": "AliPay", "x_02": rank,
+                            "x_03": account, "x_04": zodiac,
+                            "x_05": identity, "x_06": tall,
+                            "x_07": weight, "x_08": carrer,
+                            "x_09": income, "x_10": taste}
+                    self.repo.PostInformation( args["repo_information_id"], para )
+                    for number in numbers:
+                        if number["name"] == phoneNumber:
+                            self.repo.uploadNumberALiPay( number["number"], args['repo_cate_id'], "checked" )
+                            break
+
+                    z.toast( "%s入库完成" % phoneNumber )
+                    i = i + 1
+                    d( description='返回' ).click( )
+                except:
+                    logging.exception("exception")
+                    for number in numbers:
+                        if number["name"] == phoneNumber:
+                            self.repo.uploadNumberALiPay( number["number"], args['repo_cate_id'], "unknown" )
+                            break
 
 
             else:
@@ -328,8 +480,11 @@ class AlipayDepost:
                         .child(className='android.widget.LinearLayout').child(className='android.widget.TextView', index=0)       #结束判断条件
                     if obj2.exists:
                         phone = obj2.info['text']
-                        if phone in set1:            #结束条件，如果
+                        if phone in set1:            # 结束条件，如果
                             if (args["time_delay"]):
+                                for number in numbers:
+                                   if not number['name'] in set1:
+                                       self.repo.uploadNumberALiPay( number['number'], args['repo_cate_id'], "not_exist" )
                                 z.sleep(int(args["time_delay"]))
                             return
                         else:
@@ -340,7 +495,7 @@ class AlipayDepost:
 
                 obj1 =d(className='android.widget.ListView').child(className='android.widget.LinearLayout', index=0) \
                     .child(className='android.widget.LinearLayout').child(className='android.widget.TextView', index=0)
-                if obj1.exists:      #实现精准滑动后有的能显示第０列的电话号码，有的显示不出来
+                if obj1.exists:      # 实现精准滑动后有的能显示第０列的电话号码，有的显示不出来
                     i = 0
                     continue
                 else:
@@ -349,7 +504,7 @@ class AlipayDepost:
 
 
 def getPluginClass():
-    return AlipayDepost
+    return AlipayDepostIII
 
 
 
@@ -360,8 +515,8 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("c0e5994f")
+    z = ZDevice("c0e5994f")
 
     # z.toast("开始重装支付宝APP")
     # z.cmd("shell", "pm uninstall com.eg.android.AlipayGphone")
@@ -377,20 +532,9 @@ if __name__ == "__main__":
     #     z.generateSerial()
     # d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
 
-    args = {"repo_cate_id":"219","contact_wait":"10"};    #cate_id是仓库号，length是数量
+    args = {"repo_information_id":"219","contact_wait":"10","repo_cate_id":"264",'number_count':'50',"random_name":"是","clear":"是", "intervalTime": "120","time_delay": "3"};    #cate_id是仓库号，length是数量
 
     o.action(d, z,args)
-
-
-
-
-
-
-
-
-
-
-
 
 
 

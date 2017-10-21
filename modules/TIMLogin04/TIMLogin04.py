@@ -130,6 +130,7 @@ class TIMLogin04:
             z.sleep( 2 )
         z.sleep(3)
         z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
+        z.sleep( 3 )
         z.heartbeat( )
         if d(className='android.widget.ImageView',resourceId='com.tencent.tim:id/title',index=1).exists:
             for i in range(0,2):
@@ -194,9 +195,14 @@ class TIMLogin04:
         if d(text='消息').exists and d(description='快捷入口').exists:
             z.toast("卡槽QQ状态正常，继续执行")
             return QQNumber
-        else:
+
+        if d( text='去安全中心' ).exists:
             self.repo.BackupInfo( cate_id, 'frozen', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
-            z.toast( "卡槽QQ状态异常，跳过此模块" )
+            z.toast( "登陆失败，重新登陆" )
+            return "nothing"
+        else:
+            self.repo.BackupInfo( cate_id, 'normal', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+            z.toast( "登陆失败，重新登陆" )
             return "nothing"
 
 
@@ -249,6 +255,7 @@ class TIMLogin04:
 
         z.sleep( 3 )
         z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
+        z.sleep(3)
         z.heartbeat()
         if d(className='android.widget.ImageView',resourceId='com.tencent.tim:id/title',index=1).exists:
             for i in range(0,2):
@@ -270,10 +277,11 @@ class TIMLogin04:
             remark = obj['remark']
             remarkArr = remark.split( "_" )
             QQnumber = remarkArr[1]
-            if d( textContains='身份过期' ).exists:
-                self.repo.BackupInfo( cate_id, 'normal', QQnumber, '', '' )
-            else:
+            if d( text='去安全中心' ).exists:
                 self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+
+            else:
+                self.repo.BackupInfo( cate_id, 'normal', QQnumber, '', '' )
             self.slot.clear( slotnum )  # 清空改卡槽，并补登
             z.toast( "卡槽QQ状态异常，补登陆卡槽" )
             self.action( d, z, args )
@@ -341,6 +349,7 @@ class TIMLogin04:
                 z.sleep( 2 )
             z.sleep( 3 )
             z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
+            z.sleep( 3 )
 
             if d( className='android.widget.ImageView', resourceId='com.tencent.tim:id/title', index=1 ).exists:
                 for i in range( 0, 2 ):
@@ -362,12 +371,14 @@ class TIMLogin04:
                 remark = obj['remark']
                 remarkArr = remark.split( "_" )
                 QQnumber = remarkArr[1]
-                if d(textContains='身份过期').exists:
-                    self.repo.BackupInfo(cate_id, 'normal', QQnumber, '', '')
+                if d(text='去安全中心').exists:
+                    self.repo.BackupInfo(cate_id, 'frozen', QQnumber, '', '')  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+
                 else:
-                    self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+                    self.repo.BackupInfo(cate_id, 'normal', QQnumber, '', '')
+
                 self.slot.clear( slotnum )  # 清空改卡槽，并补登
-                z.toast( "卡槽QQ状态异常，补登陆卡槽" )
+                z.toast("卡槽QQ状态异常，补登陆卡槽")
                 self.action( d, z, args )
 
         else:  # 有空卡槽的情况
@@ -387,11 +398,6 @@ class TIMLogin04:
                     break
                 z.sleep( 2 )
 
-            try:
-                self.IPCheckRepitition(z , d, args)
-            except:
-                logging.exception( "exception" )
-                z.toast( "IP检测出错了，请查找问题" )
 
             serialinfo = d.server.adb.device_serial( )
             # print('登陆时的serial%s'%serialinfo)
@@ -425,8 +431,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("ec244f8")
-    z = ZDevice("ec244f8")
+    d = Device("c0e5994f")
+    z = ZDevice("c0e5994f")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "228", "time_limit": "0", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量

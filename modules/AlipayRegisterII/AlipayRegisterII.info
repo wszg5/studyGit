@@ -9,6 +9,13 @@
 "remark":"支付宝注册",
 "setting":[
     {
+    "id": "WaitingTime",
+    "name":"拉起后等待时间",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒；检测支付宝是否已有帐号登录时，执行完拉起命令后的等待时间"
+    },
+    {
     "id": "time_delay",
     "name":"延时",
     "type":"textbox",
