@@ -1,0 +1,79 @@
+{
+"id": "MMCTIMAddfriendsByNumber",
+"cate":"其他模块",
+"name":"TIM搜索加好友(MMC版)",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"MMC_TIM-A-N1.0",
+"icon": "vcard-o",
+"remark":"TIM搜索加好友(MMC版)",
+"setting":[
+	{
+	"id": "repo_number_cate_id",
+	"name":"号码库分类",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"22"
+	},
+	{
+    "id": "repo_material_cate_id",
+    "name":"验证信息素材库",
+    "type":"repo",
+    "source":"material",
+    "top_cate_id":"12",
+    "remark":"取验证语"
+    },
+
+    {
+	"id": "add_count",
+	"name":"添加好友个数",
+	"type":"textbox",
+	"defaultValue":"5",
+	"remark":"单位：个"
+	},
+	{
+	"id": "gender",
+	"name":"性别",
+	"type":"select",
+	"list":{"男":"男","女":"女","不限":"不限"},
+	"defaultValue":"女",
+	"remark":"性别要求"
+	},
+	{
+	"id": "switch_card",
+	"name":"展示名片",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"N",
+	"remark":"是否展示名片"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    },
+    {
+    "id": "set_time",
+    "name":"在多长时间只运行一次",
+    "type":"textbox",
+    "defaultValue":"60",
+    "remark":"单位：分钟"
+    },
+    {
+    "id": "startTime",
+    "name":"模块不运行的开始时间",
+    "type":"textbox",
+    "defaultValue":"０",
+    "remark":"单位：点(24小时制)"
+    },
+    {
+    "id": "模块不运行的结束时间",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"８",
+    "remark":"单位：点(24小时制)"
+    }
+]
+}

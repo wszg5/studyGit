@@ -82,6 +82,8 @@ class TIMAppointQQPullGroup:
                 d.dump( compressed=False )
                 while d( text="返回", className="android.widget.TextView" ).exists:
                     d( text="返回", className="android.widget.TextView" ).click( )
+                if d( index=0, resourceId='com.tencent.tim:id/head', className="android.widget.ImageView" ).exists:
+                    d( index=0, resourceId='com.tencent.tim:id/head', className="android.widget.ImageView" ).click( )
 
         else:
             z.toast("都尝试6次,真的获取获取不到自己的账号,停止模块")

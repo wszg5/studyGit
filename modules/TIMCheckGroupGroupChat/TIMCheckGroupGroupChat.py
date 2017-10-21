@@ -92,6 +92,8 @@ class TIMCheckGroupGroupChat:
                 d.dump( compressed=False )
                 while d(text="返回",className="android.widget.TextView").exists:
                     d( text="返回", className="android.widget.TextView" ).click()
+                if d( index=0, resourceId='com.tencent.tim:id/head', className="android.widget.ImageView" ).exists:
+                    d( index=0, resourceId='com.tencent.tim:id/head', className="android.widget.ImageView" ).click( )
 
         else:
             z.toast("都尝试6次,真的获取获取不到自己的账号,停止模块")
@@ -176,7 +178,7 @@ class TIMCheckGroupGroupChat:
 
                         if d( text="复制链接", className="android.widget.TextView" ).exists:
                             d( text="复制链接", className="android.widget.TextView" ).click( )
-                            z.sleep( 1 )
+                            z.sleep( 3 )
                             z.heartbeat( )
 
                         if d( text="返回", resourceId="com.tencent.tim:id/ivTitleBtnLeft" ).exists:
@@ -249,7 +251,7 @@ class TIMCheckGroupGroupChat:
                              (bottom - top) / 2 + top - (bottom - top) * 8 )
                     z.sleep(1.5)
                     y = y + 1
-                    d.dump( compressed=False )
+                    # d.dump( compressed=False )
                     if d( index=0, resourceId="com.tencent.tim:id/lv_discussion" ).child( index=x - 1,
                                                                                           className="android.widget.RelativeLayout" ).child(
                         index=1, className="android.widget.TextView" ).exists:

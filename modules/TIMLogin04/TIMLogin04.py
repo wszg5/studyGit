@@ -1,5 +1,5 @@
 # coding:utf-8
-
+import logging
 from PIL import Image
 from imageCode import imageCode
 from smsCode import smsCode
@@ -11,7 +11,7 @@ import time, datetime, random
 from slot import Slot
 from zservice import ZDevice
 
-class TIMLogin03:
+class TIMLogin04:
 
     def __init__(self):
         self.repo = Repo()
@@ -219,23 +219,24 @@ class TIMLogin03:
         if not slotObj is None:
             slotnum = slotObj['id']
         z.heartbeat()
-        # d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate()  # 清除缓存
+        d.server.adb.cmd("shell", "pm clear com.tencent.tim").communicate()  # 清除缓存
 
-        # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
-        # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-        # z.sleep(6)
-        # z.heartbeat()
-        self.slot.restore(slotnum)  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-        # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
-        # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
-        # z.heartbeat()
-        # z.toast( "正在ping网络是否通畅" )
+        d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+        z.sleep(6)
+        z.heartbeat()
+        d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+        z.heartbeat()
+        z.toast( "正在ping网络是否通畅" )
         while True:
             ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
             print(ping)
             if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
                 break
             z.sleep(2)
+
+        self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
 
         d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + str(slotnum) + "号\"").communicate()
         z.sleep(2)
@@ -287,45 +288,46 @@ class TIMLogin03:
         z.toast("随机生成手机特征码")
 
 
-        time_limit = int( args['time_limit'] )
+        time_limit = int(args['time_limit'])
         cate_id = args["repo_cate_id"]
-        serial = d.server.adb.device_serial( )
-        self.slot = Slot( serial, self.type )
-        slotnum = self.slot.getEmpty( )  # 取空卡槽
+        serial = d.server.adb.device_serial()
+        self.slot = Slot(serial, self.type)
+        slotnum = self.slot.getEmpty()  # 取空卡槽
         if slotnum == 0:  # 没有空卡槽的话
-            slotObj = self.slot.getAvailableSlot( time_limit )  # 取空卡槽，取２小时没用过的卡槽
+            slotObj = self.slot.getAvailableSlot(time_limit)  # 取空卡槽，取２小时没用过的卡槽
             if not slotObj is None:
                 slotnum = slotObj['id']
-            print( slotnum )
+            print(slotnum)
             while slotObj is None:  # 2小时没用过的卡槽也为没有的情况
                 d.server.adb.cmd( "shell",
                                   "am broadcast -a com.zunyun.zime.toast --es msg \"QQ卡槽全满，无间隔时间段未用\"" ).communicate( )
-                z.heartbeat( )
-                z.sleep( 10 )
-                slotObj = self.slot.getAvailableSlot( time_limit )
+                z.heartbeat()
+                z.sleep(10)
+                slotObj = self.slot.getAvailableSlot(time_limit)
                 if not slotObj is None:
                     slotnum = slotObj['id']
-            z.heartbeat( )
-            # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
+            z.heartbeat()
+            d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
             # d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止
 
 
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate() #开数据流量
-            # d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()#开飞行模式
-            # z.sleep( 6 )
-            # z.heartbeat( )
-            self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate() # 关数据流量
-            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()#开飞行模式
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate() #开数据流量
+            d.server.adb.cmd("shell","am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()#开飞行模式
+            z.sleep( 6 )
+            z.heartbeat( )
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate() # 关数据流量
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()#开飞行模式
 
-            # z.heartbeat( )
-            # z.toast( "正在ping网络是否通畅" )
+            z.heartbeat( )
+            z.toast( "正在ping网络是否通畅" )
             while True:
                 ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
                 print( ping )
                 if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
                     break
                 z.sleep( 2 )
+
+            self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
 
             d.server.adb.cmd( "shell",
                               "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + slotnum + "号\"" ).communicate( )
@@ -371,19 +373,26 @@ class TIMLogin03:
         else:  # 有空卡槽的情况
             d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
 
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
-            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-            # z.sleep(3)
-            # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
-            # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
-            # z.heartbeat( )
-            # z.toast( "正在ping网络是否通畅" )
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+            z.sleep(3)
+            d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+            d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+            z.heartbeat( )
+            z.toast( "正在ping网络是否通畅" )
             while True:
                 ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
                 print( ping )
                 if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
                     break
                 z.sleep( 2 )
+
+            try:
+                self.IPCheckRepitition(z , d, args)
+            except:
+                logging.exception( "exception" )
+                z.toast( "IP检测出错了，请查找问题" )
+
             serialinfo = d.server.adb.device_serial( )
             # print('登陆时的serial%s'%serialinfo)
             z.heartbeat( )
@@ -407,7 +416,7 @@ class TIMLogin03:
             time.sleep(int(args["time_delay"]))
 
 def getPluginClass():
-    return TIMLogin03
+    return TIMLogin04
 
 if __name__ == "__main__":
     import sys
@@ -416,8 +425,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT524SK00685")
-    z = ZDevice("HT524SK00685")
+    d = Device("ec244f8")
+    z = ZDevice("ec244f8")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "228", "time_limit": "0", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量

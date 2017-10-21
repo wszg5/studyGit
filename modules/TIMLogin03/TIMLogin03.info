@@ -1,5 +1,5 @@
 {
-"id": "TIMLogin01",
+"id": "TIMLogin03",
 "cate":"其他模块",
 "name":"TIM登录(有卡槽,开关飞行模式)",
 "url": "http://www.bejson.com",
@@ -14,6 +14,13 @@
 "type":"repo",
 "source":"account",
 "top_cate_id":"1"
+},
+{
+"id": "time_out",
+"name":"超时",
+"type":"textbox",
+"defaultValue":"5",
+"remark":"单位：分钟"
 },
 {
 "id": "time_limit",

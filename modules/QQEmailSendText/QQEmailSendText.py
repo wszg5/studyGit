@@ -117,10 +117,44 @@ class QQEmailSendText:
                     d( index=0, resourceId="com.tencent.androidqqmail:id/mp", className="android.widget.EditText" ).click()
                     z.input(message.encode("utf-8"))
                     z.sleep(0.5)
+        if d(resourceId="com.tencent.androidqqmail:id/m1",description="附件操作").exists:
+            d( resourceId="com.tencent.androidqqmail:id/m1", description="附件操作" ).click()
+            z.sleep(0.5)
+            if d(resourceId="com.tencent.androidqqmail:id/cu",description="从相册选择文件").exists:
+                d( resourceId="com.tencent.androidqqmail:id/cu", description="从相册选择文件" ).click()
+                z.sleep(5)
+                obj = d( index=2, resourceId="com.tencent.androidqqmail:id/de",className="android.widget.GridView" ).child(
+                    index=1, className="android.widget.RelativeLayout" ).child(
+                    index=2, resourceId="com.tencent.androidqqmail:id/t8",className="android.widget.CheckBox" )
+                if obj.exists:
+                    obj.click( )
+                    z.sleep( 0.5 )
+                    if d( textContains="添加到邮件", resourceId="com.tencent.androidqqmail:id/do" ).exists:
+                        d( textContains="添加到邮件", resourceId="com.tencent.androidqqmail:id/do" ).click( )
+                        z.sleep( 2 )
+                        if d( index=1, resourceId="com.tencent.androidqqmail:id/cz",
+                              className="android.widget.HorizontalScrollView" ).child( index=0,
+                                                                                       resourceId="com.tencent.androidqqmail:id/d0",
+                                                                                       className="android.widget.LinearLayout" ).exists:
+                            d( index=1, resourceId="com.tencent.androidqqmail:id/cz",
+                               className="android.widget.HorizontalScrollView" ).child( index=0,
+                                                                                        resourceId="com.tencent.androidqqmail:id/d0",
+                                                                                        className="android.widget.LinearLayout" ).click( )
+                            z.sleep( 0.5 )
+                            z.heartbeat( )
+                            if d( text="添加到正文", resourceId="com.tencent.androidqqmail:id/hy" ).exists:
+                                d( text="添加到正文", resourceId="com.tencent.androidqqmail:id/hy" ).click( )
+                                z.sleep( 0.5 )
+
+                else:
+                    z.toast( "没有图片,停止模块" )
+                    return
         d.dump( compressed=False )
         if d( index=3, text="发送​", resourceId="com.tencent.androidqqmail:id/d",className="android.widget.Button" ).exists:
             d( index=3, text="发送​", resourceId="com.tencent.androidqqmail:id/d",className="android.widget.Button" ).click( )
             z.sleep(2)
+            if d(textContains="小",resourceId="com.tencent.androidqqmail:id/hy",className="android.widget.TextView").exists:
+                d( textContains="小", resourceId="com.tencent.androidqqmail:id/hy", className="android.widget.TextView" ).click()
         else:
             pass
         if d( index=3, text="发送​", resourceId="com.tencent.androidqqmail:id/d",className="android.widget.Button" ).exists:

@@ -81,6 +81,8 @@ class TIMAppointGroupPullFriends:
                 d.dump( compressed=False )
                 while d( text="返回", className="android.widget.TextView" ).exists:
                     d( text="返回", className="android.widget.TextView" ).click( )
+                if d( index=0, resourceId='com.tencent.tim:id/head', className="android.widget.ImageView" ).exists:
+                    d( index=0, resourceId='com.tencent.tim:id/head', className="android.widget.ImageView" ).click( )
 
         else:
             z.toast("都尝试6次,真的获取获取不到自己的账号,停止模块")
@@ -92,7 +94,7 @@ class TIMAppointGroupPullFriends:
         totalNumber = int(args['totalNumber'])  # 要给多少人发消息
 
         repo_group_id = int( args["repo_group_id"] )  # 得到取号码的仓库号
-        numbers = self.repo.GetNumber( repo_group_id, 60, 1000, "normal", "NO" )  # 取出t1条两小时内没有用过的号码
+        numbers = self.repo.GetNumber( repo_group_id, 0, 100, "normal", "NO" )  # 取出t1条两小时内没有用过的号码
         if len( numbers ) == 0:
             d.server.adb.cmd( "shell","am broadcast -a com.zunyun.zime.toast --es msg \"群号码库%s号仓库中该账号对应的数据取完，等待中\"" % repo_group_id ).communicate( )
             z.sleep( 10 )
@@ -258,25 +260,26 @@ class TIMAppointGroupPullFriends:
         z.heartbeat( )
         count = 0
         i = 0
+        qqList = []
+        repo_qq_id = int( args["repo_qq_id"] )  # 得到取号码的仓库号
+        qq = self.repo.GetNumber( repo_qq_id, 0, 100, "normal", "NO", None,
+                                  myAccount.encode( 'utf-8' ) )  # 取出t1条两小时内没有用过的号码
+        if len( qq ) == 0:
+            d.server.adb.cmd( "shell",
+                              "am broadcast -a com.zunyun.zime.toast --es msg \"群号码库%s号仓库为空，等待中\"" % repo_qq_id ).communicate( )
+            return
         while True:
             # obj = d(index=3,className="android.widget.LinearLayout").child(description='邀请新成员',className="android.widget.ImageView")
-            repo_qq_id = int( args["repo_qq_id"] )  # 得到取号码的仓库号
-            qq = self.repo.GetNumber( repo_qq_id, 60, 1, "normal", "NO",None,myAccount.encode( 'utf-8' )  )  # 取出t1条两小时内没有用过的号码
-            if len( qq ) == 0:
-                d.server.adb.cmd( "shell",
-                                  "am broadcast -a com.zunyun.zime.toast --es msg \"群号码库%s号仓库为空，等待中\"" % repo_qq_id ).communicate( )
-                if i ==0:
-                    z.sleep( 10 )
-                    return
-                else:
-                    break
+
             # list = numbers  # 将取出的号码保存到一个新的集合
             # print( list )
             # z.sleep(15)
-            z.sleep( 1 )
+            if i >len(qq)-1:
+                break
+            # z.sleep( 1 )
             z.heartbeat( )
-            QQnumber = qq[0]['number']
-            print( QQnumber )
+            QQnumber = qq[i]['number'].encode('utf-8')
+            print(QQnumber)
 
             if d(text="搜索",className="android.widget.EditText").exists:
                 d( text="搜索", className="android.widget.EditText" ).click()
@@ -299,7 +302,7 @@ class TIMAppointGroupPullFriends:
                 z.sleep(1)
                 break
             if breakA:
-                # i = i + 1
+                i = i + 1
                 self.repo.savePhonenumberXM( QQnumber, repo_qq_id, "Y", myAccount )
                 continue
             d.dump( compressed=False )
@@ -307,7 +310,7 @@ class TIMAppointGroupPullFriends:
                   className="android.widget.TextView" ).exists:
                 z.toast( "该QQ号可能不是你的好友" )
                 self.repo.savePhonenumberXM( QQnumber, repo_qq_id, "N", myAccount )
-                # i = i + 1
+                i = i + 1
                 objText = d( index=0, className="android.widget.RelativeLayout" ).child(
                     className="android.widget.EditText" )
                 if objText.exists:
@@ -327,13 +330,15 @@ class TIMAppointGroupPullFriends:
                 z.heartbeat( )
                 self.repo.savePhonenumberXM( QQnumber, repo_qq_id, "Y", myAccount )
                 i = i + 1
+                if QQnumber not in qqList:
+                    qqList.append( QQnumber )
                 count = count + 1
                 if count >= totalNumber:
                     break
             else:
                 z.toast( "该QQ号可能不是你的好友" )
                 self.repo.savePhonenumberXM( QQnumber, repo_qq_id, "N", myAccount )
-                # i = i + 1
+                i = i + 1
                 continue
         if d( textContains="完成", resourceId="com.tencent.tim:id/ivTitleBtnRightText" ).exists:
             d( textContains="完成", resourceId="com.tencent.tim:id/ivTitleBtnRightText" ).click( )
@@ -341,8 +346,11 @@ class TIMAppointGroupPullFriends:
             z.heartbeat( )
             if d( textContains="完成", resourceId="com.tencent.tim:id/ivTitleBtnRightText" ).exists:
                 z.toast( "无法拉好友入群" )
-                self.repo.savePhonenumberXM( myAccount, repo_group_id, "N", group )
-            self.repo.savePhonenumberXM( myAccount, repo_group_id, "Y", group )
+                # self.repo.savePhonenumberXM( myAccount, repo_group_id, "N", group )
+                return
+            for i in range( len( qqList ) ):
+                self.repo.savePhonenumberXM( qqList[i], repo_qq_id, "Y", myAccount )
+            z.sleep( 1 )
             z.sleep( 1 )
             z.heartbeat( )
             # self.repo.savePhonenumberXM( QQnumber, repo_qq_id, "Y", myAccount )

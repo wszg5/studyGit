@@ -33,7 +33,7 @@ class TIMGroupSendText:
                           "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
         z.sleep( 10 )
         z.heartbeat( )
-        if d( text="消息", resourceId="com.tencent.tim:id/ivTitleName" ).exists:
+        if d( text="消息", resourceId="com.tencent.tim:id/ivTitleName" ).exists and not d( text="马上绑定",className="android.widget.Button" ).exists:
             z.toast( "登录状态正常，继续执行" )
         else:
             if d( text="关闭", resourceId="com.tencent.tim:id/ivTitleBtnLeftButton" ).exists:
@@ -54,13 +54,13 @@ class TIMGroupSendText:
                 z.heartbeat( )
                 d( index=2, className="android.widget.FrameLayout" ).child( index=0,
                                                                             className="android.widget.RelativeLayout" ).click( )
-            if d( text="加好友" ).exists:  # 由于网速慢或手机卡可能误点
-                d( text="加好友" ).click( )
-                z.heartbeat( )
-                d( text="返回", className="android.widget.TextView" ).click( )
-                d( index=2, className="android.widget.FrameLayout" ).child( index=0,
-                                                                            className="android.widget.RelativeLayout" ).click( )
-            z.sleep( 3 )
+            # if d( text="加好友" ).exists:  # 由于网速慢或手机卡可能误点
+            #     d( text="加好友" ).click( )
+            #     z.heartbeat( )
+            #     d( text="返回", className="android.widget.TextView" ).click( )
+            #     d( index=2, className="android.widget.FrameLayout" ).child( index=0,
+            #                                                                 className="android.widget.RelativeLayout" ).click( )
+            z.sleep( 1 )
             if d( text='邮件', resourceId='com.tencent.tim:id/name', className="android.widget.TextView" ).exists:
                 z.heartbeat( )
                 d( index=0, resourceId='com.tencent.tim:id/head', className="android.widget.ImageView" ).click( )
@@ -102,7 +102,7 @@ class TIMGroupSendText:
                 z.sleep( 10 )
                 return
             message = Material[0]['content']
-            numbers = self.repo.GetNumber( repo_group_id, 60, 1000, "normal", "NO",myAccount )  # 取出t1条两小时内没有用过的号码
+            numbers = self.repo.GetNumber( repo_group_id, 0, 1000, "normal", "NO",myAccount )  # 取出t1条两小时内没有用过的号码
             if len( numbers ) == 0:
                 d.server.adb.cmd( "shell","am broadcast -a com.zunyun.zime.toast --es msg \"群号码库%s号仓库中该账号对应的数据取完，等待中\"" % repo_group_id ).communicate( )
                 z.sleep( 10 )

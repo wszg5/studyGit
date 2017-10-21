@@ -53,6 +53,12 @@ class Slot:
             self.folders = ['shared_prefs']
             self.maxSlot = const.MAX_SLOTS_TOKEN
 
+        elif (self.type == "qqmail"):
+            self.package = "com.tencent.androidqqmail"
+            self.files = []
+            self.folders = ['databases']
+            self.maxSlot = const.MAX_SLOTS_QQMAIL
+
         else:
             raise SyntaxError("目前还不支持%s卡槽"%self.type)
 

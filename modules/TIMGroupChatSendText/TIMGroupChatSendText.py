@@ -89,6 +89,8 @@ class TIMGroupChatSendText:
                 d.dump( compressed=False )
                 while d( text="返回", className="android.widget.TextView" ).exists:
                     d( text="返回", className="android.widget.TextView" ).click( )
+                if d( index=0, resourceId='com.tencent.tim:id/head', className="android.widget.ImageView" ).exists:
+                    d( index=0, resourceId='com.tencent.tim:id/head', className="android.widget.ImageView" ).click( )
 
         else:
             z.toast("都尝试6次,真的获取获取不到自己的账号,停止模块")
@@ -125,15 +127,18 @@ class TIMGroupChatSendText:
                 useCount = 0
             else:
                 useCount = int( totalList[num]["x03"] )
-            thisTime = totalList[num]["x04"]  # 仓库中数据：时间
+            if not totalList[num]["x04"] ==None :
+                thisTime = totalList[num]["x04"].encode("utf-8")  # 仓库中数据：时间
+            else:
+                thisTime = None
             if useCount >= 5:
-                if thisTime == None:
+                if thisTime == None or thisTime == "None":
                     para = {"phoneNumber": address, 'x_01': myAccount,
                             'x_03': useCount, 'x_04': nowTime,'x_06':'N'}
                     # z.toast( "该地址已被超过五人使用,3小时候后才可被使用" )
                     self.repo.PostInformation( repo_group_id, para )
                     para2 = {"x_key": "x_06", "x_value": "normal"}
-                    totalList = Repo( ).GetTIMInfomation( repo_group_id, para )
+                    totalList = Repo( ).GetTIMInfomation( repo_group_id, para2 )
 
                     if len( totalList ) == 0:
                         z.toast( "%s仓库%s账号可用数据为空" % (repo_group_id, myAccount) )
@@ -146,7 +151,10 @@ class TIMGroupChatSendText:
                         peopleCount = 0
                     else:
                         peopleCount = int( totalList[num]["x05"] )
-                    thisTime = totalList[num]["x04"]  # 仓库中数据：时间
+                    if not totalList[num]["x04"] == None:
+                        thisTime = totalList[num]["x04"].encode( "utf-8" )  # 仓库中数据：时间
+                    else:
+                        thisTime = None
                 else:
                     thisTime = self.getTimeSecond( thisTime )
                     nowTime = self.getTimeSecond( nowTime )
@@ -156,7 +164,7 @@ class TIMGroupChatSendText:
                         self.repo.PostInformation( repo_group_id, para )
                     else:
                         para2 = {"x_key": "x_06", "x_value": "normal"}
-                        totalList = Repo( ).GetTIMInfomation( repo_group_id, para )
+                        totalList = Repo( ).GetTIMInfomation( repo_group_id, para2 )
 
                         if len( totalList ) == 0:
                             z.toast( "%s仓库%s账号可用数据为空" % (repo_group_id, myAccount) )
@@ -164,12 +172,18 @@ class TIMGroupChatSendText:
                         num = random.randint( 0, len( totalList ) - 1 )
                         address = totalList[num]["phonenumber"]
                         address = address.encode( 'utf-8' )
-                        useCount = int( totalList[num]["x03"] )
+                        if totalList[num]["x03"] == None:
+                            useCount = 0
+                        else:
+                            useCount = int( totalList[num]["x03"] )
                         if totalList[num]["x05"] == None:
                             peopleCount = 0
                         else:
                             peopleCount = int( totalList[num]["x05"] )
-                        thisTime = totalList[num]["x04"]  # 仓库中数据：时间
+                        if not totalList[num]["x04"] == None:
+                            thisTime = totalList[num]["x04"].encode( "utf-8" )  # 仓库中数据：时间
+                        else:
+                            thisTime = None
             print(address)
             d.server.adb.cmd( "shell", 'am start -a android.intent.action.VIEW -d "%s"' % address )
             z.sleep( 10 )
@@ -233,8 +247,12 @@ class TIMGroupChatSendText:
                 d( text="发送", resourceId="com.tencent.tim:id/fun_btn" ).click( )
                 z.sleep( 1 )
                 n = n + 1
-            para = {"phoneNumber": address, 'x_01': myAccount,
-                    'x_03': useCount + 1}
+            if useCount + 1>=5:
+                para = {"phoneNumber": address, 'x_01': myAccount,
+                        'x_03': useCount + 1,"x_04":nowTime}
+            else:
+                para = {"phoneNumber": address, 'x_01': myAccount,
+                        'x_03': useCount + 1}
             self.repo.PostInformation( repo_group_id, para )
 
         z.toast("模块完成")
