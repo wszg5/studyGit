@@ -23,6 +23,22 @@
 	"top_cate_id":"22"
 	},
 	{
+	"id": "picture",
+	"name":"是否发送图片",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"是",
+	"remark":"是否发送图片"
+	},
+	{
+	"id": "size",
+	"name":"图片大小",
+	"type":"select",
+	"list":{"大":"大","小":"小","中":"中"},
+	"defaultValue":"小",
+	"remark":"图片大小"
+	},
+	{
 	"id": "count",
 	"name":"发邮件总人数",
 	"type":"textbox",

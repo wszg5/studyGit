@@ -1,0 +1,85 @@
+{
+"id": "WXAddFriendByNewFriend",
+"name":"微信新朋友加好友(+导入通讯录)",
+"cate":"MMC模块",
+"font": "WeiXin",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"WX-MMC-02",
+"icon":"vcard-o",
+"remark":"微信新朋友加好友，微信最新版",
+"setting":[
+   {
+	"id": "run_time_min",
+	"name":"最小间隔",
+	"type":"textbox",
+	"defaultValue":"1",
+	"remark":"单位：小时；注：模块运行时间间隔"
+	},
+	{
+	"id": "run_time_max",
+	"name":"最大间隔",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：小时；注：模块运行时间间隔"
+	},
+	{
+	"id": "start_time",
+	"name": "起始时间点",
+	"type":"textbox",
+	"defaultValue":"10",
+	"remark":"注：模块不可运行时间段起始时间点，时间格式（如：8或者8：30）"
+	},
+	{
+	"id": "stop_time",
+	"name": "结束时间点",
+	"type":"textbox",
+	"defaultValue":"5",
+	"remark":"注：模块不可运行时间段结束时间点，时间格式（如：8或者8：30）"
+	},
+    {
+    "id": "repo_cate_id",
+	"name":"通讯录导入号码库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"21"
+	},
+	{
+	"id": "clear",
+	"name":"是否清空通讯录",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"是",
+	"remark":"是否清空通讯录"
+	},
+	{
+	"id": "random_name",
+	"name":"是否使用随机姓名",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"是",
+	"remark":"是否使用随机姓名"
+	},
+	{
+	"id": "number_count",
+	"name":"导入号码个数",
+	"type":"textbox",
+	"defaultValue":"20",
+	"remark":""
+	},
+	{
+    "id": "time_delay2",
+    "name":"导完通讯录延时",
+    "type":"textbox",
+    "defaultValue":"30",
+    "remark":"单位：秒"
+    },
+    {
+    "id": "time_delay1",
+    "name":"模块结束延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

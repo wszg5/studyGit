@@ -1,4 +1,6 @@
 # coding:utf-8
+import logging
+
 from uiautomator import Device
 from Repo import *
 from zservice import ZDevice
@@ -9,18 +11,37 @@ class AlipayRegisterII:
         self.repo = Repo()
         self.__apk_pkgname = 'com.eg.android.AlipayGphone'
 
-    def CheckLogined(self,d, z ):
+    def CheckLogined(self, d, z , args):
         z.toast( "检测是否已有支付宝帐号登录" )
         z.cmd("shell", "am force-stop com.eg.android.AlipayGphone")  # 强制停止
         z.cmd("shell", "am start -n com.eg.android.AlipayGphone/com.eg.android.AlipayGphone.AlipayLogin")
-        z.sleep(15)
+        z.sleep(int(args['WaitingTime']))
         if d(textContains='口碑').exists:
             return True
         return False
 
+    def CheckAddressBook(self,d, z ):
+        z.toast( "检测通讯录是否正常" )
+        d( description='通讯录' ).click( )
+        if d( text='转到银行卡' ).exists:
+            d( description='返回' ).click( )
+            d( description='通讯录' ).click( )
+
+        d( text='新的朋友' ).click( )
+        d( text='添加手机联系人' ).click( )
+        z.sleep(8)
+
+        if d(textContains='账号违规').exists or d(textContains='该功能暂未对您开放').exists:
+            d.server.adb.cmd( "shell", "pm clear com.eg.android.AlipayGphone" ).communicate( )  # 清除缓存
+            return False
+        return True
+
+    def checkTransfer(self):
+        print
+
     def action(self, d, z, args):
         z.heartbeat()
-        if self.CheckLogined(d, z) :
+        if self.CheckLogined(d, z,args) :
             z.toast("检测到已经登录，跳过注册")
             return
 
@@ -40,12 +61,17 @@ class AlipayRegisterII:
                 d.dump(compressed=False)
                 z.sleep(5)
 
+            z.sleep(3)
             if d(text='登录').exists:
                 d(resourceId='com.ali.user.mobile.security.ui:id/loginButton').click()
                 z.sleep(3)
 
+            try:
+                PhoneNumber = self.scode.GetPhoneNumber( self.scode.ALIPAY_REGISTER )
+            except:
+                logging.exception( "exception" )
+                PhoneNumber = None
 
-            PhoneNumber = self.scode.GetPhoneNumber( self.scode.ALIPAY_REGISTER )
             if PhoneNumber is None:
                 z.toast( "取不到手机号" )
                 break
@@ -74,15 +100,20 @@ class AlipayRegisterII:
                 z.sleep(8)
 
                 if d(descriptionContains='验证码').exists:
-                    code = self.scode.GetVertifyCode( PhoneNumber, self.scode.ALIPAY_REGISTER, '4' )  # 获取接码验证码
-                    self.scode.defriendPhoneNumber( PhoneNumber, self.scode.ALIPAY_REGISTER )
+                    try:
+                        code = self.scode.GetVertifyCode( PhoneNumber, self.scode.ALIPAY_REGISTER, '4' )  # 获取接码验证码
+                        self.scode.defriendPhoneNumber( PhoneNumber, self.scode.ALIPAY_REGISTER )
+                    except:
+                        logging.exception("exception")
+                        code = ''
+
                     if code == '':
                         z.toast("获取不到验证码")
                         continue
                     z.input( code )
                     z.sleep( 16 )
-                    if d( descriptionContains='暂不设置' ).exists:
-                        d( descriptionContains='暂不设置' ).click()
+                    if d( description='暂不设置，先进入支付宝' ).exists:
+                        d( description='暂不设置，先进入支付宝' ).click()
                         z.sleep( 10 )
                         if d( textContains='口碑' ).exists:
                             z.sleep( 5 )
@@ -129,10 +160,10 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("HT4A1SK02114")
+    z = ZDevice("HT4A1SK02114")
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").wait()
-    args = {"time_delay": "3"};    #cate_id是仓库号，length是数量
+    args = {"WaitingTime": "3", "time_delay": "3"};    #cate_id是仓库号，length是数量
     o.action(d, z,args)
     #  z.cmd( "shell", "am force-stop com.eg.android.AlipayGphone" )  # 强制停止
     # z.cmd( "shell", "am start -n com.eg.android.AlipayGphone/com.eg.android.AlipayGphone.AlipayLogin" )

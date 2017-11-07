@@ -16,39 +16,39 @@ class MobilqqCardParise:
         self.repo = Repo()
 
     def action(self, d,z,args):
-        # z.toast( "准备执行QQ名片点赞" )
-        # z.sleep(1)
-        # z.heartbeat( )
-        # z.toast( "正在ping网络是否通畅" )
-        # z.heartbeat( )
-        # i = 0
-        # while i < 200:
-        #     i += 1
-        #     ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
-        #     print( ping )
-        #     if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-        #         z.toast( "网络通畅。开始执行：QQ名片点赞" )
-        #         break
-        #     z.sleep( 2 )
-        # if i > 200:
-        #     z.toast( "网络不通，请检查网络状态" )
-        #     if (args["time_delay"]):
-        #         z.sleep( int( args["time_delay"] ) )
-        #     return
-        # self.scode = smsCode( d.server.adb.device_serial( ) )
-        # z.heartbeat( )
-        # d.server.adb.cmd( "shell", "am force-stop com.tencent.mobileqq" ).communicate( )  # 强制停止
-        # d.server.adb.cmd( "shell",
-        #                   "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
-        # z.sleep( 8 )
-        # z.heartbeat( )
-        #
-        # if d( text='消息' ).exists:  # 到了通讯录这步后看号有没有被冻结
-        #     z.toast( "卡槽QQ状态正常，继续执行" )
-        # else:
-        #     z.toast( "卡槽QQ状态异常，跳过此模块" )
-        #     return
-        # z.heartbeat()
+        z.toast( "准备执行QQ名片点赞" )
+        z.sleep(1)
+        z.heartbeat( )
+        z.toast( "正在ping网络是否通畅" )
+        z.heartbeat( )
+        i = 0
+        while i < 200:
+            i += 1
+            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            print( ping )
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                z.toast( "网络通畅。开始执行：QQ名片点赞" )
+                break
+            z.sleep( 2 )
+        if i > 200:
+            z.toast( "网络不通，请检查网络状态" )
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
+            return
+        self.scode = smsCode( d.server.adb.device_serial( ) )
+        z.heartbeat( )
+        d.server.adb.cmd( "shell", "am force-stop com.tencent.mobileqq" ).communicate( )  # 强制停止
+        d.server.adb.cmd( "shell",
+                          "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
+        z.sleep( 8 )
+        z.heartbeat( )
+
+        if d( text='消息' ).exists:  # 到了通讯录这步后看号有没有被冻结
+            z.toast( "卡槽QQ状态正常，继续执行" )
+        else:
+            z.toast( "卡槽QQ状态异常，跳过此模块" )
+            return
+        z.heartbeat()
 
         count = int(args['count'])  # 要添加多少人
         i = 0

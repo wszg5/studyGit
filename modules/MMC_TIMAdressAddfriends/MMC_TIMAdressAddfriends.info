@@ -1,12 +1,12 @@
 {
 "id": "MMCTIMAdressAddfriends",
-"cate":"其他模块",
-"name":"TIM通讯录加好友+导入通讯录(MMC版)",
+"cate":"MMC模块",
+"name":"TIM-MMC-通讯录加好友+导入通讯录",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"MMC_TIM-A-AL1.0",
+"code":"TIM-MMC-02",
 "icon":"vcard-o",
-"remark":"TIM通讯录加好友(MMC版)",
+"remark":"TIM-MMC通讯录加好友",
 "setting":[
     {
 	"id": "repo_cate_id",
@@ -69,10 +69,17 @@
     "remark":"单位：秒"
     },
     {
-    "id": "set_time",
-    "name":"在多长时间只运行一次",
+    "id": "set_timeStart",
+    "name":"在随机范围时间只运行一次(始)",
     "type":"textbox",
     "defaultValue":"60",
+    "remark":"单位：分钟"
+    },
+    {
+    "id": "set_timeEnd",
+    "name":"在随机范围时间只运行一次(终)",
+    "type":"textbox",
+    "defaultValue":"120",
     "remark":"单位：分钟"
     },
     {
@@ -80,14 +87,14 @@
     "name":"模块不运行的开始时间",
     "type":"textbox",
     "defaultValue":"0",
-    "remark":"单位：点(24小时制)"
+    "remark":"格式如0:00或0(24小时制)"
     },
     {
-    "id": "模块不运行的结束时间",
-    "name":"延时",
+    "id": "endTime",
+    "name":"模块不运行的结束时间",
     "type":"textbox",
     "defaultValue":"8",
-    "remark":"单位：点(24小时制)"
+    "remark":"格式如8:00或8(24小时制)"
     }
 ]
 }

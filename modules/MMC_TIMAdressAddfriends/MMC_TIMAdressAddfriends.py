@@ -19,6 +19,7 @@ from zservice import ZDevice
 class MMCTIMAdressAddfriends:
     def __init__(self):
         self.repo = Repo()
+        self.mid = os.path.realpath( __file__ )
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
@@ -27,36 +28,6 @@ class MMCTIMAdressAddfriends:
             randomNum = str(00) + str(randomNum);
         uniqueNum = str(nowTime) + str(randomNum);
         return uniqueNum
-
-    def timeinterval(self, z, args):
-        now = datetime.datetime.now( )
-        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-        d1 = datetime.datetime.strptime( nowtime, '%Y-%m-%d %H:%M:%S' )
-        logging.info( '现在的时间%s' % nowtime )
-        gettime = cache.get( '%s_MMCTIMAdressAddfriends_time' % d.server.adb.device_serial( ) )
-        logging.info( '以前的时间%s' % gettime )
-        if gettime != None:
-            d2 = datetime.datetime.strptime( gettime, '%Y-%m-%d %H:%M:%S' )
-            delta1 = (d1 - d2)
-            # print( delta1 )
-            delta = re.findall( r"\d+\.?\d*", str( delta1 ) )  # 将天小时等数字拆开
-            day1 = int( delta[0] )
-            hours1 = int( delta[1] )
-            minutes1 = 0
-            if 'days' in str( delta1 ):
-                minutes1 = int( delta[2] )
-                allminutes = day1 * 24 * 60 + hours1 * 60 + minutes1
-            else:
-                allminutes = day1 * 60 + hours1  # 当时间不超过天时此时天数变量成为小时变量
-            logging.info( "day=%s,hours=%s,minutes=%s" % (day1, hours1, minutes1) )
-
-            logging.info( '两个时间的时间差%s' % allminutes )
-            set_time = int( args['set_time'] )  # 得到设定的时间
-            if allminutes < set_time:  # 由外界设定
-                z.toast( '该模块未满足指定时间间隔,程序结束' )
-                return 'end'
-        else:
-            z.toast( '尚未保存时间' )
 
     def getAddressList(self, d,z, args):
         z.heartbeat()
@@ -236,8 +207,21 @@ class MMCTIMAdressAddfriends:
         z.sleep( 1 )
 
     def action(self,d,z,args):
-        condition = self.timeinterval( z, args )
-        if condition == 'end':
+        startTime = args["startTime"]
+        endTime = args["endTime"]
+        try:
+            if self.repo.timeCompare( startTime, endTime ):
+                z.toast( "该时间段不允许运行" )
+                return
+        except:
+            z.toast( "输入的时间格式错误,请检查后再试" )
+            return
+        set_timeStart = int( args['set_timeStart'] )  # 得到设定的时间
+        set_timeEnd = int( args["set_timeEnd"] )
+        run_time = float( random.randint( set_timeStart, set_timeEnd ) )
+        run_interval = z.getModuleRunInterval( self.mid )
+        if run_interval is not None and run_interval < run_time:
+            z.toast( u'锁定时间还差:%d分钟' % int( run_time - run_interval ) )
             z.sleep( 2 )
             return
         z.heartbeat( )
@@ -290,8 +274,7 @@ class MMCTIMAdressAddfriends:
                 z.toast( "登录状态异常，跳过此模块" )
                 now = datetime.datetime.now( )
                 nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                cache.set( '%s_MMCTIMAdressAddfriends_time' % d.server.adb.device_serial( ), nowtime,
-                           None )
+                z.setModuleLastRun( self.mid )
                 z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
         if d( text='马上绑定' ).exists:
@@ -299,8 +282,7 @@ class MMCTIMAdressAddfriends:
             if result == "nothing":
                 now = datetime.datetime.now( )
                 nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                cache.set( '%s_MMCTIMAdressAddfriends_time' % d.server.adb.device_serial( ), nowtime,
-                           None )
+                z.setModuleLastRun( self.mid )
                 z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
         if d( text='通讯录' ).exists:
@@ -322,8 +304,7 @@ class MMCTIMAdressAddfriends:
                         z.sleep( int( args["time_delay"] ) )
                     now = datetime.datetime.now( )
                     nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                    cache.set( '%s_MMCTIMAdressAddfriends_time' % d.server.adb.device_serial( ), nowtime,
-                               None )
+                    z.setModuleLastRun( self.mid )
                     z.toast( '模块结束，保存的时间是%s' % nowtime )
                     return
             obj = d( className="android.view.View", description="删除 按钮" )
@@ -383,8 +364,7 @@ class MMCTIMAdressAddfriends:
                     z.sleep( int( args["time_delay"] ) )
                 now = datetime.datetime.now( )
                 nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                cache.set( '%s_MMCTIMAdressAddfriends_time' % d.server.adb.device_serial( ), nowtime,
-                           None )
+                z.setModuleLastRun( self.mid )
                 z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
             z.sleep( 7 )
@@ -393,8 +373,7 @@ class MMCTIMAdressAddfriends:
                 z.sleep( int( args["time_delay"] ) )
             now = datetime.datetime.now( )
             nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-            cache.set( '%s_MMCTIMAdressAddfriends_time' % d.server.adb.device_serial( ), nowtime,
-                       None )
+            z.setModuleLastRun( self.mid )
             z.toast( '模块结束，保存的时间是%s' % nowtime )
             return
         if d( text='匹配手机通讯录' ).exists:
@@ -414,8 +393,7 @@ class MMCTIMAdressAddfriends:
                     z.sleep( int( args["time_delay"] ) )
                 now = datetime.datetime.now( )
                 nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                cache.set( '%s_MMCTIMAdressAddfriends_time' % d.server.adb.device_serial( ), nowtime,
-                           None )
+                z.setModuleLastRun( self.mid )
                 z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
         count = 0
@@ -491,9 +469,7 @@ class MMCTIMAdressAddfriends:
                                     z.toast( "频繁操作,跳出模块" )
                                     now = datetime.datetime.now( )
                                     nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                                    cache.set( '%s_MMCTIMAdressAddfriends_time' % d.server.adb.device_serial( ),
-                                               nowtime,
-                                               None )
+                                    z.setModuleLastRun( self.mid )
                                     z.toast( '模块结束，保存的时间是%s' % nowtime )
                                     return
 
@@ -525,8 +501,7 @@ class MMCTIMAdressAddfriends:
                     z.toast( "频繁操作,跳出模块" )
                     now = datetime.datetime.now( )
                     nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                    cache.set( '%s_MMCTIMAdressAddfriends_time' % d.server.adb.device_serial( ), nowtime,
-                               None )
+                    z.setModuleLastRun( self.mid )
                     z.toast( '模块结束，保存的时间是%s' % nowtime )
                     return
                 else:
@@ -584,8 +559,27 @@ class MMCTIMAdressAddfriends:
                                 d( text="退出" ).click( )
             z.sleep( 1 )
             z.heartbeat( )
+            objtemp = d( index=0, className="android.widget.RelativeLayout",
+                         resourceId="com.tencent.tim:id/name" ).child( index=2,className="android.widget.TextView",resourceId="com.tencent.tim:id/name" )
+            if objtemp.exists:
+                objtemp = objtemp.info["text"].encode( "utf-8" )[3:]
             d( text='下一步', resourceId='com.tencent.tim:id/ivTitleBtnRightText',
                className="android.widget.TextView" ).click( )
+            try:
+                obj = d( index=0, className="android.widget.LinearLayout", resourceId="com.tencent.tim:id/name" ).child(
+                    index=1, className="android.widget.EditText", resourceId="com.tencent.tim:id/name" )
+                if obj.exists:
+                    obj = obj.info["text"].encode( "utf-8" )
+                    obj = int(obj)
+            except:
+                try:
+                    a = int(objtemp)
+                    if d(index=0,className="android.view.View",description="删除 按钮").exists:
+                        d( index=0, className="android.view.View", description="删除 按钮" ).click()
+                        z.sleep(1)
+                        z.input(objtemp)
+                except:
+                    z.sleep(1)
             z.sleep( 1 )
             if d( text='发送' ).exists:
                 d( text='发送' ).click( )
@@ -594,16 +588,14 @@ class MMCTIMAdressAddfriends:
                     z.toast("无法添加")
                     now = datetime.datetime.now( )
                     nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                    cache.set( '%s_MMCTIMAdressAddfriends_time' % d.server.adb.device_serial( ), nowtime,
-                               None )
+                    z.setModuleLastRun( self.mid )
                     z.toast( '模块结束，保存的时间是%s' % nowtime )
                     return
             if d( resourceId='com.tencent.tim:id/name', text='添加失败，请勿频繁操作' ).exists:  # 操作过于频繁的情况
                 z.toast( "频繁操作,跳出模块" )
                 now = datetime.datetime.now( )
                 nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                cache.set( '%s_MMCTIMAdressAddfriends_time' % d.server.adb.device_serial( ), nowtime,
-                           None )
+                z.setModuleLastRun( self.mid )
                 z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
             # print( QQnumber + "请求发送成功" )
@@ -616,23 +608,20 @@ class MMCTIMAdressAddfriends:
                 z.toast( "添加数量好友达到需求数量,停止模块" )
                 now = datetime.datetime.now( )
                 nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                cache.set( '%s_MMCTIMAdressAddfriends_time' % d.server.adb.device_serial( ), nowtime,
-                           None )
+                z.setModuleLastRun( self.mid )
                 z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
             if num > 3:
                 z.toast( "请求失败，无法添加，退出模块" )
                 now = datetime.datetime.now( )
                 nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                cache.set( '%s_MMCTIMAdressAddfriends_time' % d.server.adb.device_serial( ), nowtime,
-                           None )
+                z.setModuleLastRun( self.mid )
                 z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
         z.toast( "已无好友可加,停止模块！" )
         now = datetime.datetime.now( )
         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-        cache.set( '%s_MMCTIMAdressAddfriends_time' % d.server.adb.device_serial( ), nowtime,
-                   None )
+        z.setModuleLastRun( self.mid )
         z.toast( '模块结束，保存的时间是%s' % nowtime )
         if (args["time_delay"]):
             time.sleep( int( args["time_delay"] ) )
@@ -652,76 +641,9 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT524SK00685")
-    z = ZDevice("HT524SK00685")
-    nowTime = datetime.datetime.now( ).strftime( "%Y%m%d%H%M%S" )  # 当前时间
-    thistimeH = int( nowTime[8:10] )
-    thistimeM = int( nowTime[10:12] )
-    thistimeH = thistimeH + thistimeM / 60
-#     name = z.phoneToName('12345678910')
-#     phone = z.nameToPhone(name)
-#     pkg = 'com.tencent.mobileqq'
-#     z.server.install()
-#
-#
-#     slot = Slot('cda0ae8d', 'mobileqq')
-#     print (slot.getSlots())
-#     #slot.backup('1', 'slot_1')
-#     #slot.restore('1')
-#     print z.qq_getLoginStatus(d)
-#     z.generate_serial('com.tencent.mobileqq')
-#     print(z.get_serial(pkg))
-#     info = '{"buildManufacturer":"ZTE","buildModel":"ZTE G720C","buildSerial":"ytz0fad63hkensm","buildVersionRelease":"Android 2.2.3","empty":false,"settingsSecureAndroidId":"wwx31wo6hhxbkrw","telephonyGetDeviceId":"864948416091531","telephonyGetLine1Number":"+8615015541026","telephonyGetNetworkType":"12","telephonyGetSimSerialNumber":"84508614357292636763","telephonyGetSubscriberId":"48313995020377949279","wifiInfoGetMacAddress":"00:03:6C:6B:B2:EA","wifiInfoGetSSID":"TP-ZPBZEBM7"}'
-#     z.set_serial(pkg, info)
-#     source = '/tmp/xxx.png'
-#     d.screenshot(source)
-#     width = 540.0
-#     height = 960.0
-#     p =  { "x1":37/width, "y1":380/height, "x2":502/width, "y2":473/height}
-#     z.img_crop(source, p)
-#
-#     out = d.server.adb.run_cmd('shell', 'ls')
-#     z.input("xxx")
-# #    d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
-#     z.server.install()
-#
-#     slot = Slot('cda0ae8d', 'mobileqq')
-#     print (slot.getSlots())
-#     slot.backup('21', '22221111')
-#
-#     print (slot.getSlots())
-#     slot.clear('21')
-#
-#     z.generateSerial();
-    #z.input("6565wv=1027&k=48KHKLm")
-
-
-    #d.server.adb.cmd("shell", "am", "start", "-a", "zime.clear.contacts").communicate()
-    # d.server.adb.cmd("shell", "pm clear com.android.providers.contacts").communicate()
-    # #d.server.adb.cmd("push", filename, "/data/local/tmp/contacts.txt").communicate()
-    # d.server.adb.cmd("shell", "am", "start", "-n", "com.zunyun.zime/.ImportActivity", "-t", "text/plain", "-d",
-    #                  "/data/local/tmp/contacts.txt").communicate()
-
-    # d.dump(compressed=False)
+    d = Device("d99e4b99")
+    z = ZDevice("d99e4b99")
 
     args = {"repo_cate_id":"113",'number_count':'50',"random_name":"是","clear":"是","time_delay":"3","repo_material_id":"39","switch_card":"否",
-            "EndIndex": "2","set_time":"100","startTime":"16","endTime":"10"}    #cate_id是仓库号，length是数量
-    startTime = float( args["startTime"] )
-    endTime = float( args["endTime"] )
-    flag = True
-    try:
-        startTime = float( args["startTime"] )
-        endTime = float( args["endTime"] )
-        if startTime > endTime:
-            if (thistimeH >= startTime and thistimeM<24) or thistimeH <= endTime:
-                z.toast( "不在指定的时间内,不运行" )
-                flag = False
-        else:
-            if thistimeH >= startTime and thistimeH <= endTime:
-                z.toast( "不在指定的时间内,不运行" )
-                flag = False
-    except:
-        z.toast( "设置的时间格式错误" )
-        flag = False
-    if flag:
-        o.action( d, z, args )
+            "EndIndex": "2","set_timeStart":"100","set_timeEnd":"120","startTime":"0","endTime":"10"}    #cate_id是仓库号，length是数量
+    o.action( d, z, args )

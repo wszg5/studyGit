@@ -22,7 +22,7 @@ from zservice import ZDevice
 class MMCTIMAddfriendsByNumber:
     def __init__(self):
         self.repo = Repo()
-
+        self.mid = os.path.realpath( __file__ )
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
         randomNum = random.randint(0, 1000);  # 生成的随机整数n，其中0<=n<=100
@@ -89,39 +89,22 @@ class MMCTIMAddfriendsByNumber:
         else:  # 没有基本资料的情况
             return '不限'
 
-    def timeinterval(self, z, args):
-        now = datetime.datetime.now( )
-        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-        d1 = datetime.datetime.strptime( nowtime, '%Y-%m-%d %H:%M:%S' )
-        logging.info( '现在的时间%s' % nowtime )
-        gettime = cache.get( '%s_MMCTIMAddfriendsByNumber_time' % d.server.adb.device_serial( ) )
-        logging.info( '以前的时间%s' % gettime )
-        if gettime != None:
-            d2 = datetime.datetime.strptime( gettime, '%Y-%m-%d %H:%M:%S' )
-            delta1 = (d1 - d2)
-            # print( delta1 )
-            delta = re.findall( r"\d+\.?\d*", str( delta1 ) )  # 将天小时等数字拆开
-            day1 = int( delta[0] )
-            hours1 = int( delta[1] )
-            minutes1 = 0
-            if 'days' in str( delta1 ):
-                minutes1 = int( delta[2] )
-                allminutes = day1 * 24 * 60 + hours1 * 60 + minutes1
-            else:
-                allminutes = day1 * 60 + hours1  # 当时间不超过天时此时天数变量成为小时变量
-            logging.info( "day=%s,hours=%s,minutes=%s" % (day1, hours1, minutes1) )
-
-            logging.info( '两个时间的时间差%s' % allminutes )
-            set_time = int( args['set_time'] )  # 得到设定的时间
-            if allminutes < set_time:  # 由外界设定
-                z.toast( '该模块未满足指定时间间隔,程序结束' )
-                return 'end'
-        else:
-            z.toast( '尚未保存时间' )
-
     def action(self, d, z,args):
-        condition = self.timeinterval( z, args )
-        if condition == 'end':
+        startTime = args["startTime"]
+        endTime = args["endTime"]
+        try:
+            if self.repo.timeCompare( startTime, endTime ):
+                z.toast( "该时间段不允许运行" )
+                return
+        except:
+            z.toast( "输入的时间格式错误,请检查后再试" )
+            return
+        set_timeStart = int( args['set_timeStart'] )  # 得到设定的时间
+        set_timeEnd = int( args["set_timeEnd"] )
+        run_time = float( random.randint( set_timeStart, set_timeEnd ) )
+        run_interval = z.getModuleRunInterval( self.mid )
+        if run_interval is not None and run_interval < run_time:
+            z.toast( u'锁定时间还差:%d分钟' % int( run_time - run_interval ) )
             z.sleep( 2 )
             return
         z.toast( "准备执行MMS版TIM搜索加好友模块" )
@@ -167,8 +150,7 @@ class MMCTIMAddfriendsByNumber:
                 z.toast( "登录状态异常，跳过此模块" )
                 now = datetime.datetime.now( )
                 nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                cache.set( '%s_MMCTIMAddfriendsByNumber_time' % d.server.adb.device_serial( ), nowtime,
-                           None )
+                z.setModuleLastRun( self.mid )
                 z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
 
@@ -195,11 +177,11 @@ class MMCTIMAddfriendsByNumber:
         list = numbers # 将取出的号码保存到一个新的集合
         # num = list[0]['number']
         QQnumber = numbers[0]['number']
-        z.sleep(8)
+        z.sleep(1)
         z.heartbeat( )
         d(resourceId='com.tencent.tim:id/name',description='快捷入口').click()
         z.heartbeat( )
-        z.sleep( 2 )
+        z.sleep( 1 )
         if d(text='加好友',resourceId='com.tencent.tim:id/name').exists:
             d(text='加好友',resourceId='com.tencent.tim:id/name').click()
             z.heartbeat( )
@@ -208,15 +190,19 @@ class MMCTIMAddfriendsByNumber:
             d(resourceId='com.tencent.tim:id/name', description='快捷入口').click()
             z.heartbeat( )
             d(text='加好友',resourceId='com.tencent.tim:id/name').click()
-        z.sleep(3)
+        z.sleep(1)
         z.heartbeat( )
-        d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/name').click()
-        d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword').click()
+        if d(text='QQ号/手机号/群', resourceId='com.tencent.tim:id/name').exists:
+            d(text='QQ号/手机号/群', resourceId='com.tencent.tim:id/name').click()
+        # d(text='QQ号/手机号/群', resourceId='com.tencent.tim:id/et_search_keyword').click()
         z.heartbeat( )
-        d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword').set_text(QQnumber)  # 第一次添加的帐号 list[0]
+        # d(text='QQ号/手机号/群', resourceId='com.tencent.tim:id/et_search_keyword').set_text(QQnumber)  # 第一次添加的帐号 list[0]
+        z.input(QQnumber)
         z.heartbeat( )
-        d( text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search' ).click( )
-        z.sleep(2)
+        # d( text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search' ).click( )
+        if d(text="找人:",className="android.widget.TextView").exists:
+            d( text="找人:", className="android.widget.TextView" ).click()
+            z.sleep(3)
         count = 0
         while count<add_count:
             numbers = list[i]
@@ -231,7 +217,7 @@ class MMCTIMAddfriendsByNumber:
             if d(text='没有找到相关结果',className='android.widget.TextView').exists:                            #没有这个人的情况
                 z.heartbeat( )
                 d(resourceId='com.tencent.tim:id/ib_clear_text',description='清空').click()
-                obj = d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword')
+                obj = d(text='QQ号/手机号/群', resourceId='com.tencent.tim:id/et_search_keyword')
                 if obj.exists:
                     z.heartbeat( )
                     z.sleep( 2 )
@@ -241,14 +227,16 @@ class MMCTIMAddfriendsByNumber:
                     z.heartbeat( )
                     z.sleep( 2 )
                     obj.set_text(QQnumber)  # 下次要添加的号码
-                d(text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search').click()
+                if d( text="找人:", className="android.widget.TextView" ).exists:
+                    d( text="找人:", className="android.widget.TextView" ).click( )
+                    z.sleep( 3 )
                 time.sleep(1)
                 continue
             time.sleep(2)
             if d(text="申请加群").exists:
                 d(resourceId="com.tencent.tim:id/ivTitleBtnLeft",description="返回按钮").click()
                 d( resourceId='com.tencent.tim:id/ib_clear_text', description='清空' ).click( )
-                obj = d( text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword' )
+                obj = d( text='QQ号/手机号/群', resourceId='com.tencent.tim:id/et_search_keyword' )
                 if obj.exists:
                     z.heartbeat( )
                     z.sleep( 2 )
@@ -258,7 +246,10 @@ class MMCTIMAddfriendsByNumber:
                     z.heartbeat( )
                     z.sleep( 2 )
                     obj.set_text( QQnumber )  # 下次要添加的号码
-                d( text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search' ).click( )
+                # d( text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search' ).click( )
+                if d( text="找人:", className="android.widget.TextView" ).exists:
+                    d( text="找人:", className="android.widget.TextView" ).click( )
+                    z.sleep( 3 )
                 time.sleep( 1 )
                 continue
             z.sleep(2)
@@ -278,7 +269,7 @@ class MMCTIMAddfriendsByNumber:
                     d( text='返回', resourceId='com.tencent.tim:id/ivTitleBtnLeft' ).click( )
                     z.sleep( 2 )
                     d( resourceId='com.tencent.tim:id/ib_clear_text', description='清空' ).click( )
-                    obj = d( text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword' )
+                    obj = d( text='QQ号/手机号/群', resourceId='com.tencent.tim:id/et_search_keyword' )
                     if obj.exists:
                         z.heartbeat( )
                         z.sleep( 2 )
@@ -287,7 +278,9 @@ class MMCTIMAddfriendsByNumber:
                     if obj.exists:
                         z.sleep( 2 )
                         obj.set_text(QQnumber )
-                    d( text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search' ).click( )
+                    if d( text="找人:", className="android.widget.TextView" ).exists:
+                        d( text="找人:", className="android.widget.TextView" ).click( )
+                        z.sleep( 3 )
                     continue
             z.heartbeat( )
             d(text='加好友',resourceId='com.tencent.tim:id/name').click()
@@ -299,7 +292,7 @@ class MMCTIMAddfriendsByNumber:
                 z.sleep( 2 )
                 d(resourceId='com.tencent.tim:id/ib_clear_text', description='清空').click()
                 z.sleep( 2 )
-                obj = d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword')
+                obj = d(text='QQ号/手机号/群', resourceId='com.tencent.tim:id/et_search_keyword')
                 if obj.exists:
                     z.heartbeat( )
                     z.sleep( 2 )
@@ -310,7 +303,9 @@ class MMCTIMAddfriendsByNumber:
                     z.sleep( 2 )
                     obj.set_text(QQnumber)
                 time.sleep(1)
-                d(text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search').click()
+                if d( text="找人:", className="android.widget.TextView" ).exists:
+                    d( text="找人:", className="android.widget.TextView" ).click( )
+                    z.sleep( 3 )
                 continue
             time.sleep(2)
             if d(text="风险提示").exists:   #风险提示
@@ -321,7 +316,7 @@ class MMCTIMAddfriendsByNumber:
                 d( text='返回', resourceId='com.tencent.tim:id/ivTitleBtnLeft' ).click( )
                 z.sleep( 2 )
                 d( resourceId='com.tencent.tim:id/ib_clear_text', description='清空' ).click( )
-                obj = d( text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword' )
+                obj = d( text='QQ号/手机号/群', resourceId='com.tencent.tim:id/et_search_keyword' )
                 if obj.exists:
                     z.heartbeat( )
                     z.sleep( 2 )
@@ -330,7 +325,9 @@ class MMCTIMAddfriendsByNumber:
                 if obj.exists:
                     z.sleep( 2 )
                     obj.set_text( QQnumber )
-                d( text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search' ).click( )
+                if d( text="找人:", className="android.widget.TextView" ).exists:
+                    d( text="找人:", className="android.widget.TextView" ).click( )
+                    z.sleep( 3 )
                 continue
             if d(text='必填',resourceId='com.tencent.tim:id/name').exists:                     #要回答问题的情况
                 z.heartbeat( )
@@ -341,7 +338,7 @@ class MMCTIMAddfriendsByNumber:
                 d(text='返回',resourceId='com.tencent.tim:id/ivTitleBtnLeft').click()
                 z.sleep( 2 )
                 d(resourceId='com.tencent.tim:id/ib_clear_text', description='清空').click()
-                obj = d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword')
+                obj = d(text='QQ号/手机号/群', resourceId='com.tencent.tim:id/et_search_keyword')
                 if obj.exists:
                     z.sleep( 2 )
                     obj.set_text(QQnumber)  # 下次要添加的号码-
@@ -351,7 +348,9 @@ class MMCTIMAddfriendsByNumber:
                     z.sleep( 2 )
                     obj.set_text(QQnumber)
                 time.sleep(1)
-                d(text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search').click()
+                if d( text="找人:", className="android.widget.TextView" ).exists:
+                    d( text="找人:", className="android.widget.TextView" ).click( )
+                    z.sleep( 3 )
                 continue
             time.sleep(1)
             z.heartbeat( )
@@ -369,27 +368,28 @@ class MMCTIMAddfriendsByNumber:
                     z.toast( "频繁操作,跳出模块" )
                     now = datetime.datetime.now( )
                     nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                    cache.set( '%s_MMCTIMAddfriendsByNumber_time' % d.server.adb.device_serial( ), nowtime,
-                               None )
+                    z.setModuleLastRun( self.mid )
                     z.toast( '模块结束，保存的时间是%s' % nowtime )
                     return
-            else:
-                print( str( QQnumber ) + "请求发送成功" )
-                time.sleep(1)
-                d(text='返回', resourceId='com.tencent.tim:id/ivTitleBtnLeft').click()
-                z.sleep( 2 )
-                d(resourceId='com.tencent.tim:id/ib_clear_text', description='清空').click()
-                obj = d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword')
-                if obj.exists:
-                    z.heartbeat( )
+                else:
+                    print( str( QQnumber ) + "请求发送成功" )
+                    time.sleep(1)
+                    d(text='返回', resourceId='com.tencent.tim:id/ivTitleBtnLeft').click()
                     z.sleep( 2 )
-                    obj.set_text(QQnumber)  # 要改为从库里取-------------------------------
-                obj = d(text='网络查找人', resourceId='com.tencent.tim:id/et_search_keyword')
-                if obj.exists:
-                    z.sleep( 2 )
-                    obj.set_text(QQnumber)
-                d(text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search').click()
-                continue
+                    d(resourceId='com.tencent.tim:id/ib_clear_text', description='清空').click()
+                    obj = d(text='QQ号/手机号/群', resourceId='com.tencent.tim:id/et_search_keyword')
+                    if obj.exists:
+                        z.heartbeat( )
+                        z.sleep( 2 )
+                        obj.set_text(QQnumber)  # 要改为从库里取-------------------------------
+                    obj = d(text='网络查找人', resourceId='com.tencent.tim:id/et_search_keyword')
+                    if obj.exists:
+                        z.sleep( 2 )
+                        obj.set_text(QQnumber)
+                    if d( text="找人:", className="android.widget.TextView" ).exists:
+                        d( text="找人:", className="android.widget.TextView" ).click( )
+                        z.sleep( 3 )
+                    continue
             time.sleep(2)
             obj = d(className='android.widget.EditText', resourceId='com.tencent.tim:id/name').info           #将之前消息框的内容删除
             obj = obj['text']
@@ -404,6 +404,35 @@ class MMCTIMAddfriendsByNumber:
             if "是" in switch_card:
                 if d( index=2, className="android.widget.CompoundButton", resourceId="com.tencent.tim:id/name" ).exists:
                     d( index=2, className="android.widget.CompoundButton", resourceId="com.tencent.tim:id/name" ).click( )
+                else:
+                    if d(text="设置我的名片").exists:
+                        d(text="设置我的名片").click()
+                        while True:
+                            z.sleep(3)
+                            z.heartbeat()
+                            d.dump( compressed=False )
+                            if d(text = "添加我的名片").exists:
+                                d(text = "添加我的名片").click()
+                            d(index=3,resourceId="com.tencent.tim:id/name",className="android.widget.Button").click()
+                            z.sleep(2)
+                            obj = d( index=0, className="com.tencent.widget.GridView",resourceId="com.tencent.tim:id/photo_list_gv" ).child(
+                                index=0, className="android.widget.RelativeLayout" )
+                            if obj.exists:
+                                z.sleep( 1 )
+                                z.heartbeat( )
+                                obj.click( )
+                                z.sleep( 3 )
+                                d( text='确定', resourceId='com.tencent.tim:id/name' ).click( )
+                                time.sleep( 3 )
+                                z.heartbeat( )
+                                d(text="完成").click()
+                                z.sleep( 1 )
+                                z.heartbeat( )
+                                d(text="返回").click()
+                                break
+                            if d( index=0,resourceId="com.tencent.tim:id/name",className="android.widget.ImageButton" ).exists:
+                                d( index=0, resourceId="com.tencent.tim:id/name", className="android.widget.ImageButton" ).click( )
+                                d(text="退出").click()
             d(text='下一步',resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
             z.sleep( 1 )
             d(text='发送',resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
@@ -419,17 +448,16 @@ class MMCTIMAddfriendsByNumber:
                 z.toast( "频繁操作,跳出模块" )
                 now = datetime.datetime.now( )
                 nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                cache.set( '%s_MMCTIMAddfriendsByNumber_time' % d.server.adb.device_serial( ), nowtime,
-                           None )
+                z.setModuleLastRun( self.mid )
                 z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
-            z.sleep( 2 )
+            z.sleep( 1 )
             d(text='返回',resourceId='com.tencent.tim:id/ivTitleBtnLeft').click()
             z.sleep(2)
             d(resourceId='com.tencent.tim:id/ib_clear_text',description='清空').click()
-            z.sleep( 2 )
+            z.sleep( 1 )
             if count<add_count:
-                obj = d(text='QQ号/手机号/邮箱/群/公众号', resourceId='com.tencent.tim:id/et_search_keyword')
+                obj = d(text='QQ号/手机号/群', resourceId='com.tencent.tim:id/et_search_keyword')
                 if obj.exists:
                     obj.click()
                     z.input(QQnumber)
@@ -438,7 +466,9 @@ class MMCTIMAddfriendsByNumber:
                 if obj.exists:
                     obj.set_text(QQnumber)
                     z.sleep( 1 )
-                d(text='搜索', resourceId='com.tencent.tim:id/btn_cancel_search').click()
+                if d( text="找人:", className="android.widget.TextView" ).exists:
+                    d( text="找人:", className="android.widget.TextView" ).click( )
+                    z.sleep( 3 )
             else:
                 z.sleep( 2 )
                 z.heartbeat( )
@@ -449,12 +479,11 @@ class MMCTIMAddfriendsByNumber:
             if count == add_count:
                 print ("模块已完成")
                 z.toast("模块已完成")
-                now = datetime.datetime.now( )
-                nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                cache.set( '%s_MMCTIMAddfriendsByNumber_time' % d.server.adb.device_serial( ), nowtime,
-                           None )
-                z.toast( '模块结束，保存的时间是%s' % nowtime )
                 break
+        now = datetime.datetime.now( )
+        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+        z.setModuleLastRun( self.mid )
+        z.toast( '模块结束，保存的时间是%s' % nowtime )
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
@@ -474,31 +503,9 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT524SK00685")
-    z = ZDevice("HT524SK00685")
-    nowTime = datetime.datetime.now( ).strftime( "%Y%m%d%H%M%S" )  # 当前时间
-    thistimeH = int( nowTime[8:10] )
-    thistimeM = int( nowTime[10:12] )
-    thistimeH = thistimeH + thistimeM / 60
+    d = Device("d99e4b99")
+    z = ZDevice("d99e4b99")
 
-    args = {"time_delay":"3","set_time":"100","startTime":"0","endTime":"14",
+    args = {"time_delay":"3","set_timeStart":"1","set_timeEnd":"1","startTime":"0","endTime":"8",
             "repo_number_cate_id":"119","repo_material_cate_id":"39",'gender':"男","add_count":"5","switch_card":"N"}    #cate_id是仓库号，length是数量
-    startTime = float( args["startTime"] )
-    endTime = float( args["endTime"] )
-    flag = True
-    try:
-        startTime = float( args["startTime"] )
-        endTime = float( args["endTime"] )
-        if startTime > endTime:
-            if thistimeH >= startTime and thistimeH >= endTime:
-                z.toast( "不在指定的时间内,不运行" )
-                flag = False
-        else:
-            if thistimeH >= startTime and thistimeH <= endTime:
-                z.toast( "不在指定的时间内,不运行" )
-                flag = False
-    except:
-        z.toast( "设置的时间格式错误" )
-        flag = False
-    if flag:
-        o.action( d, z, args )
+    o.action( d, z, args )

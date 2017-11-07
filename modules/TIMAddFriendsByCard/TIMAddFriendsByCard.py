@@ -90,7 +90,9 @@ class TIMAddFriendsByCard:
                 z.heartbeat( )
                 d( text="添加第一张名片" ).click()
                 z.sleep( 1 )
-                d( text='从相册选择', resourceId='com.tencent.tim:id/action_sheet_button' ).click( )
+                while d( index=3, className="android.widget.Button" ).exists:
+                    z.heartbeat( )
+                    d( index=3, className="android.widget.Button" ).click( )
                 z.sleep( 1 )
                 obj =  d( index=0, className="com.tencent.widget.GridView",resourceId="com.tencent.tim:id/photo_list_gv" ).child(index=0,className="android.widget.RelativeLayout")
                 if obj.exists:

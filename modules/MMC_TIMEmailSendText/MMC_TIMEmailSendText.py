@@ -22,6 +22,7 @@ from zservice import ZDevice
 class MMCTIMEmailSendText:
     def __init__(self):
         self.repo = Repo()
+        self.mid = os.path.realpath( __file__ )
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
@@ -86,40 +87,22 @@ class MMCTIMEmailSendText:
         #     dominant_color = None
         return dominant_color
     
-    def timeinterval(self, z, args):
-        now = datetime.datetime.now( )
-        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-        d1 = datetime.datetime.strptime( nowtime, '%Y-%m-%d %H:%M:%S' )
-        logging.info( '现在的时间%s' % nowtime )
-        gettime = cache.get( '%s_MMCTIMEmailSendText_time' % d.server.adb.device_serial( ) )
-        logging.info( '以前的时间%s' % gettime )
-        if gettime != None:
-            d2 = datetime.datetime.strptime( gettime, '%Y-%m-%d %H:%M:%S' )
-            delta1 = (d1 - d2)
-            # print( delta1 )
-            delta = re.findall( r"\d+\.?\d*", str( delta1 ) )  # 将天小时等数字拆开
-            day1 = int( delta[0] )
-            hours1 = int( delta[1] )
-            minutes1 = 0
-            if 'days' in str( delta1 ):
-                minutes1 = int( delta[2] )
-                allminutes = day1 * 24 * 60 + hours1 * 60 + minutes1
-            else:
-                allminutes = day1 * 60 + hours1  # 当时间不超过天时此时天数变量成为小时变量
-            logging.info( "day=%s,hours=%s,minutes=%s" % (day1, hours1, minutes1) )
-
-            logging.info( '两个时间的时间差%s' % allminutes )
-            set_time = int( args['set_time'] )  # 得到设定的时间
-            if allminutes < set_time:  # 由外界设定
-                z.toast( '该模块未满足指定时间间隔,程序结束' )
-                return 'end'
-        else:
-            z.toast( '尚未保存时间' )
-
-
     def action(self, d, z, args):
-        condition = self.timeinterval( z, args )
-        if condition == 'end':
+        startTime = args["startTime"]
+        endTime = args["endTime"]
+        try:
+            if self.repo.timeCompare( startTime, endTime ):
+                z.toast( "该时间段不允许运行" )
+                return
+        except:
+            z.toast( "输入的时间格式错误,请检查后再试" )
+            return
+        set_timeStart = int( args['set_timeStart'] )  # 得到设定的时间
+        set_timeEnd = int( args["set_timeEnd"] )
+        run_time = float( random.randint( set_timeStart, set_timeEnd ) )
+        run_interval = z.getModuleRunInterval( self.mid )
+        if run_interval is not None and run_interval < run_time:
+            z.toast( u'锁定时间还差:%d分钟' % int( run_time - run_interval ) )
             z.sleep( 2 )
             return
         z.toast( "MMC版TIM邮件发消息" )
@@ -170,8 +153,7 @@ class MMCTIMEmailSendText:
                 z.toast( "登录状态异常，跳过此模块" )
                 now = datetime.datetime.now( )
                 nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                cache.set( '%s_MMCTIMEmailSendText_time' % d.server.adb.device_serial( ), nowtime,
-                           None )
+                z.setModuleLastRun( self.mid )
                 z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
         count = int( args["count"] )
@@ -196,7 +178,7 @@ class MMCTIMEmailSendText:
                 break
         time.sleep( 4 )
         n = 0
-        if not d( text="写邮件" ).exists:
+        if not d( text="开始写邮件" ).exists:
             while d( text='开通QQ邮箱', className='android.widget.Button' ).exists:
                 z.heartbeat( )
                 z.sleep( 1 )
@@ -205,8 +187,7 @@ class MMCTIMEmailSendText:
                     z.toast( "邮箱开通失败,停止模块" )
                     now = datetime.datetime.now( )
                     nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                    cache.set( '%s_MMCTIMEmailSendText_time' % d.server.adb.device_serial( ), nowtime,
-                               None )
+                    z.setModuleLastRun( self.mid )
                     z.toast( '模块结束，保存的时间是%s' % nowtime )
                     return
                 else:
@@ -229,7 +210,10 @@ class MMCTIMEmailSendText:
             QQEmail = numbers[0]['number']
             Material = self.repo.GetMaterial( repo_material_cateId, 0, 1 )
             message = Material[0]['content']
-            d( text="写邮件" ).click( )
+            if d( text="开始写邮件" ).exists:
+                d( text="开始写邮件" ).click( )
+            if d(text="写邮件").exists:
+                d( text="写邮件" ).click()
             # while not d(text="发送").exists:
             #     z.sleep(2)
             z.sleep( 14 )
@@ -264,24 +248,21 @@ class MMCTIMEmailSendText:
                 z.toast( "状态异常,停止模块" )
                 now = datetime.datetime.now( )
                 nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                cache.set( '%s_MMCTIMEmailSendText_time' % d.server.adb.device_serial( ), nowtime,
-                           None )
+                z.setModuleLastRun( self.mid )
                 z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
             if color == (0, 121, 255):
                 z.toast( "状态异常,停止模块" )
                 now = datetime.datetime.now( )
                 nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                cache.set( '%s_MMCTIMEmailSendText_time' % d.server.adb.device_serial( ), nowtime,
-                           None )
+                z.setModuleLastRun( self.mid )
                 z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
             if color != None:
                 z.toast( "状态异常,停止模块" )
                 now = datetime.datetime.now( )
                 nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                cache.set( '%s_MMCTIMEmailSendText_time' % d.server.adb.device_serial( ), nowtime,
-                           None )
+                z.setModuleLastRun( self.mid )
                 z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
             if d( text="邮件", resourceId="com.tencent.tim:id/ivTitleBtnLeft",
@@ -294,8 +275,7 @@ class MMCTIMEmailSendText:
                 z.toast( "非正常状态,停止模块" )
                 now = datetime.datetime.now( )
                 nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                cache.set( '%s_MMCTIMEmailSendText_time' % d.server.adb.device_serial( ), nowtime,
-                           None )
+                z.setModuleLastRun( self.mid )
                 z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
                 # x4 = 431 / 540
@@ -306,12 +286,11 @@ class MMCTIMEmailSendText:
                 # d(text="邮件",resourceId="com.tencent.tim:id/ivTitleBtnLeft",className="android.widget.TextView").click()
                 # while 1:
                 #     if d(text='发送', className='android.widget.Button').exists:
+        z.toast( "模块完成" )
         now = datetime.datetime.now( )
         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-        cache.set( '%s_MMCTIMEmailSendText_time' % d.server.adb.device_serial( ), nowtime,
-                   None )
+        z.setModuleLastRun( self.mid )
         z.toast( '模块结束，保存的时间是%s' % nowtime )
-        z.toast( "模块完成" )
         if (args["time_delay"]):
             time.sleep( int( args["time_delay"] ) )
 
@@ -329,30 +308,11 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT524SK00685")
-    z = ZDevice("HT524SK00685")
-    nowTime = datetime.datetime.now( ).strftime( "%Y%m%d%H%M%S" )  # 当前时间
-    thistimeH = int( nowTime[8:10] )
-    thistimeM = int( nowTime[10:12] )
-    thistimeH = thistimeH + thistimeM / 60
+    d = Device("d99e4b99")
+    z = ZDevice("d99e4b99")
 
-    args = {"repo_mail_cateId": "119", "repo_material_cateId": "39", "time_delay": "3","count":"5","set_time":"100","startTime":"0","endTime":"20"}    #cate_id是仓库号，length是数量
-    flag = True
-    try :
-        startTime = float( args["startTime"] )
-        endTime = float( args["endTime"] )
-        if startTime > endTime:
-            if thistimeH >= startTime and thistimeH >= endTime:
-                z.toast( "不在指定的时间内,不运行" )
-                flag = False
-        else:
-            if thistimeH >= startTime and thistimeH <= endTime:
-                z.toast( "不在指定的时间内,不运行" )
-                flag = False
-    except:
-        z.toast("设置的时间格式错误")
-        flag = False
-    if flag:
-        o.action(d,z,args)
+    args = {"repo_mail_cateId": "119", "repo_material_cateId": "39", "time_delay": "3","count":"5",
+            "set_timeStart":"100","set_timeEnd":"120","startTime":"0","endTime":"8"}    #cate_id是仓库号，length是数量
+    o.action(d,z,args)
 
 

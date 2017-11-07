@@ -37,6 +37,8 @@ class TIMLogin03:
                 if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
                     break
                 z.sleep( 10 )
+                z.heartbeat()
+                z.sleep(10)
                 t = t + 1
             if t >= 6:
                 z.toast("网络无法ping通，重新开关飞行模式")
@@ -236,9 +238,14 @@ class TIMLogin03:
         if d(text='消息').exists and d(description='快捷入口').exists:
             z.toast("卡槽QQ状态正常，继续执行")
             return QQNumber
-        else:
+
+        if d( text='去安全中心' ).exists:
             self.repo.BackupInfo( cate_id, 'frozen', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
-            z.toast( "卡槽QQ状态异常，跳过此模块" )
+            z.toast( "登陆失败，重新登陆" )
+            return "nothing"
+        else:
+            self.repo.BackupInfo( cate_id, 'normal', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+            z.toast( "登陆失败，重新登陆" )
             return "nothing"
 
 
@@ -317,10 +324,11 @@ class TIMLogin03:
             remark = obj['remark']
             remarkArr = remark.split( "_" )
             QQnumber = remarkArr[1]
-            if d( textContains='身份过期' ).exists:
-                self.repo.BackupInfo( cate_id, 'normal', QQnumber, '', '' )
-            else:
+            if d( text='去安全中心' ).exists:
                 self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+
+            else:
+                self.repo.BackupInfo( cate_id, 'normal', QQnumber, '', '' )
             self.slot.clear( slotnum )  # 清空改卡槽，并补登
             z.toast( "卡槽QQ状态异常，补登陆卡槽" )
             self.action( d, z, args )
@@ -407,17 +415,18 @@ class TIMLogin03:
                     d( text='匹配手机通讯录' ).click( )
                     z.sleep( 1.5 )
                     if d( text='取消' ).exists:
-                        d( text='取消' ).child( )
+                        d( text='取消' ).click( )
                 z.toast("卡槽QQ切换成功，继续执行")
             else:
                 obj = self.slot.getSlotInfo( slotnum )
                 remark = obj['remark']
                 remarkArr = remark.split( "_" )
                 QQnumber = remarkArr[1]
-                if d(textContains='身份过期').exists:
-                    self.repo.BackupInfo(cate_id, 'normal', QQnumber, '', '')
-                else:
+                if d( text='去安全中心' ).exists:
                     self.repo.BackupInfo( cate_id, 'frozen', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+
+                else:
+                    self.repo.BackupInfo( cate_id, 'normal', QQnumber, '', '' )
                 self.slot.clear( slotnum )  # 清空改卡槽，并补登
                 z.toast( "卡槽QQ状态异常，补登陆卡槽" )
                 self.action( d, z, args )
@@ -477,8 +486,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("ec244f8")
-    z = ZDevice("ec244f8")
+    d = Device("HT4A1SK02114")
+    z = ZDevice("HT4A1SK02114")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "228","time_out":"120","time_limit": "0", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量

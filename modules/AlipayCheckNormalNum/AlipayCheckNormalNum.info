@@ -1,5 +1,5 @@
 {
-"id": "AlipayRegister",
+"id": "AlipayCheckNormalNum",
 "cate":"其他模块",
 "name":"支付宝检测手机号",
 "url": "http://www.bejson.com",
@@ -17,7 +17,7 @@
 	},
 	{
 	"id": "repo_normal_id",
-	"name":"正常号入库",
+	"name":"存在号入库",
 	"type":"repo",
 	"source":"number",
 	"top_cate_id":"21"
@@ -31,7 +31,7 @@
 	},
 	{
 	"id": "repo_not_exist_id",
-	"name":"未知号入库",
+	"name":"不存在号入库",
 	"type":"repo",
 	"source":"number",
 	"top_cate_id":"21"

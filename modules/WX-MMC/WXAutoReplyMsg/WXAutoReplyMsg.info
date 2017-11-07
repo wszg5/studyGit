@@ -1,0 +1,61 @@
+{
+"id": "WXAutoReplyMsg",
+"cate":"MMC模块",
+"name":"微信监测自动回复（恢复完毕，结束监测）",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"WX-MMC-06",
+"icon": "vcard-o",
+"remark":"微信版本,最新版",
+"setting":[
+    {
+	"id": "run_time_min",
+	"name":"最小间隔",
+	"type":"textbox",
+	"defaultValue":"1",
+	"remark":"单位：小时；注：模块运行时间间隔"
+	},
+	{
+	"id": "run_time_max",
+	"name":"最大间隔",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：小时；注：模块运行时间间隔"
+	},
+	{
+	"id": "start_time",
+	"name": "起始时间点",
+	"type":"textbox",
+	"defaultValue":"10",
+	"remark":"注：模块不可运行时间段起始时间点，时间格式（如：8或者8：30）"
+	},
+	{
+	"id": "stop_time",
+	"name": "结束时间点",
+	"type":"textbox",
+	"defaultValue":"5",
+	"remark":"注：模块不可运行时间段结束时间点，时间格式（如：8或者8：30）"
+	},
+	{
+	"id": "repo_material_id",
+	"name":"发消息素材库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "reply_count",
+	"name":"回复次数",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：次"
+	},
+    {
+	"id": "msg_count",
+	"name":"发消息数",
+	"type":"textbox",
+	"defaultValue":"1",
+	"remark":"单位：条"
+	}
+]
+}
