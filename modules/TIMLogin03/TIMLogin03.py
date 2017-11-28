@@ -212,12 +212,6 @@ class TIMLogin03:
                                  className="android.widget.EditText" )
         if detection_robot.exists or not_detection_robot.exists:
             playCodeResult = self.LoginPlayCode( d, z )  # 打验证码
-        elif d( text='消息' ).exists or d( text='马上绑定' ).exists or d( text='匹配手机通讯录' ).exists:
-            return QQNumber
-        else:
-            self.repo.BackupInfo( cate_id, 'frozen', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
-            z.toast( "卡槽QQ状态异常，跳过此模块" )
-            return "nothing"
 
         if playCodeResult == "no":
             return "nothing"

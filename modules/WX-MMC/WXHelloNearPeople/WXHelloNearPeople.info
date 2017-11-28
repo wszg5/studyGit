@@ -1,13 +1,41 @@
 {
 "id": "WXHelloNearPeople",
-"cate":"微信模块",
-"name":"微信附近人打招呼（尊云专用）",
+"cate":"MMC模块",
+"name":"微信附近人打招呼",
 "url": "http://www.bejson.com",
-"version": "1.2.1",
-"code":"WX-D-T3",
+"version": "1.0",
+"code":"WX-MMC-04",
 "icon": "vcard-o",
-"remark":"微信版本6.5.4",
+"remark":"微信版本,最新版",
 "setting":[
+   {
+	"id": "run_time_min",
+	"name":"最小间隔",
+	"type":"textbox",
+	"defaultValue":"1",
+	"remark":"单位：小时；注：模块运行时间间隔"
+	},
+	{
+	"id": "run_time_max",
+	"name":"最大间隔",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：小时；注：模块运行时间间隔"
+	},
+	{
+	"id": "start_time",
+	"name": "起始时间点",
+	"type":"textbox",
+	"defaultValue":"10",
+	"remark":"注：模块不可运行时间段起始时间点，时间格式（如：8或者8：30）"
+	},
+	{
+	"id": "stop_time",
+	"name": "结束时间点",
+	"type":"textbox",
+	"defaultValue":"5",
+	"remark":"注：模块不可运行时间段结束时间点，时间格式（如：8或者8：30）"
+	},
 	{
 	"id": "repo_material_id",
 	"name":"发消息素材库",
@@ -29,13 +57,6 @@
 	"list":{"男":"男","女":"女","不限":"不限"},
 	"defaultValue":"不限",
 	"remark":"性别要求"
-	},
-    {
-    "id": "run_time",
-    "name":"模块运行时间间隔",
-    "type":"textbox",
-    "defaultValue":"3",
-    "remark":"单位：时"
-    }
+	}
 ]
 }

@@ -1,0 +1,40 @@
+{
+"id": "YiXinAccountLogin",
+"cate":"其他模块",
+"name":"易信账号登录(有卡槽)",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"YX-Login-02",
+"icon":"vcard-o",
+"remark":"易信登录带卡槽(版本：3.0.0.202)",
+"setting":[
+{
+"id": "repo_account_id",
+"name":"提取易信帐号库",
+"type":"repo",
+"source":"account",
+"top_cate_id":"1"
+},
+{
+"id": "slot_time_limit",
+"name":"YX卡槽提取间隔",
+"type":"textbox",
+"defaultValue":"120",
+"remark":"单位：分钟；注：如果没有符合条件卡槽，后台将一直等待至有可用卡槽"
+},
+{
+"id": "account_time_limit",
+"name":"YX帐号提取间隔",
+"type":"textbox",
+"defaultValue":"120",
+"remark":"单位：分钟；注：如果帐号仓库为空，模块将开始切换卡槽"
+},
+{
+"id": "time_delay",
+"name":"模块结束延时",
+"type":"textbox",
+"defaultValue":"3",
+"remark":"单位：秒"
+}
+]
+}

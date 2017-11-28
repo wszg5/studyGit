@@ -1,34 +1,41 @@
 {
 "id": "WXImpContactAddressAddFriend",
-"name":"微信通讯录添加好友",
-"cate":"微信模块",
+"name":"微信通讯录加好友(+导入通讯录)",
+"cate":"MMC模块",
 "font": "WeiXin",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"WX30",
+"code":"WX-MMC-01",
 "icon":"vcard-o",
-"remark":"微信通讯录添加好友，微信最新版",
+"remark":"微信导入通讯录添加好友，微信最新版",
 "setting":[
     {
-	"id": "run_time",
-	"name":"模块运行时间间隔",
+	"id": "run_time_min",
+	"name":"最小间隔",
+	"type":"textbox",
+	"defaultValue":"1",
+	"remark":"单位：小时；注：模块运行时间间隔"
+	},
+	{
+	"id": "run_time_max",
+	"name":"最大间隔",
 	"type":"textbox",
 	"defaultValue":"3",
-	"remark":"单位：小时"
+	"remark":"单位：小时；注：模块运行时间间隔"
 	},
 	{
 	"id": "start_time",
 	"name": "起始时间点",
 	"type":"textbox",
-	"defaultValue":"--:--"
-	"remark":"单位：时:分"
+	"defaultValue":"10",
+	"remark":"注：模块不可运行时间段起始时间点，时间格式（如：8或者8：30）"
 	},
 	{
 	"id": "stop_time",
 	"name": "结束时间点",
 	"type":"textbox",
-	"defaultValue":"--:--"
-	"remark":"单位：时:分"
+	"defaultValue":"5",
+	"remark":"注：模块不可运行时间段结束时间点，时间格式（如：8或者8：30）"
 	},
 	{
 	"id": "repo_material_id",
@@ -47,18 +54,11 @@
 	},
 	{
 	"id": "EndIndex",
-	"name":"总人数",
+	"name":"加好友人数",
 	"type":"textbox",
-	"defaultValue":"4",
+	"defaultValue":"5",
 	"remark":"单位：个"
 	},
-    {
-    "id": "time_delay1",
-    "name":"加完好友延时",
-    "type":"textbox",
-    "defaultValue":"3",
-    "remark":"单位：秒"
-    },
     {
     "id": "repo_cate_id",
 	"name":"通讯录导入号码库",
@@ -89,11 +89,18 @@
 	"defaultValue":"20",
 	"remark":""
 	},
-	{
+    {
     "id": "time_delay2",
     "name":"导完通讯录延时",
     "type":"textbox",
     "defaultValue":"30",
+    "remark":"单位：秒"
+    },
+    {
+    "id": "time_delay1",
+    "name":"模块结束延时",
+    "type":"textbox",
+    "defaultValue":"3",
     "remark":"单位：秒"
     }
 ]

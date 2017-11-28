@@ -1,13 +1,41 @@
 {
 "id": "WinXinAddFriends",
-"cate":"微信模块",
+"cate":"MMC模块",
 "name":"微信搜索加好友",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"WX20",
+"code":"WX-MMC-03",
 "icon": "vcard-o",
-"remark":"微信版本，6.5.13",
+"remark":"微信版本，最新版",
 "setting":[
+    {
+	"id": "run_time_min",
+	"name":"最小间隔",
+	"type":"textbox",
+	"defaultValue":"1",
+	"remark":"单位：小时；注：模块运行时间间隔"
+	},
+	{
+	"id": "run_time_max",
+	"name":"最大间隔",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：小时；注：模块运行时间间隔"
+	},
+	{
+	"id": "start_time",
+	"name": "起始时间点",
+	"type":"textbox",
+	"defaultValue":"10",
+	"remark":"注：模块不可运行时间段起始时间点，时间格式（如：8或者8：30）"
+	},
+	{
+	"id": "stop_time",
+	"name": "结束时间点",
+	"type":"textbox",
+	"defaultValue":"5",
+	"remark":"注：模块不可运行时间段结束时间点，时间格式（如：8或者8：30）"
+	},
 	{
 	"id": "repo_number_cate_id",
 	"name":"号码库分类",
@@ -38,15 +66,15 @@
 	"remark":"单位：个"
 	},
 	{
-    "id": "run_time",
-    "name":"模块运行度量值",
-    "type":"textbox",
-    "defaultValue":"3",
-    "remark":"单位：时"
-    },
+	"id": "set_remark",
+	"name":"是否设置备注",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"否"
+	},
     {
     "id": "time_delay",
-    "name":"延时",
+    "name":"模块结束延时",
     "type":"textbox",
     "defaultValue":"3",
     "remark":"单位：秒"

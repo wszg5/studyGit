@@ -55,6 +55,7 @@ class Repo:
         path = "/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s" % (cateId,status,Number)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         conn.request("GET",path)
+
     def GetAccount(self, cateId, interval, limit):
         path = "/repo_api/account/pick?status=normal&cate_id=%s&interval=%s&limit=%s" % (cateId,interval,limit)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
@@ -126,14 +127,43 @@ class Repo:
         else:
             return []
     def BackupInfo(self,cateId,status,Number,IMEI,remark):  #仓库号，状态，QQ号，备注设备id_卡槽id
-        path = "/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&IMEI=%s&cardslot=%s" % (cateId,status,Number,IMEI,remark)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET",path)
+        # path = "/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&IMEI=%s&cardslot=%s" % (cateId,status,Number,IMEI,remark)
+        # conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        # conn.request("GET",path)
+        data = {"cate_id": cateId, "status": status, 'Number': Number, 'IMEI': IMEI, "cardslot": remark}
+        path = "/repo_api/account/statusInfo"
+        headers = {"Content-Type": "application/x-www-form-urlencoded",
+                   "Connection": "Keep-Alive"};
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        params = urllib.urlencode( data )
+        conn.request( method="POST", url=path, body=params, headers=headers )
+        conn.close( )
 
-    def RegisterAccount(self,qqNumber,password,phoneNumber, numberCateId):
-        path = "/repo_api/register/numberInfo?QQNumber=%s&QQPassword=%s&PhoneNumber=%s&cate_id=%s" % (qqNumber,password,phoneNumber,numberCateId)
-        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
-        conn.request("GET",path)
+    def GetDesignationAccount(self,qqNumber, numberCateId):
+        path = "/repo_api/account/getAccountNumber?QQNumber=%s&cate_id=%s" % (qqNumber,numberCateId)
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        conn.request( "GET", path )
+        response = conn.getresponse( )
+        if response.status == 200:
+            data = response.read( )
+            numbers = json.loads( data )
+            return numbers
+        else:
+            return []
+
+    def RegisterAccount(self,qqNumber,password,phoneNumber, numberCateId, status='normal', IMEI=None, remark=None):
+        # path = "/repo_api/register/numberInfo?QQNumber=%s&QQPassword=%s&PhoneNumber=%s&cate_id=%s" % (qqNumber,password,phoneNumber,numberCateId)
+        # conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        # conn.request("GET",path)
+
+        data = {"QQNumber": qqNumber, "QQPassword": password, 'PhoneNumber': phoneNumber, 'cate_id': numberCateId, 'status': status, 'IMEI': IMEI, "cardslot": remark}
+        path = "/repo_api/register/numberInfo"
+        headers = {"Content-Type": "application/x-www-form-urlencoded",
+                   "Connection": "Keep-Alive"};
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        params = urllib.urlencode( data )
+        conn.request( method="POST", url=path, body=params, headers=headers )
+        conn.close( )
 
     def uploadPhoneNumber(self, phoneNumber, numberCateId,guolv='N'):
         path = "/repo_api/screen/numberInfo?PhoneNumber=%s&cate_id=%s&guolv=%s" % (phoneNumber, numberCateId,guolv)
@@ -219,9 +249,7 @@ class Repo:
             stop_time = stop_time + ":00"
 
         if time.strptime( start_time, '%H:%M' ) < time.strptime( stop_time, '%H:%M' ):
-
-            if time.strptime( start_time, '%H:%M' ) < time.strptime( nowtime, '%H:%M' ) < time.strptime( stop_time,
-                                                                                                         '%H:%M' ):
+            if time.strptime( start_time, '%H:%M' ) < time.strptime( nowtime, '%H:%M' ) < time.strptime( stop_time, '%H:%M'):
                 return True
             else:
                 return False

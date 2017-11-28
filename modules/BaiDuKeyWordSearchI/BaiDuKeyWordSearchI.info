@@ -1,0 +1,103 @@
+{
+"id": "BaiDuKeyWordSearch",
+"cate":"MMC模块",
+"name":"百度关键词搜索",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"BD-MMC-01",
+"icon":"vcard-o",
+"remark":"百度关键词搜索,点击指定商家",
+"setting":[
+    {
+	"id": "start_time",
+	"name": "起始时间点",
+	"type":"textbox",
+	"defaultValue":"10",
+	"remark":"注：模块运行时间段起始时间点，24时间格式（如：8或者8：30）"
+	},
+	{
+	"id": "stop_time",
+	"name": "结束时间点",
+	"type":"textbox",
+	"defaultValue":"5",
+	"remark":"注：模块运行时间段结束时间点，24时间格式（如：8或者8：30）"
+	},
+    {
+    "id": "repo_information_id",
+    "name":"搜索数据储存库",
+    "type":"repo",
+    "source":"information",
+    "top_cate_id":"4"
+    },
+    {
+    "id": "material_KeyWords_id",
+    "name":"素材库取关键词",
+    "type":"repo",
+    "source":"material",
+    "top_cate_id":"12"
+    },
+    {
+    "id": "material_msg_id",
+    "name":"素材库取发消息",
+    "type":"repo",
+    "source":"material",
+    "top_cate_id":"12"
+    },
+    {
+	"id": "repo_address_id",
+	"name":"坐标仓库号",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"25"
+	},
+    {
+    "id": "KeyWords_interval",
+    "name":"关键词提取间隔",
+    "type":"textbox",
+    "defaultValue":"120",
+    "remark":"单位：分钟"
+    },
+	{
+    "id": "time",
+    "name":"坐标提取间隔",
+    "type":"textbox",
+    "defaultValue":"120",
+    "remark":"单位：分钟"
+    },
+    {
+    "id": "Msg_interval",
+    "name":"发消息提取间隔",
+    "type":"textbox",
+    "defaultValue":"120",
+    "remark":"单位：分钟"
+    },
+    {
+    "id": "run_count",
+    "name":"搜索次数",
+    "type":"textbox",
+    "defaultValue":"5",
+    "remark":"单位：次"
+    },
+    {
+    "id": "time_delay3",
+    "name":"发消息延时",
+    "type":"textbox",
+    "defaultValue":"3~5",
+    "remark":"单位：秒;注：分隔符用英文“~”分割"
+    },
+    {
+    "id": "time_delay1",
+    "name":"设置完坐标延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    },
+    {
+    "id": "time_delay2",
+    "name":"模块结束延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

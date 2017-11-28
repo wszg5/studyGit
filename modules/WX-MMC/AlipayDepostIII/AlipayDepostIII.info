@@ -1,0 +1,98 @@
+{
+"id": "AlipayDepostIII",
+"name":"支付宝通讯录简存(合并导入通讯录)",
+"cate":"MMC模块",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"Ali-MMC-03",
+"icon":"vcard-o",
+"remark":"支付宝通讯录简存和导入通讯录合并模块",
+"setting":[
+     {
+	"id": "run_time_min",
+	"name":"最小间隔",
+	"type":"textbox",
+	"defaultValue":"1",
+	"remark":"单位：小时；注：模块运行时间间隔"
+	},
+	{
+	"id": "run_time_max",
+	"name":"最大间隔",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：小时；注：模块运行时间间隔"
+	},
+	{
+	"id": "start_time",
+	"name": "起始时间点",
+	"type":"textbox",
+	"defaultValue":"10",
+	"remark":"注：模块不可运行时间段起始时间点，时间格式（如：8或者8：30）"
+	},
+	{
+	"id": "stop_time",
+	"name": "结束时间点",
+	"type":"textbox",
+	"defaultValue":"5",
+	"remark":"注：模块不可运行时间段结束时间点，时间格式（如：8或者8：30）"
+	},
+    {
+	"id": "repo_cate_id",
+	"name":"号码库取号",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"21"
+	},
+	{
+	"id": "clear",
+	"name":"清空通讯录",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"是",
+	"remark":"是否清空通讯录"
+	},
+	{
+	"id": "random_name",
+	"name":"随机姓名",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"是",
+	"remark":"是否使用随机姓名"
+	},
+	{
+	"id": "number_count",
+	"name":"数量",
+	"type":"textbox",
+	"defaultValue":"20",
+	"remark":"导入号码个数"
+	},
+	 {
+	"id": "intervalTime",
+	"name":"取号间隔时间",
+	"type":"textbox",
+    "defaultValue":"120",
+    "remark":"单位：秒。备注：设置导入通讯录从仓库取出的号码多长时间内不能被取"
+	},
+	{
+	"id": "repo_information_id",
+	"name":"回写资料库",
+	"type":"repo",
+	"source":"information",
+	"top_cate_id":"4"
+	},
+	{
+	"id": "contact_wait",
+	"name":"点击通讯录后等待时间",
+	"type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+	},
+	 {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

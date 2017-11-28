@@ -1,5 +1,6 @@
 # coding:utf-8
 import os
+import random
 from imp import reload
 
 from uiautomator import Device
@@ -15,21 +16,46 @@ class WXHelloNearPeople:
         self.mid = os.path.realpath(__file__)
 
     def action(self, d, z, args):
-        run_time = float(args['run_time']) * 60
+        z.toast( "正在ping网络是否通畅" )
+        while True:
+            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            print(ping)
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                break
+            z.sleep( 2 )
+
+        z.toast( "开始执行：微信附近人打招呼" )
+        run_time_min = int( args['run_time_min'] )
+        run_time_max = int( args['run_time_max'] )
+        run_time = float( random.randint( run_time_min, run_time_max ) ) * 60
         run_interval = z.getModuleRunInterval(self.mid)
         if run_interval is not None and run_interval < run_time:
-            z.toast(u'锁定时间还差:%d分钟' % int(run_time - run_interval))
+            z.toast( u'模块在锁定时间内，无法运行' )
             z.sleep(2)
+            return
+
+        start_time = args['start_time']
+        stop_time = args['stop_time']
+        try:
+            if self.repo.timeCompare( start_time, stop_time ):
+                z.toast( '处于' + start_time + '～' + stop_time + '时间段内，模块不运行' )
+                z.sleep( 2 )
+                return
+        except:
+            logging.exception( "exception" )
+            z.toast( "输入时间格式有误" )
             return
 
         z.heartbeat()
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
+        z.sleep(20)
+        z.heartbeat()
 
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
-        z.sleep(7)
+
 
         while True:
             if d(text='发现').exists and d(text='我').exists and d(text='通讯录').exists:
@@ -41,6 +67,8 @@ class WXHelloNearPeople:
         for i in range(0, 2):
             d(text='发现').click()
             z.sleep(2)
+
+
         if d(text='附近的人').exists:
             d(text='附近的人').click()
             z.sleep(15)
@@ -49,15 +77,18 @@ class WXHelloNearPeople:
             d(textContains='开始查看').click()
             z.sleep(1.5)
 
-        if d(textContains='提高微信定位精确度').exists:
-            d(text='跳过').click()
-            z.sleep(1.5)
-
         if d(textContains='下次不提示').exists:
             d(textContains='下次不提示').click()
 
         if d(text='确定').exists:
             d(text='确定').click()
+
+        if d(textContains='提高微信定位精确度').exists:
+            if d( textContains='下次不提示' ).exists:
+                d( textContains='下次不提示' ).click( )
+
+            d(text='跳过').click()
+            z.sleep(1.5)
 
         if d(textContains='补充个人信息').exists:
             d(text='女').click()
@@ -71,53 +102,43 @@ class WXHelloNearPeople:
             d(text='查看附近的人').click()
             z.sleep( 3 )
 
-        # while True:
-        #     v1List1 = z.wx_userList()
-        #     endIndex1 = len(list(json.loads(v1List1)))
-        #     if endIndex1 < 20:
-        #         break
-        #
-        #     for j in range(0, endIndex1):
-        #         v1_1 = list(json.loads(v1List1))[j]  # 将字符串改为list样式
-        #         self.repo.uploadPhoneNumber(v1_1, args['repo_number_id'])
+        while d(text='正在查找附近的人').exists:
+            z.sleep(3)
 
-
-        # d( descriptionContains='更多' ).click( )
-        # if d(text='附近打招呼的人').exists:
-        #     d(text='附近打招呼的人').click()
-        #     while True:
-        #         HolleNearPeople = d(className='android.widget.ListView', index=0).child(className='android.view.View', index=0)
-        #         if HolleNearPeople.exists:
-        #             HolleNearPeople.click()
-        #             z.sleep(2)
-        #         else:
-        #             d(descriptionContains='返回', className='android.widget.ImageView').click()
-        #             break
-        #         if d(text='通过验证').exists:
-        #             d(text='通过验证').click()
-        #             z.sleep(2)
-        #             if d( text='完成' ).exists:
-        #                 d( text='完成' ).click( )
-        #                 z.sleep( 2 )
-        #             d( descriptionContains='返回', className='android.widget.ImageView' ).click()
-        #             z.sleep( 2 )
-        #             if HolleNearPeople.exists:
-        #                 HolleNearPeople.long_click( )
-        #             z.sleep( 1.5 )
-        #             if d( textContains='删除' ).exists:
-        #                 d( textContains='删除' ).click( )
-        #             continue
-        #         else:
-        #             d(descriptionContains='返回', className='android.widget.ImageView').click()
-        #             z.sleep(2)
-        #             if HolleNearPeople.exists:
-        #                 HolleNearPeople.long_click()
-        #             z.sleep(1.5)
-        #             if d(textContains='删除').exists:
-        #                 d(textContains='删除').click()
-        #             continue
+        z.sleep(3)
+        if d(textContains='暂时没有找到附近也使用该功能的人').exists:
+            z.toast("暂时没有找到附近的人")
+            now = datetime.datetime.now( )
+            nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+            z.setModuleLastRun( self.mid )
+            z.toast( '模块结束，保存的时间是%s' % nowtime )
+            return
 
         d(descriptionContains='更多').click()
+        z.sleep(1)
+        d(text='附近打招呼的人').click()
+        z.sleep(1)
+        if d(text='查看更多').exists:
+            d( text='查看更多' ).click()
+
+        nearPeopleObj = d(className='android.widget.ListView',resourceId='com.tencent.mm:id/bb1').child(className='android.view.View',index=0)
+        while True:
+            if nearPeopleObj.exists:
+                nearPeopleObj.click()
+                if d(text='通过验证').exists:
+                    d( text='通过验证' ).click()
+                    z.sleep(1)
+                if d(text='完成').exists:
+                    d( text='完成' ).click()
+                    z.sleep(5)
+                if d(text='发消息').exists:
+                    d(description='返回').click()
+            else:
+                d( description='返回' ).click( )
+                break
+
+        d(descriptionContains='更多').click()
+        z.sleep(1)
         gender = args['gender']
         if gender == '男':
             d(text='只看男生').click()
@@ -129,15 +150,6 @@ class WXHelloNearPeople:
             d(text='查看全部').click()
             z.sleep(3)
 
-        # while True:
-        #     v1List = z.wx_userList()
-        #     endIndex = len(list(json.loads(v1List)))
-        #     if endIndex < 20:
-        #         break
-        #
-        #     for a in range(0, endIndex):
-        #         v1 = list(json.loads(v1List))[a]  # 将字符串改为list样式
-        #         self.repo.uploadPhoneNumber(v1, args['repo_number_id'])
 
         z.sleep(8)
         i = 0
@@ -187,11 +199,11 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4AVSK00885")
-    z = ZDevice("HT4AVSK00885")
+    d = Device("HT4A1SK02114")
+    z = ZDevice("HT4A1SK02114")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {"repo_material_id": "40","repo_number_id": "205", "hello_count": "3", 'gender': '女', 'run_time': "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_material_id": "40", "repo_number_id": "205", "hello_count": "3", 'gender': '女', 'run_time_min': '1', 'run_time_max': '3', 'start_time': '', 'stop_time': ''}    #cate_id是仓库号，length是数量
     o.action(d, z, args)
 

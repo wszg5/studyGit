@@ -1,0 +1,41 @@
+{
+"id": "WeiXinSentMoments",
+"name":"微信发朋友圈(文字)",
+"cate":"微信模块",
+"font": "WinXin",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"WX25",
+"icon":"vcard-o",
+"remark":"微信发朋友圈(文字)，微信最新版",
+"setting":[
+	{
+	"id": "repo_material_id",
+	"name":"发送消息内容仓库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"14"
+	},
+	 {
+	"id": "run_time_MIN",
+	"name":"最小间隔",
+	"type":"textbox",
+	"defaultValue":"1",
+	"remark":"单位：小时；注：模块运行时间间隔"
+	},
+	{
+	"id": "run_time_MAX",
+	"name":"最大间隔",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：小时；注：模块运行时间间隔"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

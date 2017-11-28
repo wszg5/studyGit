@@ -1,19 +1,47 @@
 {
 "id": "WXAssignSearchHello",
-"cate":"微信模块",
+"cate":"MMC模块",
 "name":"微信指定好友互聊",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"WX-Y-02",
+"code":"WX-MMC-05",
 "icon": "vcard-o",
-"remark":"微信版本，6.5.4",
+"remark":"微信版本，最新版",
 "setting":[
+    {
+	"id": "run_time_min",
+	"name":"最小间隔",
+	"type":"textbox",
+	"defaultValue":"1",
+	"remark":"单位：小时；注：模块运行时间间隔"
+	},
 	{
-	"id": "repo_number_id",
-	"name":"微信号码库",
+	"id": "run_time_max",
+	"name":"最大间隔",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：小时；注：模块运行时间间隔"
+	},
+	{
+	"id": "start_time",
+	"name": "起始时间点",
+	"type":"textbox",
+	"defaultValue":"10",
+	"remark":"注：模块不可运行时间段起始时间点，时间格式（如：8或者8：30）"
+	},
+	{
+	"id": "stop_time",
+	"name": "结束时间点",
+	"type":"textbox",
+	"defaultValue":"5",
+	"remark":"注：模块不可运行时间段结束时间点，时间格式（如：8或者8：30）"
+	},
+	{
+	"id": "repo_material_people_id",
+	"name":"微信昵称素材库",
 	"type":"repo",
-	"source":"number",
-	"top_cate_id":"23"
+	"source":"material",
+	"top_cate_id":"12"
 	},
 	{
     "id": "repo_material_id",
@@ -23,25 +51,25 @@
     "top_cate_id":"12"
     },
     {
+	"id": "hello_count",
+	"name":"聊天人数",
+	"type":"textbox",
+	"defaultValue":"1~3",
+	"remark":"单位：x~y人"
+	},
+    {
 	"id": "msg_count",
 	"name":"发消息数",
 	"type":"textbox",
 	"defaultValue":"1",
 	"remark":"单位：条"
 	},
-	{
-	"id": "get_number",
-	"name":"取号数量",
-	"type":"textbox",
-	"defaultValue":"10",
-	"remark":"注：尽量一次不要取太多（10～50）"
-	},
-    {
-    "id": "run_time",
-    "name":"模块运行间隔时间",
+	 {
+    "id": "time_delay",
+    "name":"消息间隔",
     "type":"textbox",
-    "defaultValue":"1",
-    "remark":"单位：小时"
+    "defaultValue":"3",
+    "remark":"单位：秒；每发一条消息时间间隔"
     }
 ]
 }

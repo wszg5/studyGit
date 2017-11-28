@@ -36,7 +36,7 @@ class WXImpContactAddressAddFriend:
             remain = number_count - len(exist_numbers)
             normal_numbers = self.repo.GetNumber(cate_id, 0, remain, 'normal')
             numbers = exist_numbers + normal_numbers
-            if len(numbers)> 0:
+            if len(numbers) > 0:
                 break
 
             d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"电话号码%s号仓库为空，等待中\""%cate_id).communicate()
@@ -78,11 +78,23 @@ class WXImpContactAddressAddFriend:
                 z.sleep(5)
 
 
+
     def action(self, d, z, args):
-        run_time = float( args['run_time'] ) * 60
+        z.toast( "正在ping网络是否通畅" )
+        while True:
+            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            print(ping)
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                break
+            z.sleep( 2 )
+
+        z.toast( "开始执行：微信通讯录加好友+导入通讯录" )
+        run_time_min = int(args['run_time_min'])
+        run_time_max = int(args['run_time_max'])
+        run_time = float( random.randint(run_time_min, run_time_max)) * 60
         run_interval = z.getModuleRunInterval( self.mid )
         if run_interval is not None and run_interval < run_time:
-            z.toast( u'锁定时间还差:%d分钟' % int( run_time - run_interval ) )
+            z.toast( u'模块在锁定时间内，无法运行' )
             z.sleep( 2 )
             return
 
@@ -99,6 +111,10 @@ class WXImpContactAddressAddFriend:
             return
 
         self.impContact(d, z, args)
+        z.toast("导入完毕。")
+        if (args["time_delay2"]):
+            z.sleep(int(args["time_delay2"]))
+
 
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
@@ -107,14 +123,34 @@ class WXImpContactAddressAddFriend:
 
         d.server.adb.cmd("shell", "am force-stop com.tencent.mm").communicate()  # 将微信强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI").communicate()  # 将微信拉起来
-        z.sleep(7)
+        z.sleep(20)
+        z.heartbeat()
         d(description='更多功能按钮').click()
+        z.sleep(1)
         d(textContains='添加朋友').click()
+        z.sleep( 1 )
         d(text='手机联系人').click()
-        d(text='添加手机联系人').click()
+        z.sleep( 1 )
         while d(textContains='正在获取').exists:
             z.sleep(3)
         z.heartbeat()
+
+        if d(text='暂无手机联系人').exists:
+            d(description='返回').click()
+            z.sleep( 1 )
+            d( text='手机联系人' ).click( )
+            z.sleep(1)
+            while d( textContains='正在获取' ).exists:
+                z.sleep( 3 )
+            z.heartbeat( )
+            if d( text='暂无手机联系人' ).exists:
+                z.toast("没有发现手机联系人")
+                now = datetime.datetime.now( )
+                nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+                z.setModuleLastRun( self.mid )
+                z.toast( '模块结束，保存的时间是%s' % nowtime )
+                return
+
         set1 = set()
         change = 0
         i = 0
@@ -200,7 +236,14 @@ class WXImpContactAddressAddFriend:
                     m = m + 1
                 z.heartbeat()
                 d(className='android.widget.EditText', index=1).click()
-                z.input(message)       #----------------------------------------
+                z.input(message)
+
+                objW = d(className='android.widget.TextView', textContains='对方在手机通讯录中的名字为')
+                if objW.exists:
+                    right = objW.info["bounds"]["right"] - 10
+                    bottom = objW.info["bounds"]["bottom"] - 10
+                    d.click(right, bottom)
+
                 d(text = '发送').click()
                 z.sleep(1)
                 d(description='返回').click()
@@ -211,6 +254,10 @@ class WXImpContactAddressAddFriend:
             else:
                 if change==0:   #一次还没有点击到人
                     if i==1:    #通讯录没有人的情况
+                        now = datetime.datetime.now( )
+                        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+                        z.setModuleLastRun( self.mid )
+                        z.toast( '模块结束，保存的时间是%s' % nowtime )
                         return
                     d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
                     i = 1
@@ -223,6 +270,10 @@ class WXImpContactAddressAddFriend:
                         endterm = endterm.info
                         name1 = endterm['text']      #判断是否已经到底
                         if name1 in set1:
+                            now = datetime.datetime.now( )
+                            nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+                            z.setModuleLastRun( self.mid )
+                            z.toast( '模块结束，保存的时间是%s' % nowtime )
                             return
                     i = 1
                     continue
@@ -232,8 +283,8 @@ class WXImpContactAddressAddFriend:
         z.setModuleLastRun( self.mid )
         z.toast( '模块结束，保存的时间是%s' % nowtime )
 
-        if (args["time_delay"]):
-            z.sleep(int(args["time_delay"]))
+        if (args["time_delay1"]):
+            z.sleep(int(args["time_delay1"]))
 
 def getPluginClass():
     return WXImpContactAddressAddFriend
@@ -249,52 +300,6 @@ if __name__ == "__main__":
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
-    args = {'run_time': '1', 'start_time': '16.', 'stop_time': '8', "repo_material_id": "39", 'EndIndex': '100', 'gender': "女", "time_delay1": "3",
-            "repo_cate_id": "113", 'number_count': '50', "random_name": "是", "clear": "是", "time_delay2": "3"}    #cate_id是仓库号，length是数量
-    # o.action(d, z, args)
-    repo = Repo()
-    start_time = args['start_time']
-    stop_time = args['stop_time']
-    try:
-        if repo.timeCompare(start_time,stop_time):
-            print "dsds"
-    except:
-        logging.exception("exception")
-        z.toast("输入时间格式有误")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    args = {'run_time_min': '1', 'run_time_max': '3', 'start_time': '', 'stop_time': '', "repo_material_id": "39", 'EndIndex': '100', 'gender': "男", "time_delay1": "3",
+            "repo_cate_id": "113", 'number_count': '50', "random_name": "是", "clear": "是", "time_delay2": "30"}    #cate_id是仓库号，length是数量
+    o.action(d, z, args)
