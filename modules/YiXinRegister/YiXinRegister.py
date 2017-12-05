@@ -38,7 +38,7 @@ class YiXinRegister:
         z.sleep( 10 )
         z.heartbeat( )
         if d( text='很抱歉，“易信”已停止运行。' ).exists:
-            d( text='确定' )
+            d( text='确定' ).click( )
             return 'fail'
 
         d.server.adb.cmd( "shell", "am force-stop im.yixin" ).communicate( )  # 强制停止
@@ -46,7 +46,7 @@ class YiXinRegister:
         z.sleep( 5 )
         z.heartbeat( )
         if d( text='很抱歉，“易信”已停止运行。' ).exists:
-            d( text='确定' )
+            d( text='确定' ).click( )
             return 'fail'
 
         if d( text='接受', resourceId='im.yixin:id/easy_dialog_positive_btn' ).exists:
@@ -178,7 +178,11 @@ class YiXinRegister:
     def qiehuan(self, d, z, args):
         z.toast( "开始切换卡槽" )
         slot_time_limit = int( args['slot_time_limit'] )  # 卡槽提取时间间隔
-        slotObj = self.slot.getAvailableSlot( slot_time_limit )  # 取空卡槽，取N小时没用过的卡槽
+        try:
+            slotObj = self.slot.getAvailableSlot( slot_time_limit )  # 取空卡槽，取N小时没用过的卡槽
+        except:
+            z.toast(u'获取卡槽异常')
+            return 'fail'
 
         if not slotObj is None:
             slotnum = slotObj['id']
@@ -206,6 +210,8 @@ class YiXinRegister:
                 featureCodeInfo = numbers[0]['imei']
                 z.set_serial( "im.yixin", featureCodeInfo )
 
+        d.server.adb.cmd( "shell", "pm clear im.yixin" ).communicate( )  # 清除缓存
+
         self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
 
         d.server.adb.cmd( "shell",
@@ -217,11 +223,17 @@ class YiXinRegister:
         z.heartbeat( )
 
         if d( text='很抱歉，“易信”已停止运行。' ).exists:
-            d( text='确定' )
+            d( text='确定' ).click( )
             return 'fail'
 
         if d( text='立即更新' ).exists and d( text='下次再说' ).exists:
             d( text='下次再说' ).click( )
+
+        if d(text='你被服务器禁止登录，详询客服').exists:
+            z.toast( u'切换帐号异常，重新补登' )
+            self.slot.clear( slotnum )  # 清空改卡槽，并补登
+            self.repo.BackupInfo( cateId, 'frozen', remarkArr[1], featureCodeInfo, '' )  # 仓库号,使用中,QQ号,设备号_卡槽号
+            return "fail"
 
         if d( text='消息' ).exists and d( text='电话' ).exists and d( text='发现' ).exists and d( text='通讯录' ).exists:
             z.toast( u'切换成功' )
@@ -229,7 +241,7 @@ class YiXinRegister:
         else:
             z.toast( u'切换失败，重新补登' )
             self.slot.clear( slotnum )  # 清空改卡槽，并补登
-            self.repo.BackupInfo( cateId, 'exception', remarkArr[1], featureCodeInfo, '')  # 仓库号,使用中,QQ号,设备号_卡槽号
+            self.repo.BackupInfo( cateId, 'frozen', remarkArr[1], featureCodeInfo, '')  # 仓库号,使用中,QQ号,设备号_卡槽号
             return "fail"
 
     def action(self, d, z, args):
@@ -262,7 +274,9 @@ class YiXinRegister:
                 self.action( d, z, args )
 
             elif register_result is None:
-                self.qiehuan( d, z, args )
+                qiehuan_result = self.qiehuan( d, z, args )
+                if qiehuan_result == "fail":
+                    self.action( d, z, args )
 
             else:
                 # 入库

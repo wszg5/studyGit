@@ -37,5 +37,5 @@ const.MAX_SLOTS_EIM=20
 const.MAX_SLOTS_TOKEN=2
 const.MAX_SLOTS_QQMAIL=10
 const.MAX_SLOTS_NOW=2
-const.MAX_SLOTS_YIXIN=10
+const.MAX_SLOTS_YIXIN=90
 const.CHINESE_ARRAY = const.loadChinese()

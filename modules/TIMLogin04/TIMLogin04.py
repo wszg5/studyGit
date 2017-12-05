@@ -359,8 +359,9 @@ class TIMLogin04:
             slotInfo = d.server.adb.device_serial( ) + '_' + self.type + '_' + slotnum
             cateId = remarkArr[2]
             numbers = self.repo.Getserial( cateId, slotInfo )
-            featureCodeInfo = numbers[0]['imei']
-            z.set_serial( "com.tencent.tim", featureCodeInfo )
+            if len( numbers ) != 0:
+                featureCodeInfo = numbers[0]['imei']
+                z.set_serial( "com.tencent.tim", featureCodeInfo )
 
         self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
 
@@ -461,8 +462,9 @@ class TIMLogin04:
                 slotInfo = d.server.adb.device_serial() + '_' + self.type + '_' + slotnum
                 cateId = remarkArr[2]
                 numbers = self.repo.Getserial( cateId, slotInfo)
-                featureCodeInfo = numbers[0]['imei']
-                z.set_serial( "com.tencent.tim", featureCodeInfo )
+                if len(numbers) != 0:
+                    featureCodeInfo = numbers[0]['imei']
+                    z.set_serial( "com.tencent.tim", featureCodeInfo )
 
             self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
 
@@ -563,21 +565,25 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("25424f9")
-    z = ZDevice("25424f9")
+    d = Device("HT4A1SK02114")
+    z = ZDevice("HT4A1SK02114")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "275", "time_limit": "0", "time_limit1": "120","time_delay1":"10","time_delay": "3"};  # cate_id是仓库号，length是数量
-    o.action(d, z, args)
+    # o.action(d, z, args)
     # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
     # d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止
     # z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
-    # serial = d.server.adb.device_serial( )
-    # type = 'tim'
-    # slot = Slot( serial, type )
+    serial = d.server.adb.device_serial( )
+    type = 'tim'
+    slot = Slot( serial, type )
     # d.server.adb.cmd( "shell", "pm clear com.tencent.mobileqq" ).communicate( )  # 清除缓存
     # slot.clear( "1" )
     # for i in range(2,20):
     #     slot.clear(i)
     #     print('已经清除')
     # print('全部清除')
+    slot.backup( 1, str( 1 ) + '_' + '2154599147' + '_' + '275' )  # 设备信息，卡槽号，QQ号
+    Repo().BackupInfo( '275', 'using', '2154599147', 'featureCodeInfo', '%s_%s_%s' % (
+        d.server.adb.device_serial( ), type, 1) )  # 仓库号,使用中,QQ号,设备号_卡槽号
+

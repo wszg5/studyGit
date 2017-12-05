@@ -358,8 +358,9 @@ class TIMLogin05:
             slotInfo = d.server.adb.device_serial( ) + '_' + self.type + '_' + slotnum
             cateId = remarkArr[2]
             numbers = self.repo.Getserial( cateId, slotInfo )
-            featureCodeInfo = numbers[0]['imei']
-            z.set_serial( "com.tencent.tim", featureCodeInfo )
+            if len( numbers ) != 0:
+                featureCodeInfo = numbers[0]['imei']
+                z.set_serial( "com.tencent.tim", featureCodeInfo )
 
         self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
 
@@ -464,8 +465,9 @@ class TIMLogin05:
                 slotInfo = d.server.adb.device_serial() + '_' + self.type + '_' + slotnum
                 cateId = remarkArr[2]
                 numbers = self.repo.Getserial( cateId, slotInfo)
-                featureCodeInfo = numbers[0]['imei']
-                z.set_serial( "com.tencent.tim", featureCodeInfo )
+                if len(numbers) != 0:
+                    featureCodeInfo = numbers[0]['imei']
+                    z.set_serial( "com.tencent.tim", featureCodeInfo )
 
             self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
 

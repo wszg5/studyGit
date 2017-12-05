@@ -30,7 +30,7 @@ class YiXinLogin:
         z.sleep(10)
         z.heartbeat()
         if d(text='很抱歉，“易信”已停止运行。').exists:
-            d(text='确定')
+            d( text='确定' ).click( )
             return 'fail'
 
         d.server.adb.cmd( "shell", "am force-stop im.yixin" ).communicate( )  # 强制停止
@@ -38,7 +38,7 @@ class YiXinLogin:
         z.sleep(5)
         z.heartbeat()
         if d( text='很抱歉，“易信”已停止运行。' ).exists:
-            d( text='确定' )
+            d( text='确定' ).click( )
             return 'fail'
 
         if d( text='接受', resourceId='im.yixin:id/easy_dialog_positive_btn' ).exists:
@@ -184,6 +184,8 @@ class YiXinLogin:
                 featureCodeInfo = numbers[0]['imei']
                 z.set_serial( "im.yixin", featureCodeInfo )
 
+        d.server.adb.cmd( "shell", "pm clear im.yixin" ).communicate( )  # 清除缓存
+
         self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
 
         d.server.adb.cmd( "shell",
@@ -194,7 +196,7 @@ class YiXinLogin:
         z.sleep(10)
         z.heartbeat()
         if d( text='很抱歉，“易信”已停止运行。' ).exists:
-            d( text='确定' )
+            d( text='确定' ).click()
             return 'fail'
 
         if d( text='立即更新' ).exists and d( text='下次再说' ).exists:

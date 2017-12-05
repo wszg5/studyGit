@@ -20,7 +20,7 @@ class YiXinAccountLogin:
         z.sleep(10)
         z.heartbeat()
         if d(text='很抱歉，“易信”已停止运行。').exists:
-            d(text='确定')
+            d( text='确定' ).click( )
             return 'fail'
 
         d.server.adb.cmd( "shell", "am force-stop im.yixin" ).communicate( )  # 强制停止
@@ -28,7 +28,7 @@ class YiXinAccountLogin:
         z.sleep(5)
         z.heartbeat()
         if d( text='很抱歉，“易信”已停止运行。' ).exists:
-            d( text='确定' )
+            d( text='确定' ).click( )
             return 'fail'
 
         if d( text='接受', resourceId='im.yixin:id/easy_dialog_positive_btn' ).exists:
@@ -38,10 +38,6 @@ class YiXinAccountLogin:
         if d( text='登 录' ).exists:
             d( text='登 录' ).click()
             z.sleep( 2 )
-
-        str = d.info  # 获取屏幕大小等信息
-        height = str["displayHeight"]
-        width = str["displayWidth"]
 
         z.toast(u"开始获取手机号码")
         cate_id = args["repo_account_id"]
@@ -54,6 +50,10 @@ class YiXinAccountLogin:
                                   cate_id, account_time_limit) ).communicate( )
             z.sleep( 2 )
             return None
+
+        featureCodeInfo = numbers[0]['imei']
+        if not featureCodeInfo is None:
+            z.set_serial( "im.yixin", featureCodeInfo )
 
         PhoneNumber = numbers[0]['number']  # 即将登陆的QQ号
         Password = numbers[0]['password']
@@ -132,18 +132,24 @@ class YiXinAccountLogin:
         z.sleep(10)
         z.heartbeat()
         if d( text='很抱歉，“易信”已停止运行。' ).exists:
-            d( text='确定' )
+            d( text='确定' ).click( )
             return 'fail'
 
         if d( text='立即更新' ).exists and d( text='下次再说' ).exists:
             d( text='下次再说' ).click( )
+
+        if d(text='你被服务器禁止登录，详询客服').exists:
+            z.toast( u'切换帐号异常，重新补登' )
+            self.slot.clear( slotnum )  # 清空改卡槽，并补登
+            self.repo.BackupInfo( cateId, 'frozen', remarkArr[1], featureCodeInfo, '' )  # 仓库号,使用中,QQ号,设备号_卡槽号
+            return "fail"
 
         if d( text='消息' ).exists and d( text='电话' ).exists and d( text='发现' ).exists and d( text='通讯录' ).exists:
             z.toast( u'切换成功' )
             return "success"
         else:
             z.toast( u'切换失败，重新补登' )
-            self.repo.BackupInfo( cateId, 'exception', remarkArr[1], featureCodeInfo, '')  # 仓库号,使用中,QQ号,设备号_卡槽号
+            self.repo.BackupInfo( cateId, 'frozen', remarkArr[1], featureCodeInfo, '')  # 仓库号,使用中,QQ号,设备号_卡槽号
             return "fail"
 
 
@@ -170,8 +176,10 @@ class YiXinAccountLogin:
             if qiehuan_result == "fail":
                 self.action(d, z, args)
         else:
+            featureCodeInfo = z.get_serial( "im.yixin" )
             login_result = self.login(d, z, args)
             if login_result == "fail":
+                self.repo.BackupInfo( args["repo_account_id"], 'frozen', login_result, featureCodeInfo, '')  # 仓库号,使用中,QQ号,设备号_卡槽号
                 self.action(d, z, args)
 
             elif login_result is None:
@@ -179,7 +187,6 @@ class YiXinAccountLogin:
 
             else:
                 # 入库
-                featureCodeInfo = z.get_serial("im.yixin")
                 self.repo.BackupInfo( args["repo_account_id"], 'using', login_result, featureCodeInfo, '%s_%s_%s' % (
                     d.server.adb.device_serial( ), self.type, slotnum) )  # 仓库号,使用中,QQ号,设备号_卡槽号
                 # 入卡槽
