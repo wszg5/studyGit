@@ -242,7 +242,9 @@ class YiXinLogin:
                 self.action(d, z, args)
 
             elif login_result is None:
-                self.qiehuan(d, z, args)
+                qiehuan_result = self.qiehuan( d, z, args )
+                if qiehuan_result == "fail":
+                    self.action( d, z, args )
 
             else:
                 # 入库

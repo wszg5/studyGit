@@ -28,7 +28,7 @@ class YiXinAccountLogin:
         z.sleep(5)
         z.heartbeat()
         if d( text='很抱歉，“易信”已停止运行。' ).exists:
-            d( text='确定' ).click( )
+            d( text='确定' ).click()
             return 'fail'
 
         if d( text='接受', resourceId='im.yixin:id/easy_dialog_positive_btn' ).exists:
@@ -54,6 +54,9 @@ class YiXinAccountLogin:
         featureCodeInfo = numbers[0]['imei']
         if not featureCodeInfo is None:
             z.set_serial( "im.yixin", featureCodeInfo )
+        else:
+            z.generate_serial( "im.yixin" )  # 随机生成手机特征码
+            z.toast( "随机生成手机特征码" )
 
         PhoneNumber = numbers[0]['number']  # 即将登陆的QQ号
         Password = numbers[0]['password']
@@ -121,6 +124,9 @@ class YiXinAccountLogin:
             if len(numbers) > 0:
                 featureCodeInfo = numbers[0]['imei']
                 z.set_serial( "im.yixin", featureCodeInfo )
+            else:
+                z.generate_serial( "im.yixin" )  # 随机生成手机特征码
+                z.toast( "随机生成手机特征码" )
 
         self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
 
@@ -128,29 +134,34 @@ class YiXinAccountLogin:
                           "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + slotnum + "号\"" ).communicate( )
         z.sleep( 2 )
 
-        d.server.adb.cmd( "shell", "am start -n im.yixin/.activity.WelcomeActivity" ).communicate( )  # 拉起易信
-        z.sleep(10)
-        z.heartbeat()
-        if d( text='很抱歉，“易信”已停止运行。' ).exists:
-            d( text='确定' ).click( )
-            return 'fail'
+        i = 0
+        while i < 2:
+            i += 1
+            d.server.adb.cmd( "shell", "am start -n im.yixin/.activity.WelcomeActivity" ).communicate( )  # 拉起易信
+            z.sleep(30)
 
-        if d( text='立即更新' ).exists and d( text='下次再说' ).exists:
-            d( text='下次再说' ).click( )
+            z.heartbeat()
+            if d( text='很抱歉，“易信”已停止运行。' ).exists:
+                d( text='确定' ).click( )
+                return 'fail'
 
-        if d(text='你被服务器禁止登录，详询客服').exists:
-            z.toast( u'切换帐号异常，重新补登' )
-            self.slot.clear( slotnum )  # 清空改卡槽，并补登
-            self.repo.BackupInfo( cateId, 'frozen', remarkArr[1], featureCodeInfo, '' )  # 仓库号,使用中,QQ号,设备号_卡槽号
-            return "fail"
+            if d( text='立即更新' ).exists and d( text='下次再说' ).exists:
+                d( text='下次再说' ).click( )
 
-        if d( text='消息' ).exists and d( text='电话' ).exists and d( text='发现' ).exists and d( text='通讯录' ).exists:
-            z.toast( u'切换成功' )
-            return "success"
-        else:
-            z.toast( u'切换失败，重新补登' )
-            self.repo.BackupInfo( cateId, 'frozen', remarkArr[1], featureCodeInfo, '')  # 仓库号,使用中,QQ号,设备号_卡槽号
-            return "fail"
+            if d(text='你被服务器禁止登录，详询客服').exists or d( text='接受', resourceId='im.yixin:id/easy_dialog_positive_btn' ).exists:
+                z.toast( u'切换帐号异常，重新补登' )
+                self.slot.clear( slotnum )  # 清空改卡槽，并补登
+                self.repo.BackupInfo( cateId, 'frozen', remarkArr[1], featureCodeInfo, '' )  # 仓库号,使用中,QQ号,设备号_卡槽号
+                return "fail"
+
+            if d( text='消息' ).exists and d( text='电话' ).exists and d( text='发现' ).exists and d( text='通讯录' ).exists:
+                z.toast( u'切换成功' )
+                return "success"
+
+        z.toast( u'切换失败，重新补登' )
+        self.slot.clear( slotnum )  # 清空改卡槽，并补登
+        self.repo.BackupInfo( cateId, 'normal', remarkArr[1], featureCodeInfo, '' )  # 仓库号,使用中,QQ号,设备号_卡槽号
+        return "fail"
 
 
 
@@ -163,9 +174,6 @@ class YiXinAccountLogin:
                 z.toast("开始执行：易信登录模块　有卡槽")
                 break
             z.sleep( 2 )
-
-        z.generate_serial( "im.yixin" )  # 随机生成手机特征码
-        z.toast( "随机生成手机特征码" )
 
         serial = d.server.adb.device_serial()
         self.slot = Slot(serial, self.type)
@@ -183,7 +191,9 @@ class YiXinAccountLogin:
                 self.action(d, z, args)
 
             elif login_result is None:
-                self.qiehuan(d, z, args)
+                qiehuan_result = self.qiehuan( d, z, args )
+                if qiehuan_result == "fail":
+                    self.action( d, z, args )
 
             else:
                 # 入库
@@ -207,8 +217,8 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A1SK02114")
-    z = ZDevice("HT4A1SK02114")
+    d = Device("f83d965")
+    z = ZDevice("f83d965")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_account_id": "281", "slot_time_limit": "2", "account_time_limit": "0", "time_delay": "3"};
     o.action(d, z, args)
@@ -219,4 +229,5 @@ if __name__ == "__main__":
     # d.server.adb.cmd( "shell", "pm clear im.yixin" ).communicate( )  # 清除缓存
     # slot.restore( 1 )
     # d.server.adb.cmd( "shell", "am start -n im.yixin/.activity.WelcomeActivity" ).communicate()  # 拉起易信
+    #
 

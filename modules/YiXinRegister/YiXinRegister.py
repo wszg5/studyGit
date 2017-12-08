@@ -219,7 +219,7 @@ class YiXinRegister:
         z.sleep( 2 )
 
         d.server.adb.cmd( "shell", "am start -n im.yixin/.activity.WelcomeActivity" ).communicate( )  # 拉起易信
-        z.sleep( 10 )
+        z.sleep( 30 )
         z.heartbeat( )
 
         if d( text='很抱歉，“易信”已停止运行。' ).exists:
@@ -241,7 +241,7 @@ class YiXinRegister:
         else:
             z.toast( u'切换失败，重新补登' )
             self.slot.clear( slotnum )  # 清空改卡槽，并补登
-            self.repo.BackupInfo( cateId, 'frozen', remarkArr[1], featureCodeInfo, '')  # 仓库号,使用中,QQ号,设备号_卡槽号
+            self.repo.BackupInfo( cateId, 'normal', remarkArr[1], featureCodeInfo, '')  # 仓库号,使用中,QQ号,设备号_卡槽号
             return "fail"
 
     def action(self, d, z, args):
