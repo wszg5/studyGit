@@ -41,6 +41,7 @@ class MMCTIMUpdateByMyCard:
         except:
             z.toast( "输入的时间格式错误,请检查后再试" )
             return
+
         set_timeStart = int( args['set_timeStart'] )  # 得到设定的时间
         set_timeEnd = int( args["set_timeEnd"] )
         run_time = float( random.randint( set_timeStart, set_timeEnd ) )

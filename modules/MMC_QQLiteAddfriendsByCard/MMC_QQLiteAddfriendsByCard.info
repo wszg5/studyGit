@@ -1,50 +1,28 @@
 {
-"id": "MMCYixinRegister",
+"id": "MMCQQLiteAddfriendsByCard",
 "cate":"MMC模块",
-"name":"Yixin-MMC-加好友(新朋友)",
+"name":"QQLite-MMC-名片加好友",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"Yixin-MMC-01",
-"icon": "vcard-o",
-"remark":"Yixin-MMC-加好友(新朋友)",
+"version": "2.0",
+"code":"QQLite-MMC-09",
+"icon": "vcard-1",
+"remark":"QQ-MMC-名片加好友",
 "setting":[
 	{
-	"id": "repo_cate_id",
+	"id": "repo_number_cate_id",
 	"name":"号码库分类",
 	"type":"repo",
 	"source":"number",
-	"top_cate_id":"21"
+	"top_cate_id":"22"
 	},
 	{
-	"id": "clear",
-	"name":"是否清空通讯录",
-	"type":"select",
-	"list":{"是":"是","否":"否"},
-	"defaultValue":"是",
-	"remark":"是否清空通讯录"
-	},
-	{
-	"id": "random_name",
-	"name":"是否使用随机姓名",
-	"type":"select",
-	"list":{"是":"是","否":"否"},
-	"defaultValue":"是",
-	"remark":"是否使用随机姓名"
-	},
-	{
-	"id": "number_count",
-	"name":"导入号码个数",
-	"type":"textbox",
-	"defaultValue":"20",
-	"remark":""
-	},
-	{
-	"id": "repo_material_cate_id",
-	"name":"验证内容仓库",
-	"type":"repo",
-	"source":"material",
-	"top_cate_id":"12"
-	},
+    "id": "repo_material_cate_id",
+    "name":"验证信息素材库",
+    "type":"repo",
+    "source":"material",
+    "top_cate_id":"12",
+    "remark":"取验证语"
+    },
 
     {
 	"id": "add_count",
@@ -52,6 +30,14 @@
 	"type":"textbox",
 	"defaultValue":"5",
 	"remark":"单位：个"
+	},
+	{
+	"id": "gender",
+	"name":"性别",
+	"type":"select",
+	"list":{"男":"男","女":"女","不限":"不限"},
+	"defaultValue":"女",
+	"remark":"性别要求"
 	},
     {
     "id": "time_delay",

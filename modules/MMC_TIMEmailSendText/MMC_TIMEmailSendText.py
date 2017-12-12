@@ -88,15 +88,6 @@ class MMCTIMEmailSendText:
         return dominant_color
     
     def action(self, d, z, args):
-        startTime = args["startTime"]
-        endTime = args["endTime"]
-        try:
-            if self.repo.timeCompare( startTime, endTime ):
-                z.toast( "该时间段不允许运行" )
-                return
-        except:
-            z.toast( "输入的时间格式错误,请检查后再试" )
-            return
         set_timeStart = int( args['set_timeStart'] )  # 得到设定的时间
         set_timeEnd = int( args["set_timeEnd"] )
         run_time = float( random.randint( set_timeStart, set_timeEnd ) )
@@ -160,6 +151,7 @@ class MMCTIMEmailSendText:
         Str = d.info  # 获取屏幕大小等信息
         height = Str["displayHeight"]
         width = Str["displayWidth"]
+        a = 0
         while True:
             if d( index=1, className='android.widget.ImageView' ).exists:
                 z.heartbeat( )
@@ -176,6 +168,15 @@ class MMCTIMEmailSendText:
                 z.heartbeat( )
                 d( text='邮件' ).click( )
                 break
+            if a == 5:
+                z.toast("此时状态可能异常,跳出模块")
+                now = datetime.datetime.now( )
+                nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+                z.setModuleLastRun( self.mid )
+                z.toast( '模块结束，保存的时间是%s' % nowtime )
+                return
+            else:
+                a = a + 1
         time.sleep( 4 )
         n = 0
         if not d( text="开始写邮件" ).exists:
@@ -199,17 +200,46 @@ class MMCTIMEmailSendText:
 
             z.sleep( 2 )
             z.heartbeat( )
+            b = 0
             while d( text="跳过", resourceId="com.tencent.tim:id/ivTitleBtnRightText",
                      className="android.widget.TextView" ).exists:
                 d( text="跳过", resourceId="com.tencent.tim:id/ivTitleBtnRightText",
                    className="android.widget.TextView" ).click( )
+                if b ==5:
+                    z.toast( "此时状态可能异常,跳出模块" )
+                    now = datetime.datetime.now( )
+                    nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+                    z.setModuleLastRun( self.mid )
+                    z.toast( '模块结束，保存的时间是%s' % nowtime )
+                    return
+                else:
+                    b = b + 1
         z.sleep( 3 )
         num = 0
+        selectContent = args["selectContent"]
+        repo_material_cateId2 = args["repo_material_cateId2"]
+        sendCount = int(args["sendCount"])
         while num < count:
-            numbers = self.repo.GetNumber( repo_mail_cateId, 120, 1 )
-            QQEmail = numbers[0]['number']
+            numbers = self.repo.GetNumber( repo_mail_cateId, 120, count )
             Material = self.repo.GetMaterial( repo_material_cateId, 0, 1 )
+            if len( Material ) == 0:
+                z.toast( "%s仓库为空" % repo_material_cateId )
+                now = datetime.datetime.now( )
+                nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+                z.setModuleLastRun( self.mid )
+                z.toast( '模块结束，保存的时间是%s' % nowtime )
+                return
             message = Material[0]['content']
+            Material2 = self.repo.GetMaterial( repo_material_cateId2, 0, 1 )
+            if len( Material2 ) == 0:
+                z.toast( "%s仓库为空" % repo_material_cateId2 )
+                now = datetime.datetime.now( )
+                nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+                z.setModuleLastRun( self.mid )
+                z.toast( '模块结束，保存的时间是%s' % nowtime )
+                return
+            message2 = Material2[0]['content']
+
             if d( text="开始写邮件" ).exists:
                 d( text="开始写邮件" ).click( )
             if d(text="写邮件").exists:
@@ -217,20 +247,33 @@ class MMCTIMEmailSendText:
             # while not d(text="发送").exists:
             #     z.sleep(2)
             z.sleep( 14 )
+
+            if selectContent == "只发主题" or selectContent == "主题内容都发":
+                x2 = 266 / 720
+                y2 = 371 / 1280
+                d.click( x2 * width, y2 * height )  # 点击到编辑主题处
+                z.heartbeat( )
+                z.input( message2.encode( 'utf-8' ) )
+                z.sleep( 2 )
+            if selectContent == "只发内容" or selectContent == "主题内容都发":
+                x3 = 80 / 540
+                y3 = 430 / 888
+                d.click( x3 * width, y3 * height )  # 点击到编辑消息处
+                z.heartbeat( )
+                z.input( message.encode( 'utf-8' ) )
+                z.sleep( 2 )
             x1 = 260 / 540
             y1 = 156 / 888
             d.click( x1 * width, y1 * height )  # 点击到收件人
             z.heartbeat( )
-            z.input( QQEmail + "@qq.com" )
-            print(QQEmail + "@qq.com")
+            for i in range( 0, count ):
+                QQEmail = numbers[i]['number']
+                z.input( QQEmail + "@qq.com " )
+                z.input(" ")
+                print(QQEmail + "@qq.com")
             z.sleep( 2 )
             z.heartbeat( )
-            x2 = 80 / 540
-            y2 = 430 / 888
-            d.click( x2 * width, y2 * height )  # 点击到编辑消息处
-            z.heartbeat( )
-            z.input( message.encode( 'utf-8' ) )
-            z.sleep( 2 )
+
             z.heartbeat( )
             x3 = 270 / 540
             y3 = 850 / 888
@@ -270,7 +313,7 @@ class MMCTIMEmailSendText:
                 z.sleep( 1 )
                 d( text="邮件", resourceId="com.tencent.tim:id/ivTitleBtnLeft",
                    className="android.widget.TextView" ).click( )
-                num = num + 1
+
             else:
                 z.toast( "非正常状态,停止模块" )
                 now = datetime.datetime.now( )
@@ -286,6 +329,7 @@ class MMCTIMEmailSendText:
                 # d(text="邮件",resourceId="com.tencent.tim:id/ivTitleBtnLeft",className="android.widget.TextView").click()
                 # while 1:
                 #     if d(text='发送', className='android.widget.Button').exists:
+            num = num + 1
         z.toast( "模块完成" )
         now = datetime.datetime.now( )
         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
@@ -308,11 +352,11 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("d99e4b99")
-    z = ZDevice("d99e4b99")
+    d = Device("HT54VSK01061")
+    z = ZDevice("HT54VSK01061")
 
     args = {"repo_mail_cateId": "119", "repo_material_cateId": "39", "time_delay": "3","count":"5",
-            "set_timeStart":"100","set_timeEnd":"120","startTime":"0","endTime":"8"}    #cate_id是仓库号，length是数量
+            "set_timeStart":"0","set_timeEnd":"0","repo_material_cateId2":"255","selectContent":"只发主题","sendCount":"5"}    #cate_id是仓库号，length是数量
     o.action(d,z,args)
 
 

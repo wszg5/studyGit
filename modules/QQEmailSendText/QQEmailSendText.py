@@ -32,13 +32,13 @@ class QQEmailSendText:
             if (args["time_delay"]):
                 z.sleep( int( args["time_delay"] ) )
             return
-        self.scode = smsCode( d.server.adb.device_serial( ) )
         z.heartbeat( )
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
         repo_mail_cateId = int(args['repo_mail_cateId'])
         repo_material_cateId= args["repo_material_cateId"]
+        repo_material_cateId2 = args["repo_material_cateId2"]
         picture = args["picture"]
         size = args["size"]
         d.server.adb.cmd( "shell", "am force-stop com.tencent.androidqqmail" ).communicate( )  # 强制停止
@@ -65,6 +65,7 @@ class QQEmailSendText:
             else:
                 z.toast( "状态异常，跳过此模块" )
                 return
+        selectContent = args["selectContent"]
         count = int(args["count"])
         numbers = self.repo.GetNumber( repo_mail_cateId, 120, count )
         if len( numbers ) == 0:
@@ -79,6 +80,14 @@ class QQEmailSendText:
             z.sleep( 10 )
             return
         message = Material[0]['content']
+
+        Material2 = self.repo.GetMaterial( repo_material_cateId2, 0, 1 )
+        if len( Material ) == 0:
+            d.server.adb.cmd( "shell",
+                              "am broadcast -a com.zunyun.zime.toast --es msg \"%s号仓库为空，没有取到消息\"" % repo_material_cateId ).communicate( )
+            z.sleep( 10 )
+            return
+        message2 = Material2[0]['content']
         # if d(text="温馨提示​",className="android.widget.TextView").exists:
         #     d(text="确定",className="android.widget.Button").click()
         #     z.sleep(1)
@@ -88,37 +97,48 @@ class QQEmailSendText:
             if d(text="写邮件",resourceId="com.tencent.androidqqmail:id/u3").exists:
                 d( text="写邮件", resourceId="com.tencent.androidqqmail:id/u3" ).click()
                 z.sleep(0.5)
-                d.click( 60 / 720 * width, 198 / 1280 * height )
-                z.sleep(0.5)
+                # d.click( 60 / 720 * width, 198 / 1280 * height )
+                # z.sleep(0.5)
                 flag2 = True
-        if flag2 or flag1:
-            for i in range(0,count):
-                QQEmail = numbers[i]['number'].encode("utf-8")
-                if "@qq.com" not in QQEmail:
-                    z.input( QQEmail + "@qq.com " )
-                else:
-                    z.input( QQEmail + " " )
-                print(QQEmail + "@qq.com")
+
+        if selectContent=="只发主题" or selectContent== "主题内容都发":
+            d.click( 166 / 720 * width, 377 / 1280 * height )
+            z.input(message2.encode( "utf-8" ))
+            z.sleep(2)
+            z.heartbeat()
+
         z.sleep(1)
         d.dump( compressed=False )
-        if not d(textContains="抄送/密送，发件人").exists:
-            obj = d(index=0,className="android.webkit.WebView").child(index=0,className="android.view.View").child(index=0,className="android.view.View")
-            while not obj.exists:
-                d.swipe( width / 2, height * 5 / 6, width / 2, height / 6 )
-                d.dump( compressed=False )
-            obj.click()
-            z.input( message.encode( "utf-8" ) )
-        else:
-            while not d(index=0,resourceId="com.tencent.androidqqmail:id/mp",className="android.widget.EditText").exists:
-                d.swipe( width / 2, height * 5 / 6, width / 2, height / 6 )
-                d.dump( compressed=False )
-            if d(index=0,resourceId="com.tencent.androidqqmail:id/mp",className="android.widget.EditText").exists:
-                text = d( index=0, resourceId="com.tencent.androidqqmail:id/mp", className="android.widget.EditText" ).info["text"].encode("utf-8")
-                z.sleep(0.5)
-                if text=="" or text==None:
-                    d( index=0, resourceId="com.tencent.androidqqmail:id/mp", className="android.widget.EditText" ).click()
-                    z.input(message.encode("utf-8"))
+        if selectContent == "只发内容" or selectContent == "主题内容都发":
+            if not d(textContains="抄送/密送，发件人").exists:
+                obj = d(index=0,className="android.webkit.WebView").child(index=0,className="android.view.View").child(index=0,className="android.view.View")
+                while not obj.exists:
+                    d.swipe( width / 2, height * 5 / 6, width / 2, height / 6 )
+                    d.dump( compressed=False )
+                obj.click()
+                z.input( message.encode( "utf-8" ) )
+            else:
+                while not d(index=0,resourceId="com.tencent.androidqqmail:id/mp",className="android.widget.EditText").exists:
+                    d.swipe( width / 2, height * 5 / 6, width / 2, height / 6 )
+                    d.dump( compressed=False )
+                if d(index=0,resourceId="com.tencent.androidqqmail:id/mp",className="android.widget.EditText").exists:
+                    text = d( index=0, resourceId="com.tencent.androidqqmail:id/mp", className="android.widget.EditText" ).info["text"].encode("utf-8")
                     z.sleep(0.5)
+                    if text=="" or text==None:
+                        d( index=0, resourceId="com.tencent.androidqqmail:id/mp", className="android.widget.EditText" ).click()
+                        z.input(message.encode("utf-8"))
+                        z.sleep(0.5)
+
+        if flag2 or flag1:
+            d.click( 81 / 720 * width, 189 / 1280 * height )
+            for i in range(0,count):
+                QQEmail = numbers[i]['number'].encode("utf-8")
+                z.input(QQEmail+" ")
+                # if "@qq.com" not in QQEmail:
+                #     z.input( QQEmail + "@qq.com " )
+                # else:
+                #     z.input( QQEmail + " " )
+                print(QQEmail)
 
         if picture=="是":
             if d(resourceId="com.tencent.androidqqmail:id/m1",description="附件操作").exists:
@@ -166,6 +186,8 @@ class QQEmailSendText:
             return
         if d(index=2,className="android.widget.Button").exists:
             d( index=2, className="android.widget.Button" ).click()
+        if d(text="取消",className="android.widget.Button").exists or d(text="取消",className="android.widget.Button").exists:
+            d( text="取消", className="android.widget.Button" ).click()
         z.toast("模块完成")
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
@@ -177,10 +199,10 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("HT53ASK01833")
+    z = ZDevice("HT53ASK01833")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_mail_cateId": "119", "repo_material_cateId": "39", "time_delay": "3","count":"3","picture":"是","size":"小"};
+    args = {"repo_mail_cateId": "119", "repo_material_cateId": "39", "time_delay": "3","count":"3","picture":"否","size":"小","repo_material_cateId2":"255","selectContent":"主题内容都发"};
 
     o.action(d, z, args)
 

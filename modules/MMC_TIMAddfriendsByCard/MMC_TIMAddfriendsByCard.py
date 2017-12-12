@@ -237,6 +237,7 @@ class MMCTIMAddfriendsByCard:
                 z.toast( "无法加好友,重新唤醒" )
                 z.sleep( 2 )
                 continue
+
             if d( text='必填', resourceId='com.tencent.tim:id/name' ).exists:  # 要回答问题的情况
                 z.heartbeat( )
                 continue

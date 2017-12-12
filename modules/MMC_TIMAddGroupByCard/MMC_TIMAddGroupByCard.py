@@ -111,11 +111,25 @@ class MMCTIMAddGroupByCard:
         i = 0
         num = 1
         while True:
+            if num == totalNumber:
+                z.toast( "模块完成" )
+                break
+            if i ==3:
+                z.toast("这个号可能已经冻结了")
+                now = datetime.datetime.now( )
+                nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+                z.setModuleLastRun( self.mid )
+                z.toast( '模块结束，保存的时间是%s' % nowtime )
+                return
             numbers = self.repo.GetNumber( repo_number_id, 60, 1, "normal" )  # 取出t1条两小时内没有用过的号码
             if len( numbers ) == 0:
                 d.server.adb.cmd( "shell",
                                   "am broadcast -a com.zunyun.zime.toast --es msg \"群号码库%s号仓库为空，等待中\"" % repo_number_id ).communicate( )
                 z.sleep( 10 )
+                now = datetime.datetime.now( )
+                nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+                z.setModuleLastRun( self.mid )
+                z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
             list = numbers  # 将取出的号码保存到一个新的集合
             # print( list )
@@ -128,6 +142,10 @@ class MMCTIMAddGroupByCard:
                 d.server.adb.cmd( "shell",
                                   "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，没有取到消息\"" % cate_id ).communicate( )
                 z.sleep( 10 )
+                now = datetime.datetime.now( )
+                nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
+                z.setModuleLastRun( self.mid )
+                z.toast( '模块结束，保存的时间是%s' % nowtime )
                 return
             message = Material[0]['content']
 
@@ -151,7 +169,8 @@ class MMCTIMAddGroupByCard:
                 d( text='申请加群' ).click( )
                 z.sleep( 10 )
             else:
-                # i = i +1
+                num = num + 1
+                i = i + 1
                 continue
             z.sleep( 1 )
             if d( text='申请加群' ).exists:
@@ -189,14 +208,9 @@ class MMCTIMAddGroupByCard:
                 d( text='发送' ).click( )
                 z.sleep( 6 )
             if d( text='发送' ).exists:
-                i = i + 1
                 continue
             print(QQnumber + "发送成功")
-            if num == totalNumber:
-                z.toast( "模块完成" )
-                break
             num = num + 1
-            # i = i +1
             z.sleep( 2 )
             z.heartbeat( )
 
@@ -223,8 +237,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("d99e4b99")
-    z = ZDevice("d99e4b99")
+    d = Device("cda0ae8d")
+    z = ZDevice("cda0ae8d")
 
     args = {"time_delay":"3","set_timeStart":"1","set_timeEnd":"1","startTime":"0","endTime":"8",
             "repo_number_id":"229","repo_material_id":"255","totalNumber":"5","switch":"否"}    #cate_id是仓库号，length是数量

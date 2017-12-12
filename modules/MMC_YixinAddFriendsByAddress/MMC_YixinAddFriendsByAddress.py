@@ -16,7 +16,6 @@ from zservice import ZDevice
 class MMCYixinAddFriendsByAddress:
     def __init__(self):
         self.repo = Repo()
-        self.mid = os.path.realpath( __file__ )
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
@@ -91,23 +90,6 @@ class MMCYixinAddFriendsByAddress:
 
 
     def action(self, d, z,args):
-        startTime = args["startTime"]
-        endTime = args["endTime"]
-        try:
-            if self.repo.timeCompare( startTime, endTime ):
-                z.toast( "该时间段不允许运行" )
-                return
-        except:
-            z.toast( "输入的时间格式错误,请检查后再试" )
-            return
-        set_timeStart = int( args['set_timeStart'] )  # 得到设定的时间
-        set_timeEnd = int( args["set_timeEnd"] )
-        run_time = float( random.randint( set_timeStart, set_timeEnd ) )
-        run_interval = z.getModuleRunInterval( self.mid )
-        if run_interval is not None and run_interval < run_time:
-            z.toast( u'锁定时间还差:%d分钟' % int( run_time - run_interval ) )
-            z.sleep( 2 )
-            return
         z.toast( "准备执行MMS版易信通讯录加好友模块" )
         z.sleep( 1 )
         z.toast( "开始导入通讯录" )
@@ -134,15 +116,20 @@ class MMCYixinAddFriendsByAddress:
         d.server.adb.cmd( "shell","am start -n im.yixin/.activity.WelcomeActivity" ).communicate( )  # 拉起来
         z.sleep( 10 )
         z.heartbeat( )
+        if d(textContains="停止运行").exists:
+            if d(text="确定").exists:
+                d( text="确定" ).click()
+                d.server.adb.cmd( "shell", "am start -n im.yixin/.activity.WelcomeActivity" ).communicate( )  # 拉起来
+                z.sleep(5)
         if d( text="好友", resourceId="im.yixin:id/tab_title_label", className="android.widget.TextView" ).exists:
             z.toast( "登录状态正常" )
             d( text="好友", resourceId="im.yixin:id/tab_title_label", className="android.widget.TextView" ).click()
         else:
-            now = datetime.datetime.now( )
-            nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-            z.setModuleLastRun( self.mid )
-            z.toast( '模块结束，保存的时间是%s' % nowtime )
+            z.toast("状态异常,跳出模块")
             return
+        if d(text="立即体验",resourceId="im.yixin:id/new_presented_resources_experience_btn").exists:
+            d( text="立即体验", resourceId="im.yixin:id/new_presented_resources_experience_btn" ).click()
+            z.sleep(1)
         str = d.info  # 获取屏幕大小等信息
         height = str["displayHeight"]
         width = str["displayWidth"]
@@ -164,7 +151,7 @@ class MMCYixinAddFriendsByAddress:
 
             objName = obj.child(index=0,className="android.widget.RelativeLayout").child(index=0,className="android.widget.LinearLayout").child(
                 index=0,resourceId="im.yixin:id/contact_item_nick_name")
-
+            z.heartbeat()
             if not obj.exists and d( index=0, className="android.widget.ListView", resourceId="im.yixin:id/lvContacts" ).child( index=i,className="android.widget.RelativeLayout" ).exists:
                 i = i + 1
                 continue
@@ -177,7 +164,7 @@ class MMCYixinAddFriendsByAddress:
                     else:
                         nameList.append( name )
                         print name
-
+                z.heartbeat( )
                 if obj.child(index=0,className="android.widget.RelativeLayout").child(index=1,className="android.widget.LinearLayout",resourceId="im.yixin:id/invite_layout_id").child(text="添加",resourceId="im.yixin:id/contact_item_function_btn").exists:
                     obj.child( index=0, className="android.widget.RelativeLayout" ).child( index=1,
                                                                                            className="android.widget.LinearLayout",
@@ -190,10 +177,6 @@ class MMCYixinAddFriendsByAddress:
                         Material = self.repo.GetMaterial( cate_id1, 0, 1 )
                         if len( Material ) == 0:
                             z.toast( "%s仓库为空" % cate_id1 )
-                            now = datetime.datetime.now( )
-                            nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-                            z.setModuleLastRun( self.mid )
-                            z.toast( '模块结束，保存的时间是%s' % nowtime )
                             return
                         message = Material[0]['content']  # 取出验证消息的内容
                         z.input( message )
@@ -212,6 +195,7 @@ class MMCYixinAddFriendsByAddress:
                 #     i = i + 1
                 #     continue
                 else:
+                    z.heartbeat( )
                     if obj.child(index=0,className="android.widget.RelativeLayout").child(index=1,className="android.widget.LinearLayout",resourceId="im.yixin:id/invite_layout_id").child(text="邀请",resourceId="im.yixin:id/contact_item_tip_view").exists:
                         z.toast("底下的都是邀请,没有添加了")
                         break
@@ -222,6 +206,7 @@ class MMCYixinAddFriendsByAddress:
                     i = i + 1
                     continue
             else:
+                z.heartbeat( )
                 d.swipe( width / 2, height * 5 / 6, width / 2, height / 6 )
                 # if d( index=0, className="android.widget.ListView", resourceId="im.yixin:id/lvContacts" ).child( index=i,className="android.widget.LinearLayout",resourceId="im.yixin:id/listItemLayout" ).child(index=0,className="android.widget.RelativeLayout").child(index=0,className="android.widget.LinearLayout").child(
                 # index=0,resourceId="im.yixin:id/contact_item_nick_name").exists:
@@ -248,10 +233,7 @@ class MMCYixinAddFriendsByAddress:
                 #                 z.toast( "到底了" )
                 #                 break
                 i = 1
-        now = datetime.datetime.now( )
-        nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
-        z.setModuleLastRun( self.mid )
-        z.toast( '模块结束，保存的时间是%s' % nowtime )
+        z.toast("模块完成")
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
 
@@ -274,6 +256,6 @@ if __name__ == "__main__":
     d = Device("d99e4b99")
     z = ZDevice("d99e4b99")
 
-    args = {"repo_cate_id":"104",'number_count':'80',"random_name":"否","clear":"是","time_delay":"3","set_timeStart":"0","set_timeEnd":"0","startTime":"0","endTime":"8",
+    args = {"repo_cate_id":"104",'number_count':'80',"random_name":"否","clear":"是","time_delay":"3",
             "repo_material_cate_id":"255","add_count":"100"}    #cate_id是仓库号，length是数量
     o.action( d, z, args )

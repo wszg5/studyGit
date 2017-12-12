@@ -1,0 +1,1 @@
+cookie = [item["name"] + "=" + item["value"] for item in sel.get_cookies()]

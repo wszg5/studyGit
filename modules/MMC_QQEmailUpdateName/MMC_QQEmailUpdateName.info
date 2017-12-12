@@ -1,0 +1,55 @@
+{
+"id": "MMCQQEmailUpdateName",
+"cate":"MMC模块",
+"name":"QQEmail-MMC-修改发信昵称",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQEmail-MMC-UN",
+"icon":"vcard-o",
+"remark":"QQEmail-MMC-邮件发消息",
+"setting":[
+    {
+    "id": "set_timeStart",
+    "name":"在随机范围时间只运行一次(始)",
+    "type":"textbox",
+    "defaultValue":"60",
+    "remark":"单位：分钟"
+    },
+    {
+    "id": "set_timeEnd",
+    "name":"在随机范围时间只运行一次(终)",
+    "type":"textbox",
+    "defaultValue":"120",
+    "remark":"单位：分钟"
+    },
+    {
+    "id": "startTime",
+    "name":"模块不运行的开始时间",
+    "type":"textbox",
+    "defaultValue":"0",
+    "remark":"格式如0:00或0(24小时制)"
+    },
+    {
+    "id": "endTime",
+    "name":"模块不运行的结束时间",
+    "type":"textbox",
+    "defaultValue":"8",
+    "remark":"格式如8:00或8(24小时制)"
+    },
+	{
+	"id": "repo_material_cateId",
+	"name":"昵称仓库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+
+    {
+    "id": "time_delay",
+    "name":"唤醒拉起休眠时间",
+    "type":"textbox",
+    "defaultValue":"8",
+    "remark":"单位：秒"
+    }
+]
+}

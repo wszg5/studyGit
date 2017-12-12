@@ -1,0 +1,56 @@
+{
+"id": "MMCYixinAddressSendMsg",
+"cate":"MMC模块",
+"name":"Yixin-MMC-通讯录发短信",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"Yixin-MMC-ASM",
+"icon": "vcard-o",
+"remark":"Yixin-MMC-通讯录发短信",
+"setting":[
+{
+	"id": "repo_cate_id",
+	"name":"号码库分类",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"21"
+	},
+	{
+	"id": "clear",
+	"name":"是否清空通讯录",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"是",
+	"remark":"是否清空通讯录"
+	},
+	{
+	"id": "random_name",
+	"name":"是否使用随机姓名",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"是",
+	"remark":"是否使用随机姓名"
+	},
+	{
+	"id": "number_count",
+	"name":"发短信的个数",
+	"type":"textbox",
+	"defaultValue":"20",
+	"remark":""
+	},
+	{
+	"id": "repo_material_cate_id",
+	"name":"验证内容仓库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

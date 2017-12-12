@@ -1,0 +1,92 @@
+{
+"id": "EmailInternet",
+"cate":"其他模块",
+"name":"邮箱无头浏览器发",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"EN1.0",
+"icon": "vcard-o",
+"remark":"邮箱无头浏览器发",
+"setting":[
+    {
+    "id": "repo_cate_id",
+    "name":"账号库分类",
+    "type":"repo",
+    "source":"account",
+    "top_cate_id":"1"
+    },
+    {
+    "id": "time_limit1",
+    "name":"QQ账号提取间隔（单位分钟）",
+    "type":"textbox",
+    "defaultValue":"120",
+    "remark":"注：如果没有符合条件账号，调度将一直等待至有可用账号"
+    },
+    {
+    "id": "repo_cookies_id",
+    "name":"存放cookie",
+    "type":"repo",
+    "source":"information",
+    "top_cate_id":"4"
+    },
+    {
+	"id": "repo_material_cateId",
+	"name":"邮件内容仓库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "repo_material_cateId2",
+	"name":"邮件主题仓库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "repo_number_cate_id",
+	"name":"收件人号码仓库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"22"
+	},
+	{
+    "id": "count",
+    "name":"发多少次",
+    "type":"textbox",
+    "defaultValue":"100",
+    "remark":"单位：次"
+    },
+    {
+	"id": "selectContent",
+	"name":"选择发送形式",
+	"type":"select",
+	"list":{"只发内容":"只发内容","只发主题":"只发主题","主题内容都发":"主题内容都发"},
+	"defaultValue":"只发内容",
+	"remark":"选择发送形式"
+	},
+	{
+	"id": "emailType",
+	"name":"邮件类型",
+	"type":"select",
+	"list":{"QQ邮箱":"QQ邮箱","189邮箱":"189邮箱"},
+	"defaultValue":"QQ邮箱",
+	"remark":"邮件类型"
+	},
+	{
+	"id": "sendCount",
+	"name":"每次发邮件人数",
+	"type":"textbox",
+	"defaultValue":"5",
+	"remark":"单位：个"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+
+]
+}

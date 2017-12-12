@@ -16,6 +16,13 @@
 	"top_cate_id":"12"
 	},
 	{
+	"id": "repo_material_cateId2",
+	"name":"邮件主题仓库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
 	"id": "repo_mail_cateId",
 	"name":"号码库分类",
 	"type":"repo",
@@ -24,10 +31,26 @@
 	},
 	{
 	"id": "count",
-	"name":"发邮件总人数",
+	"name":"发邮件次数",
 	"type":"textbox",
 	"defaultValue":"4",
 	"remark":"单位：个"
+	},
+
+	{
+	"id": "sendCount",
+	"name":"每次发邮件人数",
+	"type":"textbox",
+	"defaultValue":"4",
+	"remark":"单位：个"
+	},
+	{
+	"id": "selectContent",
+	"name":"选择发送形式",
+	"type":"select",
+	"list":{"只发内容":"只发内容","只发主题":"只发主题","主题内容都发":"主题内容都发"},
+	"defaultValue":"只发内容",
+	"remark":"选择发送形式"
 	},
 
     {
@@ -50,20 +73,6 @@
     "type":"textbox",
     "defaultValue":"120",
     "remark":"单位：分钟"
-    },
-    {
-    "id": "startTime",
-    "name":"模块不运行的开始时间",
-    "type":"textbox",
-    "defaultValue":"0",
-    "remark":"格式如0:00或0(24小时制)"
-    },
-    {
-    "id": "endTime",
-    "name":"模块不运行的结束时间",
-    "type":"textbox",
-    "defaultValue":"8",
-    "remark":"格式如8:00或8(24小时制)"
     }
 
 ]
