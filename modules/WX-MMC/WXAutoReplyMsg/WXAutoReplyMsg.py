@@ -66,18 +66,26 @@ class WXAutoReplyMsg:
             if d(text='删除该聊天').exists:
                 d(text='删除该聊天').click()
 
+            z.sleep( 2 )
+            if d( text='删除' ).exists:
+                d( text='删除' ).click( )
+
         if d(text='微信团队').exists:
             d(text='微信团队').long_click()
             z.sleep(2)
             if d(text='删除该聊天').exists:
                 d(text='删除该聊天').click()
 
+            z.sleep( 2 )
+            if d( text='删除' ).exists:
+                d( text='删除' ).click( )
+
         i = 0
         j = 0
         while True:
             i = i + 1
-            nearObj = d(className='android.widget.RelativeLayout', index=0).child(className='android.widget.TextView',resourceId='com.tencent.mm:id/i4', index=1)
-            newNearObj = d(className='android.widget.RelativeLayout',index=0).child(className='android.widget.TextView', resourceId='com.tencent.mm:id/ie', index=1)
+            nearObj = d(className='android.widget.RelativeLayout', index=0).child(className='android.widget.TextView',resourceId='com.tencent.mm:id/il', index=1)
+            newNearObj = d(className='android.widget.RelativeLayout',index=0).child(className='android.widget.TextView', resourceId='com.tencent.mm:id/il', index=1)
             if nearObj.exists or newNearObj.exists:
                 if j > int(args['reply_count']):
                     break
@@ -87,7 +95,7 @@ class WXAutoReplyMsg:
                     newNearObj.click()
                 z.sleep(1.5)
                 for i in range( 0, msg_count ):
-                    if d( textContains='(', resourceId='com.tencent.mm:id/gh' ).exists:
+                    if d( textContains='(', resourceId='com.tencent.mm:id/h2' ).exists:
                         break
                     cate_id = args["repo_material_id"]
                     Material = self.repo.GetMaterial( cate_id, 0, 1 )
@@ -110,6 +118,10 @@ class WXAutoReplyMsg:
                                                                          index=i).long_click()
                 if d(text='删除该聊天').exists:
                     d(text='删除该聊天').click()
+
+                z.sleep(2)
+                if d(text='删除').exists:
+                    d(text='删除').click()
                 z.sleep( 1 )
                 j += 1
             else:
@@ -138,5 +150,9 @@ if __name__ == "__main__":
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
+<<<<<<< HEAD
     args = {"repo_material_id": "207", "msg_count": "1","reply_count": "3", 'run_time_min': '1', 'run_time_max': '3', 'start_time': '', 'stop_time': ''}    #cate_id是仓库号，length是数量
+=======
+    args = {"repo_material_id": "207", "msg_count": "1","reply_count": "3", 'run_time_min': '0', 'run_time_max': '0', 'start_time': '', 'stop_time': ''}    #cate_id是仓库号，length是数量
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
     o.action(d,z, args)

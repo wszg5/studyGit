@@ -7,7 +7,7 @@
 "version": "1.0",
 "code":"WX25",
 "icon":"vcard-o",
-"remark":"微信发朋友圈(文字)，6.5.3版",
+"remark":"微信发朋友圈(文字)，微信最新版",
 "setting":[
 	{
 	"id": "repo_material_id",

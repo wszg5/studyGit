@@ -269,8 +269,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding( 'utf8' )
     clazz = getPluginClass( )
     o = clazz( )
-    d = Device( "HT54VSK01061" )
-    z = ZDevice( "HT54VSK01061" )
+    d = Device( "d99e4b99" )
+    z = ZDevice( "d99e4b99" )
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").wait()
     # d.dump(compressed=False)
     args = { "time_delay": "3"};

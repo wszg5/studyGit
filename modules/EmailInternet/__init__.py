@@ -1,10 +1,21 @@
-{'domain': '.mail.qq.com', 'name': 'mpwd', 'expires': '\u5468\u4e09, 10 1\u6708 2018 09:23:39 GMT', 'value': '76B5754E4B5F180625366E729727C115A4084636BACFF7C8264C3BE4A5326BEF@2564855064@4', 'expiry': 1515576219, 'path': '/', 'httponly': False, 'secure': False}
+import re
 
 
-'https://w.mail.qq.com/cgi-bin/today?sid=BR2GhBFf2joUw1sB0F7TgfMX,4,qYUdGY3g5RWRVQTUtZEV6THQ2cjVxTEdBTnRBVnIwMzVBNmhmR0o0dk1ma18.&first=1&mcookie=disabled'
-<!DOCTYPE html><html lang="zh-CN"><head>    <title>QQ邮箱</title>    <meta http-equiv="content-type" content="text/html;charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=Edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="format-detection" content="telephone=no"><link rel="stylesheet" type="text/css" href="https://res.mail.qq.com/wapmail/zh_CN/htmledition/style/mobile/wap2e7061.css"><!--[if lt IE 10]><script>
-(function() {
-var a = ['header','footer','section','aside','article','nav','hgroup','figure','figcaption','time','mark','output','meter'];
-for(var i = 0, m = a.length; i < m; i++) {document.createElement(a[i]);}
-})();
-</script><link rel="stylesheet" type="text/css" href="https://res.mail.qq.com/wapmail/zh_CN/htmledition/style/mobile/wap_ie2ab915.css" /><![endif]--><link rel="icon" type="image/png" sizes="16x16" href="http://mail.qq.com/zh_CN/htmledition/images/favicon/qqmail_favicon_16h.png"><link rel="icon" type="image/png" sizes="32x32" href="http://mail.qq.com/zh_CN/htmledition/images/favicon/qqmail_favicon_32h.png"><link rel="icon" type="image/png" sizes="48x48" href="http://mail.qq.com/zh_CN/htmledition/images/favicon/qqmail_favicon_48h.png"><link rel="icon" type="image/png" sizes="96x96" href="http://mail.qq.com/zh_CN/htmledition/images/favicon/qqmail_favicon_96h.png"><link rel="apple-touch-icon-precomposed" href="http://rescdn.mail.qq.com/zh_CN/htmledition/images/logo/app/qqmail_logo_ios_60h.png"><link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://rescdn.mail.qq.com/zh_CN/htmledition/images/logo/app/qqmail_logo_ios_114h.png"><link rel="apple-touch-icon-precomposed" sizes="120x120" href="http://rescdn.mail.qq.com/zh_CN/htmledition/images/logo/app/qqmail_logo_ios_120h.png"><link rel="apple-touch-icon-precomposed" sizes="152x152" href="http://rescdn.mail.qq.com/zh_CN/htmledition/images/logo/app/qqmail_logo_ios_152h.png">    </head><body><div class="system_error_tips_container" style="padding: 20px;">    <div class="qm_tips qm_tips_PromptInfo">        <div class="system_error_tips_title">QQ邮箱提示：</div>                <div class="system_error_tips_cnt"><b> 邮件中可能包含不合适的用语或内容。</b></div>        <div class="system_error_tips_tool">            <a href="javascript:history.back();">«返回</a>        </div>            </div></div></body></html>
+
+pattern = re.compile(ur'\bid="ZC.*?" \b')
+str = '<div id="ZC4412-X8uJ0acJOdzz1FUPVCPRN7c" un="mail" list="item,<div id=m,<div id="ZC4412-X8uJ0acJOdzz1FUPVCPRN8c" un="mail" list="item,<div id=m,<div id="ZC4412-X8uJ0acJOdzz1FUPVCPRN9c" un="mail" list="item'
+print(pattern.search(str).group())
+
+line = '<div id="ZC4412-X8uJ0acJOdzz1FUPVCPRN7c" un="mail" list="item,<div id=m,'
+
+searchObj = re.search( r'\bid="ZC.*?" \b', str, re.M | re.I )
+
+
+if searchObj:
+   print "searchObj.group() : ", searchObj.group()
+   print "searchObj.group(1) : ", searchObj.group(1)
+   print "searchObj.group(2) : ", searchObj.group(2)
+else:
+   print "Nothing found!!"
+
+

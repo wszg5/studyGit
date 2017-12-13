@@ -59,6 +59,18 @@ class Slot:
             self.folders = ['databases']
             self.maxSlot = const.MAX_SLOTS_QQMAIL
 
+        elif (self.type == "now"):
+            self.package = "com.tencent.now"
+            self.files = []
+            self.folders = ['files', 'databases', 'shared_prefs']
+            self.maxSlot = const.MAX_SLOTS_NOW
+
+        elif (self.type == "yixin"):
+            self.package = "im.yixin"
+            self.files = ['databases/conf.dat']
+            self.folders = []
+            self.maxSlot = const.MAX_SLOTS_YIXIN
+
         else:
             raise SyntaxError("目前还不支持%s卡槽"%self.type)
 

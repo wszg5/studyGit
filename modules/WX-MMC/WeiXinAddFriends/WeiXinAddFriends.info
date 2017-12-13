@@ -65,6 +65,16 @@
 	"defaultValue":"3",
 	"remark":"单位：个"
 	},
+<<<<<<< HEAD
+=======
+	{
+	"id": "set_remark",
+	"name":"是否设置备注",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"否"
+	},
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
     {
     "id": "time_delay",
     "name":"模块结束延时",

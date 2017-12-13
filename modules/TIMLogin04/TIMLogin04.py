@@ -10,6 +10,8 @@ from Repo import *
 import time, datetime, random
 from slot import Slot
 from zservice import ZDevice
+import colorsys
+from imageCode import imageCode
 
 class TIMLogin04:
 
@@ -24,6 +26,108 @@ class TIMLogin04:
             randomNum = str(00) + str(randomNum);
         uniqueNum = str(nowTime) + str(randomNum);
         return uniqueNum
+
+    def WebViewBlankPages(self, d):
+        z.toast( "判断是否是空白页" )
+        Str = d.info  # 获取屏幕大小等信息
+        height = float( Str["displayHeight"] )
+        width = float( Str["displayWidth"] )
+
+        W_H = width / height
+        screenScale = round( W_H, 2 )
+
+        base_dir = os.path.abspath( os.path.join( os.path.dirname( __file__ ), os.path.pardir, "tmp" ) )
+        if not os.path.isdir( base_dir ):
+            os.mkdir( base_dir )
+        sourcePng = os.path.join( base_dir, "%s_s.png" % (self.GetUnique( )) )
+
+        if screenScale == 0.56:
+            left = 60  # 验证码的位置信息
+            top = 655
+            right = 290
+            bottom = 680
+        if screenScale == 0.61:
+            left = 60  # 验证码的位置信息
+            top = 490
+            right = 210
+            bottom = 510
+
+        left = width * 7 / 135  # 验证码的位置信息
+        top = height * 245 / 444
+        right = width * 51 / 54
+        bottom = height * 275 / 444
+
+        d.screenshot( sourcePng )  # 截取整个输入验证码时的屏幕
+
+        img = Image.open( sourcePng )
+        box = (left, top, right, bottom)  # left top right bottom
+        region = img.crop( box )  # 截取验证码的图片
+        # show(region)    #展示资料卡上的信息
+        image = region.convert( 'RGBA' )
+        # 生成缩略图，减少计算量，减小cpu压力
+        image.thumbnail( (200, 200) )
+        max_score = None
+        dominant_color = None
+        for count, (r, g, b, a) in image.getcolors( image.size[0] * image.size[1] ):
+            # 跳过纯黑色
+            if a == 0:
+                continue
+            saturation = colorsys.rgb_to_hsv( r / 255.0, g / 255.0, b / 255.0 )[1]
+            y = min( abs( r * 2104 + g * 4130 + b * 802 + 4096 + 131072 ) >> 13, 235 )
+            y = (y - 16.0) / (235 - 16)
+            # 忽略高亮色
+            if y > 0.9:
+                continue
+
+            score = (saturation + 0.1) * count
+            if score > max_score:
+                max_score = score
+                dominant_color = (r, g, b)  # 红绿蓝
+        return dominant_color
+
+    def WebViewPlayCode(self, d, z):
+        z.toast( "开始截图打码" )
+
+        Str = d.info  # 获取屏幕大小等信息
+        height = float( Str["displayHeight"] )
+        width = float( Str["displayWidth"] )
+        W_H = width / height
+        screenScale = round( W_H, 2 )
+
+        base_dir = os.path.abspath( os.path.join( os.path.dirname( __file__ ), os.path.pardir, "tmp" ) )
+        if not os.path.isdir( base_dir ):
+            os.mkdir( base_dir )
+        sourcePng = os.path.join( base_dir, "%s_s.png" % (self.GetUnique( )) )
+        icode = imageCode( )
+        im_id = ""
+        for i in range( 0, 1 ):  # 打码循环
+            if i > 0:
+                icode.reportError( im_id )
+
+            d.screenshot( sourcePng )  # 截取整个输入验证码时的屏幕
+            if screenScale == 0.61:
+                p = {"x1": 30 / width, "y1": 283 / height, "x2": 271 / width, "y2": 379 / height}
+            if screenScale == 0.56:
+                p = {"x1": 40 / width, "y1": 375 / height, "x2": 362 / width, "y2": 505 / height}
+            cropedImg = z.img_crop( sourcePng, p )
+            im = open( cropedImg, 'rb' )
+            codeResult = icode.getCode( im, icode.CODE_TYPE_4_NUMBER_CHAR, 60 )
+            code = codeResult["Result"]
+            im_id = codeResult["Id"]
+            os.remove( sourcePng )
+            z.heartbeat( )
+            z.sleep( 5 )
+            d.click( width * 300 / 540, height * 330 / 888 )
+            z.input( code )
+            z.sleep( 2 )
+            d.click( width * 270 / 540, height * 525 / 888 )
+            while d( className='android.widget.ProgressBar', index=0 ).exists:  # 网速不给力时，点击完成后仍然在加载时的状态
+                z.sleep( 2 )
+            z.sleep( 8 )
+            z.toast( "机器人打码－－" )
+            if not d( textContains='验证码' ).exists:
+                z.toast( "机器人打码跳出－－" )
+                break
 
     def LoginPlayCode(self, d, z):
         self.scode = smsCode( d.server.adb.device_serial( ) )
@@ -104,8 +208,6 @@ class TIMLogin04:
         Str = d.info  # 获取屏幕大小等信息
         height = float( Str["displayHeight"] )
         width = float( Str["displayWidth"] )
-        W_H = width / height
-        screenScale = round( W_H, 2 )
 
         cate_id = args["repo_cate_id"]
         time_limit1 = args['time_limit1']
@@ -125,12 +227,13 @@ class TIMLogin04:
         # d.server.adb.cmd("shell",
         #                   "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
         z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
-        z.sleep(5)
+        z.sleep(10)
         while d( textContains='正在更新数据' ).exists:
             z.sleep( 2 )
-        z.sleep(3)
+        z.sleep(10)
+        z.heartbeat()
         z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
-        z.sleep( 3 )
+        z.sleep( 5 )
         z.heartbeat( )
         if d(className='android.widget.ImageView',resourceId='com.tencent.tim:id/title',index=1).exists:
             for i in range(0,2):
@@ -140,8 +243,7 @@ class TIMLogin04:
                 d(text='立即体验').click()
         z.sleep(2)
         d.dump(compressed=False)
-        if d(text='登 录',resourceId='com.tencent.tim:id/btn_login').exists:
-            z.toast("控件点击")
+        if d(text='登 录').exists:
             d( text='登 录' ).click()
         else:
            d( text='QQ号登录' ).click( )
@@ -162,27 +264,35 @@ class TIMLogin04:
         z.sleep(1)
         while d(text='登录中').exists:
             z.sleep(2)
-        z.sleep(5)
+
+        z.sleep(int(args['time_delay1']))
         z.heartbeat()
 
         detection_robot = d( index='3', className="android.widget.EditText" )
         not_detection_robot = d( resourceId='com.tencent.tim:id/name', index='2',
                                  className="android.widget.EditText" )
+        playCodeResult = ''
         if detection_robot.exists or not_detection_robot.exists:
             playCodeResult = self.LoginPlayCode( d, z )  # 打验证码
-        elif d( text='消息' ).exists or d( text='马上绑定' ).exists or d( text='匹配手机通讯录' ).exists:
-            return QQNumber
         else:
-            self.repo.BackupInfo( cate_id, 'frozen', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
-            z.toast( "卡槽QQ状态异常，跳过此模块" )
-            return "nothing"
+            if self.WebViewBlankPages( d )[2] > 200:
+                z.toast( "不是空白页" )
+                self.WebViewPlayCode( d, z )
+            else:
+                z.toast( "是空白页" )
+                return "nothing"
+
 
         if playCodeResult == "no":
             return "nothing"
 
-        z.sleep(5)
+        z.sleep(10)
         z.heartbeat()
         if d( text='马上绑定' ).exists:
+            return QQNumber
+
+        if d(textContains="请在小米神隐模式中将TIM设置为“无限制”。").exists:
+            z.toast("我是小米神隐")
             return QQNumber
 
         if d( text='匹配手机通讯录' ).exists:  # 登陆上后弹出t通讯录的情况
@@ -242,6 +352,17 @@ class TIMLogin04:
                 break
             z.sleep(2)
 
+        obj = self.slot.getSlotInfo( slotnum )
+        remark = obj['remark']
+        remarkArr = remark.split( "_" )
+        if len( remarkArr ) == 3:
+            slotInfo = d.server.adb.device_serial( ) + '_' + self.type + '_' + slotnum
+            cateId = remarkArr[2]
+            numbers = self.repo.Getserial( cateId, slotInfo )
+            if len( numbers ) != 0:
+                featureCodeInfo = numbers[0]['imei']
+                z.set_serial( "com.tencent.tim", featureCodeInfo )
+
         self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
 
         d.server.adb.cmd("shell", "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + str(slotnum) + "号\"").communicate()
@@ -263,14 +384,14 @@ class TIMLogin04:
                 z.sleep(1.5)
             if d(text='立即体验').exists:
                 d(text='立即体验').click()
-        z.sleep(2)
+        z.sleep(3)
 
-        if d( text='消息' ).exists or d( text='马上绑定' ).exists or d( text='匹配手机通讯录' ).exists:
-            if d( text='匹配手机通讯录' ).exists:  # 登陆上后弹出t通讯录的情况
-                d( text='匹配手机通讯录' ).click( )
-                z.sleep( 1.5 )
-                if d( text='取消' ).exists:
-                    d( text='取消' ).child( )
+        if d( textContains="请在小米神隐模式中将TIM设置为“无限制”。" ).exists:
+            z.toast( "我是小米神隐" )
+            d( text='我知道了' ).click( )
+        elif d( text='消息' ).exists or d( text='马上绑定' ).exists or d( text='匹配手机通讯录' ).exists:
+            if d( text='取消' ).exists:
+                d( text='取消' ).child( )
             z.toast( "卡槽QQ切换成功，继续执行" )
         else:
             obj = self.slot.getSlotInfo( slotnum )
@@ -334,6 +455,16 @@ class TIMLogin04:
                 if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
                     break
                 z.sleep( 2 )
+            obj = self.slot.getSlotInfo( slotnum )
+            remark = obj['remark']
+            remarkArr = remark.split( "_" )
+            if len( remarkArr ) == 3:
+                slotInfo = d.server.adb.device_serial() + '_' + self.type + '_' + slotnum
+                cateId = remarkArr[2]
+                numbers = self.repo.Getserial( cateId, slotInfo)
+                if len(numbers) != 0:
+                    featureCodeInfo = numbers[0]['imei']
+                    z.set_serial( "com.tencent.tim", featureCodeInfo )
 
             self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
 
@@ -359,7 +490,10 @@ class TIMLogin04:
                     d( text='立即体验' ).click( )
             z.sleep( 2 )
             z.heartbeat()
-            if d( text='消息' ).exists or d( text='马上绑定' ).exists or d( text='匹配手机通讯录' ).exists:
+            if d( textContains="请在小米神隐模式中将TIM设置为“无限制”。" ).exists:
+                z.toast( "我是小米神隐" )
+                d( text='我知道了' ).click( )
+            elif d( text='消息' ).exists or d( text='马上绑定' ).exists or d( text='匹配手机通讯录' ).exists:
                 if d( text='匹配手机通讯录' ).exists:  # 登陆上后弹出t通讯录的情况
                     d( text='匹配手机通讯录' ).click( )
                     z.sleep( 1.5 )
@@ -418,8 +552,9 @@ class TIMLogin04:
                 return
             else:
                 z.heartbeat()
-                self.slot.backup( slotnum, str( slotnum ) + '_' + QQnumber )  # 设备信息，卡槽号，QQ号
-                self.repo.BackupInfo( cate_id, 'using', QQnumber, serialinfo, '%s_%s_%s' % (
+                featureCodeInfo = z.get_serial("com.tencent.tim")
+                self.slot.backup( slotnum, str( slotnum ) + '_' + QQnumber + '_' + cate_id)  # 设备信息，卡槽号，QQ号
+                self.repo.BackupInfo( cate_id, 'using', QQnumber, featureCodeInfo, '%s_%s_%s' % (
                     d.server.adb.device_serial( ), self.type, slotnum) )  # 仓库号,使用中,QQ号,设备号_卡槽号
 
 
@@ -436,21 +571,25 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("c0e5994f")
-    z = ZDevice("c0e5994f")
+    d = Device("HT4A1SK02114")
+    z = ZDevice("HT4A1SK02114")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id": "228", "time_limit": "0", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
-    o.action(d, z, args)
+    args = {"repo_cate_id": "275", "time_limit": "0", "time_limit1": "120","time_delay1":"10","time_delay": "3"};  # cate_id是仓库号，length是数量
+    # o.action(d, z, args)
     # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
     # d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止
     # z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
-    # serial = d.server.adb.device_serial( )
-    # type = 'tim'
-    # slot = Slot( serial, type )
+    serial = d.server.adb.device_serial( )
+    type = 'tim'
+    slot = Slot( serial, type )
     # d.server.adb.cmd( "shell", "pm clear com.tencent.mobileqq" ).communicate( )  # 清除缓存
     # slot.clear( "1" )
-    # for i in range(1,10):
+    # for i in range(2,20):
     #     slot.clear(i)
     #     print('已经清除')
     # print('全部清除')
+    slot.backup( 1, str( 1 ) + '_' + '2154599147' + '_' + '275' )  # 设备信息，卡槽号，QQ号
+    Repo().BackupInfo( '275', 'using', '2154599147', 'featureCodeInfo', '%s_%s_%s' % (
+        d.server.adb.device_serial( ), type, 1) )  # 仓库号,使用中,QQ号,设备号_卡槽号
+

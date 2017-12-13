@@ -572,3 +572,15 @@
 [2017-08-31 19:40:00] [INFO] 切分消息：MSG&7581&13431693384&【腾讯科技】6895（手机营业厅短信验证码，正在绑定手机营业厅。为了保证账号安全，请勿向他人泄露。如非本人操作，请忽略。）
 [2017-08-31 19:40:00] [INFO] KEY: verify_code_7581_13431693384, Code: 6895
 >>>>>>> ec13252965fcf224c6886d40a0a2692f2e722c81
+[2017-11-07 11:41:52] [INFO] UNKNOW ACTIVITY:   ACTIVITY com.tencent.mobileqq/.activity.SplashActivity 428bf420 pid=9690
+
+[2017-11-07 11:42:19] [INFO] UNKNOW ACTIVITY:   ACTIVITY com.tencent.mobileqq/.activity.SplashActivity 428bf420 pid=9690
+
+[2017-11-07 17:33:31] [INFO] UNKNOW ACTIVITY:   ACTIVITY com.tencent.mobileqq/.activity.QQBrowserActivity 42fc4ae8 pid=27337
+
+[2017-11-07 17:40:01] [INFO] UNKNOW ACTIVITY:   ACTIVITY com.tencent.mobileqq/.activity.QQBrowserActivity 42f56578 pid=30475
+
+[2017-11-07 18:29:17] [INFO] UNKNOW ACTIVITY:   ACTIVITY com.tencent.mobileqq/.activity.QQBrowserActivity 4311d3e0 pid=4780
+
+[2017-11-08 11:22:42] [INFO] UNKNOW ACTIVITY:   ACTIVITY com.tencent.mobileqq/.activity.SplashActivity 42622b78 pid=21619
+

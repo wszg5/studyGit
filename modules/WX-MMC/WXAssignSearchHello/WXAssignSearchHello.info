@@ -29,6 +29,16 @@
 	"defaultValue":"10",
 	"remark":"注：模块不可运行时间段起始时间点，时间格式（如：8或者8：30）"
 	},
+<<<<<<< HEAD
+	{
+	"id": "stop_time",
+	"name": "结束时间点",
+	"type":"textbox",
+	"defaultValue":"5",
+	"remark":"注：模块不可运行时间段结束时间点，时间格式（如：8或者8：30）"
+	},
+=======
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
 	{
 	"id": "stop_time",
 	"name": "结束时间点",
@@ -37,11 +47,11 @@
 	"remark":"注：模块不可运行时间段结束时间点，时间格式（如：8或者8：30）"
 	},
 	{
-	"id": "repo_number_id",
-	"name":"微信号码库",
+	"id": "repo_material_people_id",
+	"name":"微信昵称素材库",
 	"type":"repo",
-	"source":"number",
-	"top_cate_id":"23"
+	"source":"material",
+	"top_cate_id":"12"
 	},
 	{
     "id": "repo_material_id",

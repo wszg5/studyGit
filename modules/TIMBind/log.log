@@ -41012,3 +41012,54 @@ timeout: timed out
 [2017-08-12 14:21:14] [INFO] 收到消息：MSG&7581&17080570112&【腾讯科技】2778 (手机QQ短信验证码，正在启用通讯录功能。为了保证帐号安全，请勿向他人泄漏。如非本人操作，请忽略。）[End]
 [2017-08-12 14:21:14] [INFO] 切分消息：MSG&7581&17080570112&【腾讯科技】2778 (手机QQ短信验证码，正在启用通讯录功能。为了保证帐号安全，请勿向他人泄漏。如非本人操作，请忽略。）
 [2017-08-12 14:21:14] [INFO] KEY: verify_code_7581_17080570112, Code: 2778
+[2017-11-08 17:09:08] [INFO] itemcode_7581
+[2017-11-08 17:09:08] [INFO] token_WuKao4Rf4W9qZHhymsUmBkBV4DUdmu55
+[2017-11-08 17:09:08] [INFO] ===XUNMA RESTURN:17082762945;
+[2017-11-08 17:09:21] [INFO] 开始获取验证码：17082762945, qq_contact_bind
+[2017-11-08 17:09:25] [INFO] 收到消息：NOTION&单笔充值满 50元送 5%单笔充值满100元送10%自动赠送！上不封顶！-------------------------运营商选择  移动、联通或电信，不会出17号段-------------------------API接口地址已改为：xapi.166idc.com[End]
+[2017-11-08 17:09:25] [INFO] 切分消息：NOTION&单笔充值满 50元送 5%单笔充值满100元送10%自动赠送！上不封顶！-------------------------运营商选择  移动、联通或电信，不会出17号段-------------------------API接口地址已改为：xapi.166idc.com
+[2017-11-08 17:09:28] [INFO] 收到消息：Null
+[2017-11-08 17:09:28] [INFO] 切分消息：Null
+[2017-11-08 17:09:31] [INFO] 收到消息：Null
+[2017-11-08 17:09:31] [INFO] 切分消息：Null
+[2017-11-08 17:09:54] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 144, in GetCode
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 557, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+gaierror: [Errno -3] Temporary failure in name resolution
+
+[2017-11-08 17:10:12] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 144, in GetCode
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 557, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+gaierror: [Errno -3] Temporary failure in name resolution
+
+[2017-11-08 17:10:15] [INFO] 收到消息：MSG&7581&17082762945&【腾讯科技】3540 (手机QQ短信验证码，正在启用通讯录功能。为了保证帐号安全，请勿向他人泄漏。如非本人操作，请忽略。）[End]
+[2017-11-08 17:10:15] [INFO] 切分消息：MSG&7581&17082762945&【腾讯科技】3540 (手机QQ短信验证码，正在启用通讯录功能。为了保证帐号安全，请勿向他人泄漏。如非本人操作，请忽略。）
+[2017-11-08 17:10:15] [INFO] KEY: verify_code_7581_17082762945, Code: 3540

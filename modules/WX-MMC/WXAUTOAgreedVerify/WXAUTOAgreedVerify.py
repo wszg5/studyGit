@@ -153,7 +153,14 @@ class WXAUTOAgreedVerify:
                     if d( text='删除' ).exists:
                         d( text='删除' ).click( )
                 else:
+<<<<<<< HEAD
                     i = i + 1
+=======
+                    wxname.child( className='android.widget.RelativeLayout', index=2 ).long_click( )
+                    if d( text='删除' ).exists:
+                        d( text='删除' ).click( )
+                    # i = i + 1
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
                     continue
 
             else:

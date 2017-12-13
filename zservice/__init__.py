@@ -450,6 +450,18 @@ class ZRemoteDevice(object):
             return None
         return (int(time.time()) - int(lasttime))/60;
 
+
+    def setModuleLastRun_new(self, mid):
+        key = '%s_%s' % (self.server.adb.device_serial( ), mid);
+        now = datetime.datetime.now( )
+        nowtime = now.strftime( '%H:%M' )  # 将日期转化为字符串 datetime => string
+        cache.set( key, nowtime, None )
+
+    def getModuleRunInterval_new(self, mid):
+        key = '%s_%s' % (self.server.adb.device_serial( ), mid);
+        lasttime = cache.get( key )
+        return lasttime;
+
     def nameToPhone(self, name):
         phone = ''
         for char in name.decode('utf8'):
@@ -567,25 +579,24 @@ class ZRemoteDevice(object):
         if 'com.tencent.mobileqq/.activity.phone.PhoneMatchActivity' in activity:  # QQ主界面
             return {'success': True, 'remark': 'PhoneMatchActivity'}
 
-
-        if 'com.tencent.mobileqq/.activity.SplashActivity' in activity:
-            #主界面尝试唤起10000号名片
-            self.qq_openUser('10000')
-            if d( text='QQ' ).exists:
-                d( text='QQ' ).click( )
-
-            while maxSleep > 0:
-                self.toast('尝试拉取10000号资料, %d' % maxSleep)
-                self.sleep(2)
-                maxSleep = maxSleep -2
-                activity = self.getTopActivity()
-                if 'com.tencent.mobileqq/.activity.FriendProfileCardActivity' not in activity:
-                    return self.qq_getLoginStatus(d, maxSleep)
-
-                if d(textContains='系统消息').exists:
-                    d.press.back()
-                    return {'success': True, 'remark': 'ok'}
-            return {'success': False, 'remark': 'check 10000 info Timeout'}
+        # if 'com.tencent.mobileqq/.activity.SplashActivity' in activity:
+        #     #主界面尝试唤起10000号名片
+        #     # self.qq_openUser('10000')
+        #     if d( text='QQ' ).exists:
+        #         d( text='QQ' ).click( )
+        #
+        #     while maxSleep > 0:
+        #         self.toast('尝试拉取10000号资料, %d' % maxSleep)
+        #         self.sleep(2)
+        #         maxSleep = maxSleep -2
+        #         activity = self.getTopActivity()
+        #         if 'com.tencent.mobileqq/.activity.FriendProfileCardActivity' not in activity:
+        #             return self.qq_getLoginStatus(d, maxSleep)
+        #
+        #         if d(textContains='系统消息').exists:
+        #             d.press.back()
+        #             return {'success': True, 'remark': 'ok'}
+        #     return {'success': False, 'remark': 'check 10000 info Timeout'}
 
         self.toast('存在未判断的QQ界面状态，请提取日志')
         import util

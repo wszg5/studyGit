@@ -54,12 +54,11 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT544SK00366")#INNZL7YDLFPBNFN7
-    z = ZDevice("HT544SK00366")
+    d = Device("HT4A1SK02114")#INNZL7YDLFPBNFN7
+    z = ZDevice("HT4A1SK02114")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    'dingdingdingdingdindigdingdingdingdingdingdingdingdingdingdingdingdignin'
-    args = {"repo_number_id": "190", "run_lock":"500","get_amount":"100","time_delay":"10"}  # cate_id是仓库号，发中文问题
+    args = {"repo_number_id": "280", "run_lock":"500","get_amount":"100","time_delay":"10"}  # cate_id是仓库号，发中文问题
     o.action(d,z, args)
 
 

@@ -47,6 +47,13 @@ class WXAssignSearchHello:
             logging.exception( "exception" )
             z.toast( "输入时间格式有误" )
             return
+<<<<<<< HEAD
+=======
+
+        Str = d.info  # 获取屏幕大小等信息
+        height = float( Str["displayHeight"] )
+        width = float( Str["displayWidth"] )
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
 
         z.heartbeat()
         msg_count = int(args['msg_count'])
@@ -61,6 +68,7 @@ class WXAssignSearchHello:
             z.sleep(3)
 
         z.sleep(3)
+<<<<<<< HEAD
         d( description='搜索', className='android.widget.TextView' ).click( )
         z.sleep(1)
 
@@ -72,28 +80,53 @@ class WXAssignSearchHello:
             normal_numbers = self.repo.GetNumber( cate_id, 0, remain, 'normal', 'NO')
             numbers = exist_numbers + normal_numbers
             if len( numbers ) > 0:
+=======
+        cate_id = int( args["repo_material_people_id"] )  # 得到取呢称的仓库号
+        while True:
+            Material_People = self.repo.GetMaterial( cate_id, 0, hello_count)
+            if len( Material_People ) > 0:
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
                 break
-            d.server.adb.cmd( "shell",
-                              "am broadcast -a com.zunyun.zime.toast --es msg \"电话号码%s号仓库为空，模块结束运行\"" % cate_id ).communicate( )
-            z.sleep( 30 )
-        if len( numbers ) <= 0:
-            return
 
-        for i in range( len( numbers ) ):
-            WXnumber = numbers[i]['number']
-            z.input( WXnumber )
+            d.server.adb.cmd( "shell", "am broadcast -a com.zunyun.zime.toast --es msg \"呢称素材%s号仓库为空，等待中……\"" % cate_id ).communicate( )
+            z.sleep( 10 )
+
+        for i in range( len( Material_People ) ):
+            if d( text='通讯录' ).exists:
+                d( text='通讯录' ).click( )
+
+            p = 0
+            WXnema = Material_People[i]['content']
+            while True:
+                p += 1
+                if d(text=WXnema).exists:
+                    d(text=WXnema).click()
+                    break
+                else:
+                    d.swipe( width / 2, height * 6 / 7, width / 2, height / 7 )
+                    if p > 30:
+                        z.toast("当前微信号没有此好友： "+ WXnema)
+                        break
+            if p > 30:
+                continue
+
             z.heartbeat( )
             z.sleep( 3 )
+<<<<<<< HEAD
             if d( textContains='联系人' ).exists or d( textContains='最常使用' ).exists:
                 d(className='android.widget.ListView').child(className='android.widget.RelativeLayout', index=1).click( )
+=======
+            if d( text='发消息' ).exists and d( text='视频聊天' ).exists:
+                d(text='发消息').click()
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
 
                 z.sleep( 1 )
                 for i in range( 0, msg_count ):
-                    cate_id = args["repo_material_id"]
-                    Material = self.repo.GetMaterial( cate_id, 0, 1 )
+                    cateid = args["repo_material_msg_id"]
+                    Material = self.repo.GetMaterial( cateid, 0, 1 )
                     if len( Material ) == 0:
                         d.server.adb.cmd( "shell",
-                                          "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cate_id ).communicate( )
+                                          "am broadcast -a com.zunyun.zime.toast --es msg \"消息素材%s号仓库为空，等待中……\"" % cateid ).communicate( )
                         z.sleep( 10 )
                         return
                     message = Material[0]['content']  # 取出发送消息的内容
@@ -103,11 +136,6 @@ class WXAssignSearchHello:
                     d( text='发送' ).click()
                     z.sleep( int(args['time_delay']) )
                 d( descriptionContains='返回' ).click( )
-                z.sleep(1)
-                d( descriptionContains='清除' ).click( )
-            else:
-                d( descriptionContains='清除' ).click( )
-                z.sleep(1.5)
 
         now = datetime.datetime.now( )
         nowtime = now.strftime( '%Y-%m-%d %H:%M:%S' )  # 将日期转化为字符串 datetime => string
@@ -124,9 +152,17 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
+<<<<<<< HEAD
     d = Device("d99e4b99")
     z = ZDevice("d99e4b99")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_id": "269", "repo_material_id": "39", "hello_count": "1~3", "msg_count": "1", "time_delay": "3", 'run_time_min': '1', 'run_time_max': '3', 'start_time': '', 'stop_time': ''}    #cate_id是仓库号，length是数量
+=======
+    d = Device("HT4A1SK02114")
+    z = ZDevice("HT4A1SK02114")
+    z.server.install()
+    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+    args = {"repo_material_people_id": "167", "repo_material_msg_id": "39", "hello_count": "1~3", "msg_count": "1", "time_delay": "3", 'run_time_min': '1', 'run_time_max': '3', 'start_time': '', 'stop_time': ''}    #cate_id是仓库号，length是数量
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
     o.action(d, z, args)
