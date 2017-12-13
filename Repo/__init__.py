@@ -232,6 +232,31 @@ class Repo:
         else:
             return []
 
+    def GetPhantomJSTaskInfo(self):
+        path = "/repo_api/InformationTaskCate/getInfoList"
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        conn.request("GET", path)
+        response = conn.getresponse( )
+        if response.status == 200:
+            data = response.read( )
+            numbers = json.loads( data )
+            return numbers
+        else:
+            return []
+
+    def GetPhantomJSParamInfo(self):
+        path = "/repo_api/InformationParamCate/getInfoList"
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        conn.request("GET", path)
+        response = conn.getresponse( )
+        if response.status == 200:
+            data = response.read( )
+            numbers = json.loads( data )
+            return numbers
+        else:
+            return []
+
+
     def DeleteInformation(self, cateId, phoneNumber):
         path = "/repo_api/WXInformation/DelInformation?cate_id=%s&phoneNumber=%s" % (cateId, phoneNumber)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)

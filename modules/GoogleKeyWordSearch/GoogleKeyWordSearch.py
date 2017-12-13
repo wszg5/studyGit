@@ -107,7 +107,7 @@ class GoogleKeyWordSearch:
             BusinessName = materials[0]["name"]
 
             d.server.adb.cmd( "shell", 'am start -a android.intent.action.VIEW -d "http://www.google.com"' )
-            z.sleep( 8 )
+            z.sleep( 5 )
 
             z.heartbeat()
             if d( text='接受并继续' ).exists:
@@ -151,7 +151,7 @@ class GoogleKeyWordSearch:
                 urlStr1 = d( resourceId='com.android.chrome:id/url_bar', className='android.widget.EditText' ).info[
                     "text"]
 
-            x = 0
+            x = 1
             while True:
 
                 if d( descriptionContains=BusinessName ).exists:
@@ -186,19 +186,46 @@ class GoogleKeyWordSearch:
                         z.sleep( 2 )
                         z.heartbeat( )
 
+                    z.heartbeat()
                     for i in range(0, 5):
                         d.click(random.randint(50, width),random.randint(height/2, height))
-                        z.sleep(3)
+                        z.sleep(5)
+
+                    z.sleep(random.randint(30, 40))
+                    z.heartbeat()
 
                     break
 
                 else:
-                    x += 1
-                    if x > int(args["slippage_count"]):
-                        break
-                    d.swipe( width / 2, height * 6 / 7, width / 2, height / 7 )
+                    z.heartbeat()
+                    for i in range(0, 5):
+                        d.swipe( width / 2, height * 6 / 7, width / 2, height / 7 )
 
-            if x > int(args["slippage_count"]):
+                    if d(description='下一页',className='android.view.View').exists:
+                        d(description='下一页',className='android.view.View').click()
+                        z.sleep( random.randint( 8, 10 ) )
+                        z.heartbeat()
+                    else:
+                        z.toast("已经到最后一页了。")
+                        break
+
+                    if d( resourceId='com.android.chrome:id/url_bar', className='android.widget.EditText' ).exists:
+                        urlStr3 = \
+                        d( resourceId='com.android.chrome:id/url_bar', className='android.widget.EditText' ).info[
+                            "text"]
+                    if urlStr1 == urlStr3:
+                        d.swipe( width / 2, height * 6 / 7, width / 2, height / 7 )
+                        continue
+                    else:
+                        z.heartbeat()
+                        if x == int(args["slippage_count"]):
+                            z.toast("已经翻完"+args["slippage_count"]+"页")
+                            break
+                        else:
+                            x += 1
+                            continue
+
+            if x == int(args["slippage_count"]):
                 z.toast("搜索无果，重新搜索。")
                 nowTime = datetime.datetime.now( ).strftime( '%Y-%m-%d %H:%M:%S' )
                 para = {"phoneNumber": KeyWords, "x_01": BusinessName, "x_02": "N", "x_20": nowTime}
@@ -234,7 +261,7 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {'start_time': '16', 'stop_time': '16:10', "repo_information_id": "284", "material_KeyWords_id": "212",
-            "KeyWords_interval": "0", "run_count": "3", "slippage_count": "6", "if_slippage": "是", "time_delay": "3"};
+            "KeyWords_interval": "0", "run_count": "3", "slippage_count": "20", "if_slippage": "是", "time_delay": "3"};
     o.action(d, z, args)
     # obj = d( className='android.widget.Button' )
     # if obj.exists:
