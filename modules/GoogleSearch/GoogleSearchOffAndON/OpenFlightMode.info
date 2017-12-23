@@ -1,0 +1,19 @@
+{
+"id": "OpenFlightMode",
+"cate":"MMC模块",
+"name":"开关飞行模式",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"Flight-MMC-01",
+"icon":"vcard-o",
+"remark":"开关飞行模式模块",
+"setting":[
+    {
+    "id": "time_delay",
+    "name":"模块结束延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

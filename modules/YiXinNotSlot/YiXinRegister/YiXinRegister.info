@@ -1,0 +1,40 @@
+{
+"id": "YiXinRegister",
+"cate":"其他模块",
+"name":"易信帐号注册",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"YX-Register-01",
+"icon":"vcard-o",
+"remark":"易信注册带卡槽(版本：3.0.0.202)",
+"setting":[
+{
+"id": "repo_account_id",
+"name":"保存到帐号库",
+"type":"repo",
+"source":"account",
+"top_cate_id":"1"
+},
+{
+"id": "repo_number_id",
+"name":"提取手机号码库",
+"type":"repo",
+"source":"number",
+"top_cate_id":"23"
+},
+{
+"id": "repo_material_id",
+"name":"提取昵称素材库",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
+{
+"id": "time_delay",
+"name":"模块结束延时",
+"type":"textbox",
+"defaultValue":"3",
+"remark":"单位：秒"
+}
+]
+}

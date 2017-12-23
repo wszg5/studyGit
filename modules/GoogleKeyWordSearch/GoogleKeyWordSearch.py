@@ -65,20 +65,20 @@ class GoogleKeyWordSearch:
 
             d.server.adb.cmd( "shell", "pm clear com.android.chrome" ).communicate( )  # 清除浏览器缓存
 
-            d.server.adb.cmd( "shell", "settings put global airplane_mode_on 1" ).communicate( )
-            d.server.adb.cmd( "shell",
-                              "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" ).communicate( )
-            z.sleep( 3 )
-            d.server.adb.cmd( "shell", "settings put global airplane_mode_on 0" ).communicate( )
-            d.server.adb.cmd( "shell",
-                              "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false" ).communicate( )
-            z.sleep(3)
-
-            d.server.adb.cmd( "shell", "am start -n com.expressvpn.vpn/.MainActivity" ).communicate( )  # 翻墙软件
-            z.sleep(3)
-            while not d( text='VPN is ON' ).exists:
-                z.sleep( 3 )
-                z.toast( u"等待翻墙成功。" )
+            # d.server.adb.cmd( "shell", "settings put global airplane_mode_on 1" ).communicate( )
+            # d.server.adb.cmd( "shell",
+            #                   "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" ).communicate( )
+            # z.sleep( 3 )
+            # d.server.adb.cmd( "shell", "settings put global airplane_mode_on 0" ).communicate( )
+            # d.server.adb.cmd( "shell",
+            #                   "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false" ).communicate( )
+            # z.sleep(3)
+            #
+            # d.server.adb.cmd( "shell", "am start -n com.expressvpn.vpn/.MainActivity" ).communicate( )  # 翻墙软件
+            # z.sleep(3)
+            # while not d( text='VPN is ON' ).exists:
+            #     z.sleep( 3 )
+            #     z.toast( u"等待翻墙成功。" )
 
             z.heartbeat( )
             z.toast("正在ping网络是否通畅")
@@ -147,22 +147,24 @@ class GoogleKeyWordSearch:
                    description='关闭' ).click()
                 z.sleep(2)
 
-            if d( resourceId='com.android.chrome:id/url_bar', className='android.widget.EditText' ).exists:
-                urlStr1 = d( resourceId='com.android.chrome:id/url_bar', className='android.widget.EditText' ).info[
-                    "text"]
-
             x = 1
             while True:
 
+                if d( resourceId='com.android.chrome:id/url_bar', className='android.widget.EditText' ).exists:
+                    urlStr1 = \
+                        d( resourceId='com.android.chrome:id/url_bar', className='android.widget.EditText' ).info[
+                            "text"]
+
                 if d( descriptionContains=BusinessName ).exists:
                     d( descriptionContains=BusinessName ).click( )
-                    z.sleep(random.randint(30, 40))
+                    z.sleep(20)
                     z.heartbeat()
+                    d.swipe( width / 2, height / 7, width / 2, height * 2 / 7 )
 
                     if d( resourceId='com.android.chrome:id/url_bar', className='android.widget.EditText' ).exists:
                         urlStr2 = \
-                        d( resourceId='com.android.chrome:id/url_bar', className='android.widget.EditText' ).info[
-                            "text"]
+                            d( resourceId='com.android.chrome:id/url_bar', className='android.widget.EditText' ).info[
+                                "text"]
 
                     if urlStr1 == urlStr2:
                         d.swipe( width / 2, height * 6 / 7, width / 2, height / 7 )
@@ -188,7 +190,7 @@ class GoogleKeyWordSearch:
 
                     z.heartbeat()
                     for i in range(0, 5):
-                        d.click(random.randint(50, width),random.randint(height/2, height))
+                        d.click(random.randint(width/8, width),random.randint(height/7, height))
                         z.sleep(5)
 
                     z.sleep(random.randint(30, 40))
@@ -198,8 +200,10 @@ class GoogleKeyWordSearch:
 
                 else:
                     z.heartbeat()
-                    for i in range(0, 5):
+                    for i in range(0, 8):
                         d.swipe( width / 2, height * 6 / 7, width / 2, height / 7 )
+
+
 
                     if d(description='下一页',className='android.view.View').exists:
                         d(description='下一页',className='android.view.View').click()
@@ -276,6 +280,7 @@ if __name__ == "__main__":
     # d.server.adb.cmd( "shell", "pm clear com.android.chrome" ).communicate( )  # 清除浏览器缓存
     #
     # d.server.adb.cmd( "shell", 'am start -a android.intent.action.VIEW -d  http://www.google.cn/' )
+
 
 
 
