@@ -532,6 +532,12 @@ class TIMLogin04:
                     break
                 z.sleep( 2 )
 
+            try:
+                self.IPCheckRepitition(z , d, args)
+            except:
+                logging.exception( "exception" )
+                z.toast( "IP检测出错了，请查找问题" )
+
             serialinfo = d.server.adb.device_serial( )
             # print('登陆时的serial%s'%serialinfo)
             z.heartbeat( )

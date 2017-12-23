@@ -92,11 +92,19 @@ class WeiXinAddFriends:
                     return
                 z.sleep(2)
                 if d(textContains='用户不存在').exists:
+<<<<<<< HEAD
+                    d( resourceId='com.tencent.mm:id/b4r', index=2 ).click( )
+                    z.sleep(1)
+                    continue
+                if d(textContains='状态异常').exists:
+                    d( resourceId='com.tencent.mm:id/b4r', index=2 ).click( )
+=======
                     d( resourceId='com.tencent.mm:id/b7v', index=2 ).click( )
                     z.sleep(1)
                     continue
                 if d(textContains='状态异常').exists:
                     d( resourceId='com.tencent.mm:id/b7v', index=2 ).click( )
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
                     continue
                 z.heartbeat()
                 gender = args['gender']
@@ -113,12 +121,20 @@ class WeiXinAddFriends:
                         if Gender!=gender:     #看性别是否满足条件
                             d(description='返回').click()
                             z.sleep(1.5)
+<<<<<<< HEAD
+                            d( resourceId='com.tencent.mm:id/b4r', index=2 ).click( )
+=======
                             d( resourceId='com.tencent.mm:id/b7v', index=2 ).click( )
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
                             continue
                     else:
                         d(description='返回').click()
                         z.sleep(1.5)
+<<<<<<< HEAD
+                        d( resourceId='com.tencent.mm:id/b4r', index=2 ).click( )
+=======
                         d( resourceId='com.tencent.mm:id/b7v', index=2 ).click( )
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
                         continue
 
                 z.heartbeat()
@@ -128,6 +144,22 @@ class WeiXinAddFriends:
                     if d(text='发消息').exists:
                         d( descriptionContains='返回' ).click( )
                         z.sleep( 1 )
+<<<<<<< HEAD
+                        d( resourceId='com.tencent.mm:id/b4r', index=2 ).click( )
+                        z.sleep( 1 )
+                        continue
+                    obj = d(className='android.widget.EditText', resourceId='com.tencent.mm:id/cl9').info  # 将之前消息框的内容删除
+                    obj = obj['text']
+                    lenth = len(obj)
+                    t = 0
+                    while t < lenth:
+                        d.press.delete()
+                        t = t + 1
+                    d(className='android.widget.EditText', resourceId='com.tencent.mm:id/cl9').click()
+                    z.input(message)
+                    if args["set_remark"] == "是":
+                        d( className='android.widget.EditText', resourceId='com.tencent.mm:id/clc' ).click( )
+=======
                         d( resourceId='com.tencent.mm:id/b7v', index=2 ).click( )
                         z.sleep( 1 )
                         continue
@@ -146,19 +178,28 @@ class WeiXinAddFriends:
                         d( className='android.widget.EditText', resourceId='com.tencent.mm:id/cpl' ).click( )
                         z.sleep(1)
                         d( className='android.widget.EditText', resourceId='com.tencent.mm:id/cpl' ).click.bottomright()
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
                         z.input(WXnumber)
                     d(text='发送').click()
                     z.heartbeat()
                     d(descriptionContains='返回').click()
                     z.sleep( 1 )
+<<<<<<< HEAD
+                    d(resourceId='com.tencent.mm:id/b4r', index=2).click()
+=======
                     d(resourceId='com.tencent.mm:id/b7v', index=2).click()
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
                     z.sleep(1)
                     account = account+1
                     continue
                 else:
                     d( descriptionContains='返回' ).click( )
                     z.sleep( 1 )
+<<<<<<< HEAD
+                    d( resourceId='com.tencent.mm:id/b4r', index=2 ).click( )
+=======
                     d( resourceId='com.tencent.mm:id/b7v', index=2 ).click( )
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
                     z.sleep( 1 )
                     continue
             else:
@@ -185,5 +226,9 @@ if __name__ == "__main__":
     z = ZDevice("HT4A1SK02114")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
+<<<<<<< HEAD
+    args = {"repo_number_cate_id": "44", "repo_material_cate_id": "39", 'run_time_min': '0', 'run_time_max': '0', 'start_time': '', 'stop_time': '', "add_count": "3","set_remark": "是", 'gender': "不限",  "time_delay": "3"}    #cate_id是仓库号，length是数量
+=======
     args = {"repo_number_cate_id": "123", "repo_material_cate_id": "39", 'run_time_min': '0', 'run_time_max': '0', 'start_time': '', 'stop_time': '', "add_count": "3","set_remark": "是", 'gender': "不限",  "time_delay": "3"}    #cate_id是仓库号，length是数量
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
     o.action(d, z, args)

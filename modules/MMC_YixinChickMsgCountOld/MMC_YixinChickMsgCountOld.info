@@ -1,0 +1,26 @@
+{
+"id": "MMC_YixinChickMsgCountOld",
+"cate":"MMC模块",
+"name":"Yixin-MMC-检查短信数量入库(旧版本)",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"Yixin-MMC-CKMCO",
+"icon": "vcard-o",
+"remark":"Yixin-MMC-群发消息",
+"setting":[
+	{
+    "id": "repo_info_id",
+    "name":"易信有短信入资料库",
+    "type":"repo",
+    "source":"information",
+    "top_cate_id":"4"
+    },
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

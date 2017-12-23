@@ -150,5 +150,9 @@ if __name__ == "__main__":
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
+<<<<<<< HEAD
+    args = {"repo_material_id": "207", "msg_count": "1","reply_count": "3", 'run_time_min': '1', 'run_time_max': '3', 'start_time': '', 'stop_time': ''}    #cate_id是仓库号，length是数量
+=======
     args = {"repo_material_id": "207", "msg_count": "1","reply_count": "3", 'run_time_min': '0', 'run_time_max': '0', 'start_time': '', 'stop_time': ''}    #cate_id是仓库号，length是数量
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
     o.action(d,z, args)

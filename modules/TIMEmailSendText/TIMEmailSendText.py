@@ -1,5 +1,14 @@
 # coding:utf-8
 from __future__ import division
+
+import colorsys
+import os
+
+import datetime
+import random
+
+from PIL import Image
+
 from smsCode import smsCode
 import string
 from uiautomator import Device
@@ -13,6 +22,68 @@ class TIMEmailSendText:
 
         self.repo = Repo()
 
+    def GetUnique(self):
+        nowTime = datetime.datetime.now( ).strftime( "%Y%m%d%H%M%S" )  # 生成当前时间
+        randomNum = random.randint( 0, 1000 )  # 生成的随机整数n，其中0<=n<=100
+        if randomNum <= 10:
+            randomNum = str( 00 ) + str( randomNum )
+        uniqueNum = str( nowTime ) + str( randomNum )
+        return uniqueNum
+
+    def WebViewBlankPages(self, d,top,left,right,bottom):
+        # z.toast( "判断图片是否正常" )
+        # Str = d.info  # 获取屏幕大小等信息
+        # height = float( Str["displayHeight"] )
+        # width = float( Str["displayWidth"] )
+
+        base_dir = os.path.abspath( os.path.join( os.path.dirname( __file__ ), os.path.pardir, "tmp" ) )
+        if not os.path.isdir( base_dir ):
+            os.mkdir( base_dir )
+        sourcePng = os.path.join( base_dir, "%s_s.png" % (self.GetUnique( )) )
+        # if i >= 0:
+        #     getobj = d( index=2, className="android.widget.HorizontalScrollView" ).child(
+        #         index=0, className="android.widget.LinearLayout", resourceId="com.tencent.mobileqq:id/name" ).child(
+        #         index=i, className="android.widget.FrameLayout" )
+        # else:
+        #     getobj = d( index=0, className="android.widget.LinearLayout" ).child( index=0,
+        #                                                                           resourceId="com.tencent.mobileqq:id/name",
+        #                                                                           className="android.widget.RelativeLayout" ).child(
+        #         index=1, resourceId="com.tencent.mobileqq:id/name", className="android.widget.RelativeLayout" )
+        # if getobj.exists:
+        # getobj = getobj.info["bounds"]
+        # top = 827/1280 * height
+        # left = 194/720 * width
+        # right = 494/720 * width
+        # bottom = 879/1280 * height
+        d.screenshot( sourcePng )  # 截取整个输入验证码时的屏幕
+
+        img = Image.open( sourcePng )
+        box = (left, top, right, bottom)  # left top right bottom
+        region = img.crop( box )  # 截取验证码的图片
+        # show(region)    #展示资料卡上的信息
+        image = region.convert( 'RGBA' )
+        # 生成缩略图，减少计算量，减小cpu压力
+        image.thumbnail( (200, 200) )
+        max_score = None
+        dominant_color = None
+        for count, (r, g, b, a) in image.getcolors( image.size[0] * image.size[1] ):
+            # 跳过纯黑色
+            if a == 0:
+                continue
+            saturation = colorsys.rgb_to_hsv( r / 255.0, g / 255.0, b / 255.0 )[1]
+            y = min( abs( r * 2104 + g * 4130 + b * 802 + 4096 + 131072 ) >> 13, 235 )
+            y = (y - 16.0) / (235 - 16)
+            # 忽略高亮色
+            if y > 0.9:
+                continue
+
+            score = (saturation + 0.1) * count
+            if score > max_score:
+                max_score = score
+                dominant_color = (r, g, b)  # 红绿蓝
+        # else:
+        #     dominant_color = None
+        return dominant_color
 
     def action(self, d, z, args):
         z.toast( "TIM邮件发消息" )
@@ -44,11 +115,22 @@ class TIMEmailSendText:
                           "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
         z.sleep( 10 )
         z.heartbeat( )
-        if d( text="消息" ).exists:
-            z.toast( "卡槽TIM状态正常，继续执行" )
+        if d( text="消息", resourceId="com.tencent.tim:id/ivTitleName" ).exists and not d( text="马上绑定",className="android.widget.Button" ).exists:
+            z.toast( "登录状态正常，继续执行" )
         else:
-            z.toast( "卡槽TIM状态异常，跳过此模块" )
-            return
+            if d( text="关闭", resourceId="com.tencent.tim:id/ivTitleBtnLeftButton" ).exists:
+                d( text="关闭", resourceId="com.tencent.tim:id/ivTitleBtnLeftButton" ).click( )
+                z.sleep( 1 )
+            elif d( text="消息", className="android.widget.TextView" ).exists and d( text="马上绑定",className="android.widget.Button" ).exists:
+                d( text="消息", className="android.widget.TextView" ).click( )
+                z.sleep( 1 )
+            elif d( text="返回" ).exists:
+                d( text="返回" ).click( )
+                z.sleep( 1 )
+
+            else:
+                z.toast( "登录状态异常，跳过此模块" )
+                return
         count = int(args["count"])
         Str = d.info  # 获取屏幕大小等信息
         height = Str["displayHeight"]
@@ -123,17 +205,33 @@ class TIMEmailSendText:
             z.heartbeat()
             if num == count:
                 break
+            top = 1213 / 1280 * height
+            left = 130 / 720 * width
+            right = 544 / 720 * width
+            bottom = 1254 / 1280 * height
+            color = self.WebViewBlankPages( d,top,left,right,bottom )
+            if color == (127, 188, 255):
+                z.toast("状态异常,停止模块")
+                return
+            if color == (0, 121, 255):
+                z.toast( "状态异常,停止模块" )
+                return
+            if color !=None:
+                z.toast( "状态异常,停止模块" )
+                return
             if d(text="邮件",resourceId="com.tencent.tim:id/ivTitleBtnLeft",className="android.widget.TextView").exists:
                 z.sleep(1)
                 d( text="邮件", resourceId="com.tencent.tim:id/ivTitleBtnLeft", className="android.widget.TextView" ).click()
                 num = num + 1
             else:
-                x4 = 431 / 540
-                y4 = 348 / 888
-                d.click(x4*width,y4*height)
-                z.sleep(1)
-                z.heartbeat()
-                d(text="邮件",resourceId="com.tencent.tim:id/ivTitleBtnLeft",className="android.widget.TextView").click()
+                z.toast("非正常状态,停止模块")
+                return
+                # x4 = 431 / 540
+                # y4 = 348 / 888
+                # d.click(x4*width,y4*height)
+                # z.sleep(1)
+                # z.heartbeat()
+                # d(text="邮件",resourceId="com.tencent.tim:id/ivTitleBtnLeft",className="android.widget.TextView").click()
             # while 1:
             #     if d(text='发送', className='android.widget.Button').exists:
         z.toast("模块完成")

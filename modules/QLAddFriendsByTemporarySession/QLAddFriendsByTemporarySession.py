@@ -83,8 +83,7 @@ class QLAddFriendsByTemporarySession:
             # print(QQnumber)
             z.sleep( 2 )
 
-            d.server.adb.cmd( "shell",
-                              'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % QQnumber )  # 临时会话  # qq名片页面
+            d.server.adb.cmd( "shell",'am start -a android.intent.action.VIEW -d "mqqwpa://im/chat?chat_type=wpa\&uin=%s\&version=1\&src_type=web\&web_src=http:://114.qq.com"' % QQnumber )  # 临时会话  # qq名片页面
             z.sleep( random.randint( 1, 3 ) )
             if d( text='QQ轻聊版' ).exists:
                 z.heartbeat( )

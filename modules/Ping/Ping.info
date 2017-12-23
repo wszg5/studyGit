@@ -1,0 +1,20 @@
+{
+"id": "Ping",
+"cate":"其他模块",
+"name":"ping网络是否通常",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"Ping1.0",
+"icon": "vcard-o",
+"remark":"ping网络是否通常",
+"setting":[
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+
+]
+}

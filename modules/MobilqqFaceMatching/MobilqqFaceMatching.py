@@ -58,6 +58,8 @@ class MobilqqFaceMatching:
                 z.sleep( 1 )
                 z.heartbeat( )
                 d( index=1, text="附近", className="android.widget.TextView" ).click( )
+                z.sleep(8)
+                break
         # d(text='附近的人',className="android.widget.TextView").click()
         tempnum = 0
         objtemp = d( index=2, className="android.widget.LinearLayout" ).child( index=0,

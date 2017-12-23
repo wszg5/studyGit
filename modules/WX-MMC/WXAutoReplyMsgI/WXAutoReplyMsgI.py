@@ -69,20 +69,26 @@ class WXAutoReplyMsgI:
             if d(text='删除该聊天').exists:
                 d(text='删除该聊天').click()
 
+<<<<<<< HEAD
+=======
             z.sleep( 2 )
             if d( text='删除' ).exists:
                 d( text='删除' ).click( )
 
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
         if d(text='微信团队').exists:
             d(text='微信团队').long_click()
             z.sleep(2)
             if d(text='删除该聊天').exists:
                 d(text='删除该聊天').click()
 
+<<<<<<< HEAD
+=======
             z.sleep( 2 )
             if d( text='删除' ).exists:
                 d( text='删除' ).click( )
 
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
         i = 1
         j = 0
         while True:
@@ -94,7 +100,11 @@ class WXAutoReplyMsgI:
                     nearObj.click()
                 z.sleep(1.5)
                 for k in range( 0, msg_count ):
+<<<<<<< HEAD
+                    if d( textContains='(', resourceId='com.tencent.mm:id/gh' ).exists:
+=======
                     if d( textContains='(', resourceId='com.tencent.mm:id/h2' ).exists:
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
                         break
                     cate_id = args["repo_material_id"]
                     Material = self.repo.GetMaterial( cate_id, 0, 1 )
@@ -119,10 +129,13 @@ class WXAutoReplyMsgI:
                                                                              index=i).long_click()
                 if d(text='删除该聊天').exists:
                     d(text='删除该聊天').click()
+<<<<<<< HEAD
+=======
 
                 z.sleep(2)
                 if d(text='删除').exists:
                     d(text='删除').click()
+>>>>>>> facaf2f92b3245033c2f6322d18dbd855f0e4f29
                 z.sleep( 1 )
                 j += 1
             else:

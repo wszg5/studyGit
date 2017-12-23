@@ -10,61 +10,83 @@ class TIMAppointQQPullGroup:
 
     def action(self, d,z, args):
 
-        # z.toast( "TIM指定QQ拉群" )
-        # z.toast( "正在ping网络是否通畅" )
-        # z.heartbeat( )
-        # i = 0
-        # while i < 200:
-        #     i += 1
-        #     ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
-        #     print( ping )
-        #     if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-        #         z.toast( "网络通畅。开始执行：TIM指定QQ拉群" )
-        #         break
-        #     z.sleep( 2 )
-        # if i > 200:
-        #     z.toast( "网络不通，请检查网络状态" )
-        #     if (args["time_delay"]):
-        #         z.sleep( int( args["time_delay"] ) )
-        #     return
-        # # self.scode = smsCode( d.server.adb.device_serial( ) )
-        # z.heartbeat( )
-        # d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止
-        # d.server.adb.cmd( "shell",
-        #                   "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
-        # z.sleep( 10 )
-        # z.heartbeat( )
-        # if d( text="消息" ).exists:
-        #     z.toast( "登录状态正常，继续执行" )
-        # else:
-        #     z.toast( "登录状态异常，跳过此模块" )
-        #     return
-        # while True:
-        #     if d( index=1, className='android.widget.ImageView' ).exists:
-        #         z.heartbeat( )
-        #         d( index=2, className="android.widget.FrameLayout" ).child( index=0,
-        #                                                                     className="android.widget.RelativeLayout" ).click( )
-        #     if d( text="加好友" ).exists:  # 由于网速慢或手机卡可能误点
-        #         d( text="加好友" ).click( )
-        #         z.heartbeat( )
-        #         d( text="返回", className="android.widget.TextView" ).click( )
-        #         d( index=2, className="android.widget.FrameLayout" ).child( index=0,
-        #                                                                     className="android.widget.RelativeLayout" ).click( )
-        #     z.sleep( 3 )
-        #     if d( text='邮件', resourceId='com.tencent.tim:id/name', className="android.widget.TextView" ).exists:
-        #         z.heartbeat( )
-        #         d( index=0, resourceId='com.tencent.tim:id/head', className="android.widget.ImageView" ).click( )
-        #         break
-        # z.sleep(6)
-        # z.heartbeat()
-        obj = d(index=0,className="android.widget.LinearLayout").child(index=1,className="android.widget.LinearLayout").child(index=0,className="android.widget.TextView",resourceId="com.tencent.tim:id/info")
-        if obj.exists:
-            myAccount = obj.info["text"]      #获取自己的账号
-            z.toast("获取自己的账号")
-            z.sleep(2)
-            z.heartbeat()
+        z.toast( "TIM指定QQ拉群" )
+        z.toast( "正在ping网络是否通畅" )
+        z.heartbeat( )
+        i = 0
+        while i < 200:
+            i += 1
+            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+            print( ping )
+            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                z.toast( "网络通畅。开始执行：TIM指定QQ拉群" )
+                break
+            z.sleep( 2 )
+        if i > 200:
+            z.toast( "网络不通，请检查网络状态" )
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
+            return
+        # self.scode = smsCode( d.server.adb.device_serial( ) )
+        z.heartbeat( )
+        d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止
+        d.server.adb.cmd( "shell",
+                          "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
+        z.sleep( 10 )
+        z.heartbeat( )
+        if d( text="消息", resourceId="com.tencent.tim:id/ivTitleName" ).exists:
+            z.toast( "登录状态正常，继续执行" )
         else:
-            z.toast("获取不到自己的账号")
+            if d( text="关闭", resourceId="com.tencent.tim:id/ivTitleBtnLeftButton" ).exists:
+                d( text="关闭", resourceId="com.tencent.tim:id/ivTitleBtnLeftButton" ).click( )
+                z.sleep( 1 )
+            elif d( text="消息", className="android.widget.TextView" ).exists and d( text="马上绑定",className="android.widget.Button" ).exists:
+                d( text="消息", className="android.widget.TextView" ).click( )
+                z.sleep( 1 )
+            elif d( text="返回" ).exists:
+                d( text="返回" ).click( )
+                z.sleep( 1 )
+
+            else:
+                z.toast( "登录状态异常，跳过此模块" )
+                return
+        while True:
+            if d( index=1, className='android.widget.ImageView' ).exists:
+                z.heartbeat( )
+                d( index=2, className="android.widget.FrameLayout" ).child( index=0,
+                                                                            className="android.widget.RelativeLayout" ).click( )
+            if d( text="加好友" ).exists:  # 由于网速慢或手机卡可能误点
+                d( text="加好友" ).click( )
+                z.heartbeat( )
+                d( text="返回", className="android.widget.TextView" ).click( )
+                d( index=2, className="android.widget.FrameLayout" ).child( index=0,
+                                                                            className="android.widget.RelativeLayout" ).click( )
+            z.sleep( 3 )
+            if d( text='邮件', resourceId='com.tencent.tim:id/name', className="android.widget.TextView" ).exists:
+                z.heartbeat( )
+                d( index=0, resourceId='com.tencent.tim:id/head', className="android.widget.ImageView" ).click( )
+                break
+        z.sleep(6)
+        z.heartbeat()
+        for num in range(0,6):
+            obj = d(index=0,className="android.widget.LinearLayout").child(index=1,className="android.widget.LinearLayout").child(index=0,className="android.widget.TextView",resourceId="com.tencent.tim:id/info")
+            if obj.exists:
+                myAccount = obj.info["text"]      #获取自己的账号
+                z.toast("获取自己的账号")
+                z.sleep(2)
+                z.heartbeat()
+                break
+            else:
+                z.toast("获取不到自己的账号再试一次")
+                z.sleep(2)
+                d.dump( compressed=False )
+                while d( text="返回", className="android.widget.TextView" ).exists:
+                    d( text="返回", className="android.widget.TextView" ).click( )
+                if d( index=0, resourceId='com.tencent.tim:id/head', className="android.widget.ImageView" ).exists:
+                    d( index=0, resourceId='com.tencent.tim:id/head', className="android.widget.ImageView" ).click( )
+
+        else:
+            z.toast("都尝试6次,真的获取获取不到自己的账号,停止模块")
             return
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
@@ -379,12 +401,12 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT49YSK00272")
-    z = ZDevice("HT49YSK00272")
+    d = Device("HT524SK00685")
+    z = ZDevice("HT524SK00685")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"repo_group_id":"249","repo_qq_id":"248","totalNumber":"12","time_delay":"3"}    #cate_id是仓库号，length是数量
-    # o.action(d, z,args)
+    o.action(d, z,args)
     # Repo( ).savePhonenumberXM( "605228889", "239", "normal","1" )
     # z.sleep( 1 )
 

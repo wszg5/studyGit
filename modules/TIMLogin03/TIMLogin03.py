@@ -36,6 +36,7 @@ class TIMLogin03:
                 print( ping )
                 if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
                     break
+                z.sleep( 10 )
                 z.heartbeat()
                 z.sleep(10)
                 t = t + 1

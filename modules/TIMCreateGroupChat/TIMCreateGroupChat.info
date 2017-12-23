@@ -8,13 +8,6 @@
 "icon": "vcard-o",
 "remark":"TIM创建群聊",
 "setting":[
-	{
-    "id": "repo_qq_id",
-    "name":"QQ好友号-QQ号",
-    "type":"repo",
-    "source":"number",
-    "top_cate_id":"27"
-    },
     {
     "id": "repo_address_id",
     "name":"群聊地址",

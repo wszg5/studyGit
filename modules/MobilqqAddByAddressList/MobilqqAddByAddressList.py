@@ -81,11 +81,6 @@ class MobilqqAddByAddressList:
         else:                          #没有基本资料的情况
             return '不限'
 
-
-
-
-
-
     def Bind(self,d,z):
         self.scode = smsCode(d.server.adb.device_serial())
         z.heartbeat()
