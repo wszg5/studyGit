@@ -84,12 +84,12 @@ class YiXinRegister:
                 d(resourceId='im.yixin:id/register_phone_number_edittext').click()
 
 
-            # try:
-            #     PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER, number)  # 获取接码平台手机号码
-            # except:
-            #     PhoneNumber = None
+            try:
+                PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER, number)  # 获取接码平台手机号码
+            except:
+                PhoneNumber = None
 
-            PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER)  # 获取接码平台手机号码
+            # PhoneNumber = self.scode.GetPhoneNumber(self.scode.WECHAT_REGISTER)  # 获取接码平台手机号码
 
             if PhoneNumber is None:
                 z.toast(u'讯码查不无此号,重新获取')
@@ -171,29 +171,32 @@ class YiXinRegister:
 
 
     def action(self, d, z, args):
-        # z.toast( "正在ping网络是否通畅" )
-        # while True:
-        #     ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
-        #     print(ping)
-        #     if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-        #         z.toast( "开始执行：易信注册模块　有卡槽" )
-        #         break
-        #     z.sleep( 2 )
 
-        z.generate_serial( "im.yixin" )  # 随机生成手机特征码
-        z.toast( "随机生成手机特征码" )
+        while True:
+            z.toast( "正在ping网络是否通畅" )
+            while True:
+                ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+                print(ping)
+                if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+                    z.toast( "开始执行：易信注册模块　有卡槽" )
+                    break
+                z.sleep( 2 )
 
-        saveCate = args['repo_account_id']
-        password = self.GenPassword( )
+            z.generate_serial( "im.yixin" )  # 随机生成手机特征码
+            z.toast( "随机生成手机特征码" )
 
-        register_result = self.register( d, z, args, password )
-        if register_result == "fail":
-            self.action( d, z, args )
+            saveCate = args['repo_account_id']
+            password = self.GenPassword( )
 
-        else:
-            # 入库
-            featureCodeInfo = z.get_serial( "im.yixin" )
-            self.repo.RegisterAccount( register_result, password, "", saveCate, "using", featureCodeInfo )
+            register_result = self.register( d, z, args, password )
+            if register_result == "fail":
+                continue
+
+            else:
+                # 入库
+                featureCodeInfo = z.get_serial( "im.yixin" )
+                self.repo.RegisterAccount( register_result, password, "", saveCate, "using", featureCodeInfo )
+                break
 
         if (args['time_delay']):
             z.sleep( int( args['time_delay'] ) )
@@ -214,8 +217,8 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("7HQWC6U8A679SGAQ")
-    z = ZDevice("7HQWC6U8A679SGAQ")
+    d = Device("HT54VSK01061")
+    z = ZDevice("HT54VSK01061")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_account_id": "279", "repo_number_id": "123", "repo_material_id": "139", "slot_time_limit": "2", "time_delay": "3"};
     o.action(d, z, args)
