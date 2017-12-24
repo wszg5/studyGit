@@ -1,0 +1,62 @@
+{
+"id": "GoogleKeyWord_1",
+"cate":"MMC模块",
+"name":"Google search Tai",
+"url": "http://www.bejson.com",
+"version": "1.2",
+"code":"Google-MMC-101",
+"icon":"vcard-o",
+"remark":"Google关键词搜索,点击指定网址",
+"setting":[
+    {
+    "id": "repo_information_id",
+    "name":"搜索数据储存库",
+    "type":"repo",
+    "source":"information",
+    "top_cate_id":"4"
+    },
+    {
+    "id": "material_KeyWords_id",
+    "name":"素材库取关键词",
+    "type":"repo",
+    "source":"material",
+    "top_cate_id":"12"
+    },
+    {
+    "id": "KeyWords_interval",
+    "name":"关键词提取间隔",
+    "type":"textbox",
+    "defaultValue":"120",
+    "remark":"单位：分钟"
+    },
+    {
+    "id": "run_count",
+    "name":"搜索次数",
+    "type":"textbox",
+    "defaultValue":"5",
+    "remark":"单位：次"
+    },
+    {
+    "id": "slippage_count",
+    "name":"翻页次数",
+    "type":"textbox",
+    "defaultValue":"5",
+    "remark":"单位：次"
+    },
+    {
+	"id": "if_slippage",
+	"name":"是否上下滑动",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"是",
+	"remark":"注：进入Target网站后是否先要上下滑动几下？"
+	},
+    {
+    "id": "time_delay",
+    "name":"模块结束延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}
