@@ -42,7 +42,7 @@ class GoogleKeyWordSearch:
 
 
     def action(self, d, z, args):
-        z.toast( "开始执行：Google关键词搜索" )
+        z.toast( "Starting：Google Search" )
         count = 1
         while count < int(args["run_count"]):
             count += 1
@@ -74,14 +74,10 @@ class GoogleKeyWordSearch:
                               "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false" ).communicate( )
             z.sleep(3)
 
-            d.server.adb.cmd( "shell", "am start -n com.expressvpn.vpn/.MainActivity" ).communicate( )  # 翻墙软件
-            z.sleep(3)
-            while not d( text='VPN is ON' ).exists:
-                z.sleep( 3 )
-                z.toast( u"等待翻墙成功。" )
+
 
             z.heartbeat( )
-            z.toast("正在ping网络是否通畅")
+            z.toast("Checking network")
             while True:
                 ping = d.server.adb.cmd( "shell", "ping -c 3 google.com" ).communicate( )
                 print(ping)
@@ -94,7 +90,7 @@ class GoogleKeyWordSearch:
             width = float( Str["displayWidth"] )
 
             z.generate_serial( "com.android.chrome" )  # 随机生成手机特征码
-            z.toast( "随机生成手机特征码" )
+            z.toast( "Generate Phone serial information" )
 
             # 取关键词
             material_KeyWords_id = args["material_KeyWords_id"]
@@ -110,8 +106,8 @@ class GoogleKeyWordSearch:
             z.sleep( 5 )
 
             z.heartbeat()
-            if d( text='接受并继续' ).exists:
-                d( text="接受并继续" ).click( )
+            if d( text='Accept & continue' ).exists:
+                d( text="Accept & continue" ).click( )
                 z.sleep( 5 )
 
             j = 0
@@ -119,7 +115,7 @@ class GoogleKeyWordSearch:
                 j += 1
                 z.sleep(8)
                 if j == 3:
-                    z.toast("网络有问题，网速较慢。")
+                    z.toast("Network is very slow")
                     break
             if j == 3:
                 return
