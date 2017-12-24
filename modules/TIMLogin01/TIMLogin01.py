@@ -411,7 +411,6 @@ if __name__ == "__main__":
     d = Device("HT54VSK01061")
     z = ZDevice("HT54VSK01061")
 
-<<<<<<< HEAD
     # slot = slot('tim')
 
     # slot.restore(d, 1)  # 有２小时没用过的卡槽情况，切换卡槽
@@ -429,24 +428,4 @@ if __name__ == "__main__":
     #     d.click(100,150)
     #     d.click(270, 484)
 
-=======
-    d = Device("HT49YSK00272")
-    z = ZDevice("HT49YSK00272")
 
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id": "132", "time_limit": "120", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量
-    o.action(d, z, args)
-    # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
-    # serial = d.server.adb.device_serial( )
-    # type = 'tim'
-    # slot = Slot( serial, type )
-    # d.server.adb.cmd( "shell", "pm clear com.tencent.mobileqq" ).communicate( )  # 清除缓存
-    # slot.clear( "1" )
-    # for i in range(1,6):
-    #     slot.clear(i)
-    #     print('已经清除')
-    # print('全部清除')
-
-    # FriendsTotalObj = d( resourceId='com.tencent.tim:id/contact_count', className='android.view.View' ).info['text']
-    # print(FriendsTotalObj)
->>>>>>> 7e308302e8f6dc89553b6a07f641d4435655ab1c

@@ -1,0 +1,19 @@
+{
+"id": "OpenVPN",
+"cate":"MMC模块",
+"name":"打开VPN",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"VPN-MMC-01",
+"icon":"vcard-o",
+"remark":"打开VPN软件模块",
+"setting":[
+    {
+    "id": "time_delay",
+    "name":"模块结束延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

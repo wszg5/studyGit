@@ -184,9 +184,10 @@ class YiXinAccountLogin:
             if qiehuan_result == "fail":
                 self.action(d, z, args)
         else:
-            featureCodeInfo = z.get_serial( "im.yixin" )
+
             login_result = self.login(d, z, args)
             if login_result == "fail":
+                featureCodeInfo = z.get_serial( "im.yixin" )
                 self.repo.BackupInfo( args["repo_account_id"], 'frozen', login_result, featureCodeInfo, '')  # 仓库号,使用中,QQ号,设备号_卡槽号
                 self.action(d, z, args)
 
@@ -196,6 +197,7 @@ class YiXinAccountLogin:
                     self.action( d, z, args )
 
             else:
+                featureCodeInfo = z.get_serial( "im.yixin" )
                 # 入库
                 self.repo.BackupInfo( args["repo_account_id"], 'using', login_result, featureCodeInfo, '%s_%s_%s' % (
                     d.server.adb.device_serial( ), self.type, slotnum) )  # 仓库号,使用中,QQ号,设备号_卡槽号

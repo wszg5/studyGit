@@ -1,0 +1,26 @@
+{
+"id": "WoMailRegister",
+"cate":"其他模块",
+"name":"沃邮箱注册模块",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"WO-Register-01",
+"icon":"vcard-o",
+"remark":"沃邮箱注册模块(版本：7.2.3)",
+"setting":[
+{
+"id": "repo_account_id",
+"name":"保存到帐号库",
+"type":"repo",
+"source":"account",
+"top_cate_id":"1"
+}
+{
+"id": "time_delay",
+"name":"模块结束延时",
+"type":"textbox",
+"defaultValue":"3",
+"remark":"单位：秒"
+}
+]
+}
