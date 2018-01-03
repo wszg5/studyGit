@@ -4,9 +4,9 @@
 "name":"易信帐号注册",
 "url": "http://www.bejson.com",
 "version": "1.0",
-"code":"YX-Register-02",
+"code":"YX-Register-03",
 "icon":"vcard-o",
-"remark":"易信注册无卡槽(版本：3.8)",
+"remark":"易信注册无卡槽(版本：3.8和6.3.2.265兼容)",
 "setting":[
 {
 "id": "repo_account_id",
