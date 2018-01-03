@@ -1,0 +1,858 @@
+[2017-11-15 11:05:06] [INFO] itemcode_2760
+[2017-11-15 11:05:06] [INFO] token_Nz647p6jsdDS7a1aIT0JCH8ERCxcoV2
+[2017-11-15 11:05:06] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-11-15 11:05:10] [INFO] itemcode_2760
+[2017-11-15 11:05:10] [INFO] token_v0JR5WlFB2ZG49OKvmzeneDNgV8JAB29
+[2017-11-15 11:05:11] [INFO] ===XUNMA RESTURN:13136438240;
+[2017-11-15 13:15:49] [INFO] itemcode_2760
+[2017-11-15 13:15:49] [INFO] token_v0JR5WlFB2ZG49OKvmzeneDNgV8JAB29
+[2017-11-15 13:15:49] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-11-15 13:15:53] [INFO] itemcode_2760
+[2017-11-15 13:15:53] [INFO] token_hKYb985gZh3iN4vqn2fBLltGqUv5Qg70
+[2017-11-15 13:15:53] [INFO] ===XUNMA RESTURN:13002626409;
+[2017-11-15 13:16:48] [INFO] 开始获取验证码：13002626409, wechat_register
+[2017-11-15 13:16:51] [INFO] 收到消息：NOTION&单笔充值满 50元送 5%单笔充值满100元送10%自动赠送！上不封顶！-------------------------运营商选择  移动、联通或电信，不会出17号段-------------------------平台号码收到短信扣费,收不到短信不会扣费。[End]MSG&2760&13002626409&【发自易信】易信验证码为：2196，请勿将验证码提供给他人。[End]
+[2017-11-15 13:16:51] [INFO] 切分消息：NOTION&单笔充值满 50元送 5%单笔充值满100元送10%自动赠送！上不封顶！-------------------------运营商选择  移动、联通或电信，不会出17号段-------------------------平台号码收到短信扣费,收不到短信不会扣费。
+[2017-11-15 13:16:51] [INFO] 切分消息：MSG&2760&13002626409&【发自易信】易信验证码为：2196，请勿将验证码提供给他人。
+[2017-11-15 13:16:54] [INFO] 收到消息：USER&77.531&500&3000&1500&0.8&18.929[End]RES&2760&13002626409[End]
+[2017-11-15 13:16:54] [INFO] 切分消息：USER&77.531&500&3000&1500&0.8&18.929
+[2017-11-15 13:16:54] [INFO] 切分消息：RES&2760&13002626409
+[2017-11-15 13:16:58] [INFO] 收到消息：Null
+[2017-11-15 13:16:58] [INFO] 切分消息：Null
+[2017-11-15 13:17:01] [INFO] 收到消息：Null
+[2017-11-15 13:17:01] [INFO] 切分消息：Null
+[2017-11-15 13:17:04] [INFO] 收到消息：Null
+[2017-11-15 13:17:04] [INFO] 切分消息：Null
+[2017-11-15 13:17:07] [INFO] 收到消息：Null
+[2017-11-15 13:17:07] [INFO] 切分消息：Null
+[2017-11-15 13:17:10] [INFO] 收到消息：Null
+[2017-11-15 13:17:10] [INFO] 切分消息：Null
+[2017-11-15 13:41:35] [INFO] itemcode_2760
+[2017-11-15 13:41:35] [INFO] token_hKYb985gZh3iN4vqn2fBLltGqUv5Qg70
+[2017-11-15 13:41:35] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-11-15 13:41:39] [INFO] itemcode_2760
+[2017-11-15 13:41:39] [INFO] token_OHjS4wOteBezcptiCc4UEGHPWBRVwJ18
+[2017-11-15 13:41:39] [INFO] ===XUNMA RESTURN:15982845059;
+[2017-11-15 13:41:51] [INFO] itemcode_2760
+[2017-11-15 13:41:51] [INFO] token_OHjS4wOteBezcptiCc4UEGHPWBRVwJ18
+[2017-11-15 13:41:51] [INFO] ===XUNMA RESTURN:18227184330;
+[2017-11-15 13:42:05] [INFO] itemcode_2760
+[2017-11-15 13:42:05] [INFO] token_OHjS4wOteBezcptiCc4UEGHPWBRVwJ18
+[2017-11-15 13:42:05] [INFO] ===XUNMA RESTURN:18280427782;
+[2017-11-15 13:42:19] [INFO] itemcode_2760
+[2017-11-15 13:42:19] [INFO] token_OHjS4wOteBezcptiCc4UEGHPWBRVwJ18
+[2017-11-15 13:42:19] [INFO] ===XUNMA RESTURN:17098244615;
+[2017-11-15 13:42:29] [INFO] 开始获取验证码：17098244615, wechat_register
+[2017-11-15 13:42:32] [INFO] 收到消息：NOTION&单笔充值满 50元送 5%单笔充值满100元送10%自动赠送！上不封顶！-------------------------运营商选择  移动、联通或电信，不会出17号段-------------------------平台号码收到短信扣费,收不到短信不会扣费。[End]
+[2017-11-15 13:42:32] [INFO] 切分消息：NOTION&单笔充值满 50元送 5%单笔充值满100元送10%自动赠送！上不封顶！-------------------------运营商选择  移动、联通或电信，不会出17号段-------------------------平台号码收到短信扣费,收不到短信不会扣费。
+[2017-11-15 13:42:35] [INFO] 收到消息：Null
+[2017-11-15 13:42:35] [INFO] 切分消息：Null
+[2017-11-15 13:42:39] [INFO] 收到消息：Null
+[2017-11-15 13:42:39] [INFO] 切分消息：Null
+[2017-11-15 13:42:42] [INFO] 收到消息：Null
+[2017-11-15 13:42:42] [INFO] 切分消息：Null
+[2017-11-15 13:42:45] [INFO] 收到消息：Null
+[2017-11-15 13:42:45] [INFO] 切分消息：Null
+[2017-11-15 13:42:48] [INFO] 收到消息：Null
+[2017-11-15 13:42:48] [INFO] 切分消息：Null
+[2017-11-15 13:42:51] [INFO] 收到消息：Null
+[2017-11-15 13:42:51] [INFO] 切分消息：Null
+[2017-11-15 13:42:54] [INFO] 收到消息：Null
+[2017-11-15 13:42:54] [INFO] 切分消息：Null
+[2017-11-15 13:42:57] [INFO] 收到消息：Null
+[2017-11-15 13:42:57] [INFO] 切分消息：Null
+[2017-11-15 13:43:01] [INFO] 收到消息：Null
+[2017-11-15 13:43:01] [INFO] 切分消息：Null
+[2017-11-15 13:43:04] [INFO] 收到消息：Null
+[2017-11-15 13:43:04] [INFO] 切分消息：Null
+[2017-11-15 13:43:07] [INFO] 收到消息：Null
+[2017-11-15 13:43:07] [INFO] 切分消息：Null
+[2017-11-15 13:43:10] [INFO] 收到消息：Null
+[2017-11-15 13:43:10] [INFO] 切分消息：Null
+[2017-11-15 13:43:13] [INFO] 收到消息：Null
+[2017-11-15 13:43:13] [INFO] 切分消息：Null
+[2017-11-15 13:43:16] [INFO] 收到消息：MSG&2760&17098244615&【发自易信】易信验证码为：4501，请勿将验证码提供给他人。[End]
+[2017-11-15 13:43:16] [INFO] 切分消息：MSG&2760&17098244615&【发自易信】易信验证码为：4501，请勿将验证码提供给他人。
+[2017-11-15 13:43:16] [INFO] KEY: verify_code_2760_17098244615, Code: 4501
+[2017-11-15 13:46:25] [INFO] itemcode_2760
+[2017-11-15 13:46:25] [INFO] token_OHjS4wOteBezcptiCc4UEGHPWBRVwJ18
+[2017-11-15 13:46:25] [INFO] ===XUNMA RESTURN:13175835479;
+[2017-11-15 13:46:36] [INFO] 开始获取验证码：13175835479, wechat_register
+[2017-11-15 13:46:39] [INFO] 收到消息：USER&77.451&500&3000&1500&0.8&18.929[End]
+[2017-11-15 13:46:39] [INFO] 切分消息：USER&77.451&500&3000&1500&0.8&18.929
+[2017-11-15 13:46:42] [INFO] 收到消息：Null
+[2017-11-15 13:46:42] [INFO] 切分消息：Null
+[2017-11-15 13:46:45] [INFO] 收到消息：Null
+[2017-11-15 13:46:45] [INFO] 切分消息：Null
+[2017-11-15 13:46:48] [INFO] 收到消息：Null
+[2017-11-15 13:46:48] [INFO] 切分消息：Null
+[2017-11-15 13:46:51] [INFO] 收到消息：Null
+[2017-11-15 13:46:51] [INFO] 切分消息：Null
+[2017-11-15 13:46:54] [INFO] 收到消息：Null
+[2017-11-15 13:46:54] [INFO] 切分消息：Null
+[2017-11-15 13:46:58] [INFO] 收到消息：Null
+[2017-11-15 13:46:58] [INFO] 切分消息：Null
+[2017-11-15 13:47:01] [INFO] 收到消息：Null
+[2017-11-15 13:47:01] [INFO] 切分消息：Null
+[2017-11-15 13:47:04] [INFO] 收到消息：Null
+[2017-11-15 13:47:04] [INFO] 切分消息：Null
+[2017-11-15 13:47:07] [INFO] 收到消息：Null
+[2017-11-15 13:47:07] [INFO] 切分消息：Null
+[2017-11-15 13:47:10] [INFO] 收到消息：Null
+[2017-11-15 13:47:10] [INFO] 切分消息：Null
+[2017-11-15 13:47:13] [INFO] 收到消息：Null
+[2017-11-15 13:47:13] [INFO] 切分消息：Null
+[2017-11-15 13:47:16] [INFO] 收到消息：Null
+[2017-11-15 13:47:16] [INFO] 切分消息：Null
+[2017-11-15 13:47:19] [INFO] 收到消息：Null
+[2017-11-15 13:47:19] [INFO] 切分消息：Null
+[2017-11-15 13:47:23] [INFO] 收到消息：Null
+[2017-11-15 13:47:23] [INFO] 切分消息：Null
+[2017-11-15 13:47:26] [INFO] 收到消息：Null
+[2017-11-15 13:47:26] [INFO] 切分消息：Null
+[2017-11-15 13:47:29] [INFO] 收到消息：Null
+[2017-11-15 13:47:29] [INFO] 切分消息：Null
+[2017-11-15 13:47:32] [INFO] 收到消息：Null
+[2017-11-15 13:47:32] [INFO] 切分消息：Null
+[2017-11-15 13:47:35] [INFO] 收到消息：Null
+[2017-11-15 13:47:35] [INFO] 切分消息：Null
+[2017-11-15 13:48:17] [INFO] itemcode_2760
+[2017-11-15 13:48:17] [INFO] token_OHjS4wOteBezcptiCc4UEGHPWBRVwJ18
+[2017-11-15 13:48:17] [INFO] ===XUNMA RESTURN:13216597945;
+[2017-11-15 13:48:28] [INFO] 开始获取验证码：13216597945, wechat_register
+[2017-11-15 13:48:31] [INFO] 收到消息：MSG&2760&13216597945&【发自易信】易信验证码为：9666，请勿将验证码提供给他人。[End]
+[2017-11-15 13:48:31] [INFO] 切分消息：MSG&2760&13216597945&【发自易信】易信验证码为：9666，请勿将验证码提供给他人。
+[2017-11-15 13:48:31] [INFO] KEY: verify_code_2760_13216597945, Code: 9666
+[2017-11-15 14:00:40] [INFO] itemcode_2760
+[2017-11-15 14:00:40] [INFO] token_OHjS4wOteBezcptiCc4UEGHPWBRVwJ18
+[2017-11-15 14:00:40] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-11-15 14:00:44] [INFO] itemcode_2760
+[2017-11-15 14:00:44] [INFO] token_T3Fd18jtaEan26KaiIP25acIcykoLE5
+[2017-11-15 14:00:44] [INFO] ===XUNMA RESTURN:17155943161;
+[2017-11-15 14:00:54] [INFO] 开始获取验证码：17155943161, wechat_register
+[2017-11-15 14:00:58] [INFO] 收到消息：NOTION&单笔充值满 50元送 5%单笔充值满100元送10%自动赠送！上不封顶！-------------------------运营商选择  移动、联通或电信，不会出17号段-------------------------平台号码收到短信扣费,收不到短信不会扣费。[End]MSG&2760&17155943161&【发自易信】易信验证码为：9044，请勿将验证码提供给他人。[End]
+[2017-11-15 14:00:58] [INFO] 切分消息：NOTION&单笔充值满 50元送 5%单笔充值满100元送10%自动赠送！上不封顶！-------------------------运营商选择  移动、联通或电信，不会出17号段-------------------------平台号码收到短信扣费,收不到短信不会扣费。
+[2017-11-15 14:00:58] [INFO] 切分消息：MSG&2760&17155943161&【发自易信】易信验证码为：9044，请勿将验证码提供给他人。
+[2017-11-15 14:00:58] [INFO] KEY: verify_code_2760_17155943161, Code: 9044
+[2017-11-15 14:05:52] [INFO] itemcode_2760
+[2017-11-15 14:05:52] [INFO] token_T3Fd18jtaEan26KaiIP25acIcykoLE5
+[2017-11-15 14:05:52] [INFO] ===XUNMA RESTURN:15828448821;
+[2017-11-15 14:06:03] [INFO] itemcode_2760
+[2017-11-15 14:06:03] [INFO] token_T3Fd18jtaEan26KaiIP25acIcykoLE5
+[2017-11-15 14:06:03] [INFO] ===XUNMA RESTURN:13175813646;
+[2017-11-15 14:06:14] [INFO] 开始获取验证码：13175813646, wechat_register
+[2017-11-15 14:06:17] [INFO] 收到消息：USER&77.291&500&3000&1500&0.8&18.929[End]MSG&2760&13175813646&【发自易信】易信验证码为：4598，请勿将验证码提供给他人。[End]
+[2017-11-15 14:06:17] [INFO] 切分消息：USER&77.291&500&3000&1500&0.8&18.929
+[2017-11-15 14:06:17] [INFO] 切分消息：MSG&2760&13175813646&【发自易信】易信验证码为：4598，请勿将验证码提供给他人。
+[2017-11-15 14:06:17] [INFO] KEY: verify_code_2760_13175813646, Code: 4598
+[2017-11-15 15:18:49] [INFO] itemcode_2760
+[2017-11-15 15:18:49] [INFO] token_T3Fd18jtaEan26KaiIP25acIcykoLE5
+[2017-11-15 15:18:54] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-11-15 15:18:58] [INFO] itemcode_2760
+[2017-11-15 15:18:58] [INFO] token_CXBX1csPfCZwboxFxRUrZT7BP3sMVr14
+[2017-11-15 15:18:58] [INFO] ===XUNMA RESTURN:15882104125;
+[2017-11-15 15:19:09] [INFO] itemcode_2760
+[2017-11-15 15:19:09] [INFO] token_CXBX1csPfCZwboxFxRUrZT7BP3sMVr14
+[2017-11-15 15:19:10] [INFO] ===XUNMA RESTURN:17083433143;
+[2017-11-15 15:19:20] [INFO] 开始获取验证码：17083433143, wechat_register
+[2017-11-15 15:19:24] [INFO] 收到消息：NOTION&单笔充值满 50元送 5%单笔充值满100元送10%自动赠送！上不封顶！-------------------------运营商选择  移动、联通或电信，不会出17号段-------------------------平台号码收到短信扣费,收不到短信不会扣费。[End]
+[2017-11-15 15:19:24] [INFO] 切分消息：NOTION&单笔充值满 50元送 5%单笔充值满100元送10%自动赠送！上不封顶！-------------------------运营商选择  移动、联通或电信，不会出17号段-------------------------平台号码收到短信扣费,收不到短信不会扣费。
+[2017-11-15 15:19:27] [INFO] 收到消息：MSG&2760&17083433143&【发自易信】易信验证码为：8147，请勿将验证码提供给他人。[End]
+[2017-11-15 15:19:27] [INFO] 切分消息：MSG&2760&17083433143&【发自易信】易信验证码为：8147，请勿将验证码提供给他人。
+[2017-11-15 15:19:27] [INFO] KEY: verify_code_2760_17083433143, Code: 8147
+[2017-11-15 16:45:29] [INFO] itemcode_2760
+[2017-11-15 16:45:29] [INFO] token_H1QHRTJ0Jm4sqjrmBP1gf0JUu5rFAW71
+[2017-11-15 16:45:29] [INFO] ===XUNMA RESTURN:False:Session 过期
+[2017-11-15 16:45:33] [INFO] itemcode_2760
+[2017-11-15 16:45:33] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-15 16:45:33] [INFO] ===XUNMA RESTURN:18478351982;
+[2017-11-15 16:45:59] [INFO] itemcode_2760
+[2017-11-15 16:45:59] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-15 16:45:59] [INFO] ===XUNMA RESTURN:18224052880;
+[2017-11-15 16:46:17] [INFO] itemcode_2760
+[2017-11-15 16:46:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-15 16:46:17] [INFO] ===XUNMA RESTURN:18200247593;
+[2017-11-18 15:04:12] [INFO] itemcode_2760
+[2017-11-18 15:04:12] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:12] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:12] [INFO] itemcode_2760
+[2017-11-18 15:04:12] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:12] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:12] [INFO] itemcode_2760
+[2017-11-18 15:04:12] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:12] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:12] [INFO] itemcode_2760
+[2017-11-18 15:04:12] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:12] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:12] [INFO] itemcode_2760
+[2017-11-18 15:04:12] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:12] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:12] [INFO] itemcode_2760
+[2017-11-18 15:04:12] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:17] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:17] [INFO] itemcode_2760
+[2017-11-18 15:04:17] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:18] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:18] [INFO] itemcode_2760
+[2017-11-18 15:04:18] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:18] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:18] [INFO] itemcode_2760
+[2017-11-18 15:04:18] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:18] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:18] [INFO] itemcode_2760
+[2017-11-18 15:04:18] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:18] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:18] [INFO] itemcode_2760
+[2017-11-18 15:04:18] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:18] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:18] [INFO] itemcode_2760
+[2017-11-18 15:04:18] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:18] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-18 15:04:18] [INFO] itemcode_2760
+[2017-11-18 15:04:18] [INFO] token_JkyRSeqfiQ7Sj4c4O5zFswMB3LZDPr21
+[2017-11-18 15:04:18] [ERROR] Traceback (most recent call last):
+  File "/home/zunyun/workspace/TaskConsole/smsCode/client_xunma.py", line 90, in GetPhoneNumber
+    conn.request("GET", path)
+  File "/usr/lib/python2.7/httplib.py", line 1057, in request
+    self._send_request(method, url, body, headers)
+  File "/usr/lib/python2.7/httplib.py", line 1097, in _send_request
+    self.endheaders(body)
+  File "/usr/lib/python2.7/httplib.py", line 1053, in endheaders
+    self._send_output(message_body)
+  File "/usr/lib/python2.7/httplib.py", line 897, in _send_output
+    self.send(msg)
+  File "/usr/lib/python2.7/httplib.py", line 859, in send
+    self.connect()
+  File "/usr/lib/python2.7/httplib.py", line 836, in connect
+    self.timeout, self.source_address)
+  File "/usr/lib/python2.7/socket.py", line 575, in create_connection
+    raise err
+error: [Errno 111] Connection refused
+
+[2017-11-19 16:22:50] [INFO] ===SERVER RESTURN:1|17187497685
+[2017-11-23 13:24:27] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:24:30] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:24:33] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:24:36] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:24:40] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:24:43] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:24:46] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:24:49] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:24:52] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:24:56] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:24:59] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:25:02] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:25:05] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:25:09] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:25:12] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:25:15] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:25:18] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:25:28] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:25:36] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:25:40] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:25:43] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:25:46] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:25:49] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:25:52] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-11-23 13:26:37] [INFO] ===SERVER RESTURN:1|18474745788
+[2017-11-23 13:26:53] [INFO] ===SERVER RESTURN:1|17122514876
+[2017-11-25 17:07:46] [INFO] ===SERVER RESTURN:1|18906845741
+[2017-11-25 17:09:40] [INFO] ===SERVER RESTURN:1|17092471303
+[2017-11-25 17:11:49] [INFO] ===SERVER RESTURN:1|17098586031
+[2017-11-25 17:16:00] [INFO] timed out
+[2017-11-25 17:16:20] [INFO] 
+[2017-11-25 17:16:26] [INFO] ===SERVER RESTURN:1|18745488726
+[2017-12-15 18:51:31] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-12-15 18:51:34] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-12-15 18:51:37] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-12-15 18:51:41] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-12-15 18:51:44] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-12-15 18:51:47] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-12-15 18:52:20] [INFO] timed out
+[2017-12-15 18:52:20] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-12-15 18:52:23] [INFO] ===SERVER RESTURN:0|系统没有找到此号码
+[2017-12-15 18:58:57] [INFO] ===SERVER RESTURN:1|18473804064
+[2017-12-15 19:01:09] [INFO] ===SERVER RESTURN:1|17197333442
+[2017-12-15 19:04:48] [INFO] ===SERVER RESTURN:1|17036659104
+[2017-12-22 17:45:12] [INFO] ===SERVER RESTURN:1|17031481448
+[2017-12-22 17:52:19] [INFO] ===SERVER RESTURN:1|17181908448
+[2017-12-22 17:54:31] [INFO] ===SERVER RESTURN:1|18245461979
+[2017-12-23 11:09:59] [INFO] ===SERVER RESTURN:1|17197495790
+[2017-12-23 11:27:04] [INFO] ===SERVER RESTURN:1|17192759893
+[2017-12-23 11:38:03] [INFO] ===SERVER RESTURN:1|17197334308
+[2017-12-23 12:36:04] [INFO] ===SERVER RESTURN:1|17099900127
+[2017-12-23 12:37:53] [INFO] ===SERVER RESTURN:1|17123202647
+[2017-12-23 13:10:02] [INFO] ===SERVER RESTURN:1|17165313847

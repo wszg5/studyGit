@@ -235,9 +235,9 @@ class AutomatorServer(object):
         if pkginfo['version_name'] != self.__apk_vercode:
             return True
 
-        pkginfo = self.adb.package_info('com.sollyu.xposed.hook.model')
-        if pkginfo is None:
-            return True
+        #pkginfo = self.adb.package_info('com.sollyu.xposed.hook.model')
+        #if pkginfo is None:
+         #   return True
         if pkginfo['version_name'] != self.__zserial_vercode:
             return True
 
@@ -253,19 +253,22 @@ class AutomatorServer(object):
     def install(self):
         base_dir = os.path.dirname(__file__)
         if self.need_install():
-            self.adb.cmd("shell", "am force-stop com.zunyun.zime").communicate()  # 强制停止
-            self.adb.cmd("shell", "su -c 'rm /data/local/tmp/install.sh'").communicate()
-            self.adb.cmd("shell", "su -c 'chmod - R 777 /data/data/de.robv.android.xposed.installer/'").communicate()
+            #self.adb.cmd("shell", "am force-stop com.zunyun.zime").communicate()  # 强制停止
+            #self.adb.cmd("shell", "su -c 'rm /data/local/tmp/install.sh'").communicate()
+            #self.adb.cmd("shell", "su -c 'chmod - R 777 /data/data/de.robv.android.xposed.installer/'").communicate()
 
-            self.adb.cmd("shell", "su -c 'rm /data/local/tmp/zime.apk'").communicate()
-            #self.adb.cmd("shell", " ").communicate()
-            self.adb.cmd("shell", "pm uninstall com.zunyun.zime").communicate()
-            filename = os.path.join(base_dir, 'libs/install.sh')
-            self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
-            filename = os.path.join(base_dir, 'libs/zime.apk')
-            self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
+            #self.adb.cmd("shell", "su -c 'rm /data/local/tmp/zime.apk'").communicate()
+            #self.adb.cmd("shell", "pm uninstall com.zunyun.zime").communicate()
+            #filename = os.path.join(base_dir, 'libs/install.sh')
+            #self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
+            #filename = os.path.join(base_dir, 'libs/zime.apk')
+            #self.adb.cmd("push", filename, "/data/local/tmp/").communicate()
             #if self.getPackageVersion() != self.__apk_vercode:
             filename = os.path.join(base_dir, 'libs/zserial.apk')
+            self.adb.run_cmd("install -r %s" % filename)
+
+
+            filename = os.path.join(base_dir, 'libs/zime.apk')
             self.adb.run_cmd("install -r %s" % filename)
 
             self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()

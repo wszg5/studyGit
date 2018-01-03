@@ -1,10 +1,10 @@
 {
-"id": "GoogleKeyWordSearch",
+"id": "GoogleKeyWord_1",
 "cate":"MMC模块",
-"name":"Google关键词搜索",
+"name":"Google search Tai",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"Google-MMC-01",
+"version": "1.2",
+"code":"Google-MMC-101",
 "icon":"vcard-o",
 "remark":"Google关键词搜索,点击指定网址",
 "setting":[
@@ -49,7 +49,7 @@
 	"type":"select",
 	"list":{"是":"是","否":"否"},
 	"defaultValue":"是",
-	"remark":"注：进入网站后是否先要上下滑动几下？"
+	"remark":"注：进入Target网站后是否先要上下滑动几下？"
 	},
     {
     "id": "time_delay",

@@ -15,6 +15,8 @@ class ADSLQieHuan:
         repo = Repo()
         sds = repo.GetPhantomJSParamInfo()
         sda = repo.GetPhantomJSTaskInfo()
+        para = {"phoneNumber": "88888888888", 'x_04': 'NO', 'x_05': 'NO'}
+        repo.PostInformation( "302", para )
         print
 
 

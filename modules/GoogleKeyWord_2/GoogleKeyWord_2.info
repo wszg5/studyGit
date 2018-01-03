@@ -1,20 +1,13 @@
 {
-"id": "GoogleKeyWordSearch",
+"id": "GoogleKeyWord_2",
 "cate":"MMC模块",
-"name":"Google关键词搜索",
+"name":"Google_2 search Tai ",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"Google-MMC-01",
+"version": "1.24",
+"code":"Google-MMC-1012",
 "icon":"vcard-o",
 "remark":"Google关键词搜索,点击指定网址",
 "setting":[
-    {
-    "id": "repo_information_id",
-    "name":"搜索数据储存库",
-    "type":"repo",
-    "source":"information",
-    "top_cate_id":"4"
-    },
     {
     "id": "material_KeyWords_id",
     "name":"素材库取关键词",
@@ -30,13 +23,6 @@
     "remark":"单位：分钟"
     },
     {
-    "id": "run_count",
-    "name":"搜索次数",
-    "type":"textbox",
-    "defaultValue":"5",
-    "remark":"单位：次"
-    },
-    {
     "id": "slippage_count",
     "name":"翻页次数",
     "type":"textbox",
@@ -49,7 +35,7 @@
 	"type":"select",
 	"list":{"是":"是","否":"否"},
 	"defaultValue":"是",
-	"remark":"注：进入网站后是否先要上下滑动几下？"
+	"remark":"注：进入Target网站后是否先要上下滑动几下？"
 	},
     {
     "id": "time_delay",
