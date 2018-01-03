@@ -1,0 +1,19 @@
+{
+"id": "MMCYixinSign",
+"cate":"MMC模块",
+"name":"Yixin-签到开宝箱",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"Yixin-YS2.0",
+"icon": "vcard-o",
+"remark":"Yixin-MMC-签到开宝箱",
+"setting":[
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

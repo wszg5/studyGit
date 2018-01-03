@@ -281,3 +281,6 @@ if __name__ == "__main__":
     args = {"repo_cate_id":"276",'number_count':'20',"random_name":"否","clear":"是","time_delay":"3",
             "repo_material_cate_id":"255","megcount":"5","sendTime":"5-8","time_lock":"60"}    #cate_id是仓库号，length是数量
     o.action( d, z, args )
+
+
+

@@ -150,11 +150,10 @@ class MMCYixinAddressSendMsg:
                 z.toast("可能没有短信可发")
                 return
 
-        number_count  = int(args["number_count"])
-        if number_count > msgNum:
-            z.toast( "今日短信还剩 %d ,所以只需导入%d 个到通信录"%(msgNum,msgNum) )
-        else:
-            z.toast("导入通讯录")
+        # number_count  = int(args["number_count"])
+        # if number_count > msgNum:
+        z.toast( "今日短信还剩 %d ,所以只需导入%d 个到通信录"%(msgNum,msgNum) )
+
         numList = self.getAddressList( d, z, args,msgNum )  # 导入的通讯录
 
         str = d.info  # 获取屏幕大小等信息
@@ -323,6 +322,6 @@ if __name__ == "__main__":
     d = Device("d99e4b99")
     z = ZDevice("d99e4b99")
 
-    args = {"repo_cate_id":"104",'number_count':'20',"random_name":"否","clear":"是","time_delay":"3",
+    args = {"repo_cate_id":"104","random_name":"否","clear":"是","time_delay":"3",
             "repo_material_cate_id":"255"}    #cate_id是仓库号，length是数量
     o.action( d, z, args )

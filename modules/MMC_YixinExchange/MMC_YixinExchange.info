@@ -1,0 +1,27 @@
+{
+"id": "MMC_YixinExchange",
+"cate":"MMC模块",
+"name":"Yixin-兑换短信",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"Yixin-YS2.0",
+"icon": "vcard-o",
+"remark":"Yixin-MMC-兑换短信",
+"setting":[
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    },
+    {
+	"id": "moneyExchange",
+	"name":"星币兑换",
+	"type":"select",
+	"list":{"1星币":"1星币","26星币":"26星币","45星币":"45星币","72星币":"72星币"},
+	"defaultValue":"26星币",
+	"remark":"星币兑换"
+	}
+]
+}

@@ -32,13 +32,6 @@
 	"remark":"是否使用随机姓名"
 	},
 	{
-	"id": "number_count",
-	"name":"发短信的个数",
-	"type":"textbox",
-	"defaultValue":"20",
-	"remark":""
-	},
-	{
 	"id": "repo_material_cate_id",
 	"name":"验证内容仓库",
 	"type":"repo",

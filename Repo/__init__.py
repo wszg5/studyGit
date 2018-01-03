@@ -12,11 +12,12 @@ class Repo:
                    "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
         self.domain = const.REPO_API_IP
         self.port = 8888
+        # self.port = None
     def PostInformation(self, cateId, data):
         data["cateId"] = cateId
         path = "/repo_api/checkDeposit/checkDepositInfo"
         headers = {"Content-Type": "application/x-www-form-urlencoded",
-                   "Connection": "Keep-Alive"};
+                   "Connection": "Keep-Alive"}
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
         params = urllib.urlencode(data)
         conn.request(method="POST", url=path, body=params, headers=headers)
@@ -28,7 +29,7 @@ class Repo:
         else:
             print ("发布失败\^0^/")
             # 关闭连接
-        conn.close();
+        conn.close()
 
 
     def GetTIMInfomation(self, cateId,data):    #TIM模块从治疗库获取数据
@@ -139,7 +140,7 @@ class Repo:
         conn.request( method="POST", url=path, body=params, headers=headers )
         conn.close( )
 
-    def GetDesignationAccount(self,qqNumber, numberCateId):
+    def GetDesignationAccount(self,qqNumber, numberCateId):             #根据qq号和仓库号取出数据
         path = "/repo_api/account/getAccountNumber?QQNumber=%s&cate_id=%s" % (qqNumber,numberCateId)
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
         conn.request( "GET", path )
