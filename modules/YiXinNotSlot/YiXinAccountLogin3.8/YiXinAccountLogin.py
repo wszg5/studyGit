@@ -143,7 +143,7 @@ if __name__ == "__main__":
     args = {"repo_account_id": "306", "account_time_limit": "0", "time_delay": "3"};
     # o.action(d, z, args)
     repo = Repo( )
-    print repo.GetSpecifiedPhantomJSTask( "8", "290" )
+    print repo.UpdateNumberStauts( "13006680408", "264", "normal")
 
 
     # slot = Slot(d.server.adb.device_serial(),'yixin')

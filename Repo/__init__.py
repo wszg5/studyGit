@@ -298,6 +298,12 @@ class Repo:
         else:
             return []
 
+    def UpdateNumberStauts(self, number, cateId, status):
+        path = "/repo_api/number/updateNumberStatus?number=%s&cateId=%s&status=%s" % (number, cateId, status)
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        conn.request( "GET", path )
+
+
 
     def DeleteInformation(self, cateId, phoneNumber):
         path = "/repo_api/WXInformation/DelInformation?cate_id=%s&phoneNumber=%s" % (cateId, phoneNumber)
