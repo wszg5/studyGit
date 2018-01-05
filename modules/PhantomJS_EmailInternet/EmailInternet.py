@@ -15,7 +15,6 @@ import json
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
-from IPChange import *
 
 
 class EmailInternet:
@@ -80,17 +79,17 @@ class EmailInternet:
             cap["phantomjs.page.settings.userAgent"] = user_agent
 
             cap["phantomjs.page.customHeaders.User-Agent"] = user_agent
-            driver = webdriver.PhantomJS( desired_capabilities=cap )
+            driver = webdriver.PhantomJS( desired_capabilities=cap,executable_path="/usr/local/phantomjs/bin/phantomjs")
             # driver.close()
             # driver.quit( )
             # 检查是否连接网络
-            driver.get( "https://www.baidu.com/" )
-            if "百度一下" in driver.page_source.encode( "utf-8" ):
-                print "Internet OK"
-            else:
-                print "Internet NO"
-                driver.quit( )
-                return
+            # driver.get( "https://www.baidu.com/" )
+            # if "百度一下" in driver.page_source.encode( "utf-8" ):
+            #     print "Internet OK"
+            # else:
+            #     print "Internet NO"
+            #     driver.quit( )
+            #     return
 
                 # driver.save_screenshot( "5.png" )
             # QQNumber = "2179298964"
@@ -377,8 +376,8 @@ class EmailInternet:
                     elif "<html><head></head><body></body></html>" in page_source:
                         # driver.save_screenshot( "%s-%s.png" % (QQNumber, self.GetUnique( )) )
                         print "%s  空" % QQNumber
-                        IPChange( ).ooo( )
-                        IPChange( ).ooo( )
+                        # IPChange( ).ooo( )
+                        # IPChange( ).ooo( )
                     elif "验证码" in page_source:
                         print "%s  需要验证码" % QQNumber
                         count = count + 1
@@ -569,8 +568,8 @@ class EmailInternet:
                 driver.find_element_by_link_text( "退出" ).click( )
                 time.sleep( 2 )
                 # driver.save_screenshot( "exit.png" )
-                IPChange( ).ooo( )
-                IPChange( ).ooo( )
+                # IPChange( ).ooo( )
+                # IPChange( ).ooo( )
             except:
                 print "error"
                 # driver.save_screenshot( "exit2.png" )
@@ -597,22 +596,27 @@ if __name__ == "__main__":
 
     from Repo import *
 
-    from IPChange import *
-
-    data = IPChange( ).Check_for_Broadband( )
-    # if exist running broadband connection, disconnected it.
-    if data != None:
-        print u"网络已连接宽带"
-    else:
-        print u"网络未连接宽带"
-        IPChange( ).ooo( )
-
-
+    # from IPChange import *
+    #
+    # data = IPChange( ).Check_for_Broadband( )
+    # # if exist running broadband connection, disconnected it.
+    # if data != None:
+    #     print u"网络已连接宽带"
+    # else:
+    #     print u"网络未连接宽带"
+    #     IPChange( ).ooo( )
     repo = Repo( )
+    # asdlFile = open( "/home/zunyun/text/asdl.txt", "r" )
+    # asdl = asdlFile.readlines( )
     while True:
+        # try:
+        #     taskId = asdl[2][:-1]
+        #     taskList = repo.GetSpecifiedPhantomJSTask( taskId, "dsa" )
+        # except:
+        #     taskList = repo.GetPhantomJSTaskInfo( )
         taskList = repo.GetPhantomJSTaskInfo( )
         if len( taskList ) == 0:
-            print "please check http://data.zunyun.net/repo/phantomjs/list"
+            print u"检查是否有可运行的任务"
             time.sleep( 30 )
             continue
 
@@ -623,6 +627,7 @@ if __name__ == "__main__":
         repo_material_cateId2 = task["x07"]
         repo_number_cate_id = task["x03"]
         user_agent_id = task["x02"]
+
 
         while True:
             paramList = repo.GetPhantomJSParamInfo( )

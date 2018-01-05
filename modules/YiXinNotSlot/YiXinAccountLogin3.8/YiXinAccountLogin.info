@@ -4,9 +4,15 @@
 "name":"易信账号登录",
 "url": "http://www.bejson.com",
 "version": "1.0",
+<<<<<<< HEAD
 "code":"YX-Login-02",
 "icon":"vcard-o",
 "remark":"易信登录带卡槽(版本：3.0.0.202)",
+=======
+"code":"YX-Login-03",
+"icon":"vcard-o",
+"remark":"易信登录无卡槽(版本：3.8和6.3.2.265兼容)",
+>>>>>>> afe1e0af91f2a33f2ae5bdf0300d90ce5cc22551
 "setting":[
 {
 "id": "repo_account_id",
@@ -20,7 +26,11 @@
 "name":"YX帐号提取间隔",
 "type":"textbox",
 "defaultValue":"120",
+<<<<<<< HEAD
 "remark":"单位：分钟；注：如果帐号仓库为空，模块将开始切换卡槽"
+=======
+"remark":"单位：分钟；注：如果帐号仓库为空，模块将一直等待"
+>>>>>>> afe1e0af91f2a33f2ae5bdf0300d90ce5cc22551
 },
 {
 "id": "time_delay",

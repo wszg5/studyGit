@@ -43,6 +43,18 @@ class WoMailRegister:
                 else:
                     i += 1
                     continue
+<<<<<<< HEAD
+=======
+
+        if d(text='设置',resourceId='android:id/button1').exists:
+            d(text='设置').click()
+            z.sleep(1)
+
+        if d(resourceId='com.asiainfo.android:id/iv_right_button').exists:
+            d(resourceId='com.asiainfo.android:id/iv_right_button').click()
+            z.sleep(3)
+
+>>>>>>> afe1e0af91f2a33f2ae5bdf0300d90ce5cc22551
         d.server.adb.cmd( "shell",
                           "am start -n com.asiainfo.android/com.asiainfo.mail.ui.mainpage.SplashActivity" ).communicate( )  # 拉起沃邮箱
         z.sleep(5)
@@ -61,8 +73,13 @@ class WoMailRegister:
         if d(resourceId='com.asiainfo.android:id/iv_task').exists:
             d( resourceId='com.asiainfo.android:id/iv_task' ).click()
             woMail_info = d(resourceId='com.asiainfo.android:id/activity_newtask_content').info['text']
+<<<<<<< HEAD
             account_start = woMail_info.find( '账号：' ) + 3
             account_end = woMail_info.find( ' 密码：' )
+=======
+            account_start = woMail_info.find('账号：') + 3
+            account_end = woMail_info.find(' 密码：')
+>>>>>>> afe1e0af91f2a33f2ae5bdf0300d90ce5cc22551
             account =  woMail_info[account_start:account_end]
 
             password_start = woMail_info.find('密码：') + 3
@@ -126,8 +143,11 @@ if __name__ == "__main__":
     args = {"repo_account_id": "293", "slot_time_limit": "2", "account_time_limit": "0", "time_delay": "3"};
     o.action(d, z, args)
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> afe1e0af91f2a33f2ae5bdf0300d90ce5cc22551
         # d.server.adb.cmd( "shell", "pm clear com.asiainfo.android" ).communicate( )  # 清除缓存
     #
     # d.server.adb.cmd( "shell", "am start -n com.asiainfo.android/com.asiainfo.mail.ui.mainpage.SplashActivity" ).communicate()  # 拉起沃邮箱
