@@ -35,7 +35,7 @@ class YiXinRegister:
         z.toast("开始注册")
         d.server.adb.cmd( "shell", "pm clear im.yixin" ).communicate( )  # 清除缓存
         d.server.adb.cmd( "shell", "am start -n im.yixin/.activity.WelcomeActivity" ).communicate( )  # 拉起易信
-        z.sleep( 10 )
+        z.sleep( 18 )
         z.heartbeat( )
         if d( text='很抱歉，“易信”已停止运行。' ).exists:
             d( text='确定' ).click( )
@@ -154,6 +154,18 @@ class YiXinRegister:
             d(text='进入易信',resourceId='im.yixin:id/btn_register_start').click()
             z.sleep(20)
 
+        if d(text='完善信息').exists:
+            d( index=1 ).click()
+            z.sleep(1)
+            ageArray = ['00后', '95后', '90后', '85后']
+            age = ageArray[random.randint(0, 3)]
+            if d(text=age).exists:
+                d(text=age).click()
+
+            if d(text='开启易信').exists:
+                d(text='开启易信').click()
+                z.sleep( 20 )
+
         # d.server.adb.cmd( "shell", "am force-stop im.yixin" ).communicate( )  # 强制停止
         # d.server.adb.cmd( "shell", "am start -n im.yixin/.activity.WelcomeActivity" ).communicate( )  # 拉起易信
 
@@ -161,8 +173,9 @@ class YiXinRegister:
         if d( text='立即更新' ).exists:
             d(text='下次再说').click()
 
-        if d(text='消息').exists and d(text='电话').exists and d(text='发现').exists:
+        if d(text='好友').exists and d(text='我').exists and d(text='发现').exists:
             z.toast( u'注册成功' )
+            d(text='我').click()
             return PhoneNumber
 
         else:
@@ -178,7 +191,7 @@ class YiXinRegister:
                 ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
                 print(ping)
                 if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-                    z.toast( "开始执行：易信注册模块　有卡槽" )
+                    z.toast( "开始执行：易信注册模块　无卡槽" )
                     break
                 z.sleep( 2 )
 

@@ -11,7 +11,7 @@ class Repo:
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                    "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
         self.domain = const.REPO_API_IP
-        self.port = 8888
+        self.port = 8686
     def PostInformation(self, cateId, data):
         data["cateId"] = cateId
         path = "/repo_api/checkDeposit/checkDepositInfo"
@@ -67,6 +67,7 @@ class Repo:
             return  numbers
         else:
             return []
+
     def GetMaterial(self, cateId, interval,limit,wid=''):    #wid是用来发微信朋友圈的
         path = "/repo_api/material/pick?status=normal&cate_id=%s&interval=%s&limit=%s&wid=%s" % (cateId,interval,limit,wid)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
@@ -78,6 +79,7 @@ class Repo:
             return  numbers
         else:
             return []
+
     def GetNumber(self, cateId, interval, limit,status='normal',statusLock = 'YES',number = None,name=None):
         path = "/repo_api/number/pick?status=%s&cate_id=%s&interval=%s&limit=%s&statusLock=%s&number=%s&name=%s" % (status, cateId, interval, limit, statusLock, number, name)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
@@ -89,6 +91,7 @@ class Repo:
             return  numbers
         else:
             return []
+
     def Getserial(self, cateId,cardslot):    #根据卡槽号和设备号得到串号
         path = "/repo_api/account/IMEIInfo?status=normal&cate_id=%s&cardslot=%s" % (cateId,cardslot)
         print('地址是%s'%path)
@@ -139,6 +142,19 @@ class Repo:
         conn.request( method="POST", url=path, body=params, headers=headers )
         conn.close( )
 
+    def UpdateYXsmsNumber(self,cateId,phoneNumber,smsNumber):  #仓库号，易信帐号，免费短信数量
+        # path = "/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&IMEI=%s&cardslot=%s" % (cateId,status,Number,IMEI,remark)
+        # conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        # conn.request("GET",path)
+        data = {"cate_id": cateId, "phoneNumber": phoneNumber, 'smsNumber': smsNumber}
+        path = "/repo_api/account/YXsmsNumber"
+        headers = {"Content-Type": "application/x-www-form-urlencoded",
+                   "Connection": "Keep-Alive"};
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        params = urllib.urlencode( data )
+        conn.request( method="POST", url=path, body=params, headers=headers )
+        conn.close( )
+
     def GetDesignationAccount(self,qqNumber, numberCateId):
         path = "/repo_api/account/getAccountNumber?QQNumber=%s&cate_id=%s" % (qqNumber,numberCateId)
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
@@ -163,7 +179,21 @@ class Repo:
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
         params = urllib.urlencode( data )
         conn.request( method="POST", url=path, body=params, headers=headers )
-        conn.close( )
+        conn.close()
+
+    def RegisterWOEMailAccount(self,qqNumber,password,phoneNumber, numberCateId, status='normal', IMEI=None, remark=None):
+        # path = "/repo_api/register/numberInfo?QQNumber=%s&QQPassword=%s&PhoneNumber=%s&cate_id=%s" % (qqNumber,password,phoneNumber,numberCateId)
+        # conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        # conn.request("GET",path)
+
+        data = {"QQNumber": qqNumber, "QQPassword": password, 'PhoneNumber': phoneNumber, 'cate_id': numberCateId, 'status': status, 'IMEI': IMEI, "cardslot": remark}
+        path = "/repo_api/register/numberInfo"
+        headers = {"Content-Type": "application/x-www-form-urlencoded",
+                   "Connection": "Keep-Alive"};
+        conn = httplib.HTTPConnection( '192.168.1.51', '8686', timeout=30 )
+        params = urllib.urlencode( data )
+        conn.request( method="POST", url=path, body=params, headers=headers )
+        conn.close()
 
     def uploadPhoneNumber(self, phoneNumber, numberCateId,guolv='N'):
         path = "/repo_api/screen/numberInfo?PhoneNumber=%s&cate_id=%s&guolv=%s" % (phoneNumber, numberCateId,guolv)
@@ -256,6 +286,24 @@ class Repo:
         else:
             return []
 
+    def GetSpecifiedPhantomJSTask(self, taskId, cateId):
+        path = "/repo_api/InformationTaskCate/getSpecifiedTask?taskId=%s&cateId=%s" % (taskId, cateId)
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        conn.request( "GET", path )
+        response = conn.getresponse( )
+        if response.status == 200:
+            data = response.read( )
+            numbers = json.loads( data )
+            return numbers
+        else:
+            return []
+
+    def UpdateNumberStauts(self, number, cateId, status):
+        path = "/repo_api/number/updateNumberStatus?number=%s&cateId=%s&status=%s" % (number, cateId, status)
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        conn.request( "GET", path )
+
+
 
     def DeleteInformation(self, cateId, phoneNumber):
         path = "/repo_api/WXInformation/DelInformation?cate_id=%s&phoneNumber=%s" % (cateId, phoneNumber)
@@ -290,6 +338,7 @@ class Repo:
 
 if __name__ == '__main__':
     repo = Repo()
+    repo.GetSpecifiedPhantomJSTask("8","290")
     # result = repo.PostInformation({"aaa":"aa"})
     # saveCate = '189'
     # phoneNumber = '13642744049'
