@@ -60,8 +60,8 @@ class GoogleKeyWord_2:
         height = float(Str["displayHeight"])
         width = float(Str["displayWidth"])
 
-        z.generate_serial("com.android.chrome")  # 随机生成手机特征码
-        z.toast("Generate Phone serial information")
+        #z.generate_serial("com.android.chrome")  # 随机生成手机特征码
+        #z.toast("Generate Phone serial information")
 
         # 取关键词
         material_KeyWords_id = args["material_KeyWords_id"]
@@ -76,7 +76,7 @@ class GoogleKeyWord_2:
 
         d.server.adb.cmd("shell", 'am start -a android.intent.action.VIEW -d "http://www.google.com"')
         z.sleep(6)
-
+        d.dump(compressed=False)
         z.heartbeat()
         if d(text='Accept & continue').exists:
             d(text="Accept & continue").click()
@@ -98,8 +98,11 @@ class GoogleKeyWord_2:
             d(text='ไม่ ขอบคุณ').click()
             z.sleep(5)
 
+
         j = 0
-        while not (d(description="Google", className="android.widget.Image").exists or d(resourceId="hplogo").exists ) :
+        while not (d(description="Google", className="android.widget.Image").exists or d(resourceId="hplogo").exists
+                   or d(resourceId='lst-ib').exists or d(resourceId='tsbb').exists or d(resourceId='mib').exists
+                   or d(description='Search', className='android.widget.Button').exists) :
             j += 1
             z.sleep(3)
             if j == 3:
@@ -112,6 +115,8 @@ class GoogleKeyWord_2:
         z.heartbeat()
         if d(resourceId='lst-ib').exists:
             d(resourceId='lst-ib').click()
+        elif d(resourceId='mib').exists:
+            d(resourceId='mib').click()
         elif d(className='android.widget.EditText', index=0).exists:
             d(className='android.widget.EditText', index=0).click()
         else:
@@ -120,10 +125,10 @@ class GoogleKeyWord_2:
         # else:
         #     bounds = d(description="Google",className="android.widget.Image").info['bounds']
         #     d.click(int(bounds['left']) - 200, (int(bounds['bottom']) - int(bounds['top'])) / 2 + int(bounds['top']))
-        z.sleep(1)
+        z.sleep(2)
 
         z.input(KeyWords)
-        z.sleep(random.randint(2, 4))
+        z.sleep(2)
         z.heartbeat()
 
         if d(description='搜索', className='android.widget.Button').exists:
@@ -134,8 +139,11 @@ class GoogleKeyWord_2:
             d(description='Search', className='android.widget.Button').click()
         elif d(resourceId='tsbb').exists:
             d(resourceId='tsbb').click()
+            z.sleep(3)
+            if d(resourceId='tsbb').exists:
+                d(resourceId='tsbb').click()
 
-        z.sleep(random.randint(8, 15))
+        z.sleep(random.randint(5, 10))
         z.heartbeat()
 
 
@@ -153,21 +161,24 @@ class GoogleKeyWord_2:
                 d(resourceId='com.android.chrome:id/infobar_close_button').click()
                 z.sleep(2)
 
+            for i in range(0, 5):
+                if d(text="ใช้ภาษาภาษาไทยต่อไป").exists:
+                    d(text="ใช้ภาษาภาษาไทยต่อไป").click()
+                    z.sleep(2)
 
+                if d(description="ใช้ภาษาภาษาไทยต่อไป").exists:
+                    d(description="ใช้ภาษาภาษาไทยต่อไป").click()
+                    z.sleep(2)
 
-            if d(text="ใช้ภาษาภาษาไทยต่อไป").exists:
-                d(text="ใช้ภาษาภาษาไทยต่อไป").click()
-                z.sleep(2)
-
-            if d(description="ใช้ภาษาภาษาไทยต่อไป").exists:
-                d(description="ใช้ภาษาภาษาไทยต่อไป").click()
-                z.sleep(2)
-
-
-            if d(descriptionContains=BusinessName).exists:
+            d.dump(compressed=False)
+            targetObj = d(descriptionContains=BusinessName)
+            if not targetObj.exists:
+                targetObj = d(textContains=BusinessName)
+            if targetObj.exists:
                 while True:
+                    z.toast("Keyword found, try to scroll and click")
                     screen_d_before = d.dump(compressed=False)  # 点击前的屏幕内容
-                    d(descriptionContains=BusinessName).click()
+                    targetObj.click()
                     z.sleep(10)
 
                     screen_d_after = d.dump(compressed=False)  #点击后的屏幕内容
@@ -204,14 +215,20 @@ class GoogleKeyWord_2:
                 z.heartbeat()
 
                 for i in range(0, 10):
+                    z.toast("Keyword Not found, Scroll and Next pageing")
 
                     while d(resourceId='com.android.chrome:id/infobar_close_button').exists:
                         d(resourceId='com.android.chrome:id/infobar_close_button').click()
                         z.sleep(2)
 
-                    if d(text="ใช้ภาษาภาษาไทยต่อไป").exists:
-                        d(text="ใช้ภาษาภาษาไทยต่อไป").click()
-                        z.sleep(2)
+                    for i in range(0, 5):
+                        if d(text="ใช้ภาษาภาษาไทยต่อไป").exists:
+                            d(text="ใช้ภาษาภาษาไทยต่อไป").click()
+                            z.sleep(2)
+
+                        if d(description="ใช้ภาษาภาษาไทยต่อไป").exists:
+                            d(description="ใช้ภาษาภาษาไทยต่อไป").click()
+                            z.sleep(2)
 
                     d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
 
@@ -227,6 +244,11 @@ class GoogleKeyWord_2:
                         z.heartbeat()
                     elif d(resourceId='pnnext').exists:
                         d(resourceId='pnnext').click()
+                        z.sleep(random.randint(3, 5))
+                        z.heartbeat()
+                        #print(d(resourceId='pnnext').info)
+                    elif d(description='ถัดไป »').exists:
+                        d(description='ถัดไป »').click()
                         z.sleep(random.randint(3, 5))
                         z.heartbeat()
                         #print(d(resourceId='pnnext').info)
@@ -269,8 +291,8 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("9201109068b4a407")
-    z = ZDevice("9201109068b4a407")
+    d = Device("9201204840b3a4c5")
+    z = ZDevice("9201204840b3a4c5")
 
     screen_d_after = d.dump(compressed=False)  # 点击后的屏幕内容
 
@@ -279,7 +301,7 @@ if __name__ == "__main__":
     #z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").communicate()
 
-    args = {'start_time': '16', 'stop_time': '16:10', "repo_information_id": "204", "material_KeyWords_id": "207",
+    args = {'start_time': '16', 'stop_time': '16:10', "repo_information_id": "204", "material_KeyWords_id": "216",
             "KeyWords_interval": "0", "run_count": "3", "slippage_count": "20", "if_slippage": "是", "time_delay": "3"};
     o.action(d, z, args)
     # obj = d( className='android.widget.Button' )

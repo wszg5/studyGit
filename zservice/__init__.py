@@ -242,12 +242,12 @@ class AutomatorServer(object):
             return True
 
 
-        pkginfo = self.adb.package_info('de.robv.android.xposed.installer')
-        out = self.adb.cmd("shell","\"su -c 'cat /data/data/de.robv.android.xposed.installer/shared_prefs/enabled_modules.xml'\"").communicate()[0].decode('utf-8')
-        if pkginfo is not None and out.find("<int name=\"com.zunyun.zime\" value=\"1\" />") == -1:
-            return True
-        if pkginfo is not None and out.find("<int name=\"com.sollyu.xposed.hook.model\" value=\"1\" />") == -1:
-            return True
+        #pkginfo = self.adb.package_info('de.robv.android.xposed.installer')
+        #out = self.adb.cmd("shell","\"su -c 'cat /data/data/de.robv.android.xposed.installer/shared_prefs/enabled_modules.xml'\"").communicate()[0].decode('utf-8')
+        #if pkginfo is not None and out.find("<int name=\"com.zunyun.zime\" value=\"1\" />") == -1:
+        #    return True
+        #if pkginfo is not None and out.find("<int name=\"com.sollyu.xposed.hook.model\" value=\"1\" />") == -1:
+        #    return True
         return False
 
     def install(self):
@@ -271,11 +271,11 @@ class AutomatorServer(object):
             filename = os.path.join(base_dir, 'libs/zime.apk')
             self.adb.run_cmd("install -r %s" % filename)
 
-            self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
-            self.adb.cmd("shell", "su -c 'sh /data/local/tmp/install.sh'").communicate()
-            self.adb.cmd("shell", "su -c 'chmod - R 777 /data/data/de.robv.android.xposed.installer/'").communicate()
+            #self.adb.cmd("shell", "su -c 'chmod 777 /data/local/tmp/install.sh'").communicate()
+            #self.adb.cmd("shell", "su -c 'sh /data/local/tmp/install.sh'").communicate()
+            #self.adb.cmd("shell", "su -c 'chmod - R 777 /data/data/de.robv.android.xposed.installer/'").communicate()
 
-            self.adb.cmd("shell", "reboot").communicate()
+            #self.adb.cmd("shell", "reboot").communicate()
 
 
 
