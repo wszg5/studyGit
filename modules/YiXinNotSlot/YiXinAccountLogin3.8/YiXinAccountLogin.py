@@ -143,7 +143,7 @@ if __name__ == "__main__":
     args = {"repo_account_id": "306", "account_time_limit": "0", "time_delay": "3"};
     # o.action(d, z, args)
     repo = Repo( )
-    print repo.UpdateNumberStauts( "13006680408", "264", "normal")
+    repo.AccountFrozenTimeDelay( "jd25@jdedm.com", "298")
 
 
     # slot = Slot(d.server.adb.device_serial(),'yixin')

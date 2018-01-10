@@ -304,6 +304,12 @@ class Repo:
         conn.request( "GET", path )
 
 
+    def AccountFrozenTimeDelay(self, number, cateId):
+        path = "/repo_api/account/timeDelay?number=%s&cate_id=%s" % (number, cateId)
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        conn.request( "GET", path )
+
+
 
     def DeleteInformation(self, cateId, phoneNumber):
         path = "/repo_api/WXInformation/DelInformation?cate_id=%s&phoneNumber=%s" % (cateId, phoneNumber)
