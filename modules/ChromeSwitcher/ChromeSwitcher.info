@@ -1,0 +1,27 @@
+{
+"id": "ChromeSwitcher",
+"cate":"MMC模块",
+"name":"ChromeUASwitcher",
+"url": "http://www.bejson.com",
+"version": "1.26",
+"code":"ChromeSwitcher-1012",
+"icon":"vcard-o",
+"remark":"Change Chrome UserAgent by Warehouse",
+"setting":[
+    {
+    "id": "Check_Result",
+	"name":"Check Result",
+	"type":"select",
+	"list":{"Yes":"Yes","No":"No"},
+	"defaultValue":"Yes",
+	"remark":"Check Result"
+    },
+    {
+    "id": "time_delay",
+    "name":"模块结束延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}
