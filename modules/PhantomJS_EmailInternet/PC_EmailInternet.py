@@ -23,7 +23,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from Repo import Repo
 
 
-class EmailInternet:
+class PC_EmailInternet:
     def __init__(self):
 
         self.repo = Repo()
@@ -47,7 +47,7 @@ class EmailInternet:
             repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
             cap = webdriver.DesiredCapabilities.PHANTOMJS
             cap["phantomjs.page.settings.resourceTimeout"] = 1000
-            cap["phantomjs.page.settings.loadImages"] = False
+            cap["phantomjs.page.settings.loadImages"] = True
             cap["phantomjs.page.settings.disk-cache"] = True
             driver = None
 
@@ -98,8 +98,7 @@ class EmailInternet:
                 # user_agent = "Mozilla/5.0(compatible;MSIE9.0;WindowsNT6.1;Trident/5.0;"
                 cap["phantomjs.page.settings.userAgent"] = user_agent
                 cap["phantomjs.page.customHeaders.User-Agent"] = user_agent
-                driver = webdriver.PhantomJS( desired_capabilities=cap,
-                                              executable_path=r"/usr/local/phantomjs/bin/phantomjs" )
+                driver = webdriver.PhantomJS(desired_capabilities=cap, executable_path=r"/usr/local/phantomjs/bin/phantomjs")
 
                 emailnumbers = self.repo.GetNumber(repo_number_cate_id, 0, 1)  # 取出add_count条两小时内没有用过的号码
                 if len(emailnumbers) == 0:
@@ -111,32 +110,31 @@ class EmailInternet:
                     "http://data.zunyun.net/repo_api/number/updateNumberStatus?number=%s&cateId=%s&status=%s" % (
                         emailnumber, repo_number_cate_id, "normal"))
 
-                # 检查是否连接网络
+                # # 检查是否连接网络
                 # driver.get("https://www.baidu.com/")
                 # if "百度一下" in driver.page_source.encode("utf-8"):
                 #     print "Internet OK"
                 # else:
                 #     print "Internet NO"
                 #     return
-
+                # driver.delete_all_cookies()
                 # 打开QQ邮箱登陆界面
-                driver.delete_all_cookies()
-                driver.get("https://w.mail.qq.com/")
-                # driver.get('https://w.mail.qq.com/cgi-bin/today?sid=BR2GhBFf2joUw1sB0F7TgfMX,4,qYUdGY3g5RWRVQTUtZEV6THQ2cjVxTEdBTnRBVnIwMzVBNmhmR0o0dk1ma18.&first=1&mcookie=disabled')
+                driver.get("https://mail.qq.com/")
                 time.sleep(3)
-                driver.save_screenshot("01.png")
-                # driver.save_screenshot("0.png")
+                driver.save_screenshot("0.png")
+                # print driver.current_url
                 # 点 进入网页版QQ邮箱 (模拟手机版会有这个)
-                try:
-                    obj = driver.find_element_by_xpath("//td[@class='enter_mail_button_td']/a")
-                    obj.click()
-
-                except:
-                    print "error"
+                # try:
+                #     obj = driver.find_element_by_xpath("//td[@class='enter_mail_button_td']/a")
+                #     obj.click()
+                #
+                # except:
+                #     print "error"
 
                 try:
                     # 若帐号输入框有内容先清空
                     driver.find_element_by_id("u").clear()
+                    driver.find_element_by_id( "p" ).clear( )
                 except:
                     pass
                 try:
@@ -144,21 +142,28 @@ class EmailInternet:
                     # 输入框输入帐号和密码
                     driver.find_element_by_id("u").send_keys(QQNumber)
                     driver.find_element_by_id("p").send_keys(QQPassword)
-                    # driver.save_screenshot( "222.png" )
+                    driver.save_screenshot( "222.png" )
                     time.sleep(1)
-                    driver.find_element_by_id("go").click()
+                    driver.find_element_by_id("login_button").click()
+                    # driver.find_element_by_id( "go" ).click( )
                     time.sleep(random.randint(time_delayStart, time_delayEnd))
+                    driver.save_screenshot("1.png")
                 except:
                     pass
 
+                # print driver.current_url
                 try:
-                    obj = driver.find_element_by_class_name("qm_btnIcon")
+                    obj = driver.find_elements_by_xpath( "//a[@id='composebtn']" )
+                except:
+                    obj = []
+                if obj != []:
+
                     print u"%s  登陆成功" % QQNumber
                     Repo().BackupInfo(repo_cate_id, 'normal', QQNumber, user_agent, '')
-                    # driver.save_screenshot("SSS.png")
-                except:
+                    driver.save_screenshot("2.png")
+                else:
                     print u"%s  登陆失败" % QQNumber
-
+                    driver.save_screenshot( "3.png" )
                     time.sleep(2)
                     # 登陆出现异常状况
                     errorPage = driver.page_source.encode("utf-8")
@@ -171,8 +176,7 @@ class EmailInternet:
                     if "冻结" in errorPage:
                         print u"%s  冻结" % QQNumber
                         self.repo.BackupInfo(repo_cate_id, 'frozen', QQNumber, '', '')
-                        driver.get(
-                            "http://data.zunyun.net/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&IMEI=%s&cardslot=%s" % (
+                        driver.get("http://data.zunyun.net/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&IMEI=%s&cardslot=%s" % (
                                 repo_cate_id, "frozen", QQNumber, "", ""))
                         continue
 
@@ -195,17 +199,18 @@ class EmailInternet:
                         #         self.repo.BackupInfo(repo_cate_id, 'frozen', QQNumber, '', '')
                         # except:
                         #     pass
-                    try:
-                        obj = driver.find_element_by_class_name("content")
-                    except:
-                        time.sleep(2)
+                    # try:
+                    #     obj = driver.find_element_by_class_name("content")
+                    # except:
+                    #     time.sleep(2)
                     # self.ipChange.ooo()
                     # self.ipChange.ooo()
                     time.sleep(5)
                     continue
 
-
+                driver.save_screenshot("4.png")
                 url = driver.current_url.encode("utf-8")
+                continue
                 driver.find_element_by_xpath("//span[@class='qm_icon qm_icon_Compose']").click()
                 time.sleep(3)
                 while driver.current_url == url:
@@ -413,11 +418,12 @@ class EmailInternet:
         #     self.ipChange.ooo()
         #     time.sleep(5)
 
-        asdlFile = open( r"/home/zunyun/text/asdl.txt", "r" )
+        asdlFile = open(r"/home/zunyun/text/asdl.txt", "r")
         asdlList = asdlFile.readlines()
         while True:
             if len(asdlList) > 2:
-                specifiedTaskId = int( asdlList[2] )
+                specifiedTaskId = int(asdlList[2])
+
                 taskList = self.repo.GetSpecifiedPhantomJSTask(specifiedTaskId)
             else:
                 taskList = self.repo.GetPhantomJSTaskInfo()
@@ -475,7 +481,7 @@ class EmailInternet:
 
 
 def getPluginClass():
-    return EmailInternet
+    return PC_EmailInternet
 
 if __name__ == "__main__":
 

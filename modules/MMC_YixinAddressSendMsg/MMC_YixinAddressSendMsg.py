@@ -319,9 +319,9 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("d99e4b99")
-    z = ZDevice("d99e4b99")
+    d = Device("cda0ae8d")
+    z = ZDevice("cda0ae8d")
 
-    args = {"repo_cate_id":"104","random_name":"否","clear":"是","time_delay":"3",
-            "repo_material_cate_id":"255"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"309","random_name":"否","clear":"是","time_delay":"3",
+            "repo_material_cate_id":"308"}    #cate_id是仓库号，length是数量
     o.action( d, z, args )

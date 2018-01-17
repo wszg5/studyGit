@@ -133,13 +133,38 @@ if __name__ == "__main__":
     sys.setdefaultencoding( 'utf8' )
     clazz = getPluginClass( )
     o = clazz( )
-    d = Device( "36be646" )
-    z = ZDevice( "36be646" )
-    z.server.install( )
-    d.server.adb.cmd( "shell", "ime set com.zunyun.qk/.ZImeService" ).wait( )
-    args = {"repo_number_id": "190", 'repo_save_exist_id': '189', "run_lock": "500", "check_count": "10",
-            "repo_save_not_exist_id": "183"}  # cate_id是仓库号，length是数量
-    o.action( d, z, args )
+    d = Device( "cda0ae8d" )
+    z = ZDevice( "cda0ae8d" )
+    # z.server.install( )
+    # d.server.adb.cmd( "shell", "ime set com.zunyun.qk/.ZImeService" ).wait( )
+    # args = {"repo_number_id": "190", 'repo_save_exist_id': '189', "run_lock": "500", "check_count": "10",
+    #         "repo_save_not_exist_id": "183"}  # cate_id是仓库号，length是数量
+    # o.action( d, z, args )
+    # str = d.info  # 获取屏幕大小等信息
+    # height = str["displayHeight"]
+    # width = str["displayWidth"]
+
+    numbers = Repo( ).GetAccount( "318", 5, 1 )
+    if len( numbers ) == 0:
+        print "号仓库没有数据"
+
+    QQNumber = numbers[0]['number']  # 即将登陆的QQ号
+    QQPassword = numbers[0]['password']
+    print d
+    d.click(641,1234)  #我的
+    d.click(413,217)
+    z.sleep(2)
+    if d( index=1, resourceId="com.tencent.mobileqq:id/password" ).exists:
+        z.input( QQNumber )
+        d( index=1, resourceId="com.tencent.mobileqq:id/password" ).click( )
+        z.input( QQPassword )
+    else:
+        pass
+        d.click(87,212)             #帐号管理
+        d.click( 367, 817 )    #登陆方式
+
+    if d(text="登 录").exists:
+        d( text="登 录").click()
 
 
 
@@ -153,4 +178,5 @@ if __name__ == "__main__":
 
 
 
-#
+
+    #

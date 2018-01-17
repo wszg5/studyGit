@@ -289,8 +289,8 @@ class Repo:
         else:
             return []
 
-    def GetSpecifiedPhantomJSTask(self, taskId, cateId):
-        path = "/repo_api/InformationTaskCate/getSpecifiedTask?taskId=%s&cateId=%s" % (taskId, cateId)
+    def GetSpecifiedPhantomJSTask(self, taskId):
+        path = "/repo_api/InformationTaskCate/getSpecifiedTask?taskId=%s" % (taskId)
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
         conn.request( "GET", path )
         response = conn.getresponse( )
@@ -300,6 +300,13 @@ class Repo:
             return numbers
         else:
             return []
+
+    def UpdateNumberStauts(self, number, cateId, status):
+        path = "/repo_api/number/updateNumberStatus?number=%s&cateId=%s&status=%s" % (number, cateId, status)
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        conn.request( "GET", path )
+
+
 
     def DeleteInformation(self, cateId, phoneNumber):
         path = "/repo_api/WXInformation/DelInformation?cate_id=%s&phoneNumber=%s" % (cateId, phoneNumber)

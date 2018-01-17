@@ -134,8 +134,7 @@ class MMC_QQAddGroupByCard:
             QQnumber = list[i]['number']
             z.sleep( 2 )
 
-            d.server.adb.cmd( "shell",
-                              'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=group&source=qrcode"' % QQnumber )  # 群页面
+            d.server.adb.cmd( "shell",'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=group&source=qrcode"' % QQnumber )  # 群页面
             z.sleep( 2 )
             z.heartbeat( )
             if d( text='QQ' ).exists:
