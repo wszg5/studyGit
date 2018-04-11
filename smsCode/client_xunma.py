@@ -81,7 +81,7 @@ class client_xunma:
         itemcode = self.im_type_list[itemId]
         self.logger.info("itemcode_%s" % itemcode)
         self.logger.info("token_%s" % token)
-        path = "/getPhone?ItemId=%s&token=%s&Count=%s" % (itemcode, token, str(count))
+        path = "/getPhone?ItemId=%s&token=%s&Count=%s&PhoneType=%s" % (itemcode, token, str(count), 1)
         if phoneNum is not None:
             path = "%s&Phone=%s" % (path, phoneNum)
         try:

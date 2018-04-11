@@ -1,0 +1,33 @@
+{
+"id": "QLCheckDepo",
+"cate":"QQLite模块",
+"name":"QQ轻聊版通讯录检存",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQLite-F-P1.0",
+"icon":"vcard-o",
+"remark":"QQ轻聊版通讯录检存",
+"setting":[
+	{
+    "id": "repo_cate_id",
+    "name":"存储资料库",
+    "type":"repo",
+    "source":"information",
+    "top_cate_id":"4"
+    },
+    {
+    "id": "time_delay1",
+    "name":"匹配通讯录延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    },
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

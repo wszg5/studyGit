@@ -1,0 +1,2 @@
+[2018-03-28 19:16:46] [INFO] JsonRPC Error code: -32002, Message: com.android.uiautomator.core.UiObjectNotFoundException: UiSelector[RESOURCE_ID=com.tencent.androidssssqqmail:id/ea]
+[2018-03-28 19:20:25] [INFO] <type 'exceptions.Exception'>

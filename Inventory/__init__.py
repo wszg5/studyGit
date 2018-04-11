@@ -9,7 +9,7 @@ class Inventory:
 
         self.headers = {'Content-Type': 'application/json'}
 
-        self.field = set(['phone', 'qq', 'sex', 'email', 'qq_nickname', 'province', 'city', 'district', 'real_name', 'birth', 'school', 'gmt_created', 'gmt_modified',
+        self.field = set(['phone', 'age', 'sex', 'area', 'qq_nickname', 'province', 'city', 'district', 'real_name', 'birth', 'school', 'gmt_created', 'gmt_modified',
                           'is_deleted', 'x_01', 'x_02', 'x_03', 'x_04', 'x_05', 'x_06', 'x_07', 'x_08', 'x_09', 'x_10', 'x_11','x_12', 'x_13', 'x_14','x_15', 'x_16',
                           'x_17', 'x_18', 'x_19', 'x_20', 'x_21', 'x_22', 'x_23', 'x_24', 'x_25', 'x_26', 'x_27', 'x_28', 'x_29', 'x_30', 'x_31', 'x_32', 'x_33', 'x_34',
                           'x_35', 'x_36', 'x_37' , 'x_38', 'x_39', 'x_40', 'x_41', 'x_42', 'x_43', 'x_44', 'x_45', 'x_46', 'x_47', 'x_48', 'x_49', 'x_50', 'x_51', 'x_52',

@@ -1,12 +1,12 @@
 {
 "id": "QQMailLogin",
 "cate":"其他模块",
-"name":"QQ邮箱登录(有卡槽)",
+"name":"QQ邮箱登录(无卡槽，5.2.0版)",
 "url": "http://www.bejson.com",
-"version": "1.0",
-"code":"QQ-Mail-01",
+"version": "1.1",
+"code":"QQ-Mail-14",
 "icon":"vcard-o",
-"remark":"QQ邮箱登录带卡槽（针对ＨＴＣ手机）",
+"remark":"QQ邮箱登录不带卡槽（邮箱版本5.2）",
 "setting":[
 {
 "id": "repo_account_id",
@@ -16,39 +16,11 @@
 "top_cate_id":"1"
 },
 {
-"id": "time_limit",
-"name":"QQ卡槽提取间隔",
+"id": "account_time_limit",
+"name":"账号提取间隔",
 "type":"textbox",
 "defaultValue":"120",
 "remark":"单位：分钟；注：如果没有符合条件账号，调度将一直等待至有可用账号"
-},
-{
-"id": "time_limit1",
-"name":"QQ账号提取间隔",
-"type":"textbox",
-"defaultValue":"120",
-"remark":"单位：分钟；注：如果没有符合条件账号，调度将一直等待至有可用账号"
-},
-{
-"id": "time_delay1",
-"name":"等待登陆页面",
-"type":"textbox",
-"defaultValue":"30",
-"remark":"单位：秒"
-},
-{
-"id": "time_delay2",
-"name":"等待登陆成功页面",
-"type":"textbox",
-"defaultValue":"30",
-"remark":"单位：秒"
-}
-{
-"id": "time_delay",
-"name":"延时",
-"type":"textbox",
-"defaultValue":"3",
-"remark":"单位：秒"
 }
 ]
 }

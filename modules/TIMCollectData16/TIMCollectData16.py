@@ -1,4 +1,5 @@
 # coding:utf-8
+from smsCode import smsCode
 from uiautomator import Device
 from Repo import *
 from Inventory import *
@@ -6,7 +7,7 @@ import os, time, datetime, random
 from zservice import ZDevice
 from PIL import Image
 import colorsys
-from RClient import *
+
 
 
 class TIMCollectData16:
@@ -23,10 +24,43 @@ class TIMCollectData16:
         uniqueNum = str(nowTime) + str(randomNum);
         return uniqueNum
 
+    def Bind(self, d,z):
+        self.scode = smsCode(d.server.adb.device_serial())
+        newStart = 1
+        while newStart == 1:
+            GetBindNumber = self.scode.GetPhoneNumber(self.scode.QQ_CONTACT_BIND)
+            print(GetBindNumber)
+            z.sleep(2)
+            d(text='请输入你的手机号码', className='android.widget.EditText').set_text(
+                GetBindNumber)  # GetBindNumber
+            z.heartbeat()
+            z.sleep(1)
+            d(text='下一步').click()
+            z.sleep(3)
+            if d(text='下一步', resourceId='com.tencent.mobileqq:id/name', index=2).exists:  # 操作过于频繁的情况
+                return 'false'
+
+            if d(text='确定', resourceId='com.tencent.mobileqq:id/name',
+                 index='2').exists:  # 提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
+                d(text='确定', resourceId='com.tencent.mobileqq:id/name', index='2').click()
+
+            code = self.scode.GetVertifyCode(GetBindNumber, self.scode.QQ_CONTACT_BIND, '4')
+            newStart = 0
+
+            d(text='请输入验证码', className='android.widget.EditText').set_text(code)
+            z.heartbeat()
+            d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
+            z.sleep(5)
+            if d(text='确定').exists:
+                d(text='确定').click()
+
+            if d(textContains='没有可匹配的').exists:
+                return 'false'
+
+        return 'true'
+
     def Gender(self,d):
-        co = RClient()
-        im_id = ""
-        co.rk_report_error(im_id)
+
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -84,6 +118,16 @@ class TIMCollectData16:
         while d(text='正在发送请求', className='android.widget.TextView').exists:
             time.sleep(2)
 
+        if d(text='启用').exists:
+            d(text='启用').click()
+
+        if d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText',index=2).exists:  # 检查到尚未 启用通讯录
+            if d(text=' +null', resourceId='com.tencent.mobileqq:id/name').exists:
+                d(text=' +null', resourceId='com.tencent.mobileqq:id/name').click()
+                d(text='中国大陆', resourceId='com.tencent.mobileqq:id/name').click()
+
+        text = self.Bind( d, z )  # 未开启通讯录的，现绑定通讯录
+
         info = d(index=0, className='android.widget.AbsListView').info
         bHeight = info["visibleBounds"]["bottom"] - info["visibleBounds"]["top"]
         bWidth = info["visibleBounds"]["right"] - info["visibleBounds"]["left"]
@@ -104,15 +148,30 @@ class TIMCollectData16:
                     if number in numberArr:
                         ok='ok'
                     else:
-                        if number.isdigit():
+                        if number != '':
                             obj.click()
                             d(index=3, className='android.widget.ImageView').click()
 
-                            numberArr.append(number)
-                            gender = self.Gender(d)
+                            phoneNumberStr = d( resourceId='com.tencent.tim:id/info', index=1 ).info['text']
+                            phoneNumber = phoneNumberStr[3:len(phoneNumberStr)]
+                            numberArr.append(phoneNumber)
 
-                            para = {"sex":gender,"phone":int(number)}
-                            self.inventory.postData(para)
+                            ageAndarea = d(className='android.widget.LinearLayout', index=6 ).child(
+                                resourceId='com.tencent.tim:id/name', className='android.widget.TextView',
+                                index=0)
+
+                            age = ''
+                            area = ''
+                            gender = ''
+                            if ageAndarea.exists:
+                                ageAndareaInfo = ageAndarea.info['text']
+                                age = ageAndareaInfo[1:4]
+                                area = ageAndareaInfo[5:len(ageAndareaInfo)]
+                                gender = self.Gender(d)
+
+                            para = {"phoneNumber": phoneNumber, 'x_01': gender, 'x_02': age, 'x_03': area}
+
+                            self.repo.PostInformation(args['repo_cate_id'], para)
 
                             d(textContains='返回').click()
                             d(text='电话', className='android.widget.TextView').click()
@@ -158,9 +217,14 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT52DSK00474")
-    z = ZDevice("HT52DSK00474")
+    d = Device("25424f9")
+    z = ZDevice("25424f9")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"time_delay":"3"};    #cate_id是仓库号，length是数量
-    o.action(d, args)
+    args = {"repo_cate_id":"349", "time_delay":"3"};    #cate_id是仓库号，length是数量
+    # o.action(d, args)
+    if d(text='验证手机号码').exists:  # 检查到尚未 启用通讯录
+        if d( text=' +null').exists:
+            d( text=' +null').click( )
+            d( text='中国').click( )
+    o.Bind( d, z )  # 未开启通讯录的，现绑定通讯录

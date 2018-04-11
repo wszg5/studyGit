@@ -140,7 +140,7 @@ if __name__ == "__main__":
     d = Device("HT4AZSK00490")
     z = ZDevice("HT4AZSK00490")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_account_id": "306", "account_time_limit": "0", "time_delay": "3"};
+    args = {"repo_account_id": "306", "account_time_limit": "0", "time_delay": "3"}
     # o.action(d, z, args)
     repo = Repo( )
     repo.AccountFrozenTimeDelay( "jd25@jdedm.com", "298")

@@ -174,7 +174,7 @@ class WeiXinRegister:
 
 
             if d( textContains='看看手机通讯录' ).exists:
-                d( text='是' ).click( )
+                d( text='是' ).click()
 
                 para = {"phoneNumber": PhoneNumber,'x_05': 'YES',  'x_19': 'WXRegister', 'x_20':d.server.adb.device_serial(), 'x_26': '登陆状态YSE'}
                 self.repo.PostInformation( saveCate, para )

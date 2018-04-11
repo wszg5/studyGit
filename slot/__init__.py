@@ -2,18 +2,20 @@
 # -*- coding: utf-8 -*-
 import base64
 import json
+import shutil
 
 import time
 
 from adb import Adb
 
 from const import const
-import  os
+import os
 
 
 """Python wrapper for Zunyun Service."""
 class Slot:
     def __init__(self, serial,  type):
+
         self.serial = serial
         self.adb = Adb(serial=serial)
         self.type = type
@@ -44,13 +46,13 @@ class Slot:
         elif (self.type == "eim"):
             self.package = "com.tencent.eim"
             self.files = ['files/ConfigStore2.dat']
-            self.folders = ['files/user','databases']
+            self.folders = ['files/user', 'databases']
             self.maxSlot = const.MAX_SLOTS_EIM
 
         elif (self.type == "token"):
             self.package = "com.tencent.token"
-            self.files = ['databases/mobiletoken.db']
-            self.folders = ['shared_prefs']
+            self.files = []
+            self.folders = ['app_webview/Cookies']
             self.maxSlot = const.MAX_SLOTS_TOKEN
 
         elif (self.type == "qqmail"):
@@ -90,7 +92,7 @@ class Slot:
             targetPath = os.path.dirname(targetPath)
             self.adb.run_cmd("shell", "su -c 'mkdir -p %s'" % targetPath)
             cmd = "cp -f -r -p /data/data/%s/%s/  %s" % (self.package, folder, targetPath)
-            self.adb.run_cmd("shell", "su -c '%s'"%cmd)
+            self.adb.run_cmd("shell", "su -c '%s'" % cmd)
 
             #self.adb.run_cmd("shell", "su -c 'cp -r -f -p /data/data/%s/%s/  /data/data/com.zy.bak/%s/%s/%s'" % (self.package, folder, self.type, name, folder))
         for file in self.files:
@@ -145,6 +147,29 @@ class Slot:
         self.adb.run_cmd("shell", "ime set com.zunyun.zime/.ZImeService")
         self.adb.run_cmd("shell",
                          "am broadcast -a com.zunyun.zime.action --es ac restore_slot --es id %s --es type %s " % (id, self.type))
+
+
+    def backupToDisk(self, id):
+        # self.adb.run_cmd("shell", "su -c 'chmod -R 777 /data/data/%s/'"%self.package)
+        self.adb.run_cmd( "shell", "su -c 'chmod 777 /data/data/com.tencent.token/app_webview/'")
+        os.system( "chmod 777 /data/data/com.tencent.token/app_webview/" )
+        os.system("chmod 777 /home/zunyun/data/data/com.zy.bak/")
+
+        for folder in self.folders:
+            targetPath = '/home/zunyun/data/data/com.zy.bak/%s/%s/%s' % (self.type, id, folder)
+            targetPath = os.path.dirname(targetPath)
+            # if not os.path.exists(targetPath):
+            #     os.mkdir(targetPath)
+
+            url = "/data/data/%s/%s/" % (self.package, folder)
+            # file = os.read(url)
+
+            # cmd = "cp -rf /data/data/%s/%s/  %s" % (self.package, folder, "/home/zunyun/data/data/com.zy.bak")
+            # cmd = "adb pull /data/data/%s/%s %s" % (self.package, folder, "/home/zunyun/data/data/com.zy.bak")
+            cmd = "adb pull /data/data/com.tencent.token/app_webview/Cookies /home/zunyun/data/data/com.zy.bak/"
+            # self.adb.run_cmd(cmd)
+            os.system("adb pull /data/data/com.tencent.token/app_webview/Cookies /home/zunyun/data/data/com.zy.bak/")
+
 
     def clear(self, id):
         self.adb.run_cmd("shell", "su -c 'rm -r -f /data/data/com.zy.bak/%s/%s/'" % (self.type, id))

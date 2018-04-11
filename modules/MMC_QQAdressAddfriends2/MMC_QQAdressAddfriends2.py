@@ -207,10 +207,10 @@ class MMCQQAdressAddfriends2:
             z.sleep( 2 )
             return
         z.heartbeat( )
-        z.toast( "准备执行QQ通讯录加好友+导入通讯录+多选 MMS版" )
-        z.toast("开始导入通讯录")
-        self.getAddressList(d,z,args)
-        z.heartbeat( )
+        # z.toast( "准备执行QQ通讯录加好友+导入通讯录+多选 MMS版" )
+        # z.toast("开始导入通讯录")
+        # self.getAddressList(d,z,args)
+        # z.heartbeat( )
 
         z.toast( "正在ping网络是否通畅" )
         z.heartbeat( )
@@ -521,8 +521,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("465b4e4b")
+    z = ZDevice("465b4e4b")
 
     args = {"repo_cate_id":"113",'number_count':'50',"random_name":"是","clear":"是","time_delay":"3","repo_material_id":"39",
             "EndIndex": "100","set_timeStart":"0","set_timeEnd":"0","startTime":"0","endTime":"8"}    #cate_id是仓库号，length是数量

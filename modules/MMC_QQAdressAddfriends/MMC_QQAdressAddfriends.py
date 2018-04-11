@@ -26,10 +26,10 @@ class MMCQQAdressAddfriends:
 
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
-        randomNum = random.randint(0, 1000);  # 生成的随机整数n，其中0<=n<=100
+        randomNum = random.randint(0, 1000)  # 生成的随机整数n，其中0<=n<=100
         if randomNum <= 10:
-            randomNum = str(00) + str(randomNum);
-        uniqueNum = str(nowTime) + str(randomNum);
+            randomNum = str(00) + str(randomNum)
+        uniqueNum = str(nowTime) + str(randomNum)
         return uniqueNum
 
     def Gender(self, d, z):
@@ -209,8 +209,8 @@ class MMCQQAdressAddfriends:
 
         z.heartbeat( )
         z.toast( "准备执行QQ通讯录加好友+导入通讯录 MMS版" )
-        z.toast("开始导入通讯录")
-        self.getAddressList(d,z,args)
+        # z.toast("开始导入通讯录")
+        # self.getAddressList(d,z,args)
         z.heartbeat( )
         gender1 = args['gender']
 
@@ -529,9 +529,11 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("465b4e4b")
+    z = ZDevice("465b4e4b")
 
     args = {"repo_cate_id":"113",'number_count':'20',"random_name":"是","clear":"是","time_delay":"3","repo_material_id":"39",'gender':"不限",
             "EndIndex": "20","set_timeStart":"0","set_timeEnd":"1","startTime":"0","endTime":"8"}    #cate_id是仓库号，length是数量
     o.action( d, z, args )
+    list = "A,B,C,D"
+
