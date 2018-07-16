@@ -37,6 +37,12 @@ class Slot:
             self.folders = ['files/user']
             self.maxSlot = const.MAX_SLOTS_MOBILEQQ
 
+        elif (self.type == "mobileqqi"):
+            self.package = "com.tencent.mobileqqi"
+            self.files = ['files/ConfigStore2.dat']
+            self.folders = ['files/user']
+            self.maxSlot = const.MAX_SLOTS_QQINTERNATION
+
         elif (self.type == "qqlite"):
             self.package = "com.tencent.qqlite"
             self.files = ['files/ConfigStore2.dat']
@@ -60,6 +66,12 @@ class Slot:
             self.files = []
             self.folders = ['databases']
             self.maxSlot = const.MAX_SLOTS_QQMAIL
+
+        elif (self.type == "163mail"):
+            self.package = "com.tencent.androidqqmail"
+            self.files = []
+            self.folders = ['databases']
+            self.maxSlot = const.MAX_SLOTS_163MAIL
 
         elif (self.type == "now"):
             self.package = "com.tencent.now"

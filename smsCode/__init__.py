@@ -44,15 +44,12 @@ class smsCode:
         self.im_type_list[self.QQ_TOKEN_BIND] = dbapi.GetSetting("%s_%s" % (self.platform,self.QQ_TOKEN_BIND));
         self.im_type_list[self.ALIPAY_REGISTER] = dbapi.GetSetting("%s_%s" % (self.platform,self.ALIPAY_REGISTER));
 
-
         if self.platform == 'xunma':
             self.client = client_xunma(serial, self.username, self.password,self.im_type_list)
         elif self.platform == 'hellotrue':  #爱乐赞
             self.client = client_hellotrue(serial , self.username, self.password,self.im_type_list)
         else:
             self.client = client_jyzszp(serial, self.username, self.password,self.im_type_list) #玉米
-
-
 
     def GetPhoneNumber(self, itemId, phone=None, times=0):
         return self.client.GetPhoneNumber(itemId, phone, times)
@@ -70,6 +67,8 @@ class smsCode:
 
     def defriendPhoneNumber(self, phoneNumber, itemId):
         return self.client.defriendPhoneNumber(phoneNumber,itemId)
+
+
 
 
 

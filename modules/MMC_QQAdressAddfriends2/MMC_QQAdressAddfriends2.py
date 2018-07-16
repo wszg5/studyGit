@@ -176,7 +176,10 @@ class MMCQQAdressAddfriends2:
                   index='2' ).exists:  # 提示该号码已经与另一个ｑｑ绑定，是否改绑,如果请求失败的情况
                 d( text='确定', resourceId='com.tencent.mobileqq:id/name', index='2' ).click( )
             z.heartbeat( )
-            code = self.scode.GetVertifyCode( GetBindNumber, self.scode.QQ_CONTACT_BIND, '4' )
+            try:
+                code = self.scode.GetVertifyCode( GetBindNumber, self.scode.QQ_CONTACT_BIND, '4' )
+            except:
+                return 'false'
             newStart = 0
 
             d( resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText' ).set_text( code )
@@ -309,7 +312,7 @@ class MMCQQAdressAddfriends2:
               index=2 ).exists:  # 检查到尚未 启用通讯录
             if d( text=' +null', resourceId='com.tencent.mobileqq:id/name' ).exists:
                 d( text=' +null', resourceId='com.tencent.mobileqq:id/name' ).click( )
-                d( text='中国', resourceId='com.tencent.mobileqq:id/name' ).click( )
+                d( text='中国大陆', resourceId='com.tencent.mobileqq:id/name' ).click( )
             z.heartbeat( )
             text = self.Bind( d, z )  # 未开启通讯录的，现绑定通讯录
             z.heartbeat( )
@@ -524,6 +527,6 @@ if __name__ == "__main__":
     d = Device("465b4e4b")
     z = ZDevice("465b4e4b")
 
-    args = {"repo_cate_id":"113",'number_count':'50',"random_name":"是","clear":"是","time_delay":"3","repo_material_id":"39",
+    args = {"repo_cate_id":"113",'number_count':'50',"random_name":"是","clear":"是","time_delay":"3","repo_material_id":"355",
             "EndIndex": "100","set_timeStart":"0","set_timeEnd":"0","startTime":"0","endTime":"8"}    #cate_id是仓库号，length是数量
     o.action( d, z, args )

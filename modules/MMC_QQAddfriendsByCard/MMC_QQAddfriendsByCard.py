@@ -272,9 +272,9 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("465b4e4b")
+    z = ZDevice("465b4e4b")
 
-    args = {"time_delay":"3","set_timeStart":"100","set_timeEnd":"120","startTime":"0","endTime":"8",
-            "repo_number_cate_id":"119","repo_material_cate_id":"39",'gender':"男","add_count":"5"}    #cate_id是仓库号，length是数量
-    o.action( d, z, args )
+    args = {"time_delay": "3", "set_timeStart": "100", "set_timeEnd": "120", "startTime": "0", "endTime": "8",
+            "repo_number_cate_id": "44", "repo_material_cate_id": "40", 'gender': "男", "add_count": "5"}    #cate_id是仓库号，length是数量
+    o.action(d, z, args)

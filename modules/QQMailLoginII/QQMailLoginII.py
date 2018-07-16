@@ -73,7 +73,6 @@ class QQMailLogin:
 
         return code
 
-
     def login(self, d, z, args, accounts):
         try:
             d.server.adb.cmd("shell", "pm clear com.tencent.androidqqmail").communicate()  # 清除QQ邮箱缓存
@@ -81,9 +80,16 @@ class QQMailLogin:
 
             z.sleep(8)
             z.heartbeat()
-            if d(resourceId='com.tencent.androidqqmail:id/ea').exists:  # 选择QQ邮箱点击进入登陆页面
-                d(resourceId='com.tencent.androidqqmail:id/ea').click()
-                z.sleep(1)
+
+            if args['mail_type'] == '163邮箱登录':
+                if d(resourceId='com.tencent.androidqqmail:id/ee').exists:  # 选择163邮箱点击进入登陆页面
+                    d(resourceId='com.tencent.androidqqmail:id/ee').click()
+                    z.sleep(1)
+
+            if args['mail_type'] == 'QQ邮箱登录':
+                if d(resourceId='com.tencent.androidqqmail:id/ea').exists:  # 选择QQ邮箱点击进入登陆页面
+                    d(resourceId='com.tencent.androidqqmail:id/ea').click()
+                    z.sleep(1)
 
             account = accounts[0]['number']
             password = accounts[0]['password']
@@ -102,17 +108,42 @@ class QQMailLogin:
             if d(resourceId='com.tencent.androidqqmail:id/a_').exists:  # 点击登录按钮
                 d(resourceId='com.tencent.androidqqmail:id/a_').click()
 
-            z.sleep(3)
-            if d(resourceId='com.tencent.androidqqmail:id/a16').exists:  # 出现验证码
-                picObj = d(resourceId='com.tencent.androidqqmail:id/a19', index=0)
-                code = self.palyCode(d, z, picObj)
-                if code == "":
-                    return False
-                if d(resourceId='com.tencent.androidqqmail:id/a17').exists:
-                    d(resourceId='com.tencent.androidqqmail:id/a17').click()
-                z.input(code)
-                if d(resourceId='com.tencent.androidqqmail:id/a_').exists:  # 点击登陆
+            z.sleep(5)
+            if args['mail_type'] == 'QQ邮箱登录':
+                if d(resourceId='com.tencent.androidqqmail:id/h').exists:  # 判断是否要填写独立密码
+                    z.input("Abc" + account)
+                    z.sleep(1)
+                    if d(text='确定').exists:
+                        d(text='确定').click()
+                    z.sleep(5)
+
+                if d(resourceId='com.tencent.androidqqmail:id/a16').exists:  # 出现验证码
+                    picObj = d(resourceId='com.tencent.androidqqmail:id/a19', index=0)
+                    code = self.palyCode(d, z, picObj)
+                    if code == "":
+                        return False
+                    if d(resourceId='com.tencent.androidqqmail:id/a17').exists:
+                        d(resourceId='com.tencent.androidqqmail:id/a17').click()
+                    z.input(code)
+                    if d(resourceId='com.tencent.androidqqmail:id/a_').exists:  # 点击登陆
+                        d(resourceId='com.tencent.androidqqmail:id/a_').click()
+                    z.sleep(5)
+
+                if d(resourceId='com.tencent.androidqqmail:id/h').exists:  # 判断是否要填写独立密码
+                    z.input("Abc" + account)
+                    z.sleep(1)
+                    if d(text='确定').exists:
+                        d(text='确定').click()
+
+            if args['mail_type'] == '163邮箱登录':
+                if d(resourceId='com.tencent.androidqqmail:id/a_').exists:   # 点击登录按钮
                     d(resourceId='com.tencent.androidqqmail:id/a_').click()
+
+                z.sleep(3)
+                z.heartbeat()
+
+                d.server.adb.cmd("shell", "am force-stop com.tencent.androidqqmail").wait()  # 强制停止163邮箱
+                d.server.adb.cmd("shell", "am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail").communicate()  # 拉起163邮箱
 
             z.sleep(12)
             z.heartbeat()
@@ -124,6 +155,8 @@ class QQMailLogin:
                 z.toast(u"登录成功。退出模块")
                 d.server.adb.cmd("shell", "am force-stop com.tencent.androidqqmail").wait()  # 强制停止
                 return True
+            else:
+                return False
         except:
             logging.exception("exception")
             z.toast(u"程序出现异常，模块退出")
@@ -131,6 +164,8 @@ class QQMailLogin:
             return False
 
     def qiehuan(self, d, z, args):
+        if args['mail_type'] == '163邮箱登录':
+            self.type = '163mail'
         time_limit = int(args['slot_time_limit'])
         serial = d.server.adb.device_serial()
         self.slot = Slot(serial, self.type)
@@ -200,7 +235,7 @@ class QQMailLogin:
                 ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
                 print(ping)
                 if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-                    z.toast(u"网络通畅。开始执行：QQ邮箱登录 有卡槽")
+                    z.toast(u"网络通畅。开始执行：" + args['mail_type'] + u" 有卡槽")
                     break
                 z.sleep(2)
             if i > 200:
@@ -209,6 +244,9 @@ class QQMailLogin:
 
             z.heartbeat()
             z.generate_serial("com.tencent.androidqqmail")  # 随机生成手机特征码
+
+            if args['mail_type'] == '163邮箱登录':
+                self.type = '163mail'
 
             accounts = self.repo.GetAccount(args['repo_account_id'], int(args['account_time_limit']), 1)  # 去仓库获取QQ邮箱帐号
             if len(accounts) == 0:
@@ -238,6 +276,11 @@ class QQMailLogin:
 
                 else:
                     self.slot.clear(slotnum)  # 清空改卡槽，并补登
+                    if d(text='本次登录存在异常，如需帮助请前往安全中心').exists:
+                        z.toast(u"登录失败。重新登录")
+                        self.repo.BackupInfo(args["repo_account_id"], 'frozen', QQnumber, '', '')  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+                    else:
+                        self.repo.BackupInfo(args["repo_account_id"], 'normal', QQnumber, '', '')  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
                     continue
 
 
@@ -252,10 +295,10 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("465b4e4b")
-    z = ZDevice("465b4e4b")
+    d = Device("25424f9")
+    z = ZDevice("25424f9")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_account_id": "331", "account_time_limit": "120", "slot_time_limit": "1"};
+    args = {"repo_account_id": "354", "mail_type": "163邮箱登录", "account_time_limit": "120", "slot_time_limit": "1"};
     o.action(d, z, args)
     # slot = Slot(d.server.adb.device_serial(),'qqmail')
     # slot.clear(1)

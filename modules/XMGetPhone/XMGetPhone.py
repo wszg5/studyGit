@@ -32,10 +32,12 @@ class XMGetPhone:
             if count > int(args['get_amount']):
                 z.toast('成功拉取'+args['get_amount'])
                 break
-            PhoneNumber = self.scode.GetPhoneNumber( self.scode.ALIPAY_REGISTER )  # 获取接码平台手机号码
-            z.sleep(5)
-            self.scode.defriendPhoneNumber( PhoneNumber, self.scode.ALIPAY_REGISTER)  # 拉黑
-            self.repo.uploadPhoneNumber(PhoneNumber, cateId)  # 入库
+            PhoneNumber = self.scode.GetPhoneNumber( self.scode.WECHAT_REGISTER )  # 获取接码平台手机号码
+            z.sleep(3)
+            PhoneNumberStr = ','.join(PhoneNumber)
+            self.scode.defriendPhoneNumber(PhoneNumberStr, self.scode.WECHAT_REGISTER)  # 拉黑
+            self.repo.uploadPhoneNumber(PhoneNumberStr, cateId)  # 入库
+
             if args["time_delay"]:
                 z.sleep(int(args["time_delay"]))
             count = count + 1
@@ -54,11 +56,11 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("465b4e4b")#INNZL7YDLFPBNFN7
-    z = ZDevice("465b4e4b")
+    d = Device("25424f9")#INNZL7YDLFPBNFN7
+    z = ZDevice("25424f9")
     # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_number_id": "350", "run_lock":"500","get_amount":"100","time_delay":"5"}  # cate_id是仓库号，发中文问题
+    args = {"repo_number_id": "305", "run_lock":"50000","get_amount":"50000","time_delay":"15"}  # cate_id是仓库号，发中文问题
     o.action(d,z, args)
 
 
