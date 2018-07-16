@@ -15,6 +15,7 @@ class smsCode:
 
     def __init__(self, serial):
         self.platform = dbapi.GetSetting("sms_platform")
+        # self.platform = "xunma"
         if self.platform == 'xunma':
             self.platform = "xunma";
         elif self.platform == 'hellotrue':  #爱乐赞
@@ -37,12 +38,16 @@ class smsCode:
         self.QQ_TOKEN_BIND = "qq_token_bind";
         self.ALIPAY_REGISTER = "alipay_register";
 
+        self.WECHAT_MAIL_BIND = "wechat_mail_bind";
+
         self.im_type_list={}
         self.im_type_list[self.WECHAT_REGISTER] = dbapi.GetSetting("%s_%s" % (self.platform,self.WECHAT_REGISTER));
         self.im_type_list[self.QQ_CONTACT_BIND] = dbapi.GetSetting("%s_%s" % (self.platform,self.QQ_CONTACT_BIND));
         self.im_type_list[self.QQ_REGISTER] = dbapi.GetSetting("%s_%s" % (self.platform,self.QQ_REGISTER));
         self.im_type_list[self.QQ_TOKEN_BIND] = dbapi.GetSetting("%s_%s" % (self.platform,self.QQ_TOKEN_BIND));
         self.im_type_list[self.ALIPAY_REGISTER] = dbapi.GetSetting("%s_%s" % (self.platform,self.ALIPAY_REGISTER));
+
+        self.im_type_list[self.WECHAT_MAIL_BIND] = dbapi.GetSetting( "%s_%s" % (self.platform, self.WECHAT_MAIL_BIND) );
 
 
         if self.platform == 'xunma':

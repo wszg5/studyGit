@@ -24,11 +24,11 @@ class Repo:
         # 返回处理后的数据
         response = conn.getresponse( )
         # 判断是否提交成功
-        if response.status == 302:
-            print ("发布成功!^_^!")
-        else:
-            print ("发布失败\^0^/")
-            # 关闭连接
+        # if response.status == 302:
+        #     print ("发布成功!^_^!")
+        # else:
+        #     print ("发布失败\^0^/")
+        #     # 关闭连接
         conn.close( )
 
     def GetTIMInfomation(self, cateId, data):  # TIM模块从治疗库获取数据
@@ -52,8 +52,8 @@ class Repo:
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
         conn.request( "GET", path )
 
-    def GetAccount(self, cateId, interval, limit):
-        path = "/repo_api/account/pick?status=normal&cate_id=%s&interval=%s&limit=%s" % (cateId, interval, limit)
+    def GetAccount(self,status, cateId, interval, limit):
+        path = "/repo_api/account/pick?status=%s&cate_id=%s&interval=%s&limit=%s" % (status,cateId, interval, limit)
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
         conn.request( "GET", path )
         response = conn.getresponse( )
@@ -265,8 +265,8 @@ class Repo:
         else:
             return []
 
-    def GetPhantomJSTaskInfo(self):
-        path = "/repo_api/InformationTaskCate/getInfoList"
+    def GetPhantomJSTaskInfo(self,taskType):
+        path = "/repo_api/InformationTaskCate/getInfoList?taskType=%s" % taskType
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
         conn.request( "GET", path )
         response = conn.getresponse( )
@@ -277,8 +277,8 @@ class Repo:
         else:
             return []
 
-    def GetPhantomJSParamInfo(self):
-        path = "/repo_api/InformationParamCate/getInfoList"
+    def GetPhantomJSParamInfo(self,taskType):
+        path = "/repo_api/InformationParamCate/getInfoList?taskType=%s" % taskType
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
         conn.request( "GET", path )
         response = conn.getresponse( )
@@ -289,8 +289,8 @@ class Repo:
         else:
             return []
 
-    def GetSpecifiedPhantomJSTask(self, taskId):
-        path = "/repo_api/InformationTaskCate/getSpecifiedTask?taskId=%s" % (taskId)
+    def GetSpecifiedPhantomJSTask(self, taskId,taskType):
+        path = "/repo_api/InformationTaskCate/getSpecifiedTask?taskId=%s&taskType=%s" % (taskId,taskType)
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
         conn.request( "GET", path )
         response = conn.getresponse( )
@@ -303,6 +303,12 @@ class Repo:
 
     def UpdateNumberStauts(self, number, cateId, status):
         path = "/repo_api/number/updateNumberStatus?number=%s&cateId=%s&status=%s" % (number, cateId, status)
+        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+        conn.request( "GET", path )
+
+
+    def AccountFrozenTimeDelay(self, number, cateId):
+        path = "/repo_api/account/timeDelay?number=%s&cate_id=%s" % (number, cateId)
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
         conn.request( "GET", path )
 

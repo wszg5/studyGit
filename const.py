@@ -25,10 +25,15 @@ class _const:
 const = _const()
 
 const.WAIT_START_TIME=200
-const.SERVER_IP = '192.168.1.104'
+
+const.SERVER_IP = '192.168.1.11'
+
+
+const.SERVER_IP = '192.168.1.11'
+
 const.RETHINKDB_NAME = 'stf'
 const.REPO_API_IP = 'data.zunyun.net'
-const.REDIS_SERVER = '192.168.1.104'
+const.REDIS_SERVER = '192.168.1.11'
 const.MAX_SLOTS_TIM=1
 const.MAX_SLOTS_WECHAT=3
 const.MAX_SLOTS_MOBILEQQ=3

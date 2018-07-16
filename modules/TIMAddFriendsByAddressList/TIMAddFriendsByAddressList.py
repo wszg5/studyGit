@@ -161,7 +161,8 @@ class TIMAddFriendsByAddressList:
         width = str["displayWidth"]
         cate_id1 = args["repo_material_id"]
         Material = self.repo.GetMaterial( cate_id1, 0, 1 )
-        message = Material[0]['content']  # 取出验证消息的内容
+        #message = Material[0]['content']  # 取出验证消息的内容
+        message = "vgfdvbd"
         d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止
         d.server.adb.cmd( "shell",
                           "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" ).communicate( )  # 拉起来
@@ -442,8 +443,8 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT524SK00685")
-    z = ZDevice("HT524SK00685")
+    d = Device("cda0ae8d")
+    z = ZDevice("cda0ae8d")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_material_id": "39", "time_delay": "3", "EndIndex": "8","switch_card":"是"};  # cate_id是仓库号，length是数量

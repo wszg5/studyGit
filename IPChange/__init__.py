@@ -1,5 +1,5 @@
 # coding: utf-8
-import win32ras
+# import win32ras
 import time, os
 
 class IPChange:

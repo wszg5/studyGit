@@ -38,7 +38,7 @@ class MMCYixinAddressSendMsg:
             exist_numbers = self.repo.GetNumber(cate_id, 60, number_count, 'exist')
             print(exist_numbers)
             remain = number_count - len(exist_numbers)
-            normal_numbers = self.repo.GetNumber(cate_id, 60, remain, 'normal',"NO")
+            normal_numbers = self.repo.GetNumber(cate_id, 60, remain, 'normal')
             numbers = exist_numbers + normal_numbers
             if len(numbers)> 0:
                 break
@@ -78,8 +78,9 @@ class MMCYixinAddressSendMsg:
 
             listNum = []
             for item in numbers:
-                print item["number"]
-                listNum.append(item["number"])
+                if item["number"]!='' and item["number"] !=None:
+                    print item["number"]
+                    listNum.append(item["number"])
 
             out = d.server.adb.cmd("shell",
                                "dumpsys activity top  | grep ACTIVITY").communicate()[0].decode('utf-8')
@@ -128,6 +129,7 @@ class MMCYixinAddressSendMsg:
         if d( text="我", resourceId="im.yixin:id/tab_title_label", className="android.widget.TextView" ).exists:
             z.toast( "登录状态正常" )
             d( text="我", resourceId="im.yixin:id/tab_title_label", className="android.widget.TextView" ).click()
+            z.sleep(5)
         else:
             z.toast( "登录状态异常" )
             return
@@ -139,16 +141,22 @@ class MMCYixinAddressSendMsg:
                                                                                       resourceId="im.yixin:id/root" ).child(
             index=0, resourceId="im.yixin:id/quotaTV" )
         msgNum = 0
-        if msg.exists:
-            try:
-                msgNum = msg.info["text"].encode( "utf-8" )[:-3]
-                msgNum = int(msgNum)
-                if msgNum == 0:
-                    z.toast( "可能没有短信可发" )
+        for i in range(0,4):
+            if msg.exists:
+                try:
+                    msgNum = msg.info["text"].encode( "utf-8" )[:-3]
+                    msgNum = int(msgNum)
+                    if msgNum == 0:
+                        z.toast( "可能没有短信可发" )
+                        return
+                    break
+                except:
+                    z.toast("可能没有短信可发")
                     return
-            except:
-                z.toast("可能没有短信可发")
-                return
+            else:
+                z.toast("该页面没加载出来,等5秒")
+                z.sleep(5)
+
 
         # number_count  = int(args["number_count"])
         # if number_count > msgNum:
@@ -319,9 +327,9 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("HT4AZSK00490")
+    z = ZDevice("HT4AZSK00490")
 
-    args = {"repo_cate_id":"309","random_name":"否","clear":"是","time_delay":"3",
+    args = {"repo_cate_id":"104","random_name":"否","clear":"是","time_delay":"3",
             "repo_material_cate_id":"308"}    #cate_id是仓库号，length是数量
     o.action( d, z, args )

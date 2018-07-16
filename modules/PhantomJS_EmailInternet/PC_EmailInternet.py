@@ -95,7 +95,7 @@ class PC_EmailInternet:
                 except:
                     pass
                 # user_agent = "Mozilla/5.0(Linux;U;Android2.3.7;en-us;NexusOneBuild/FRF91)AppleWebKit/533.1(KHTML,likeGecko)Version/4.0MobileSafari/533.1"
-                # user_agent = "Mozilla/5.0(compatible;MSIE9.0;WindowsNT6.1;Trident/5.0;"
+                # user_agent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.9 Safari/537.36"
                 cap["phantomjs.page.settings.userAgent"] = user_agent
                 cap["phantomjs.page.customHeaders.User-Agent"] = user_agent
                 driver = webdriver.PhantomJS(desired_capabilities=cap, executable_path=r"/usr/local/phantomjs/bin/phantomjs")
@@ -119,54 +119,47 @@ class PC_EmailInternet:
                 #     return
                 # driver.delete_all_cookies()
                 # 打开QQ邮箱登陆界面
-                driver.get("https://mail.qq.com/")
-                time.sleep(3)
-                driver.save_screenshot("0.png")
-                # print driver.current_url
+                driver.get( "https://w.mail.qq.com/" )
+                # driver.get('https://w.mail.qq.com/cgi-bin/today?sid=BR2GhBFf2joUw1sB0F7TgfMX,4,qYUdGY3g5RWRVQTUtZEV6THQ2cjVxTEdBTnRBVnIwMzVBNmhmR0o0dk1ma18.&first=1&mcookie=disabled')
+                time.sleep( 3 )
+                driver.save_screenshot( "01.png" )
+                # driver.save_screenshot("0.png")
                 # 点 进入网页版QQ邮箱 (模拟手机版会有这个)
-                # try:
-                #     obj = driver.find_element_by_xpath("//td[@class='enter_mail_button_td']/a")
-                #     obj.click()
-                #
-                # except:
-                #     print "error"
+                try:
+                    obj = driver.find_element_by_xpath( "//td[@class='enter_mail_button_td']/a" )
+                    obj.click( )
+
+                except:
+                    print "error"
 
                 try:
                     # 若帐号输入框有内容先清空
-                    driver.find_element_by_id("u").clear()
-                    driver.find_element_by_id( "p" ).clear( )
+                    driver.find_element_by_id( "u" ).clear( )
                 except:
                     pass
                 try:
                     # ///
                     # 输入框输入帐号和密码
-                    driver.find_element_by_id("u").send_keys(QQNumber)
-                    driver.find_element_by_id("p").send_keys(QQPassword)
+                    driver.find_element_by_id( "u" ).send_keys( QQNumber )
+                    driver.find_element_by_id( "p" ).send_keys( QQPassword )
                     driver.save_screenshot( "222.png" )
-                    time.sleep(1)
-                    driver.find_element_by_id("login_button").click()
-                    # driver.find_element_by_id( "go" ).click( )
-                    time.sleep(random.randint(time_delayStart, time_delayEnd))
-                    driver.save_screenshot("1.png")
+                    time.sleep( 1 )
+                    driver.find_element_by_id( "go" ).click( )
+                    time.sleep( random.randint( time_delayStart, time_delayEnd ) )
                 except:
                     pass
 
-                # print driver.current_url
                 try:
-                    obj = driver.find_elements_by_xpath( "//a[@id='composebtn']" )
-                except:
-                    obj = []
-                if obj != []:
-
+                    obj = driver.find_element_by_class_name( "qm_btnIcon" )
                     print u"%s  登陆成功" % QQNumber
-                    Repo().BackupInfo(repo_cate_id, 'normal', QQNumber, user_agent, '')
-                    driver.save_screenshot("2.png")
-                else:
+                    Repo( ).BackupInfo( repo_cate_id, 'normal', QQNumber, user_agent, '' )
+                    # driver.save_screenshot("SSS.png")
+                except:
                     print u"%s  登陆失败" % QQNumber
-                    driver.save_screenshot( "3.png" )
-                    time.sleep(2)
+                    driver.save_screenshot( "002.png" )
+                    time.sleep( 2 )
                     # 登陆出现异常状况
-                    errorPage = driver.page_source.encode("utf-8")
+                    errorPage = driver.page_source.encode( "utf-8" )
                     if "拖动下方滑块完成拼图" in errorPage:
                         print u"%s  拖动下方滑块完成拼图" % QQNumber
                         continue
@@ -175,51 +168,34 @@ class PC_EmailInternet:
                         continue
                     if "冻结" in errorPage:
                         print u"%s  冻结" % QQNumber
-                        self.repo.BackupInfo(repo_cate_id, 'frozen', QQNumber, '', '')
-                        driver.get("http://data.zunyun.net/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&IMEI=%s&cardslot=%s" % (
-                                repo_cate_id, "frozen", QQNumber, "", ""))
+                        self.repo.BackupInfo( repo_cate_id, 'frozen', QQNumber, '', '' )
+                        driver.get(
+                            "http://data.zunyun.net/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&IMEI=%s&cardslot=%s" % (
+                                repo_cate_id, "frozen", QQNumber, "", "") )
                         continue
 
-                        # try:
-                        #     obj = driver.find_element_by_id("p")
-                        #     text = obj.get_attribute("text")
-                        #
-                        #     driver.find_element_by_id("p").send_keys(QQPassword)
-                        #
-                        #     driver.find_element_by_id("go").click()
-                        #     try:
-                        #         driver.find_element_by_id("go")
-                        #         print u"%s  冻结" % QQNumber
-                        #         self.repo.BackupInfo(repo_cate_id, 'frozen', QQNumber, '', '')
-                        #         driver.get(
-                        #             "http://data.zunyun.net/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&IMEI=%s&cardslot=%s" % (
-                        #                 repo_cate_id, "frozen", QQNumber, "", ""))
-                        #     except:
-                        #         pass
-                        #         self.repo.BackupInfo(repo_cate_id, 'frozen', QQNumber, '', '')
-                        # except:
-                        #     pass
-                    # try:
-                    #     obj = driver.find_element_by_class_name("content")
-                    # except:
-                    #     time.sleep(2)
+                    try:
+                        obj = driver.find_element_by_class_name( "content" )
+                    except:
+                        time.sleep( 2 )
                     # self.ipChange.ooo()
                     # self.ipChange.ooo()
-                    time.sleep(5)
+                    time.sleep( 5 )
+
                     continue
+                try:
+                    driver.find_element_by_link_text("标准版").click()
+                except:
+                    print "没有标准版"
 
                 driver.save_screenshot("4.png")
                 url = driver.current_url.encode("utf-8")
-                continue
-                driver.find_element_by_xpath("//span[@class='qm_icon qm_icon_Compose']").click()
-                time.sleep(3)
-                while driver.current_url == url:
-                    time.sleep(2)
-                    print "mei jin qu"
-                    try:
-                        driver.find_element_by_class_name("qm_btnIcon").click()
-                    except:
-                        pass
+
+                try:
+                    driver.find_element_by_xpath("//*[@id='composebtn']").click()
+                except:
+                    print "没找到写信按钮"
+                    continue
 
                 tourl = driver.current_url.encode("utf-8")
                 flag = True
@@ -253,7 +229,7 @@ class PC_EmailInternet:
                     emailnumber = emailnumbers[0]['number']
 
                     try:
-                        emailnumberObj = driver.find_element_by_id("showto")
+                        emailnumberObj = driver.find_element_by_xpath( '//*[@id="toAreaCtrl"]')
                     except:
                         try:
                             emailnumberObj = driver.find_element_by_id("to")
@@ -292,9 +268,10 @@ class PC_EmailInternet:
 
 
                     if selectContent1 == "只发主题":
-                        driver.find_element_by_id("subject").send_keys(message)
+                        subject = driver.find_elements_by_xpath('//*[@id="subject"]')
+                        subject.send_keys( message )
                     if selectContent2 == "只发内容":
-                        driver.find_element_by_id("content").send_keys(message2)
+                        driver.find_element_by_xpath("content").send_keys(message2)
                     time.sleep(3)
                     try:
                         # windows

@@ -37,46 +37,82 @@ class EmailInternet:
         uniqueNum = str(nowTime) + str(randomNum)
         return uniqueNum
 
-    def sendProcess(self, args):
+    def getArgs(self):
+        asdlFile = open( r"/home/zunyun/text/asdl.txt", "r" )
+        # asdlFile = open( r"c:\asdl.txt", "r" )
+        asdlList = asdlFile.readlines( )
+        while True:
+            if len( asdlList ) > 2:
+                specifiedTaskId = int( asdlList[2] )
+                taskList = self.repo.GetSpecifiedPhantomJSTask( specifiedTaskId, "phantomjs_task" )
+            else:
+                taskList = self.repo.GetPhantomJSTaskInfo( "phantomjs_param" )
+                if len( taskList ) == 0:
+                    print u"检查是否有任务可运行"
+                    time.sleep( 30 )
+                    continue
+
+            task = taskList[random.randint( 0, len( taskList ) ) - 1]
+            phonenumber = task["phonenumber"]
+            cateId = task["cateId"]
+            repo_material_cateId = task["x01"]
+            repo_material_cateId2 = task["x02"]
+            repo_number_cate_id = task["x03"]
+            user_agent_id = task["x07"]
+            repo_cate_id = task["x08"]
+
+            while True:
+                paramList = self.repo.GetPhantomJSParamInfo( "phantomjs_param" )
+                if len( paramList ) == 0:
+                    time.sleep( 30 )
+                    continue
+                else:
+                    break
+
+            param = paramList[random.randint( 0, len( paramList ) ) - 1]
+            time_delay = param["x01"]
+            sendTime = param["x02"]
+            emailType = param["x03"]
+            sleepTime = param["x04"]
+
+            args = {"time_delay": time_delay, "sendTime": sendTime, "repo_cate_id": repo_cate_id,
+                    "repo_number_cate_id": repo_number_cate_id, "repo_material_cateId": repo_material_cateId,
+                    "repo_material_cateId2": repo_material_cateId2, "emailType": emailType,
+                    "user_agent_id": user_agent_id,"phonenumber":phonenumber,"cateId":cateId,"sleepTime":sleepTime}  # cate_id是仓库号，length是数量
+            return args
+
+    def sendProcess(self):
         try:
-            emailType = args["emailType"]
-            repo_material_cateId2 = args["repo_material_cateId2"]
-            repo_material_cateId = args["repo_material_cateId"]
-            user_agent_id = args["user_agent_id"]
-            repo_cate_id = args["repo_cate_id"]
-            repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
-            cap = webdriver.DesiredCapabilities.PHANTOMJS
-            cap["phantomjs.page.settings.resourceTimeout"] = 1000
-            cap["phantomjs.page.settings.loadImages"] = False
-            cap["phantomjs.page.settings.disk-cache"] = True
-            driver = None
-
-            sendTime = args["sendTime"].split("-")
-            try:
-                sendTimeStart = int(sendTime[0])
-                sendTimeEnd = int(sendTime[1])
-            except:
-                print  u"发送时间间隔的参数格式有误"
-                sendTimeStart = 3
-                sendTimeEnd = 5
-
-            time_delay = args["time_delay"].split("-")
-            try:
-                time_delayStart = int(time_delay[0])
-                time_delayEnd = int(time_delay[1])
-            except:
-                print  u"参数格式有误"
-                time_delayStart = 3
-                time_delayEnd = 5
+            # cap = webdriver.DesiredCapabilities.PHANTOMJS
+            # cap["phantomjs.page.settings.resourceTimeout"] = 1000
+            # cap["phantomjs.page.settings.loadImages"] = False
+            # cap["phantomjs.page.settings.disk-cache"] = True
 
             count = 0
             changeCount = 0
             while True:
+                args = self.getArgs()
+                user_agent_id = args["user_agent_id"]
+                repo_cate_id = args["repo_cate_id"]
+                repo_number_cate_id = int( args["repo_number_cate_id"] )  # 得到取号码的仓库号
+                time_delay = args["time_delay"].split( "-" )
+                try:
+                    time_delayStart = int( time_delay[0] )
+                    time_delayEnd = int( time_delay[1] )
+                except:
+                    print  u"参数格式有误"
+                    time_delayStart = 3
+                    time_delayEnd = 5
                 changeCount = changeCount + 1
-                numbers = self.repo.GetAccount(repo_cate_id, 20, 1)
+                numbers = self.repo.GetAccount("normal",repo_cate_id, 20, 1)
                 if len(numbers) == 0:
                     print u"%s号仓库没有数据" % repo_cate_id
                     time.sleep(300)
+                    try:
+                        driver.close( )
+                        driver.quit( )
+                    except:
+                        pass
                     return
                 QQNumber = numbers[0]['number']  # 即将登陆的QQ号
                 QQPassword = numbers[0]['password']
@@ -85,6 +121,11 @@ class EmailInternet:
                     user_agentList = self.repo.GetMaterial(user_agent_id, 0, 1)
                     if len(user_agentList) == 0:
                         # print "%s号仓库为空，没有取到消息"%repo_material_cateId
+                        try:
+                            driver.close( )
+                            driver.quit( )
+                        except:
+                            pass
                         return
                     user_agent = user_agentList[0]['content']
                 print user_agent
@@ -94,17 +135,31 @@ class EmailInternet:
                     # print u'close02'
                 except:
                     pass
-                # user_agent = "Mozilla/5.0(Linux;U;Android2.3.7;en-us;NexusOneBuild/FRF91)AppleWebKit/533.1(KHTML,likeGecko)Version/4.0MobileSafari/533.1"
+                # user_agent = "Mozilla/5.0(hp-tablet;Linux;hpwOS/3.0.0;U;en-US)AppleWebKit/534.6(KHTML,likeGecko)wOSBrowser/233.70Safari/534.6TouchPad/1.0"
                 # user_agent = "Mozilla/5.0(compatible;MSIE9.0;WindowsNT6.1;Trident/5.0;"
-                cap["phantomjs.page.settings.userAgent"] = user_agent
-                cap["phantomjs.page.customHeaders.User-Agent"] = user_agent
-                driver = webdriver.PhantomJS( desired_capabilities=cap,
-                                              executable_path=r"/usr/local/phantomjs/bin/phantomjs" )
+                # cap["phantomjs.page.settings.userAgent"] = user_agent
+                # cap["phantomjs.page.customHeaders.User-Agent"] = user_agent
+                # driver = webdriver.PhantomJS( desired_capabilities=cap,
+                #                               executable_path=r"/usr/local/phantomjs/bin/phantomjs" )
+                user_agent = "Mozilla/5.0(BlackBerry;U;BlackBerry9800;en)AppleWebKit/534.1+(KHTML,likeGecko)Version/6.0.0.337MobileSafari/534.1+"
+                options = webdriver.ChromeOptions( )
+                options.add_argument( 'disable-infobars' )
+                options.add_argument( 'lang=zh_CN.UTF-8' )
+                # options.add_argument( 'headless' )
+                # 更换头部
+                # options.add_argument(user_agent)
+                options.add_argument( 'user-agent="%s' % user_agent )
+                driver = webdriver.Chrome( chrome_options=options, executable_path="/opt/google/chrome/chromedriver" )
 
                 emailnumbers = self.repo.GetNumber(repo_number_cate_id, 0, 1)  # 取出add_count条两小时内没有用过的号码
                 if len(emailnumbers) == 0:
                     print u"%s号仓库没有数据" % repo_number_cate_id
                     time.sleep(300)
+                    try:
+                        driver.close( )
+                        driver.quit( )
+                    except:
+                        pass
                     return
                 emailnumber = emailnumbers[0]['number']
                 driver.get(
@@ -158,23 +213,21 @@ class EmailInternet:
                     # driver.save_screenshot("SSS.png")
                 except:
                     print u"%s  登陆失败" % QQNumber
-
+                    driver.save_screenshot("002.png")
                     time.sleep(2)
                     # 登陆出现异常状况
                     errorPage = driver.page_source.encode("utf-8")
+
                     if "拖动下方滑块完成拼图" in errorPage:
                         print u"%s  拖动下方滑块完成拼图" % QQNumber
-                        continue
-                    if "帐号或密码不正确" in errorPage:
+                    elif "帐号或密码不正确" in errorPage:
                         print u"%s  帐号或密码不正确" % QQNumber
-                        continue
-                    if "冻结" in errorPage:
+                    elif "冻结" in errorPage:
                         print u"%s  冻结" % QQNumber
                         self.repo.BackupInfo(repo_cate_id, 'frozen', QQNumber, '', '')
                         driver.get(
                             "http://data.zunyun.net/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&IMEI=%s&cardslot=%s" % (
                                 repo_cate_id, "frozen", QQNumber, "", ""))
-                        continue
 
                         # try:
                         #     obj = driver.find_element_by_id("p")
@@ -199,6 +252,11 @@ class EmailInternet:
                         obj = driver.find_element_by_class_name("content")
                     except:
                         time.sleep(2)
+                    try:
+                        driver.close( )
+                        driver.quit( )
+                    except:
+                        pass
                     # self.ipChange.ooo()
                     # self.ipChange.ooo()
                     time.sleep(5)
@@ -219,11 +277,29 @@ class EmailInternet:
                 tourl = driver.current_url.encode("utf-8")
                 flag = True
                 while flag:
+                    args = self.getArgs()
+                    emailType = args["emailType"]
+                    repo_material_cateId2 = args["repo_material_cateId2"]
+                    repo_material_cateId = args["repo_material_cateId"]
                     repo_number_cate_id = int(args["repo_number_cate_id"])  # 得到取号码的仓库号
+                    sendTime = args["sendTime"].split( "-" )
+                    try:
+                        sendTimeStart = int( sendTime[0] )
+                        sendTimeEnd = int( sendTime[1] )
+                    except:
+                        print  u"发送时间间隔的参数格式有误"
+                        sendTimeStart = 3
+                        sendTimeEnd = 5
                     emailnumbers = self.repo.GetNumber(repo_number_cate_id, 0, 1)  # 取出add_count条两小时内没有用过的号码
+                    bccnumbers = self.repo.GetNumber( repo_number_cate_id, 0, 1 )
                     if len(emailnumbers) == 0:
                         print u"%s号仓库没有数据" % repo_number_cate_id
                         # print u'close08'
+                        try:
+                            driver.close( )
+                            driver.quit( )
+                        except:
+                            pass
                         return
                     if repo_material_cateId == "" or repo_material_cateId is None:
                         selectContent1 = ""
@@ -233,6 +309,11 @@ class EmailInternet:
                         if len(Material) == 0:
                             print u"%s  号仓库为空，没有取到消息" % repo_material_cateId
                             # print u'close09'
+                            try:
+                                driver.close( )
+                                driver.quit( )
+                            except:
+                                pass
                             return
                         message = Material[0]['content']
                     if repo_material_cateId2 == "" or repo_material_cateId2 is None:
@@ -242,11 +323,24 @@ class EmailInternet:
                         Material2 = self.repo.GetMaterial(repo_material_cateId2, 0, 1)
                         if len(Material2) == 0:
                             print u"%s号仓库为空，没有取到消息" % repo_material_cateId
+                            try:
+                                driver.close( )
+                                driver.quit( )
+                            except:
+                                pass
                             return
                         message2 = Material2[0]['content']
 
-                    emailnumber = emailnumbers[0]['number']
+                    time.sleep(2)
+                    try:
+                        obj = driver.find_element_by_xpath('//*[@id="attachUpload"]/a/input')
+                        obj.send_keys("/home/zunyun/text/images/55555.jpg")
+                    except:
+                        pass
 
+
+                    emailnumber = emailnumbers[0]['number']
+                    bccnumber = bccnumbers[0]['number']
                     try:
                         emailnumberObj = driver.find_element_by_id("showto")
                     except:
@@ -267,6 +361,11 @@ class EmailInternet:
                             # self.ipChange.ooo()
                             # self.ipChange.ooo()
                             time.sleep(3)
+                            try:
+                                driver.close( )
+                                driver.quit( )
+                            except:
+                                pass
                             return "false"
 
                     if "@" not in emailnumber:
@@ -285,6 +384,32 @@ class EmailInternet:
                     else:
                         emailnumberObj.send_keys(emailnumber)
 
+                    #密送
+                    try:
+                        driver.find_element_by_xpath( '//*[@id="more"]/div/a' ).click( )
+                    except:
+                        driver.find_element_by_xpath('//*[@id="composeMain"]/div/div/div[2]/div/a').click()
+                    time.sleep( 1 )
+                    try:
+                        bccnumberObj = driver.find_element_by_xpath( '//*[@id="showbcc"]' )
+                    except:
+                        bccnumberObj = driver.find_element_by_xpath( '//*[@id="bcc"]' )
+
+                    if "@" not in bccnumber:
+                        if emailType == "QQ邮箱":
+                            bccnumberObj.send_keys(bccnumber + "@qq.com")
+                        elif emailType == "189邮箱":
+                            bccnumberObj.send_keys(bccnumber + "@189.cn")
+                        elif emailType == "139邮箱":
+                            bccnumberObj.send_keys(bccnumber + "@139.com")
+                        elif emailType == "163邮箱":
+                            bccnumberObj.send_keys(bccnumber + "@163.com")
+                        elif emailType == "wo邮箱":
+                            bccnumberObj.send_keys(bccnumber + "@wo.cn")
+                        else:
+                            bccnumberObj.send_keys(bccnumber + "@qq.com")
+                    else:
+                        bccnumberObj.send_keys(bccnumber)
 
                     if selectContent1 == "只发主题":
                         driver.find_element_by_id("subject").send_keys(message)
@@ -343,8 +468,7 @@ class EmailInternet:
                             driver.delete_all_cookies()
                             print u"您的域名邮箱账号存在异常行为"
                             self.repo.BackupInfo(repo_cate_id, 'frozen', QQNumber, '', '')
-                            driver.get(
-                                "http://data.zunyun.net/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&IMEI=%s&cardslot=%s" % (
+                            driver.get("http://data.zunyun.net/repo_api/account/statusInfo?cate_id=%s&status=%s&Number=%s&IMEI=%s&cardslot=%s" % (
                                 repo_cate_id, "exception", QQNumber, "", ""))
                         elif "您的帐号存在安全隐患" in page_source:
                             driver.delete_all_cookies()
@@ -378,18 +502,23 @@ class EmailInternet:
                             pass
                     else:
                         pass
+
                 if not flag:
                     if changeCount >= 5:
                         # self.ipChange.ooo()
                         # self.ipChange.ooo()
                         time.sleep(3)
                         changeCount = 0
-                    continue
                 driver.get(url)
                 time.sleep(2)
                 try:
                     driver.find_element_by_link_text("退出").click()
                     time.sleep(2)
+                    try:
+                        driver.close( )
+                        driver.quit( )
+                    except:
+                        pass
                     driver.delete_all_cookies()
                     if changeCount >= 5:
                         # self.ipChange.ooo()
@@ -397,10 +526,21 @@ class EmailInternet:
                         time.sleep(3)
                         changeCount = 0
                 except:
+                    try:
+                        driver.close( )
+                        driver.quit( )
+                    except:
+                        pass
                     print "error"
         except:
+            logging.exception("dds")
             command = 'taskkill /F /IM phantomjs.exe'
             os.system(command)
+            try:
+                driver.close( )
+                driver.quit( )
+            except:
+                pass
             # result = [driver]
             return []
 
@@ -413,64 +553,24 @@ class EmailInternet:
         #     self.ipChange.ooo()
         #     time.sleep(5)
 
-        asdlFile = open( r"/home/zunyun/text/asdl.txt", "r" )
-        asdlList = asdlFile.readlines()
-        while True:
-            if len(asdlList) > 2:
-                specifiedTaskId = int( asdlList[2] )
-                taskList = self.repo.GetSpecifiedPhantomJSTask(specifiedTaskId)
-            else:
-                taskList = self.repo.GetPhantomJSTaskInfo()
-                if len(taskList) == 0:
-                    print u"检查是否有任务可运行"
-                    time.sleep(30)
-                    continue
-
-            task = taskList[random.randint(0, len(taskList)) - 1]
-            phonenumber = task["phonenumber"]
-            cateId = task["cateId"]
-            repo_material_cateId = task["x01"]
-            repo_material_cateId2 = task["x02"]
-            repo_number_cate_id = task["x03"]
-            user_agent_id = task["x07"]
-            repo_cate_id = task["x08"]
-
-            while True:
-                paramList = self.repo.GetPhantomJSParamInfo()
-                if len(paramList) == 0:
-                    time.sleep(30)
-                    continue
-                else:
-                    break
-
-            param = paramList[random.randint(0, len(paramList)) - 1]
-            time_delay = param["x01"]
-            sendTime = param["x02"]
-            emailType = param["x03"]
-
-            args = {"time_delay": time_delay, "sendTime": sendTime, "repo_cate_id": repo_cate_id,
-                    "repo_number_cate_id": repo_number_cate_id, "repo_material_cateId": repo_material_cateId,
-                    "repo_material_cateId2": repo_material_cateId2, "emailType": emailType,
-                    "user_agent_id": user_agent_id}  # cate_id是仓库号，length是数量
-
-            x = self.sendProcess(args)
-            if x == "false":
-                sta = "normal"
-            elif type(x) == list:
-                # print "xxx"
-                # d = x[0]
-                # try:
-                #     d.close()
-                #     d.quit()
-                #     # print u'close14'
-                # except:
-                #     pass
-                sta = "normal"
-            else:
-                sta = "stopped"
-
-            para = {"phoneNumber": phonenumber, "x_04": sta}
-            self.repo.PostInformation(cateId, para)
+        x = self.sendProcess( )
+        if x == "false":
+            sta = "normal"
+        elif type( x ) == list:
+            # d = x[0]
+            # try:
+            #     d.close()
+            #     d.quit()
+            # except:
+            #     pass
+            sta = "normal"
+        else:
+            sta = "stopped"
+        args = self.getArgs( )
+        phonenumber = args["phonenumber"]
+        cateId = args["cateId"]
+        para = {"phoneNumber": phonenumber, "x_04": sta}
+        self.repo.PostInformation( cateId, para )
 
 
 
@@ -484,9 +584,18 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
+
     # time.sleep(150)
-    o.action()
+    # while True:
+    #     try:
+    #         o.action()
+    #     except Exception,e:
+    #         print e
 
+    Material2 = Repo().GetMaterial( "362", 0, 1 )
+    if len( Material2 ) == 0:
+        print u"%s号仓库为空，没有取到消息" % "362"
+    message2 = Material2[0]['content']
 
-
+    print message2.encode("GB18030")
 

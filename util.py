@@ -15,7 +15,6 @@ def exccmd(cmd):
     except Exception:
         return None
 
-
 # 线程函数
 class FuncThread(threading.Thread):
     def __init__(self, func, *params, **paramMap):
