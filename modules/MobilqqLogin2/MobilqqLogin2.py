@@ -296,8 +296,8 @@ if __name__ == "__main__":
     o = clazz()
 
 
-    d = Device("9ef40375")
-    z = ZDevice("9ef40375")
-    args = {"repo_cate_id":"203","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    d = Device("25424f9")
+    z = ZDevice("25424f9")
+    args = {"repo_cate_id":"331","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

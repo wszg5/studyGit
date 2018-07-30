@@ -72,16 +72,16 @@ class client_xunma:
             return None
             # raise 'XunMa has tried 3 minutes'
         token = self.GetToken()
-        key = 'phone_%s_%s' % (token, itemId)
-        phone = cache.popSet(key)
-        if phone:
-            return phone
+        # key = 'phone_%s_%s' % (token, itemId)
+        # phone = cache.popSet(key)
+        # if phone:
+        #     return phone
 
-        count = 1;
+        count = 100
         itemcode = self.im_type_list[itemId]
         self.logger.info("itemcode_%s" % itemcode)
         self.logger.info("token_%s" % token)
-        path = "/getPhone?ItemId=%s&token=%s&Count=%s" % (itemcode, token, str(count))
+        path = "/getPhone?ItemId=%s&token=%s&Count=%s&PhoneType=%s" % (itemcode, token, str(count), 0)
         if phoneNum is not None:
             path = "%s&Phone=%s" % (path, phoneNum)
         try:
@@ -106,10 +106,11 @@ class client_xunma:
             if data.startswith('False'):
                 time.sleep(3)
             numbers = data.split(";");
-            for number in numbers:
-                if re.search("\d{11}", str(number)):
-                    cache.addSet(key, number)
-            return self.GetPhoneNumber(itemId, phoneNum,round)
+            return numbers
+            # for number in numbers:
+            #     if re.search("\d{11}", str(number)):
+            #         cache.addSet(key, number)
+            # return self.GetPhoneNumber(itemId, phoneNum,round)
         else:
             # data = response.read().decode('GBK')
             data = response.read( ).decode( 'UTF-8' )

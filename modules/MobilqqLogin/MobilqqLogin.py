@@ -31,7 +31,7 @@ class MobilqqLogin:
         return uniqueNum
 
     def WebViewBlankPages(self, d, z):
-        z.toast("判断是否是空白页")
+        z.toast("判断是否是滑块")
         Str = d.info  # 获取屏幕大小等信息
         height = float( Str["displayHeight"] )
         width = float( Str["displayWidth"] )
@@ -45,15 +45,15 @@ class MobilqqLogin:
         sourcePng = os.path.join( base_dir, "%s_s.png" % (self.GetUnique( )) )
 
         if screenScale == 0.56:
-            left = 60  # 验证码的位置信息
-            top = 500
-            right = 290
-            bottom = 600
+            left = 115  # 验证码的位置信息
+            top = 670
+            right = 185
+            bottom = 720
         if screenScale == 0.61:
-            left = 60  # 验证码的位置信息
-            top = 490
-            right = 210
-            bottom = 510
+            left = 115  # 验证码的位置信息
+            top = 670
+            right = 185
+            bottom = 720
 
         d.screenshot( sourcePng )  # 截取整个输入验证码时的屏幕
 
@@ -255,8 +255,8 @@ class MobilqqLogin:
                 return "nothing"
 
         if d(className='android.webkit.WebView').exists:
-            if self.WebViewBlankPages(d, z)[2] > 200:
-                self.WebViewPlayCode( d, z )
+            if self.WebViewBlankPages(d, z)[2] < 200:
+                self.WebViewPlayCode(d, z)
 
 
         z.sleep(5)
@@ -450,12 +450,15 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4AVSK01106")
-    z = ZDevice("HT4AVSK01106")
+    d = Device("465b4e4b")
+    z = ZDevice("465b4e4b")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id": "133", "time_limit": "2", "time_limit1": "120", "time_delay": "3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id": "331", "time_limit": "2", "time_limit1": "120", "time_delay": "3"};    #cate_id是仓库号，length是数量
     # z.server.install( )
-    o.action(d, z, args)
+    # o.action(d, z, args)
+    Repo().BackupInfo( '331', 'using', '2857017564', '',
+                          '%s_%s_%s' % (d.server.adb.device_serial( ), 'mobileqq', 1))  # 仓库号,使用中,QQ号,设备号_卡槽号
+    print 's'
 
 
     # serial = d.server.adb.device_serial( )

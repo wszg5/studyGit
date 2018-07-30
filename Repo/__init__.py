@@ -13,6 +13,7 @@ class Repo:
         self.domain = const.REPO_API_IP
         self.port = None
 
+        self.port = 8888
     def PostInformation(self, cateId, data):
         data["cateId"] = cateId
         path = "/repo_api/checkDeposit/checkDepositInfo"
@@ -52,8 +53,8 @@ class Repo:
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
         conn.request( "GET", path )
 
-    def GetAccount(self,status, cateId, interval, limit):
-        path = "/repo_api/account/pick?status=%s&cate_id=%s&interval=%s&limit=%s" % (status,cateId, interval, limit)
+    def GetAccount(self,cateId, interval, limit):
+        path = "/repo_api/account/pick?status=%s&cate_id=%s&interval=%s&limit=%s" % ("normal",cateId, interval, limit)
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
         conn.request( "GET", path )
         response = conn.getresponse( )
@@ -64,12 +65,17 @@ class Repo:
         else:
             return []
 
-    def GetMaterial(self, cateId, interval, limit, wid=''):  # wid是用来发微信朋友圈的
-        path = "/repo_api/material/pick?status=normal&cate_id=%s&interval=%s&limit=%s&wid=%s" % (
-        cateId, interval, limit, wid)
-        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
-        conn.request( "GET", path )
-        response = conn.getresponse( )
+    # def GetMaterial(self, cateId, interval, limit, wid=''):  # wid是用来发微信朋友圈的
+    #     path = "/repo_api/material/pick?status=normal&cate_id=%s&interval=%s&limit=%s&wid=%s" % (
+    #     cateId, interval, limit, wid)
+    #     conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+    #     conn.request( "GET", path )
+    #     response = conn.getresponse( )
+    def GetMaterial(self, cateId, interval, limit, wid=''):    #wid是用来发微信朋友圈的
+        path = "/repo_api/material/pick?status=normal&cate_id=%s&interval=%s&limit=%s&wid=%s" % (cateId,interval,limit,wid)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
+        response = conn.getresponse()
         if response.status == 200:
             data = response.read( )
             numbers = json.loads( data )
@@ -77,12 +83,17 @@ class Repo:
         else:
             return []
 
-    def GetNumber(self, cateId, interval, limit, status='normal', statusLock='YES', number=None, name=None):
-        path = "/repo_api/number/pick?status=%s&cate_id=%s&interval=%s&limit=%s&statusLock=%s&number=%s&name=%s" % (
-        status, cateId, interval, limit, statusLock, number, name)
-        conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
-        conn.request( "GET", path )
-        response = conn.getresponse( )
+    # def GetNumber(self, cateId, interval, limit, status='normal', statusLock='YES', number=None, name=None):
+    #     path = "/repo_api/number/pick?status=%s&cate_id=%s&interval=%s&limit=%s&statusLock=%s&number=%s&name=%s" % (
+    #     status, cateId, interval, limit, statusLock, number, name)
+    #     conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+    #     conn.request( "GET", path )
+    #     response = conn.getresponse( )
+    def GetNumber(self, cateId, interval, limit, status='normal',statusLock = 'YES',number = None,name=None):
+        path = "/repo_api/number/pick?status=%s&cate_id=%s&interval=%s&limit=%s&statusLock=%s&number=%s&name=%s" % (status, cateId, interval, limit, statusLock, number, name)
+        conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)
+        conn.request("GET", path)
+        response = conn.getresponse()
         if response.status == 200:
             data = response.read( )
             numbers = json.loads( data )

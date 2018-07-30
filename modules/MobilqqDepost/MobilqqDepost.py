@@ -1,4 +1,6 @@
 # coding:utf-8
+
+
 from smsCode import smsCode
 from uiautomator import Device
 from Repo import *
@@ -38,6 +40,13 @@ class MobilqqDepost:
             z.heartbeat()
             d(text='完成', resourceId='com.tencent.mobileqq:id/name').click()
             z.sleep(5)
+            if d(text='确定').exists:
+                d(text='确定').click()
+
+            while d(text='允许').exists:
+                d(text='允许').click()
+                z.sleep(5)
+
             if d(textContains='没有可匹配的').exists:
                 return 'false'
 
@@ -67,90 +76,96 @@ class MobilqqDepost:
         d(description='快捷入口').click()
         d(textContains='加好友').click()
         d(text='添加手机联系人').click()
+
         z.sleep(3)
         if d(resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText',index=2).exists:  # 检查到尚未 启用通讯录
             if d(text=' +null', resourceId='com.tencent.mobileqq:id/name').exists:
                 d(text=' +null', resourceId='com.tencent.mobileqq:id/name').click()
-                d(text='中国', resourceId='com.tencent.mobileqq:id/name').click()
+                d(text='中国大陆', resourceId='com.tencent.mobileqq:id/name').click()
             z.heartbeat()
             text = self.Bind(d,z)  # 未开启通讯录的，现绑定通讯录
             z.heartbeat()
             if text == 'false':  # 操作过于频繁的情况
                 return
-            z.sleep(7)
+            z.sleep(int(args['time_delay1']))
+
         z.heartbeat()
         if d(textContains='没有可匹配的').exists:
             return
         if d(text='匹配手机通讯录', resourceId='com.tencent.mobileqq:id/name').exists:
             d(text='匹配手机通讯录', resourceId='com.tencent.mobileqq:id/name').click()
             z.sleep(10)
+
+        nickArr = []
+        judge = 0
+        g = 8
         while True:
-            if d(text='#').exists:
+            for i in range(0, g):
                 z.heartbeat()
-                for m in range(0,12,+1):     #快速加好友从#号下面的
-                    obj = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',
-                                                                          index=m).child(className='android.widget.TextView')
-                    if not obj.exists:
-                        continue
-                    else:
-                        obj = obj.info
-                    if obj['text']=='#':
-                        break
-                    else:
-                        m = m+1
-                        continue
-
-                break
-            else:         #当前页没有找到＃时滑页
-                d.swipe(width / 2, height * 4 / 5, width / 2, height / 5)
-        z.heartbeat()
-        cate_id = args['repo_number_id']
-        set1 = set()
-        i = m+1
-        t = 0
-        bbb = 0
-
-        while True :
-            obj = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=i)  #滑动的条件判断第i个人是否存在
-            if obj.exists:
-                z.heartbeat()
-                obj1 = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout', index=i)\
-                    .child(className='android.widget.LinearLayout').child(className='android.widget.TextView',textStartsWith='1')     #第i个内容存在并且是人的情况
-                if obj1.exists:
-                    obj1 = obj1.info
-                    phone = obj1['text']
-                    if phone in set1:
-                        i = i+1
+                obj = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout', index=i).child(
+                    className='android.widget.RelativeLayout', index=0).child(className='android.widget.LinearLayout', index=1).child(
+                    resourceId='com.tencent.mobileqq:id/nickname')  #滑动的条件判断第i个人是否存在
+                if obj.exists:
+                    z.heartbeat()
+                    nick = obj.info['text']
+                    if nick in nickArr:
                         continue
                     else:
                         z.heartbeat()
-                        set1.add(phone)
-                        self.repo.uploadPhoneNumber(phone,cate_id)
-                        time.sleep(0.2)
-                        bbb = bbb+1
-                        print(bbb)
-                        print(phone)
-                else:
-                    i = i+1
-                    continue
-            else:
-                d.swipe(width / 2, height * 6 / 7, width / 2, height / 7)
-                z.sleep(2)
-                obj2 = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout', index=i-1) \
-                    .child(className='android.widget.LinearLayout').child(
-                    className='android.widget.TextView',textStartsWith='1')  # 结束条件
-                if obj2.exists:
-                    obj2 = obj2.info
-                else:
-                    obj2 = d(className='android.widget.AbsListView').child(className='android.widget.LinearLayout',index=i - 2) \
-                        .child(className='android.widget.LinearLayout').child(
-                        className='android.widget.TextView',textStartsWith='1').info  # 结束条件
-                EndPhone = obj2['text']
-                if EndPhone in set1:
-                    break
+                        nickArr.append(nick)
+                        obj.click()
 
-                i = 1
-                continue
+                        note = ''
+                        nick = ''
+                        gender = ''
+                        age = ''
+                        area = ''
+                        number = ''
+
+                        noteObj = d(resourceId='com.tencent.mobileqq:id/common_xlistview').child(className='android.widget.LinearLayout', index=0).child(
+                            className='android.widget.LinearLayout', index=6).child(className='android.widget.TextView', resourceId='com.tencent.mobileqq:id/name', index=0
+                                                                                    )
+                        if noteObj.exists:
+                            note = noteObj.info['text']
+
+                        infoObj = d(resourceId='com.tencent.mobileqq:id/common_xlistview').child(className='android.widget.LinearLayout', index=1).child(
+                            className='android.widget.LinearLayout', resourceId='com.tencent.mobileqq:id/name').child(className='android.widget.LinearLayout', index=0)
+
+                        if infoObj.exists:
+                            nick = infoObj.child(className='android.widget.LinearLayout', index=0).child(resourceId='com.tencent.mobileqq:id/info').info['text']
+
+                            numberObj = infoObj.child(className='android.widget.LinearLayout', index=2).child(resourceId='com.tencent.mobileqq:id/info')
+                            infoStr = infoObj.child(className='android.widget.LinearLayout', index=1).child(resourceId='com.tencent.mobileqq:id/info')
+                            if numberObj.exists:
+                                infoArr = infoStr.info['text'].split("  ")
+                                gender = infoArr[0]
+                                if len(infoArr) == 2:
+                                    age = infoArr[1]
+                                if len(infoArr) == 3:
+                                    age = infoArr[1]
+                                    area = infoArr[2]
+
+                                number = numberObj.info['text'][3:len(numberObj.info['text'])]
+                            else:
+                                number = infoStr.info['text'][3:len(infoStr.info['text'])]
+
+                        para = {"phoneNumber": number, 'x_01': gender, 'x_02': age, 'x_03': area, 'x_04': nick, 'x_05': note}
+                        self.repo.PostInformation(args['repo_cate_id'], para)
+
+                        if d(resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').exists:
+                            d(resourceId='com.tencent.mobileqq:id/ivTitleBtnLeft').click()
+
+                        time.sleep(1)
+                        z.heartbeat()
+
+            if len(nickArr) > judge:
+                judge = len(nickArr)
+                d.swipe(width / 2, height * 5 / 6, width / 2, height / 6)
+            else:
+                if g == 8:
+                    g = 12
+                else:
+                    break
 
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
@@ -164,12 +179,14 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A4SK00901")
-    z = ZDevice("HT4A4SK00901")
-    z.server.install()
+    d = Device("465b4e4b")
+    z = ZDevice("465b4e4b")
+    # z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
 
-    args = {"repo_number_id": "106","time_delay": "3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id": "349", "time_delay1": "1", "time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
 
+
+    pass

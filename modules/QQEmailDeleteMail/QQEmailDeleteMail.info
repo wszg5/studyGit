@@ -1,0 +1,27 @@
+{
+"id": "QQEmailDeleteMail",
+"cate":"其他模块",
+"name":"QQ邮箱删除邮件",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQEmailDeleteMail",
+"icon":"vcard-o",
+"remark":"QQ邮箱发消息",
+"setting":[
+	{
+	"id": "mailType",
+	"name":"删除的邮件信箱",
+	"type":"select",
+	"list":{"只删收件箱":"只删收件箱","删除所有":"删除所有"},
+	"defaultValue":"删除所有",
+	"remark":"删除所有"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

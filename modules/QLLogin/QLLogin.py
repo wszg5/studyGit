@@ -319,10 +319,9 @@ class QLLogin:
 
 
     def action(self,d,z,args):
+
         z.generate_serial("com.tencent.qqlite")  # 随机生成手机特征码
         z.toast("随机生成手机特征码")
-
-
 
         time_limit = int( args['time_limit'] )
         cate_id = args["repo_cate_id"]
@@ -446,8 +445,8 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT524SK00685")
-    z = ZDevice("HT524SK00685")
+    d = Device("465b4e4b")
+    z = ZDevice("465b4e4b")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "228", "time_limit": "0", "time_limit1": "120","time_delay": "3"};  # cate_id是仓库号，length是数量

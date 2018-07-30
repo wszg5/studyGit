@@ -5,6 +5,7 @@ import colorsys
 
 import logging
 import re
+# from ctypes import windll, c_char_p
 
 from PIL import Image
 
@@ -357,4 +358,16 @@ if __name__ == "__main__":
 
     args = {"time_delay":"3","set_timeStart":"1","set_timeEnd":"1","startTime":"0","endTime":"8",
             "repo_number_cate_id":"119","repo_material_cate_id":"39",'gender':"不限","add_count":"5","switch_card":"N","switch":"是"}    #cate_id是仓库号，length是数量
+
     o.action( d, z, args )
+    # with open(r'/home/zunyun/wz/pic/test.jpg',"rb") as f:
+    #     data = f.read()
+    # dll = windll.LoadLibrary( 'OCR163.dll' )
+    # time.sleep( 3 )
+    # ret = dll.OCR( data, len( data ) )
+    # time.sleep( 3 )
+    # ocrVal = c_char_p( ret )
+    # time.sleep( 2 )
+    # ocrCode = str( ocrVal.value )
+    # print(ocrCode)
+

@@ -220,7 +220,6 @@ class QQSafetyCenter:
                 d(text='开启安全之旅').click()
 
             return QQNumber
-                return QQNumber
 
             if d(textContains='绑定QQ失败').exists:
                 return "again"
@@ -327,16 +326,11 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("465b4e4b")
+    z = ZDevice("465b4e4b")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").communicate()    #打开android设置页面
     args = {"repo_cate_id": "218","time_limit":"120", "time_limit_slot":"2", "time_delay": "1"};
-    d = Device("c0e5994f")
-    z = ZDevice("c0e5994f")
-    d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    # d.server.adb.cmd("shell", "am start -a android.intent.action.MAIN -n com.android.settings/.Settings").communicate()    #打开android设置页面
-    args = {"repo_cate_id": "261","time_limit":"120", "time_limit_slot":"2", "time_delay": "3"};
     o.action(d, z, args)
     # repo = Repo()
     # cate_id = args["repo_cate_id"]

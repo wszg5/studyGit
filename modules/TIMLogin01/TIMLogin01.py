@@ -408,15 +408,15 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT54VSK01061")
-    z = ZDevice("HT54VSK01061")
+    d = Device("25424f9")
+    z = ZDevice("25424f9")
 
     # slot = slot('tim')
 
     # slot.restore(d, 1)  # 有２小时没用过的卡槽情况，切换卡槽
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id":"64","time_limit":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"331","time_limit":"120","time_limit1":"120","time_delay":"3"};    #cate_id是仓库号，length是数量
     # util.doInThread(runwatch, d, 0, t_setDaemon=True)
 
     o.action(d,z, args)

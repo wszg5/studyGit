@@ -22,7 +22,6 @@ class Field(object):
         return '<%s:%s>' % (self.__class__.__name__, self.name)
 
 class StringField(Field):
-
     def __init__(self, name):
         super(StringField, self).__init__(name, 'varchar(100)')
 
@@ -75,6 +74,7 @@ class Model(dict):
         print('SQL: %s' % sql)
         print('ARGS: %s' % str(args))
 
+
 class User(Model):
     # 定义类的属性到列的映射：
     id = IntegerField('id')
@@ -85,4 +85,5 @@ class User(Model):
 # 创建一个实例：
 u = User(id=12345, name='Michael', email='test@orm.org', password='my-pwd')
 # 保存到数据库：
+
 u.save()

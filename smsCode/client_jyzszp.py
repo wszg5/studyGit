@@ -59,7 +59,7 @@ class client_jyzszp:
         except Exception:
             ok = 'ok'
 
-    def GetPhoneNumber(self, itemId, phoneNum=None, times=0):
+    def GetPhoneNumber(self, itemId, phoneNum=None, times=0,):
         round = times + 1
         if round > 30:
             raise 'jyzszp has tried 3 minutes'

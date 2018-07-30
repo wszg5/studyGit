@@ -230,7 +230,7 @@ class WXImpContactAddFriend:
                             lenth = len( deltext )
                             m = 0
                             while m < lenth:
-                                d.press.delete( )
+                                d.press.delete()
                                 m = m + 1
                             z.input( SJZL1 )
                         if SJZL[0] == SJZL[1]:

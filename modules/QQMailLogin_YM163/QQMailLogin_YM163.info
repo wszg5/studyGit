@@ -1,0 +1,33 @@
+{
+"id": "QQMailLogin_YM163",
+"cate":"其他模块",
+"name":"QQ网易域名邮箱登录",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"QQ-Mail-ym163",
+"icon":"vcard-o",
+"remark":"QQ网易域名邮箱登录（邮箱版本5.2）",
+"setting":[
+{
+"id": "repo_account_id",
+"name":"提取帐号库",
+"type":"repo",
+"source":"account",
+"top_cate_id":"1"
+},
+{
+"id": "repo_name_cateId",
+"name":"昵称仓库",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
+{
+"id": "account_time_limit",
+"name":"账号提取间隔",
+"type":"textbox",
+"defaultValue":"120",
+"remark":"单位：分钟；"
+}
+]
+}

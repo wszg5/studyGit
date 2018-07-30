@@ -87,23 +87,23 @@ class TIMAddFriendByShareCard:
         z.toast( "准备执行TIM唤醒名片加好友模块" )
         z.sleep(1)
         z.heartbeat( )
-        z.toast( "正在ping网络是否通畅" )
-        z.heartbeat( )
-        i = 0
-        while i < 200:
-            i += 1
-            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
-            print( ping )
-            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-                z.toast( "网络通畅。开始执行：TIM加好友(唤醒名片)" )
-                break
-            z.sleep( 2 )
-        if i > 200:
-            z.toast( "网络不通，请检查网络状态" )
-            if (args["time_delay"]):
-                z.sleep( int( args["time_delay"] ) )
-            return
-        self.scode = smsCode( d.server.adb.device_serial( ) )
+        # z.toast( "正在ping网络是否通畅" )
+        # z.heartbeat( )
+        # i = 0
+        # while i < 200:
+        #     i += 1
+        #     ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
+        #     print( ping )
+        #     if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+        #         z.toast( "网络通畅。开始执行：TIM加好友(唤醒名片)" )
+        #         break
+        #     z.sleep( 2 )
+        # if i > 200:
+        #     z.toast( "网络不通，请检查网络状态" )
+        #     if (args["time_delay"]):
+        #         z.sleep( int( args["time_delay"] ) )
+        #     return
+        # self.scode = smsCode( d.server.adb.device_serial( ) )
         z.heartbeat( )
         d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止
         d.server.adb.cmd( "shell",
@@ -112,9 +112,9 @@ class TIMAddFriendByShareCard:
         z.heartbeat( )
 
         if d( text='消息' ).exists:  # 到了通讯录这步后看号有没有被冻结
-            z.toast( "卡槽TIM状态正常，继续执行" )
+            z.toast( "TIM状态正常，继续执行" )
         else:
-            z.toast( "卡槽TIM状态异常，跳过此模块" )
+            z.toast( "TIM状态异常，跳过此模块" )
             return
         z.heartbeat()
 
@@ -274,8 +274,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT524SK00685")
-    z = ZDevice("HT524SK00685")
+    d = Device("9cae944e")
+    z = ZDevice("9cae944e")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_cate_id":"119","repo_material_cate_id":"39",'gender':"男","add_count":"3","time_delay":"3","switch_card":"","switch":"否"}    #cate_id是仓库号，length是数量
     try:

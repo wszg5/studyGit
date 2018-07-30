@@ -43,29 +43,42 @@ class AlipayRegister:
                 z.sleep(5)
 
             d(resourceId='com.ali.user.mobile.security.ui:id/registerButton').click()
+            z.sleep(1.5)
+
+            if d(text='同意').exists:
+                d(text='同意').click()
 
             while not d(text='中国大陆').exists:
                 d(resourceId='com.ali.user.mobile.security.ui:id/reg_region_name').click();
                 z.sleep(1)
                 d(text='中国大陆').click()
 
-            if d(description='清空输入内容').exists:
-                d(description='清空输入内容').click()
+            if d(text='请输入您的手机号').exists:
+                d(text='请输入您的手机号').click()
 
             #d(className='android.widget.ScrollView').child(className='android.widget.RelativeLayout',index=2).click()
             #d(text='请输入您的手机号').click()
-            GetBindNumber = self.scode.GetPhoneNumber(self.scode.ALIPAY_REGISTER)
 
-            d(resourceId='com.ali.user.mobile.security.ui:id/content').click()
-            for i in GetBindNumber:
-                z.input(i)
+            while True:
+                if d(description='清空输入内容').exists:
+                    d(description='清空输入内容').click()
 
+                GetBindNumber = self.scode.GetPhoneNumber(self.scode.ALIPAY_REGISTER)
 
-            #z.input(GetBindNumber)
-            z.sleep(1)
-            z.heartbeat()
-            d(text='注册').click()
+                d(resourceId='com.ali.user.mobile.security.ui:id/content').click()
+                for i in GetBindNumber:
+                    z.input(i)
 
+                #z.input(GetBindNumber)
+                z.sleep(1)
+                z.heartbeat()
+                d(text='注册').click()
+                z.sleep(2)
+
+                if d(text='中国大陆').exists:
+                    continue
+                else:
+                    break
 
             if d(textContains='您的操作频率过快').exists or d(textContains='请将球滑向篮球框中').exists:
                 self.scode.ReleasePhone(GetBindNumber, self.scode.ALIPAY_REGISTER)
@@ -92,6 +105,9 @@ class AlipayRegister:
             d(resourceId='com.ali.user.mobile.security.ui:id/box_input_wrapper').child(index=0).set_text(code)
             z.heartbeat()
             z.sleep(10)
+
+            if d(textContains='手机号绑定的支付宝账号').exists:
+                d(text='知道了').click()
 
             if d(textContains='立即登录').exists:
                 d(text='立即登录').click()
@@ -128,7 +144,7 @@ class AlipayRegister:
 
             break
 
-        if (args["time_delay"]):
+        if args["time_delay"]:
             z.sleep(int(args["time_delay"]))
 
 
@@ -141,10 +157,10 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("emulator-5554")
-    z = ZDevice("emulator-5554")
+    d = Device("25424f9")
+    z = ZDevice("25424f9")
     print (z.getTopActivity())
-    z.generateSerial()
+    # z.generateSerial()
 
     d.server.adb.cmd("shell", "ime set com.zunyun.zime/.ZImeService").wait()
     args = {"checkLogin": "否","repo_number_id": "136","time_delay": "3"};    #cate_id是仓库号，length是数量

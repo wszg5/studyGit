@@ -1,17 +1,15 @@
 # coding:utf-8
-import colorsys
+import base64
 import os
 import random
-
+from uiautomator import Device
+from Repo import *
+from util import logger
+from zservice import ZDevice
 from PIL import Image
 
 from imageCode import imageCode
-from slot import Slot
 from smsCode import smsCode
-from uiautomator import Device
-from Repo import *
-from zservice import ZDevice
-
 
 class QQMailLogin:
     def __init__(self):
@@ -19,238 +17,419 @@ class QQMailLogin:
         self.type = 'qqmail'
 
     def GetUnique(self):
-        nowTime = datetime.datetime.now( ).strftime( "%Y%m%d%H%M%S" );  # 生成当前时间
-        randomNum = random.randint( 0, 1000 );  # 生成的随机整数n，其中0<=n<=100
+        nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S")  # 生成当前时间
+        randomNum = random.randint(0, 1000)  # 生成的随机整数n，其中0<=n<=100
         if randomNum <= 10:
-            randomNum = str( 00 ) + str( randomNum );
-        uniqueNum = str( nowTime ) + str( randomNum );
+            randomNum = str(00) + str(randomNum)
+        uniqueNum = str(nowTime) + str(randomNum)
         return uniqueNum
 
-    def WebViewBlankPages(self, d, z):
-        z.toast( "判断是否是空白页" )
-        Str = d.info  # 获取屏幕大小等信息
-        height = float( Str["displayHeight"] )
-        width = float( Str["displayWidth"] )
+    def input(self,z,height,text):
+        if height>888:
+            z.input(text)
+        else:
+            z.cmd( "shell", "am broadcast -a ZY_INPUT_TEXT --es text \\\"%s\\\"" % text )
 
-        W_H = width / height
-        screenScale = round( W_H, 2 )
+    def palyCode(self, d, z, picObj):
+        self.scode = smsCode(d.server.adb.device_serial())
+        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "tmp"))
+        if not os.path.isdir(base_dir):
+            os.mkdir(base_dir)
+        sourcePng = os.path.join(base_dir, "%s_s.png" % (self.GetUnique()))
+        codePng = os.path.join(base_dir, "%s_c.png" % (self.GetUnique()))
+        icode = imageCode()
+        im_id = ""
+        code = ""
+        for i in range(0, 2):  # 打码循环
+            # if i > 0:
+            #     icode.reportError(im_id)
+            obj = picObj.info
+            obj = obj['bounds']  # 验证码处的信息
+            left = obj["left"]  # 验证码的位置信息
+            top = obj['top']
+            right = obj['right']
+            bottom = obj['bottom']
 
-        base_dir = os.path.abspath( os.path.join( os.path.dirname( __file__ ), os.path.pardir, "tmp" ) )
-        if not os.path.isdir( base_dir ):
-            os.mkdir( base_dir )
-        sourcePng = os.path.join( base_dir, "%s_s.png" % (self.GetUnique( )) )
+            d.screenshot(sourcePng)  # 截取整个输入验证码时的屏幕
 
-        if screenScale == 0.61:
-            left = 55  # 验证码的位置信息
-            top = 420
-            right = 460
-            bottom = 460
+            img = Image.open(sourcePng)
+            box = (left, top, right, bottom)  # left top right bottom
+            region = img.crop(box)  # 截取验证码的图片
 
-        d.screenshot( sourcePng )  # 截取整个输入验证码时的屏幕
+            img = Image.new('RGBA', (right - left, bottom - top))
+            img.paste(region, (0, 0))
 
-        img = Image.open( sourcePng )
-        box = (left, top, right, bottom)  # left top right bottom
-        region = img.crop( box )  # 截取验证码的图片
-        # show(region)    #展示资料卡上的信息
-        image = region.convert( 'RGBA' )
-        # 生成缩略图，减少计算量，减小cpu压力
-        image.thumbnail( (200, 200) )
-        max_score = None
-        dominant_color = None
-        for count, (r, g, b, a) in image.getcolors( image.size[0] * image.size[1] ):
-            # 跳过纯黑色
-            if a == 0:
-                continue
-            saturation = colorsys.rgb_to_hsv( r / 255.0, g / 255.0, b / 255.0 )[1]
-            y = min( abs( r * 2104 + g * 4130 + b * 802 + 4096 + 131072 ) >> 13, 235 )
-            y = (y - 16.0) / (235 - 16)
-            # 忽略高亮色
-            if y > 0.9:
-                continue
-
-            score = (saturation + 0.1) * count
-            if score > max_score:
-                max_score = score
-                dominant_color = (r, g, b)  # 红绿蓝
-        return dominant_color
-
-    def palyCode(self):
-        print
-
-
-    def login(self, d, z, args):
-        z.heartbeat()
-        cate_id = args["repo_account_id"]
-        time_limit1 = args['time_limit1']
-        numbers = self.repo.GetAccount( cate_id, time_limit1, 1 )
-        if len( numbers ) == 0:
-            z.heartbeat( )
-            d.server.adb.cmd( "shell", "am broadcast -a com.zunyun.zime.toast --es msg \"QQ帐号库%s号仓库无%s分钟未用,开始切换卡槽\"" % (
-                cate_id, time_limit1) ).communicate( )
-            z.sleep( 2 )
-            return 0
-
-        QQNumber = numbers[0]['number']  # 即将登陆的QQ号
-        QQPassword = numbers[0]['password']
-        z.sleep( 1 )
-        z.heartbeat( )
-        d.server.adb.cmd( "shell", "pm clear com.tencent.androidqqmail" ).communicate( )  # 清除缓存
-        z.sleep(2)
-        d.server.adb.cmd( "shell",
-                          "am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail" ).communicate( )  # 拉起QQ邮箱
-        z.sleep( 5 )
-        while d( textContains='正在更新数据' ).exists:
-            z.sleep( 2 )
-
-        z.sleep( 15 )
-        z.heartbeat( )
-        d.dump( compressed=False )
-        if d(description='QQ邮箱').exists:
-            d(description='QQ邮箱').click()
-        z.sleep(5)
-
-        z.heartbeat( )
-        if not self.WebViewBlankPages(d, z) is None:
-            if self.WebViewBlankPages( d, z )[2] > 200:
-                d.click( 130, 280 )
-                z.input( QQNumber )
-                z.sleep( 1 )
-                d.click( 130, 360 )
-                z.input( QQPassword )
-                z.sleep( 1 )
-                d.click( 270, 443 )
-
-                print('QQ号:%s,QQ密码：%s' % (QQNumber, QQPassword))
-                z.sleep( int( args['time_delay2'] ) )
-
-                z.heartbeat( )
-                if d( text='收件箱​' ).exists or d( text='温馨提示​' ).exists:
-                    z.toast( "登陆成功" )
-                    return QQNumber
-
-                elif d( description='安全验证' ).exists:
-                    self.repo.BackupInfo( cate_id, 'frozen', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
-                    z.toast( "卡槽QQ状态异常，跳过此模块" )
-                    return "nothing"
-
-                elif self.WebViewBlankPages( d, z )[2] > 200:
-                    self.repo.BackupInfo( cate_id, 'normal', QQNumber, '', '' )
-                    return "nothing"
-
+            img.save(codePng)
+            with open( codePng, 'rb' ) as f:
+                # file = f.read()
+                file = "data:image/jpeg;base64," + base64.b64encode( f.read( ) )
+                da = {"IMAGES": file}
+                path = "/ocr.index"
+                headers = {"Content-Type": "application/x-www-form-urlencoded",
+                           "Connection": "Keep-Alive"}
+                conn = httplib.HTTPConnection( "162626i1w0.51mypc.cn", 10082, timeout=30 )
+                params = urllib.urlencode( da )
+                conn.request( method="POST", url=path, body=params, headers=headers )
+                response = conn.getresponse( )
+                if response.status == 200:
+                    code = response.read( )
+                    break
                 else:
-                    self.repo.BackupInfo( cate_id, 'normal', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
-                    z.toast( "卡槽QQ状态异常，跳过此模块" )
-                    return "nothing"
-            else:
-                self.repo.BackupInfo( cate_id, 'normal', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
-                return "nothing"
+                    continue
+                # print data
+            # im = open(codePng, 'rb')
+            #
+            # codeResult = icode.getCode(im, icode.CODE_TYPE_4_NUMBER_CHAR, 60)
+            #
+            # code = codeResult["Result"]
+            # im_id = codeResult["Id"]
+            os.remove(sourcePng)
+            os.remove(codePng)
+            z.heartbeat()
+            break
+            # if code.isalpha() or code.isisdigitv() or code.isalnum():
+            #     break
+            # else:
+            #     continue
 
-        else:
-            self.repo.BackupInfo( cate_id, 'normal', QQNumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
-            return "nothing"
-
-    def qiehuan(self, d, z, args):
-        time_limit = int( args['time_limit'] )
-        serial = d.server.adb.device_serial( )
-        self.slot = Slot( serial, self.type )
-        slotObj = self.slot.getAvailableSlot( time_limit )  # 没有空卡槽，取２小时没用过的卡槽
-
-        if not slotObj is None:
-            slotnum = slotObj['id']
-
-        while slotObj is None:  # 2小时没用过的卡槽也为没有的情况
-            d.server.adb.cmd( "shell",
-                              "am broadcast -a com.zunyun.zime.toast --es msg \"QQ卡槽全满，无间隔时间段未用\"" ).communicate( )
-            z.heartbeat( )
-            z.sleep( 30 )
-            slotObj = self.slot.getAvailableSlot( time_limit )
-            if not slotObj is None:
-                slotnum = slotObj['id']
-                break
-
-        z.heartbeat( )
-        d.server.adb.cmd( "shell", "pm clear com.tencent.androidqqmail" ).communicate( )  # 清除缓存
-
-        obj = self.slot.getSlotInfo( slotnum )
-        remark = obj['remark']
-        remarkArr = remark.split( "_" )
-        if len( remarkArr ) == 3:
-            slotInfo = d.server.adb.device_serial( ) + '_' + self.type + '_' + slotnum
-            cateId = remarkArr[2]
-            numbers = self.repo.Getserial( cateId, slotInfo )
-            if len( numbers ) != 0:
-                featureCodeInfo = numbers[0]['imei']
-                z.set_serial( "com.tencent.androidqqmail", featureCodeInfo )
-
-        self.slot.restore( slotnum )  # 有time_limit分钟没用过的卡槽情况，切换卡槽
-        z.sleep( 2 )
-
-        d.server.adb.cmd( "shell",
-                          "am broadcast -a com.zunyun.zime.toast --es msg \"卡槽成功切换为" + slotnum + "号\"" ).communicate( )
-        z.sleep( 2 )
-        d.server.adb.cmd( "shell",
-                          "am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail" ).communicate( )  # 拉起QQ邮箱
-        z.sleep( 5 )
-        while d( textContains='正在更新数据' ).exists:
-            z.sleep( 2 )
-        z.sleep( 20 )
-
-        z.heartbeat( )
-        d.dump( compressed=False )
-        if d( text='密码错误，请重新输入' ).exists:
-            QQnumber = remarkArr[1]
-            self.repo.BackupInfo( cateId, 'normal', QQnumber, '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
-
-            self.slot.clear( slotnum )  # 清空改卡槽，并补登
-            z.toast( "卡槽易信号状态异常，补登陆卡槽" )
-            self.action( d, z, args )
-
-        else:
-            z.toast( "邮箱登陆状态正常，切换完毕。" )
-            return
-
+        return code
 
     def action(self, d,z,args):
-        z.toast( "正在ping网络是否通畅" )
-        i = 0
-        while i < 200:
-            i += 1
-            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
-            print(ping)
-            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-                z.toast( "网络通畅。开始执行：ＱＱ邮箱登录 有卡槽" )
-                break
-            z.sleep( 2 )
-        if i > 200:
-            z.toast( "网络不通，请检查网络状态" )
-            if (args["time_delay"]):
-                z.sleep(int(args["time_delay"]))
-            return
-
+        # z.toast("正在ping网络是否通畅")
+        # i = 0
+        # while i < 200:
+        #     i += 1
+        #     ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
+        #     print(ping)
+        #     if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+        #         z.toast(u"网络通畅。开始执行：QQ邮箱登录 无卡槽" )
+        #         break
+        #     z.sleep(2)
+        # if i > 200:
+        #     z.toast(u"网络不通，请检查网络状态" )
+        #     return
+        Str = d.info  # 获取屏幕大小等信息
+        height = int( Str["displayHeight"] )
+        width = int( Str["displayWidth"] )
+        z.heartbeat( )
         z.heartbeat( )
         z.generate_serial( "com.tencent.androidqqmail" )  # 随机生成手机特征码
+        d.server.adb.cmd( "shell", "pm clear com.tencent.androidqqmail" ).communicate( )  # 清除QQ邮箱缓存
+        d.server.adb.cmd( "shell",
+                          "am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail" ).communicate( )  # 拉起QQ邮箱
+        z.sleep( 15 )
+        z.heartbeat( )
+        try:
+            for x in range(2):
+                if args['mail_type'] == '163邮箱登录':
+                    if d(resourceId='com.tencent.androidqqmail:id/ee').exists:  # 选择163邮箱点击进入登陆页面
+                        d(resourceId='com.tencent.androidqqmail:id/ee').click()
+                        z.sleep(1)
+                        break
+                    else:
+                        d.server.adb.cmd( "shell",
+                                          "am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail" ).communicate( )  # 拉起QQ邮箱
+                        time.sleep(25)
+                        continue
 
-        serial = d.server.adb.device_serial( )
-        self.slot = Slot( serial, self.type )
-        slotnum = self.slot.getEmpty( )  # 取空卡槽
-        if slotnum == 0:  # 没有空卡槽的话
-            self.qiehuan( d, z, args )
+                if args['mail_type'] == 'QQ邮箱登录':
+                    if d(resourceId='com.tencent.androidqqmail:id/ea').exists:  # 选择QQ邮箱点击进入登陆页面
+                        d(resourceId='com.tencent.androidqqmail:id/ea').click()
+                        z.sleep(1)
+                        break
+                    else:
+                        d.server.adb.cmd( "shell",
+                                          "am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail" ).communicate( )  # 拉起QQ邮箱
+                        time.sleep( 25 )
+                        continue
 
-        else:  # 有空卡槽的情况
-            QQnumber = self.login( d, z, args )
+                if args['mail_type'] == '腾讯企业邮箱登录':
+                    if d(resourceId='com.tencent.androidqqmail:id/eb').exists:  # 选择腾讯企业邮箱登录点击进入登陆页面
+                        d(resourceId='com.tencent.androidqqmail:id/eb').click()
+                        z.sleep(1)
+                        break
+                    else:
+                        d.server.adb.cmd( "shell",
+                                          "am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail" ).communicate( )  # 拉起QQ邮箱
+                        time.sleep( 25 )
+                        continue
 
-            if QQnumber == 'nothing':
-                self.slot.clear( slotnum )  # 清空改卡槽，并补登
-                self.action( d, z, args )
-            if QQnumber == 0:
-                z.toast( "仓库为空，无法登陆。开始切换卡槽" )
-                self.qiehuan( d, z, args )
+            accounts = self.repo.GetAccount(args['repo_account_id'], int( args['account_time_limit'] ),1 )  # 去仓库获取QQ邮箱帐号
+            if len( accounts ) == 0:
+                z.toast( u"帐号库为空" )
+                return
 
-            z.heartbeat( )
-            featureCodeInfo = z.get_serial( "com.tencent.androidqqmail" )
-            self.slot.backup( slotnum, str( slotnum ) + '_' + QQnumber + '_' + args["repo_account_id"] )  # 设备信息，卡槽号，QQ号
-            self.repo.BackupInfo( args["repo_account_id"], 'using', QQnumber, featureCodeInfo, '%s_%s_%s' % (
-            d.server.adb.device_serial( ), self.type, slotnum) )  # 仓库号,使用中,QQ号,设备号_卡槽号
+            account = accounts[0]['number']
+            password = accounts[0]['password']
+            # account = "17094558161"
+            # password = "tifo5456"
+
+            if d(text='帐号密码登录').exists:
+                d(text='帐号密码登录').click()
+
+            if d(resourceId='com.tencent.androidqqmail:id/bi').exists:  # 输入邮箱帐号
+                d(resourceId='com.tencent.androidqqmail:id/bi').set_text(account)
+                # self.input( z,height,account )
+            else:
+                z.toast("判断不出来界面")
+                return
+
+            if d(resourceId='com.tencent.androidqqmail:id/bs').exists:  # 输入邮箱密码
+                d(resourceId='com.tencent.androidqqmail:id/bs').click()
+                self.input(z,height,password)
+
+            if d(resourceId='com.tencent.androidqqmail:id/a_').exists:  # 点击登录按钮
+                d(resourceId='com.tencent.androidqqmail:id/a_').click()
+
+            z.sleep(8)
+            while True:
+                if d(textContains="验证中"):
+                    time.sleep(3)
+                else:
+                    break
+            if args['mail_type'] == 'QQ邮箱登录':
+                if d(resourceId='com.tencent.androidqqmail:id/h').exists:  # 判断是否要填写独立密码
+                    self.input(z,height,"Abc" + account)
+                    z.sleep(1)
+                    if d(text='确定').exists:
+                        d(text='确定').click()
+                    z.sleep(5)
+
+                while d(resourceId='com.tencent.androidqqmail:id/a16').exists:  # 出现验证码
+                    picObj = d(resourceId='com.tencent.androidqqmail:id/a19', index=0)
+                    code = self.palyCode(d, z, picObj)
+                    if code == "":
+                        return False
+                    if d(resourceId='com.tencent.androidqqmail:id/a17').exists:
+                        d(resourceId='com.tencent.androidqqmail:id/a17').click()
+                    self.input(z,height,code)
+                    if d(resourceId='com.tencent.androidqqmail:id/a_').exists:  # 点击登陆
+                        d(resourceId='com.tencent.androidqqmail:id/a_').click()
+                    z.sleep(8)
+
+                if d(resourceId='com.tencent.androidqqmail:id/h').exists:  # 判断是否要填写独立密码
+                    self.input(z,height,"Abc" + account)
+                    z.sleep(1)
+                    if d(text='确定').exists:
+                        d(text='确定').click()
+
+            if args['mail_type'] == '163邮箱登录' or args['mail_type'] == '腾讯企业邮箱登录':
+                if d(resourceId='com.tencent.androidqqmail:id/a_').exists:   # 点击登录按钮
+                    obj = d(resourceId="com.tencent.androidqqmail:id/e4",className="android.widget.EditText")
+                    repo_name_cateId = args["repo_name_cateId"]
+                    Material = self.repo.GetMaterial( repo_name_cateId, 0, 1 )
+                    if len( Material ) == 0:
+                        d.server.adb.cmd( "shell",
+                                          "am broadcast -a com.zunyun.zime.toast --es msg \"%s号仓库为空，没有取到消息\"" % repo_name_cateId ).communicate( )
+                        z.sleep( 10 )
+                        return
+                    message = Material[0]['content']
+                    name = ""
+                    if obj.exists:
+                        name = obj.info["text"]
+                        if len(name)>1:
+                            obj.click()
+                            for nameL in range( len( name ) ):
+                                d.press.right()
+                            time.sleep(1)
+                            for nameL in range(len(name)):
+                                d.press.delete()
+                            time.sleep(1)
+                            self.input(z,height,message)
+                        else:
+                            self.input( z, height, message )
+                    else:
+                        if d(textContains="发信昵称",resourceId="com.tencent.androidqqmail:id/e3").exists:
+                            d( textContains="发信昵称", resourceId="com.tencent.androidqqmail:id/e3" ).click()
+                            time.sleep(1)
+                            self.input( z, height, message )
+                            time.sleep(1)
+
+                    d(resourceId='com.tencent.androidqqmail:id/a_').click()
+                    z.sleep(1)
+                    z.heartbeat()
+                    z.toast("登陆成功")
+                    d.server.adb.cmd( "shell", "am force-stop com.tencent.androidqqmail" ).communicate( )  # 强制停止
+                    return True
+                else:
+                    while True:
+                        if not d( text='收件箱​',resourceId="com.tencent.androidqqmail:id/t0" ).exists and d(textContains=account,resourceId="com.tencent.androidqqmail:id/ac").exists:
+                            time.sleep(5)
+                        else:
+                            break
+                    if d( text='收件箱​' ).exists:
+                        if d( description="写邮件和设置等功能" ).exists:
+                            d( description="写邮件和设置等功能" ).click( )
+                            z.sleep( 0.5 )
+                            if d( text="设置", resourceId="com.tencent.androidqqmail:id/w1" ).exists:
+                                d( text="设置", resourceId="com.tencent.androidqqmail:id/w1" ).click( )
+                                z.sleep( 0.5 )
+
+                        if d( textContains=account, className="android.widget.TextView" ).exists:
+                            d( textContains=account, className="android.widget.TextView" ).click( )
+                            z.sleep( 1 )
+
+                        objName = d( index=1, className="android.widget.LinearLayout" ).child( index=1,
+                                                                                               className="android.widget.TextView" )
+                        name = ""
+                        if objName.exists:
+                            name = objName.info["text"]
+
+                        if d( index=1, className="android.widget.LinearLayout" ).child( index=2,
+                                                                                        className="android.widget.ImageView" ).exists:
+                            d( index=1, className="android.widget.LinearLayout" ).child( index=2,
+                                                                                         className="android.widget.ImageView" ).click( )
+                            z.sleep( 2 )
+                            z.heartbeat( )
+                            nameLen = len( name )
+                            repo_name_cateId = args["repo_name_cateId"]
+                            Material = self.repo.GetMaterial( repo_name_cateId, 0, 1 )
+                            if len( Material ) == 0:
+                                d.server.adb.cmd( "shell",
+                                                  "am broadcast -a com.zunyun.zime.toast --es msg \"%s号仓库为空，没有取到消息\"" % repo_name_cateId ).communicate( )
+                                z.sleep( 10 )
+                                return
+                            message = Material[0]['content']
+                            if nameLen == 1:
+                                if d( text="默认发信昵称​", className="android.widget.TextView" ).exists:
+                                    d( text="默认发信昵称​", className="android.widget.TextView" ).click( )
+                                    time.sleep( 0.5 )
+                                    self.input( z, height, message.encode( "utf-8" ) )
+                                    time.sleep( 0.5 )
+                                    if d( index=0, resourceId="com.tencent.androidqqmail:id/a6",
+                                          className="android.widget.ImageButton" ).exists:
+                                        d( index=0, resourceId="com.tencent.androidqqmail:id/a6",
+                                           className="android.widget.ImageButton" ).click( )
+                                        z.sleep( 1 )
+                            else:
+                                if d( text=name, className="android.widget.TextView" ).exists:
+                                    d( text=name, className="android.widget.TextView" ).click( )
+                                    for i in range( 0, nameLen ):
+                                        d.press.delete( )
+                                    self.input( z, height, message.encode( "utf-8" ) )
+                                    if d( index=0, resourceId="com.tencent.androidqqmail:id/a6",
+                                          className="android.widget.ImageButton" ).exists:
+                                        d( index=0, resourceId="com.tencent.androidqqmail:id/a6",
+                                           className="android.widget.ImageButton" ).click( )
+                                        z.sleep( 1 )
+                        z.toast("登陆成功")
+                        return True
+
+                    # d.server.adb.cmd( "shell",
+                    #                   "am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail" ).communicate( )  # 拉起QQ邮箱
+
+
+            # if args['mail_type'] == '腾讯企业邮箱登录':
+            #     if d(resourceId='com.tencent.androidqqmail:id/a_').exists:   # 点击登录按钮
+            #         d(resourceId='com.tencent.androidqqmail:id/a_').click()
+            #         z.sleep(3)
+            #         z.heartbeat()
+            #         d.server.adb.cmd( "shell", "am force-stop com.tencent.androidqqmail" ).communicate( )  # 强制停止
+            #         d.server.adb.cmd( "shell",
+            #                           "am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail" ).communicate( )  # 拉起QQ邮箱
+            #
+            #     if d( text='收件箱​' ).exists:
+            #         z.toast( u"登录成功。退出模块" )
+            #         # d.server.adb.cmd( "shell", "am force-stop com.tencent.androidqqmail" ).wait( )  # 强制停止
+            #         return True
+            #     else:
+            #         return False
+            # d.server.adb.cmd("shell", "am force-stop com.tencent.androidqqmail").wait()  # 强制停止163邮箱
+            # d.server.adb.cmd("shell", "am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail").communicate()  # 拉起163邮箱
+
+            z.sleep(12)
+            z.heartbeat()
+            if d(textContains='你有多个应用同时收到').exists:
+                d(text='确定').click()
+                z.sleep(2)
+
+            if d(text='收件箱​').exists:
+                z.toast(u"登录成功。退出模块")
+                # d.server.adb.cmd("shell", "am force-stop com.tencent.androidqqmail").wait()  # 强制停止
+                return True
+            else:
+                if d(textContains='帐号或密码错误').exists:
+                    z.toast(u"帐号或密码错误")
+                    againCount = int(args["againCount"])
+                    for ac in range(againCount):
+                        result = self.againLogin(account,password,d,z,height)
+                        if result is True:
+                            z.toast("跳出模块")
+                            return
+                    else:
+                        z.toast( u"一直登陆出现密码错误,跳出该帐号")
+
+                    # self.repo.BackupInfo(args["repo_account_id"], 'frozen', account, '', '')  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+                elif d(textContains="未开启IMAP服务").exists:
+                    z.toast( u"未开启IMAP服务，标记为异常" )
+                    self.repo.BackupInfo( args["repo_account_id"], 'exception', account, '','' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+                self.action(d,z,args)
+        except:
+            logging.exception("exception")
+            z.toast(u"程序出现异常，模块退出")
+            d.server.adb.cmd("shell", "am force-stop com.tencent.androidqqmail").wait()  # 强制停止
+            return False
+
+    def againLogin(self,account,password,d,z,height):
+        if d(text="确定",className="android.widget.Button").exists or d(text="重新输入",className="android.widget.Button").exists:
+            if d(text="确定",className="android.widget.Button").exists:
+                d( text="确定", className="android.widget.Button" ).click()
+            else:
+                d( text="重新输入", className="android.widget.Button" ).click()
+            time.sleep(1)
+            self.input( z, height, password)
+            time.sleep(1)
+            if d(resourceId="com.tencent.androidqqmail:id/a_").exists:
+                d( resourceId="com.tencent.androidqqmail:id/a_" ).click()
+                time.sleep(5)
+            while True:
+                if d(textContains="验证中"):
+                    time.sleep(3)
+                else:
+                    break
+            if d( resourceId='com.tencent.androidqqmail:id/h' ).exists:  # 判断是否要填写独立密码
+                self.input( z, height, "Abc" + account )
+                z.sleep( 1 )
+                if d( text='确定' ).exists:
+                    d( text='确定' ).click( )
+                z.sleep( 5 )
+
+            while d( resourceId='com.tencent.androidqqmail:id/a16' ).exists:  # 出现验证码
+                picObj = d( resourceId='com.tencent.androidqqmail:id/a19', index=0 )
+                code = self.palyCode( d, z, picObj )
+                if code == "":
+                    return False
+                if d( resourceId='com.tencent.androidqqmail:id/a17' ).exists:
+                    d( resourceId='com.tencent.androidqqmail:id/a17' ).click( )
+                self.input( z, height, code )
+                if d( resourceId='com.tencent.androidqqmail:id/a_' ).exists:  # 点击登陆
+                    d( resourceId='com.tencent.androidqqmail:id/a_' ).click( )
+                z.sleep( 8 )
+
+            if d( resourceId='com.tencent.androidqqmail:id/h' ).exists:  # 判断是否要填写独立密码
+                self.input( z, height, "Abc" + account )
+                z.sleep( 1 )
+                if d( text='确定' ).exists:
+                    d( text='确定' ).click( )
+
+            if d(textContains='你有多个应用同时收到').exists:
+                d(text='确定').click()
+                z.sleep(2)
+
+            if d(text='收件箱​').exists:
+                z.toast(u"登录成功。退出模块")
+                # d.server.adb.cmd("shell", "am force-stop com.tencent.androidqqmail").wait()  # 强制停止
+                return True
+            else:
+                if d(textContains='帐号或密码错误').exists:
+                    z.toast(u"帐号或密码错误")
+                    return False
+                elif d(textContains="未开启IMAP服务").exists:
+                    z.toast( u"未开启IMAP服务，标记为异常" )
+                    self.repo.BackupInfo( args["repo_account_id"], 'exception', account, '','' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+                    return False
+
+
 
 
 def getPluginClass():
@@ -260,13 +439,29 @@ if __name__ == "__main__":
     import sys
     reload(sys)
     sys.setdefaultencoding("utf-8")
-
+    # codePng = "/home/zunyun/code/t.jpg"
+    # with open( codePng, 'rb' ) as f:
+    #     # file = f.read()
+    #     file = "data:image/jpeg;base64," + base64.b64encode( f.read( ) )
+    # da = {"IMAGES": file}
+    # path = "/ocr.index"
+    # headers = {"Content-Type": "application/x-www-form-urlencoded",
+    #            "Connection": "Keep-Alive"}
+    # conn = httplib.HTTPConnection( "162626i1w0.51mypc.cn", 10082, timeout=30 )
+    # params = urllib.urlencode( da )
+    # conn.request( method="POST", url=path, body=params, headers=headers )
+    # response = conn.getresponse( )
+    # if response.status == 200:
+    #     code = response.read( )
+    #     print code
     clazz = getPluginClass()
     o = clazz()
-    d = Device("d99e4b99")
-    z = ZDevice("d99e4b99")
+    d = Device("9cae944e")
+    z = ZDevice("9cae944e")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_account_id": "275", "time_limit": "1", "time_limit1": "120", "time_delay": "3" , "time_delay1": "30", "time_delay2": "30"};
+    args = {"repo_account_id": "250", "account_time_limit": "15","mail_type": "QQ邮箱登录","repo_name_cateId":"234","againCount":"10"}
+    # d.dump( 'test.xml' )
+    # o.palyCode(d,z,"dsa")
     o.action(d, z, args)
 
     # slot = Slot(d.server.adb.device_serial(),'qqmail')
@@ -275,4 +470,3 @@ if __name__ == "__main__":
     # slot.restore( 1 )
     # d.server.adb.cmd( "shell",
     #                   "am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail" ).communicate( )  # 拉起QQ邮箱
-

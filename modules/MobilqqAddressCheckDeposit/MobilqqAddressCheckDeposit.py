@@ -332,12 +332,12 @@ if __name__ == "__main__":
     import sys
 
     reload( sys )
-    sys.setdefaultencoding( 'utf8' )
-    clazz = getPluginClass( )
-    o = clazz( )
-    d = Device( "HT54VSK01061" )
-    z = ZDevice( "HT54VSK01061" )
-    z.server.install( )
+    sys.setdefaultencoding('utf8')
+    clazz = getPluginClass()
+    o = clazz()
+    d = Device("25424f9")
+    z = ZDevice("25424f9")
+    z.server.install()
     d.server.adb.cmd( "shell", "ime set com.zunyun.qk/.ZImeService" ).communicate( )
     args = {"repo_number_id": "209", "time_delay": "3"};  # cate_id是仓库号，length是数量
     o.action( d, z, args )

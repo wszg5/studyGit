@@ -42,20 +42,15 @@ class TIMLogin04:
         sourcePng = os.path.join( base_dir, "%s_s.png" % (self.GetUnique( )) )
 
         if screenScale == 0.56:
-            left = 60  # 验证码的位置信息
-            top = 655
-            right = 290
-            bottom = 680
+            left = 115  # 验证码的位置信息
+            top = 670
+            right = 185
+            bottom = 720
         if screenScale == 0.61:
             left = 60  # 验证码的位置信息
             top = 490
             right = 210
             bottom = 510
-
-        left = width * 7 / 135  # 验证码的位置信息
-        top = height * 245 / 444
-        right = width * 51 / 54
-        bottom = height * 275 / 444
 
         d.screenshot( sourcePng )  # 截取整个输入验证码时的屏幕
 
@@ -275,9 +270,14 @@ class TIMLogin04:
         if detection_robot.exists or not_detection_robot.exists:
             playCodeResult = self.LoginPlayCode( d, z )  # 打验证码
         else:
-            if self.WebViewBlankPages( d )[2] > 200:
-                z.toast( "不是空白页" )
-                self.WebViewPlayCode( d, z )
+            #if self.WebViewBlankPages( d )[2] > 200:
+            #   self.WebViewPlayCode( d, z )
+
+            if d(description='拖动下方滑块完成拼图').exists or self.WebViewBlankPages( d )[2] > 200:
+                z.toast( "滑块验证" )
+                return "nothing"
+            elif d( text='马上绑定' ).exists or d( text='匹配手机通讯录' ).exists:
+                z.toast('没有遇到打码，')
             else:
                 z.toast( "是空白页" )
                 return "nothing"
@@ -448,7 +448,7 @@ class TIMLogin04:
             d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()#开飞行模式
 
             z.heartbeat( )
-            z.toast( "正在ping网络是否通畅" )
+            z.toast("正在ping网络是否通畅" )
             while True:
                 ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
                 print( ping )
@@ -532,14 +532,6 @@ class TIMLogin04:
                     break
                 z.sleep( 2 )
 
-            try:
-                self.IPCheckRepitition(z , d, args)
-            except:
-                logging.exception( "exception" )
-                z.toast( "IP检测出错了，请查找问题" )
-
-            serialinfo = d.server.adb.device_serial( )
-            # print('登陆时的serial%s'%serialinfo)
             z.heartbeat( )
             QQnumber = self.login( d, args, z )
             if QQnumber == 'nothing':
@@ -571,25 +563,25 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4A1SK02114")
-    z = ZDevice("HT4A1SK02114")
+    d = Device("25424f9")
+    z = ZDevice("25424f9")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id": "275", "time_limit": "0", "time_limit1": "120","time_delay1":"10","time_delay": "3"};  # cate_id是仓库号，length是数量
-    # o.action(d, z, args)
+    args = {"repo_cate_id": "331", "time_limit": "0", "time_limit1": "120","time_delay1":"10","time_delay": "3"};  # cate_id是仓库号，length是数量
+    o.action(d, z, args)
     # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
     # d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止
     # z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )
-    serial = d.server.adb.device_serial( )
-    type = 'tim'
-    slot = Slot( serial, type )
+    # serial = d.server.adb.device_serial( )
+    # type = 'tim'
+    # slot = Slot( serial, type )
     # d.server.adb.cmd( "shell", "pm clear com.tencent.mobileqq" ).communicate( )  # 清除缓存
     # slot.clear( "1" )
     # for i in range(2,20):
     #     slot.clear(i)
     #     print('已经清除')
     # print('全部清除')
-    slot.backup( 1, str( 1 ) + '_' + '2154599147' + '_' + '275' )  # 设备信息，卡槽号，QQ号
-    Repo().BackupInfo( '275', 'using', '2154599147', 'featureCodeInfo', '%s_%s_%s' % (
-        d.server.adb.device_serial( ), type, 1) )  # 仓库号,使用中,QQ号,设备号_卡槽号
+    # slot.backup( 1, str( 1 ) + '_' + '2154599147' + '_' + '275' )  # 设备信息，卡槽号，QQ号
+    # Repo().BackupInfo( '275', 'using', '2154599147', 'featureCodeInfo', '%s_%s_%s' % (
+    #     d.server.adb.device_serial( ), type, 1) )  # 仓库号,使用中,QQ号,设备号_卡槽号
 

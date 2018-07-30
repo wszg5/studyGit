@@ -1,0 +1,19 @@
+{
+"id": "YiXinSignInAndOpenBox",
+"cate":"其他模块",
+"name":"易信签到开宝箱",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"YX-OpenBox-01",
+"icon":"vcard-o",
+"remark":"易信签到开宝箱(版本：最新版本)",
+"setting":[
+{
+"id": "time_delay",
+"name":"模块结束延时",
+"type":"textbox",
+"defaultValue":"3",
+"remark":"单位：秒"
+}
+]
+}

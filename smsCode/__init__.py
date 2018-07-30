@@ -57,8 +57,6 @@ class smsCode:
         else:
             self.client = client_jyzszp(serial, self.username, self.password,self.im_type_list) #玉米
 
-
-
     def GetPhoneNumber(self, itemId, phone=None, times=0):
         return self.client.GetPhoneNumber(itemId, phone, times)
 
@@ -75,6 +73,8 @@ class smsCode:
 
     def defriendPhoneNumber(self, phoneNumber, itemId):
         return self.client.defriendPhoneNumber(phoneNumber,itemId)
+
+
 
 
 

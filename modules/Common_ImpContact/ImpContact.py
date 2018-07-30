@@ -99,11 +99,11 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT4AVSK01106")
-    z = ZDevice("HT4AVSK01106")
+    d = Device("465b4e4b")
+    z = ZDevice("465b4e4b")
 
 
-    args = {"repo_cate_id":"35",'number_count':'50',"clear":"是","random_name": "是","time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"118",'number_count':'50',"clear":"是","random_name": "否","time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
 
@@ -154,6 +154,6 @@ if __name__ == "__main__":
     # d.dump(compressed=False)
 
 
-    args = {"repo_cate_id":"307",'number_count':'50',"clear":"是","random_name": "是", "time_delay":"3"}    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"307",'number_count':'50',"clear":"是","random_name": "否", "time_delay":"3"}    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)
