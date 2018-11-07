@@ -329,12 +329,12 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("0d12dd17")
+    z = ZDevice("0d12dd17")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
     args = {"repo_info_id":"253","repo_group_id":"256","totalNumber":"5","time_delay":"3",}    #cate_id是仓库号，length是数量
-    o.action(d, z,args)
+    # o.action(d, z,args)
     # if len( totalList ) == 0:
     #     z.toast( "%s仓库%s账号可数据为空" % (repo_group_id, myAccount) )
     # address = totalList[0]["x02"][1:]
@@ -349,3 +349,5 @@ if __name__ == "__main__":
     #         'x_06': 'normal', 'x_20': "4455886644"}
     # Repo().PostInformation( "256", para )
     # z.sleep(1)
+    address = 'snssdk1128://aweme/detail/6615484959316528392?refer=web&gd_label=click_wap_download_banner&appParam=&needlaunchlog=1'
+    d.server.adb.cmd( "shell", 'am start -a android.intent.action.VIEW -d "%s"' % address )

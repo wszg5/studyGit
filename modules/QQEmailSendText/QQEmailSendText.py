@@ -167,19 +167,34 @@ class QQEmailSendText:
             numbers = []
             if count>0:
                 numbers = self.repo.GetNumber( repo_mail_cateId, 120, count )
-                if len( numbers ) == 0:
-                    d.server.adb.cmd( "shell","am broadcast -a com.zunyun.zime.toast --es msg \"%s号仓库为空，没有取到消息\"" % repo_mail_cateId ).communicate( )
-                    z.sleep( 10 )
-                    return
+                if len(numbers)==0:
+                    if args["nuberLoop"] == "循环":
+                        self.repo.UpdateNumberStauts( "", repo_mail_cateId, "normal" )
+                        numbers = self.repo.GetNumber( repo_mail_cateId, 120, count )
+                        if len( numbers ) == 0:
+                            z.toast( "%s号仓库没有号码" % repo_mail_cateId )
+                            return
+                    else:
+                        d.server.adb.cmd( "shell",
+                                          "am broadcast -a com.zunyun.zime.toast --es msg \"%s号仓库为空，没有取到消息\"" % repo_mail_cateId ).communicate( )
+                        z.sleep( 10 )
+                        return
             bccCount = int( args["bccCount"] )
             bccNumbers = []
             if bccCount > 0:
                 bccNumbers = self.repo.GetNumber( repo_mail_cateId, 120, bccCount )
                 if len( bccNumbers ) == 0:
-                    d.server.adb.cmd( "shell",
-                                      "am broadcast -a com.zunyun.zime.toast --es msg \"%s号仓库为空，没有取到消息\"" % repo_mail_cateId ).communicate( )
-                    z.sleep( 10 )
-                    return
+                    if args["nuberLoop"]== "循环":
+                        self.repo.UpdateNumberStauts("",repo_mail_cateId,"normal")
+                        bccNumbers = self.repo.GetNumber( repo_mail_cateId, 120, bccCount )
+                        if len( bccNumbers ) == 0:
+                            z.toast("%s号仓库没有号码"% repo_mail_cateId)
+                            return
+                    else:
+                        d.server.adb.cmd( "shell",
+                                          "am broadcast -a com.zunyun.zime.toast --es msg \"%s号仓库为空，没有取到消息\"" % repo_mail_cateId ).communicate( )
+                        z.sleep( 10 )
+                        return
             Material = self.repo.GetMaterial( repo_material_cateId, 0, 1 )
             if len( Material ) == 0:
                 d.server.adb.cmd( "shell",
@@ -324,17 +339,19 @@ class QQEmailSendText:
                             if d( textContains="添加到邮件" ).exists:
                                 d( textContains="添加到邮件").click( )
                                 z.sleep( 2 )
-                                if d( index=1,
-                                      className="android.widget.HorizontalScrollView" ).child( index=0,
+                                addToText = args['addToText']
+                                if addToText == "添加":
+                                    if d( index=1,
+                                          className="android.widget.HorizontalScrollView" ).child( index=0,
 
-                                                                                               className="android.widget.LinearLayout" ).exists:
-                                    d( index=1,
-                                       className="android.widget.HorizontalScrollView" ).child( index=0,className="android.widget.LinearLayout" ).click( )
-                                    z.sleep( 0.5 )
-                                    z.heartbeat( )
-                                    if d( text="添加到正文").exists:
-                                        d( text="添加到正文").click( )
+                                                                                                   className="android.widget.LinearLayout" ).exists:
+                                        d( index=1,
+                                           className="android.widget.HorizontalScrollView" ).child( index=0,className="android.widget.LinearLayout" ).click( )
                                         z.sleep( 0.5 )
+                                        z.heartbeat( )
+                                        if d( text="添加到正文").exists:
+                                            d( text="添加到正文").click( )
+                                            z.sleep( 0.5 )
 
                         else:
                             z.toast( "没有图片,停止模块" )
@@ -408,13 +425,17 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("9cae944e")
-    z = ZDevice("9cae944e")
+    d = Device("HT4AVSK00981")
+    z = ZDevice("HT4AVSK00981")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_mail_cateId": "119","account_cateId": "358", "repo_material_cateId": "40", "time_delay": "3","count":"4","bccCount":"1","sendCount":"6","picture":"是","size":"实际大小","repo_material_cateId2":"52","selectContent":"主题内容都发","failCount":"7"}
+    args = {"repo_mail_cateId": "119","account_cateId": "358", "repo_material_cateId": "40", "time_delay": "3","count":"4","bccCount":"1","sendCount":"6","picture":"是","size":"实际大小","repo_material_cateId2":"52","selectContent":"主题内容都发","failCount":"7","nuberLoop":"循环","addToText":"不添加"}
     # Str = d.info  # 获取屏幕大小等信息
     # height = int( Str["displayHeight"] )
     # width = int( Str["displayWidth"] )
     # o.input(z,height,"扎广泛的烦恼")
     o.action(d, z, args)
-
+    # z.input("dsadfcs")
+    # Str = d.info  # 获取屏幕大小等信息
+    # height = int( Str["displayHeight"] )
+    # o.input( z, height,"dsada".encode("utf-8") )
+    # z.cmd( "shell", "am broadcast -a ZY_INPUT_TEXT --es text \\\"%s\\\"" % "Fdscscvf" )

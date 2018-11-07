@@ -1,0 +1,27 @@
+{
+"id": "QQEmailUpdateDefaultAccount",
+"cate":"其他模块",
+"name":"QQEmail-修改默认发信帐号",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQEmailUpdateDefaultAccount",
+"icon":"vcard-o",
+"remark":"QQEmail-修改默认发信帐号",
+"setting":[
+    {
+    "id": "time_delay",
+    "name":"唤醒拉起休眠时间",
+    "type":"textbox",
+    "defaultValue":"8",
+    "remark":"单位：秒"
+    },
+    {
+	"id": "account_type",
+	"name":"默认发信帐号",
+	"type":"select",
+	"list":{"数字":"数字","英文":"英文","foxmail":"foxmail","英文或foxmail":"英文或foxmail"},
+	"defaultValue":"数字",
+	"remark":"默认发信帐号"
+	}
+]
+}

@@ -14,22 +14,6 @@ class MobilqqAddFriends:
 
     def action(self, d,z, args):
 
-        z.toast( "正在ping网络是否通畅" )
-        z.heartbeat( )
-        i = 0
-        while i < 200:
-            i += 1
-            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
-            print( ping )
-            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-                z.toast( "网络通畅。" )
-                break
-            z.sleep( 2 )
-        if i > 200:
-            z.toast( "网络不通，请检查网络状态" )
-            if (args["time_delay"]):
-                z.sleep( int( args["time_delay"] ) )
-            return
 
         z.heartbeat()
         str = d.info  # 获取屏幕大小等信息
@@ -46,29 +30,46 @@ class MobilqqAddFriends:
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         z.sleep(5)
+        # loginStatusList = z.qq_getLoginStatus( d )
+        # if loginStatusList is None:
+        #     z.toast( "登陆新场景，现无法判断登陆状态" )
+        #     return
+        # loginStatus = loginStatusList['success']
 
-        if loginStatusList is None:
-            z.toast( "登陆新场景，现无法判断登陆状态" )
-            return
-        loginStatus = loginStatusList['success']
+
         if d( text='消息' ).exists and d( text='联系人' ).exists and d( text='动态' ).exists:  # 到了通讯录这步后看号有没有被冻结
-            z.toast( "卡槽QQ状态正常，继续执行" )
+            z.toast( "QQ状态正常，继续执行" )
+        elif d(text='绑定手机号码').exists:
+            d(text='关闭').click()
+            d(text='关闭').click()
+            z.sleep(1)
+        elif d(text='主题装扮').exists:
+            d(text='关闭').click()
+        elif d(text='马上绑定').exists:
+            d(text='关闭').click()
+        elif d(text='通讯录').exists:
+            d(text='关闭').click()
         else:
-            z.toast( "卡槽QQ状态异常，跳过此模块" )
+            z.toast( "QQ状态异常，跳过此模块" )
             return
 
-        d(description='快捷入口').click()
-        z.sleep(2)
-        if not d(text='扫一扫').exists:
-            d( description='快捷入口' ).click( )
-            z.sleep(1)
-        z.heartbeat()
-        if d(textContains='加好友').exists:
-            d(textContains='加好友').click()
-        else:
-            d(resourceId='com.tencent.mobileqq:id/name', description='快捷入口').click()
-            d(textContains='加好友').click()
-        z.sleep(3)
+        d(text="联系人", resourceId="com.tencent.mobileqq:id/name").click()
+        time.sleep(1)
+        d(text="添加", resourceId="com.tencent.mobileqq:id/ivTitleBtnRightText").click()
+        # time.sleep(1)
+
+        # d(description='快捷入口').click()
+        # z.sleep(2)
+        # if not d(text='扫一扫').exists:
+        #     d( description='快捷入口' ).click( )
+        #     z.sleep(1)
+        # z.heartbeat()
+        # if d(textContains='加好友').exists:
+        #     d(textContains='加好友').click()
+        # else:
+        #     d(resourceId='com.tencent.mobileqq:id/name', description='快捷入口').click()
+        #     d(textContains='加好友').click()
+        z.sleep(1)
         d(className='android.widget.EditText',index=0).click()           #刚进来时点击 QQ号/手机号/群/公众号
         z.sleep(1)
         # d(className='android.widget.EditText',index=0).click()   #QQ号/手机号/群/公众号
@@ -206,7 +207,7 @@ class MobilqqAddFriends:
                         z.sleep( int( args["time_delay"] ) )
                     return
                 d(text='返回').click()
-                if add_count ==i+1:
+                if add_count ==i+2:
                     if (args["time_delay"]):
                         z.sleep( int( args["time_delay"] ) )
                     return
@@ -239,12 +240,12 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("HT4A6SK01638")
-    z = ZDevice("HT4A6SK01638")
+    d = Device("cc0e9474")
+    z = ZDevice("cc0e9474")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
 
 
     # print(d.dump(compressed=False))
-    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","add_count":"4","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"245","repo_material_cate_id":"244","add_count":"2","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

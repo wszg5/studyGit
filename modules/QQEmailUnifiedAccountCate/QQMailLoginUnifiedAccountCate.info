@@ -1,0 +1,39 @@
+{
+"id": "QQMailLoginUnifiedAccountCate",
+"cate":"其他模块",
+"name":"QQ邮箱登录(指定服务器版)",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"QQMailLoginUnifiedAccountCate",
+"icon":"vcard-o",
+"remark":"QQ邮箱登录不带卡槽（指定服务器版）",
+"setting":[
+{
+"id": "domain",
+"name":"指定服务器",
+"defaultValue":"http://192.168.1.108:8888",
+"type":"textbox",
+"remark":"格式如：http://192.168.1.108:8888"
+},
+{
+"id": "repo_account_id",
+"name":"对应服务器上的帐号库",
+"defaultValue":"000",
+"type":"textbox",
+},
+{
+"id": "againCount",
+"name":"帐号密码错误重登次数",
+"type":"textbox",
+"defaultValue":"5",
+"remark":"帐号密码错误重登次数,直到次数达上限或登陆成功"
+},
+{
+"id": "account_time_limit",
+"name":"账号提取间隔",
+"type":"textbox",
+"defaultValue":"120",
+"remark":"单位：分钟；"
+}
+]
+}

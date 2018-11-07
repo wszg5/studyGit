@@ -148,6 +148,10 @@ class QQEmailDeleteMail:
                 d( textContains=tx, className="android.widget.TextView" ).click()
                 time.sleep(3)
                 while True:
+                    z.heartbeat( )
+                    if d( text='加载更多' ).exists:
+                        d( text='加载更多' ).click( )
+                        time.sleep( 5 )
                     obj = d( index=5, className="android.widget.RelativeLayout" ).child( index=0, className="android.widget.FrameLayout" )
                     if obj.exists:
                         obj.long_click( )

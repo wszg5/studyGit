@@ -10,23 +10,6 @@ class MobilqqAddFriendByCard:
 
 
     def action(self, d,z,args):
-        z.toast( "正在ping网络是否通畅" )
-        z.heartbeat( )
-        i = 0
-        while i < 200:
-            i += 1
-            ping = d.server.adb.cmd( "shell", "ping -c 3 baidu.com" ).communicate( )
-            print( ping )
-            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-                z.toast( "网络通畅。开始执行：普通QQ点赞名片加好友" )
-                break
-            z.sleep( 2 )
-        if i > 200:
-            z.toast( "网络不通，请检查网络状态" )
-            if (args["time_delay"]):
-                z.sleep( int( args["time_delay"] ) )
-            return
-
         d.server.adb.cmd("shell", "am force-stop com.tencent.mobileqq").communicate()  # 强制停止
         z.sleep(1.5)
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
@@ -62,8 +45,8 @@ class MobilqqAddFriendByCard:
             z.cmd("shell", 'am start -a android.intent.action.VIEW -d "mqqapi://card/show_pslcard?src_type=internal\&version=1\&uin=%s\&card_type=person\&source=qrcode"'%QQnumber)  # qq名片页面
             z.sleep(10)
 
-            if d( textContains='下次默认' ).exists:
-                d( textContains='下次默认' ).click( )
+            # if d( textContains='下次默认' ).exists:
+            #     d( textContains='下次默认' ).click( )
 
             if d(text='QQ').exists:
                 d(text='QQ').click()
@@ -101,8 +84,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("cda0ae8d")
-    z = ZDevice("cda0ae8d")
+    d = Device("cc0e9474")
+    z = ZDevice("cc0e9474")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_cate_id":"119","repo_material_cate_id":"39","add_count":"3","time_delay":"3"};    #cate_id是仓库号，length是数量
 

@@ -1,0 +1,86 @@
+{
+"id": "QQEmailSendText",
+"cate":"其他模块",
+"name":"QQ邮箱指定帐号发消息",
+"url": "http://www.bejson.com",
+"version": "2.0",
+"code":"QQEmailAST",
+"icon":"vcard-o",
+"remark":"QQ邮箱指定帐号发消息",
+"setting":[
+	{
+	"id": "repo_material_cateId",
+	"name":"邮件内容仓库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+    "id": "account_cateId",
+    "name":"帐号库",
+    "type":"repo",
+    "source":"account",
+    "top_cate_id":"1"
+    },
+	{
+	"id": "repo_material_cateId2",
+	"name":"邮件主题仓库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "appoint_number",
+	"name":"指定的QQ号",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"手动填写QQ号码"
+	},
+	{
+	"id": "picture",
+	"name":"是否发送图片",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"否",
+	"remark":"是否发送图片"
+	},
+	{
+	"id": "selectContent",
+	"name":"发送主题或内容",
+	"type":"select",
+	"list":{"只发主题":"只发主题","只发内容":"只发内容","主题内容都发":"主题内容都发"},
+	"defaultValue":"主题内容都发",
+	"remark":"发送主题或内容"
+	},
+	{
+	"id": "addToText",
+	"name":"是否添加到正文",
+	"type":"select",
+	"list":{"添加":"添加","不添加":"不添加"},
+	"defaultValue":"添加",
+	"remark":"图片是否添加到正文"
+	},
+	{
+	"id": "size",
+	"name":"图片大小",
+	"type":"select",
+	"list":{"大":"大","小":"小","中":"中","实际大小":"实际大小"},
+	"defaultValue":"大",
+	"remark":"图片大小"
+	},
+    {
+	"id": "sendCount",
+	"name":"一个帐号发邮件次数",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：次"
+	},
+    {
+    "id": "time_delay",
+    "name":"延时",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

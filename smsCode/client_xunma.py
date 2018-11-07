@@ -77,7 +77,7 @@ class client_xunma:
         # if phone:
         #     return phone
 
-        count = 100
+        count = 1
         itemcode = self.im_type_list[itemId]
         self.logger.info("itemcode_%s" % itemcode)
         self.logger.info("token_%s" % token)
@@ -98,14 +98,14 @@ class client_xunma:
             import string
             if string.find(data, u'单个用户获取数量不足') != -1:
                 self.ReleaseAllPhone()
-            if u'Session 过期' in data or u'Session过期' in data:
+            if u'Session' in data or u'Session过期' in data:
                 self.GetToken(False)
             if u'暂时没有此项目号码，请等会试试'  in data:
                 return None
 
             if data.startswith('False'):
                 time.sleep(3)
-            numbers = data.split(";");
+            numbers = data.split(";")
             return numbers
             # for number in numbers:
             #     if re.search("\d{11}", str(number)):

@@ -400,28 +400,3 @@ if __name__ == "__main__":
     args = {"repo_cate_id":164,"time_delay": "3", "contact_wait": "12"};    #cate_id是仓库号，length是数量
 
     o.action(d, z,args)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

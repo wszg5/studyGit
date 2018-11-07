@@ -21,7 +21,7 @@ import json
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
-# sys.path.append("C:\TaskConsole-master")
+sys.path.append("/home/zunyun/workspace/TaskConsole")
 # from IPChange import IPChange
 from Repo import Repo
 
@@ -1635,7 +1635,7 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    o.getArgs("1")
+    # o.getArgs("1")
     # ip = o.getIp()
     # print ip
     # o.delete()
@@ -1649,13 +1649,27 @@ if __name__ == "__main__":
     # else:
     #     message2 = Material[0]['content']
     #     print message2
-
-
     while True:
-        try:
-            o.action()
-        except Exception,e:
-            print e
+        repo_number_cate_id = "273"
+        emailnumbers = o.repo.GetNumber( repo_number_cate_id, 0, 1 )  # 取出add_count条两小时内没有用过的号码
+        if len( emailnumbers ) == 0:
+            print u"%s号仓库没有数据" % repo_number_cate_id
+            time.sleep( 300 )
+        emailnumber = emailnumbers[0]['number']
+        print emailnumber
+        # repo_cate_id = "226"
+        # numbers = o.repo.GetAccount(repo_cate_id, 0,1 )
+        # if len( numbers ) == 0:
+        #     print u"%s号仓库没有数据" % repo_cate_id
+        #     time.sleep( 300 )
+        # QQNumber = numbers[0]['number']  # 即将登陆的QQ号
+        # QQPassword = numbers[0]['password']
+
+    # while True:
+    #     try:
+    #         o.action()
+    #     except Exception,e:
+    #         print e
 
 
 

@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import base64
-import commands
 import json
 import shutil
 
 import time
-
-import subprocess
 
 from adb import Adb
 
@@ -66,8 +63,8 @@ class Slot:
 
         elif (self.type == "qqmail"):
             self.package = "com.tencent.androidqqmail"
-            self.files = []
-            self.folders = ['databases']
+            self.files = ['databases/AccountInfo', 'databases/tk_file']
+            self.folders = []
             self.maxSlot = const.MAX_SLOTS_QQMAIL
 
         elif (self.type == "163mail"):
@@ -194,14 +191,11 @@ class Slot:
         self.adb.run_cmd("shell",
                          "am broadcast -a com.zunyun.zime.action --es ac clear_slot --es id %s --es type %s " % (id, self.type))
 
-    def test(self):
-        cmd = "adb pull /storage/emulated/0/did /home/zunyun/text/images"
-        # self.adb.run_cmd("shell",cmd)
-        print os.system(cmd)
+
     def getEmpty(self):
         slots = self.getSlots()
         if not slots:
-            return 1
+            return 1;
         for index in range(1, self.maxSlot + 1):
             if not slots.has_key(str(index)) :
                 return index
@@ -250,14 +244,9 @@ class Slot:
         else:
             return False
 
-def getPluginClass():
-    return Slot
-
 if __name__ == "__main__":
     slot = Slot("FA53CSR02947", "mobileqq")
-    slot.test()
-    # clazz = getPluginClass( )
-    # o = clazz( )
+
     print slot.getAvailableSlot(25)
     #id = slot.getEmpty()
     #slot.backup(id, "XXXX%s" % str(id))

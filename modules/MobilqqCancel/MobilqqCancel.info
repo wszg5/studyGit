@@ -1,0 +1,19 @@
+{
+"id": "MobilqqCancel",
+"cate":"QQ模块",
+"name":"普通QQ关闭无用设置",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"MobilqqCancel",
+"icon":"vcard-o",
+"remark":"普通QQ关闭无用设置",
+"setting":[
+{
+"id": "time_delay",
+"name":"延时",
+"type":"textbox",
+"defaultValue":"3",
+"remark":"单位：秒"
+}
+]
+}

@@ -1,0 +1,19 @@
+{
+"id": "QQEmailClearCache",
+"cate":"其他模块",
+"name":"QQEmail-清除缓存",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQEmailClearCache",
+"icon":"vcard-o",
+"remark":"QQEmail-清除缓存",
+"setting":[
+    {
+    "id": "time_delay",
+    "name":"延迟",
+    "type":"textbox",
+    "defaultValue":"720",
+    "remark":"单位：分钟"
+    }
+]
+}

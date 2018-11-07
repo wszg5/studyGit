@@ -1,0 +1,33 @@
+{
+"id": "QQEmailUpdateNameUnifiedAccountCate",
+"cate":"其他模块",
+"name":"QQEmail-修改发信昵称(2.7)",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQEmailUpdateNameUnifiedAccountCate",
+"icon":"vcard-o",
+"remark":"QQEmail-修改发信昵称",
+"setting":[
+{
+"id": "domain",
+"name":"指定服务器",
+"defaultValue":"http://192.168.1.108:8888",
+"type":"textbox",
+"remark":"格式如：http://192.168.1.108:8888"
+},
+{
+"id": "random_code",
+"name":"乱码专用",
+"type":"select",
+"list":{"乱码":"乱码","不乱码":"不乱码"},
+"defaultValue":"不乱码",
+"remark":"出现乱码可修改该设置"
+},
+{
+"id": "repo_material_cateId",
+"name":"对应服务器上的昵称仓库",
+"defaultValue":"000",
+"type":"textbox",
+}
+]
+}

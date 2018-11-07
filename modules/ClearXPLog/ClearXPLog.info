@@ -1,0 +1,19 @@
+{
+"id": "ClearXPLog",
+"cate":"基础模块",
+"name":"清除XP框架日志文件",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"ClearXPLog",
+"icon":"vcard-o",
+"remark":"清除XP框架日志文件",
+"setting":[
+    {
+    "id": "time_delay",
+    "name":"多长时间只运行一次",
+    "type":"textbox",
+    "defaultValue":"1440",
+    "remark":"单位：分钟"
+    }
+]
+}

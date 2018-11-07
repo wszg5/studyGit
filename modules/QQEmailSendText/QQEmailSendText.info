@@ -45,6 +45,22 @@
 	"remark":"是否发送图片"
 	},
 	{
+	"id": "nuberLoop",
+	"name":"是否循环号码库",
+	"type":"select",
+	"list":{"循环":"循环","不循环":"不循环"},
+	"defaultValue":"不循环",
+	"remark":"是否循环号码库"
+	},
+	{
+	"id": "addToText",
+	"name":"是否添加到正文",
+	"type":"select",
+	"list":{"添加":"添加","不添加":"不添加"},
+	"defaultValue":"添加",
+	"remark":"图片是否添加到正文"
+	},
+	{
 	"id": "selectContent",
 	"name":"发送主题或内容",
 	"type":"select",

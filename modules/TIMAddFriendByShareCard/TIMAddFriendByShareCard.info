@@ -1,5 +1,5 @@
 {
-"id": "TIMAddFriendByShareCard",
+"id": "TIMAddFriendBySendText",
 "cate":"其他模块",
 "name":"TIM加好友(唤醒名片)",
 "url": "http://www.bejson.com",
@@ -10,7 +10,14 @@
 "setting":[
 	{
 	"id": "repo_number_cate_id",
-	"name":"号码库分类",
+	"name":"双向号码库分类",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"22"
+	},
+	{
+	"id": "repo_number_cate_id2",
+	"name":"单向号码库分类",
 	"type":"repo",
 	"source":"number",
 	"top_cate_id":"22"
@@ -22,6 +29,14 @@
     "source":"material",
     "top_cate_id":"12",
     "remark":"取验证语"
+    },
+    {
+    "id": "nuberLoop",
+    "name":"是否循环号码库",
+    "type":"select",
+    "list":{"循环":"循环","不循环":"不循环"},
+    "defaultValue":"不循环",
+    "remark":"是否循环号码库"
     },
     {
 	"id": "switch_card",
@@ -48,11 +63,19 @@
 	"remark":"性别要求"
 	},
 	{
+	"id": "random_code",
+	"name":"乱码专用",
+	"type":"select",
+	"list":{"乱码":"乱码","不乱码":"不乱码"},
+	"defaultValue":"不乱码",
+	"remark":"出现乱码可修改该设置"
+	},
+	{
 	"id": "add_count",
-	"name":"添加好友个数",
+	"name":"双向：单向",
 	"type":"textbox",
-	"defaultValue":"5",
-	"remark":"单位：个"
+	"defaultValue":"4-1",
+	"remark":"格式如：4-1"
 	},
 	{
     "id": "time_delay",

@@ -23,6 +23,7 @@ class MMCTIMAddfriendsByNumber:
     def __init__(self):
         self.repo = Repo()
         self.mid = os.path.realpath( __file__ )
+
     def GetUnique(self):
         nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S");  # 生成当前时间
         randomNum = random.randint(0, 1000);  # 生成的随机整数n，其中0<=n<=100
@@ -503,9 +504,9 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("d99e4b99")
-    z = ZDevice("d99e4b99")
+    d = Device("HT536SK03609")
+    z = ZDevice("HT536SK03609")
 
     args = {"time_delay":"3","set_timeStart":"1","set_timeEnd":"1","startTime":"0","endTime":"8",
-            "repo_number_cate_id":"119","repo_material_cate_id":"39",'gender':"男","add_count":"5","switch_card":"N"}    #cate_id是仓库号，length是数量
+            "repo_number_cate_id":"119","repo_material_cate_id":"52",'gender':"男","add_count":"5","switch_card":"N"}    #cate_id是仓库号，length是数量
     o.action( d, z, args )

@@ -1,0 +1,107 @@
+{
+"id": "QQEmailSendTextAndReceiveMail2",
+"cate":"其他模块",
+"name":"QQ邮箱发消息并收信只标记有回信",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQEmailSendTextAndReceiveMail2",
+"icon":"vcard-o",
+"remark":"QQ邮箱发消息并查看收件箱是否收到回信只标记有回信",
+"setting":[
+	{
+	"id": "repo_material_cateId",
+	"name":"邮件内容仓库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+    "id": "account_cateId",
+    "name":"帐号库",
+    "type":"repo",
+    "source":"account",
+    "top_cate_id":"1"
+    },
+	{
+	"id": "repo_material_cateId2",
+	"name":"邮件主题仓库",
+	"type":"repo",
+	"source":"material",
+	"top_cate_id":"12"
+	},
+	{
+	"id": "repo_mail_cateId",
+	"name":"号码库分类",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"22"
+	},
+	{
+	"id": "picture",
+	"name":"是否发送图片",
+	"type":"select",
+	"list":{"是":"是","否":"否"},
+	"defaultValue":"是",
+	"remark":"是否发送图片"
+	},
+	{
+	"id": "nuberLoop",
+	"name":"是否循环号码库",
+	"type":"select",
+	"list":{"循环":"循环","不循环":"不循环"},
+	"defaultValue":"不循环",
+	"remark":"是否循环号码库"
+	},
+	{
+	"id": "selectContent",
+	"name":"发送主题或内容",
+	"type":"select",
+	"list":{"只发主题":"只发主题","只发内容":"只发内容","主题内容都发":"主题内容都发"},
+	"defaultValue":"主题内容都发",
+	"remark":"发送主题或内容"
+	},
+	{
+	"id": "size",
+	"name":"图片大小",
+	"type":"select",
+	"list":{"大":"大","小":"小","中":"中","实际大小":"实际大小"},
+	"defaultValue":"大",
+	"remark":"图片大小"
+	},
+	{
+	"id": "count",
+	"name":"每次发邮件收件人个数",
+	"type":"textbox",
+	"defaultValue":"1",
+	"remark":"单位：个"
+	},
+	{
+	"id": "bccCount",
+	"name":"每次发邮件密送人数",
+	"type":"textbox",
+	"defaultValue":"2",
+	"remark":"单位：个"
+	},
+    {
+	"id": "sendCount",
+	"name":"一个帐号发邮件次数",
+	"type":"textbox",
+	"defaultValue":"3",
+	"remark":"单位：次"
+	},
+	{
+	"id": "failCount",
+	"name":"待发送个数",
+	"type":"textbox",
+	"defaultValue":"4",
+	"remark":"当待发送个数达到此个数时，跳出模块"
+	},
+    {
+    "id": "time_delay",
+    "name":"发送后等待时间,进收件箱查看是否收信",
+    "type":"textbox",
+    "defaultValue":"30",
+    "remark":"单位：秒,"
+    }
+]
+}

@@ -127,8 +127,8 @@ class MobilqqAddByAddressList:
         d.server.adb.cmd("shell", "am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
         z.sleep(6)
         z.heartbeat()
-        if not d(text='消息',resourceId='com.tencent.mobileqq:id/name').exists:                    #到了通讯录这步后看号有没有被冻结
-            return 2
+        # if not d(text='消息',resourceId='com.tencent.mobileqq:id/name').exists:                    #到了通讯录这步后看号有没有被冻结
+        #     return 2
         if d(text='绑定手机号码').exists:
             d(text='关闭').click()
             d(text='关闭').click()
@@ -341,8 +341,8 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("9ef40375")
-    z = ZDevice("9ef40375")
+    d = Device("cc0e9474")
+    z = ZDevice("cc0e9474")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # z.input('13094731693')
     args = {"repo_material_id":"100",'gender':"不限",'EndIndex':'50',"time_delay":"3"};    #cate_id是仓库号，length是数量

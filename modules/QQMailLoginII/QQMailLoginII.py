@@ -202,7 +202,7 @@ class QQMailLogin:
                         continue
 
             account = accounts[0]['number']
-            password = accounts[0]['password'] +"x"
+            password = accounts[0]['password']
 
             if d(text='帐号密码登录').exists:
                 d(text='帐号密码登录').click()
@@ -389,7 +389,9 @@ class QQMailLogin:
             width = int( Str["displayWidth"] )
             z.heartbeat()
             z.generate_serial("com.tencent.androidqqmail")  # 随机生成手机特征码
-
+            d.server.adb.cmd( "shell",
+                              "su -c 'rm -r -f /storage/emulated/0/tencent/QQmail'" )  # 删除/storage/emulated/0/tencent/QQmail文件夹
+            time.sleep( 2 )
             if args['mail_type'] == '163邮箱登录':
                 self.type = '163mail'
 
@@ -456,11 +458,12 @@ if __name__ == "__main__":
 
     clazz = getPluginClass()
     o = clazz()
-    d = Device("9cae944e")
-    z = ZDevice("9cae944e")
+    d = Device("HT51DSK01490")
+    z = ZDevice("HT51DSK01490")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_account_id": "358", "mail_type": "QQ邮箱登录", "account_time_limit": "120", "slot_time_limit": "1","againCount":"4"}
-    print o.repo.GetAccount("345","120",1)
+    # print o.repo.GetAccount("345","120",1,"","1")
+    # o.repo.UpdateNumberStauts("","104","normal")
     o.action( d, z, args )
     # d.server.adb.cmd( "shell",
     #                   "am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail" ).communicate( )  # 拉起QQ邮箱

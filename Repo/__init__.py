@@ -11,9 +11,10 @@ class Repo:
         self.headers = {"Content-type": "application/x-www-form-urlencoded",
                         "Accept": "application/json", "Content-type": "application/xml; charset=utf=8"}
         self.domain = const.REPO_API_IP
-        self.port = None
+        # self.port = None
 
         self.port = 8888
+
     def PostInformation(self, cateId, data):
         data["cateId"] = cateId
         path = "/repo_api/checkDeposit/checkDepositInfo"
@@ -25,7 +26,7 @@ class Repo:
         # 返回处理后的数据
         response = conn.getresponse( )
         # 判断是否提交成功
-        # if response.status == 302:
+        # if response.status == 200:
         #     print ("发布成功!^_^!")
         # else:
         #     print ("发布失败\^0^/")
@@ -53,17 +54,36 @@ class Repo:
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
         conn.request( "GET", path )
 
-    def GetAccount(self,cateId, interval, limit):
-        path = "/repo_api/account/pick?status=%s&cate_id=%s&interval=%s&limit=%s" % ("normal",cateId, interval, limit)
+    def GetAccount(self,cateId, interval, limit,condition="",recover=""):
+        path = "/repo_api/account/pick?status=%s&cate_id=%s&interval=%s&limit=%s&condition=%s&recover=%s" % ("normal",cateId, interval, limit,condition,recover)
         conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
         conn.request( "GET", path )
         response = conn.getresponse( )
         if response.status == 200:
             data = response.read( )
             numbers = json.loads( data )
+            if numbers == [] and recover!='':
+                path = "/repo_api/account/pick?status=%s&cate_id=%s&interval=%s&limit=%s&condition=%s&recover=%s" % (
+                "normal", cateId, interval, limit, condition, recover)
+                conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+                conn.request( "GET", path )
+                response = conn.getresponse( )
+                if response.status == 200:
+                    data = response.read( )
+                    numbers = json.loads( data )
             return numbers
         else:
-            return []
+            path = "/repo_api/account/pick?status=%s&cate_id=%s&interval=%s&limit=%s&condition=%s&recover=%s" % (
+            "normal", cateId, interval, limit, condition, recover)
+            conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
+            conn.request( "GET", path )
+            response = conn.getresponse( )
+            if response.status == 200:
+                data = response.read( )
+                numbers = json.loads( data )
+                return numbers
+            else:
+                return []
 
     # def GetMaterial(self, cateId, interval, limit, wid=''):  # wid是用来发微信朋友圈的
     #     path = "/repo_api/material/pick?status=normal&cate_id=%s&interval=%s&limit=%s&wid=%s" % (
@@ -71,6 +91,7 @@ class Repo:
     #     conn = httplib.HTTPConnection( self.domain, self.port, timeout=30 )
     #     conn.request( "GET", path )
     #     response = conn.getresponse( )
+
     def GetMaterial(self, cateId, interval, limit, wid=''):    #wid是用来发微信朋友圈的
         path = "/repo_api/material/pick?status=normal&cate_id=%s&interval=%s&limit=%s&wid=%s" % (cateId,interval,limit,wid)
         conn = httplib.HTTPConnection(self.domain, self.port, timeout=30)

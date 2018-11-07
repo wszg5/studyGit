@@ -16,6 +16,14 @@
 "top_cate_id":"22"
 },
 {
+"id": "nuberLoop",
+"name":"是否循环号码库",
+"type":"select",
+"list":{"循环":"循环","不循环":"不循环"},
+"defaultValue":"不循环",
+"remark":"是否循环号码库"
+},
+{
 "id": "repo_material_sign_id",
 "name":"提取署名素材库",
 "type":"repo",

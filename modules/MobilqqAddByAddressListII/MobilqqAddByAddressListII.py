@@ -16,6 +16,12 @@ class MobilqqAddByAddressListII:
         newStart = 1
         while newStart == 1:
             GetBindNumber = self.scode.GetPhoneNumber( self.scode.QQ_CONTACT_BIND )
+            if 'Session' in GetBindNumber:
+                self.Bind(d, z)
+            if isinstance(GetBindNumber, list) and GetBindNumber:
+                GetBindNumber = GetBindNumber[0]
+            elif GetBindNumber is None or GetBindNumber==[]:
+                return 'false'
             print( GetBindNumber )
             z.sleep( 2 )
             d( resourceId='com.tencent.mobileqq:id/name', className='android.widget.EditText' ).set_text(
@@ -24,6 +30,8 @@ class MobilqqAddByAddressListII:
             z.sleep( 1 )
             d( text='下一步' ).click( )
             z.sleep( 3 )
+            while d(text="正在发送请求").exists:
+                time.sleep(3)
             if d( text='下一步' ).exists:  # 操作过于频繁的情况
                 return 'false'
 
@@ -232,25 +240,3 @@ if __name__ == "__main__":
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_material_id": "39",'EndIndex':'100',"time_delay": "3"}    #cate_id是仓库号，length是数量
     o.action(d,z, args)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

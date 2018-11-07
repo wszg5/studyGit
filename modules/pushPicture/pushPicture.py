@@ -81,13 +81,26 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("9cae944e")
-    z = ZDevice("9cae944e")
+    d = Device("37f7b82f")
+    z = ZDevice("37f7b82f")
     z.server.install()
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_material_id": "246",'num':'2','time':'0',"time_delay": "3"}    #cate_id是仓库号，length是数量
-    o.action(d,z, args)
-
+    args = {"repo_material_id": "392",'num':'3','time':'0',"time_delay": "3"}    #cate_id是仓库号，length是数量
+    # o.action(d,z, args)
+    import string
+    salt = ''.join( random.sample( string.ascii_letters + string.digits, random.randint(1,11) ) )
+    print salt
+    with open('/home/zunyun/text/z.png','rb') as f:
+        form = 'png'
+        string = '/tmp/%s.%s' % (uuid.uuid1( ), form)
+        fp = open( string, 'wb' )
+        fp.write( f.read() )
+        fp.close( )
+    # print '%s -- %s' %(k,v)
+    name = 'abcdefghijklmnopqrestuvwxyz0123456789'
+    imgTarget = "/sdcard/Android/%s.%s" % (salt, form)
+    d.server.adb.cmd( "push", string, imgTarget ).wait( )
+    d.server.adb.cmd( "shell","am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file://%s" % imgTarget ).communicate( )
 
 
 

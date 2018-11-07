@@ -49,7 +49,8 @@ class MobilqqLoginNoSolt:
             z.sleep(1)
 
             z.heartbeat()
-            d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
+            d.server.adb.cmd( "shell", "pm clear com.tencent.mobileqq" ).communicate( )  # 清除缓存
+            # d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
             d.server.adb.cmd("shell","am start -n com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity").communicate()  # 拉起来
             z.sleep(8)
             d(text='登 录').click()
@@ -88,11 +89,22 @@ class MobilqqLoginNoSolt:
                     img.paste(region, (0, 0))
 
                     img.save(codePng)
-                    im = open(codePng, 'rb')
-
-                    codeResult = icode.getCode(im, icode.CODE_TYPE_4_NUMBER_CHAR)
-                    code = codeResult["Result"]
-                    im_id = codeResult["Id"]
+                    with open( codePng, 'rb' ) as f:
+                        # file = f.read()
+                        file = "data:image/jpeg;base64," + base64.b64encode( f.read( ) )
+                        da = {"IMAGES": file}
+                        path = "/ocr.index"
+                        headers = {"Content-Type": "application/x-www-form-urlencoded",
+                                   "Connection": "Keep-Alive"}
+                        conn = httplib.HTTPConnection( "162626i1w0.51mypc.cn", 10082, timeout=30 )
+                        params = urllib.urlencode( da )
+                        conn.request( method="POST", url=path, body=params, headers=headers )
+                        response = conn.getresponse( )
+                        if response.status == 200:
+                            code = response.read( )
+                            break
+                        else:
+                            continue
                     os.remove(sourcePng)
                     os.remove(codePng)
                     z.heartbeat()
@@ -140,20 +152,21 @@ class MobilqqLoginNoSolt:
 
     def action(self, d,z, args):
         z.heartbeat()
-        d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
-        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
-        z.sleep(6)
-        d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
-        d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+        # d.server.adb.cmd("shell", "settings put global airplane_mode_on 1").communicate()
+        # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true").communicate()
+        # z.sleep(6)
+        # d.server.adb.cmd("shell", "settings put global airplane_mode_on 0").communicate()
+        # d.server.adb.cmd("shell", "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false").communicate()
+        # z.heartbeat()
+        # while True:
+        #     ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
+        #     # print(ping)
+        #     if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
+        #         break
+        #     z.sleep(2)
         z.heartbeat()
-        while True:
-            ping = d.server.adb.cmd("shell", "ping -c 3 baidu.com").communicate()
-            # print(ping)
-            if 'icmp_seq' and 'bytes from' and 'time' in ping[0]:
-                break
-            z.sleep(2)
-        z.heartbeat()
-        serialinfo = z.generateSerial("788")  # 修改串号等信息
+        z.generate_serial( "com.tencent.mobileqq" )  # 随机生成手机特征码
+        z.toast( "随机生成手机特征码" )
         self.login(d,args,z)
         z.heartbeat()
         if (args["time_delay"]):
@@ -169,14 +182,14 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("HT54VSK01061")
-    z = ZDevice("HT54VSK01061")
+    d = Device("cc0e9474")
+    z = ZDevice("cc0e9474")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     # d.server.adb.cmd("shell", "pm clear com.tencent.mobileqq").communicate()  # 清除缓存
     # slot.restore(d, 9)
 
     # d.dump(compressed=False)
-    args = {"repo_cate_id":"132","time_limit":"1","time_delay":"3"};    #cate_id是仓库号，length是数量
+    args = {"repo_cate_id":"264","time_limit":"1","time_delay":"3"};    #cate_id是仓库号，length是数量
 
     o.action(d,z, args)

@@ -1,0 +1,12 @@
+{
+"id": "Wifi",
+"cate":"基础模块",
+"name":"检测是否连接wifi",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"Wifi",
+"icon":"vcard-o",
+"remark":"未连接wifi将重启手机",
+"setting":[
+]
+}

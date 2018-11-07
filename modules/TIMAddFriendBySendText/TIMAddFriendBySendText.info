@@ -1,0 +1,79 @@
+{
+"id": "TIMAddFriendBySendText",
+"cate":"其他模块",
+"name":"TIM加好友(唤醒监控发消息)",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"TIMAddFriendBySendText",
+"icon": "vcard-o",
+"remark":"TIM加好友(唤醒监控发消息)",
+"setting":[
+	{
+	"id": "repo_number_cate_id",
+	"name":"唤醒的号码库分类",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"22"
+	},
+	{
+	"id": "repo_number_cate_id2",
+	"name":"添加的号码库分类",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"22"
+	},
+	{
+    "id": "repo_material_cate_id",
+    "name":"回复信息素材库",
+    "type":"repo",
+    "source":"material",
+    "top_cate_id":"12",
+    "remark":"取验证语"
+    },
+    {
+    "id": "nuberLoop2",
+    "name":"是否循环添加的号码库",
+    "type":"select",
+    "list":{"循环":"循环","不循环":"不循环"},
+    "defaultValue":"不循环",
+    "remark":"是否循环添加的号码库"
+    },
+    {
+    "id": "nuberLoop",
+    "name":"是否循环唤醒的号码库",
+    "type":"select",
+    "list":{"循环":"循环","不循环":"不循环"},
+    "defaultValue":"不循环",
+    "remark":"是否循环唤醒的号码库"
+    },
+	{
+	"id": "random_code",
+	"name":"乱码专用",
+	"type":"select",
+	"list":{"乱码":"乱码","不乱码":"不乱码"},
+	"defaultValue":"不乱码",
+	"remark":"出现乱码可修改该设置"
+	},
+	{
+	"id": "add_count",
+	"name":"每次唤醒后需要添加的好友个数",
+	"type":"textbox",
+	"defaultValue":"4",
+	"remark":"格式如：4"
+	},
+	{
+	"id": "friendCounts",
+	"name":"唤醒好友的个数",
+	"type":"textbox",
+	"defaultValue":"4",
+	"remark":"格式如：4"
+	},
+	{
+    "id": "time_delay",
+    "name":"发送消息后的等待时间",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"单位：秒"
+    }
+]
+}

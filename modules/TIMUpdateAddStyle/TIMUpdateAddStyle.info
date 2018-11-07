@@ -1,0 +1,19 @@
+{
+"id": "TIMUpdateAddStyle",
+"cate":"其他模块",
+"name":"TIM修改加好友设置",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"TIMUpdateAddStyle",
+"icon": "vcard-o",
+"remark":"TIM修改加好友设置",
+"setting":[
+{
+"id": "repo_account_id",
+"name":"账号库分类",
+"type":"repo",
+"source":"account",
+"top_cate_id":"1"
+}
+]
+}

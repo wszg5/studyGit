@@ -111,20 +111,46 @@ class TIMAddFriendByShareCard:
         z.sleep( 8 )
         z.heartbeat( )
 
-        if d( text='消息' ).exists:  # 到了通讯录这步后看号有没有被冻结
-            z.toast( "TIM状态正常，继续执行" )
+        if d( text="消息", resourceId="com.tencent.tim:id/ivTitleName" ).exists and not d( text="马上绑定",
+                                                                                         className="android.widget.Button" ).exists:
+            z.toast( "登录状态正常，继续执行" )
         else:
-            z.toast( "TIM状态异常，跳过此模块" )
-            return
+            if d( text="关闭", resourceId="com.tencent.tim:id/ivTitleBtnLeftButton" ).exists:
+                d( text="关闭", resourceId="com.tencent.tim:id/ivTitleBtnLeftButton" ).click( )
+                z.sleep( 1 )
+            elif d( text="消息", className="android.widget.TextView" ).exists and d( text="马上绑定",
+                                                                                   className="android.widget.Button" ).exists:
+                d( text="消息", className="android.widget.TextView" ).click( )
+                z.sleep( 1 )
+            elif d( text="返回" ).exists:
+                d( text="返回" ).click( )
+                z.sleep( 1 )
+
+            else:
+                z.toast( "登录状态异常，跳过此模块" )
+                return
         z.heartbeat()
 
         gender1 = args['gender']
         cate_id1 = args["repo_material_cate_id"]
-        add_count = int(args['add_count'])  # 要添加多少人
+        all_count = args['add_count']  # 要添加多少人
+        try:
+            add_count = int(all_count.split("-")[0])
+            to_count = int(all_count.split("-")[1])
+        except:
+            add_count = int(all_count.split( "-" )[0])
+            z.toast("默认使用%s-1")
+            to_count = 1
+
         switch_card = args["switch_card"]
         switch = args["switch"]
         count = 1
         num = 0
+        flag = False
+        flag2 = False
+        flag3 = True
+        repo_number_cate_id2 = args['repo_number_cate_id2']
+        random_code = args['random_code']
         while True:            #总人数
             Material = self.repo.GetMaterial( cate_id1, 0, 1 )
             if len( Material ) == 0:
@@ -135,13 +161,24 @@ class TIMAddFriendByShareCard:
             message = Material[0]['content']  # 取出验证消息的内容
 
             repo_number_cate_id = int( args["repo_number_cate_id"] )  # 得到取号码的仓库号
-
-            numbers = self.repo.GetNumber( repo_number_cate_id, 120, 1 )  # 取出add_count条两小时内没有用过的号码
+            if flag:
+                numbers = self.repo.GetNumber( repo_number_cate_id2, 120, 1 )  # 取出add_count条两小时内没有用过的号码
+            else:
+                numbers = self.repo.GetNumber( repo_number_cate_id, 120, 1 )  # 取出add_count条两小时内没有用过的号码
             if len( numbers ) == 0:
-                d.server.adb.cmd( "shell",
-                                  "am broadcast -a com.zunyun.zime.toast --es msg \"QQ号码库%s号仓库为空，等待中\"" % repo_number_cate_id ).communicate( )
-                z.sleep( 5 )
-                return
+                if args["nuberLoop"] == "循环":
+                    if flag:
+                        repo_number_cate_id = repo_number_cate_id2
+                    self.repo.UpdateNumberStauts( "", repo_number_cate_id, "normal" )
+                    numbers = self.repo.GetNumber( repo_number_cate_id, 120, 1 )
+                    if len( numbers ) == 0:
+                        z.toast( "%s号仓库没有号码" % repo_number_cate_id )
+                        return
+                else:
+                    d.server.adb.cmd( "shell",
+                                      "am broadcast -a com.zunyun.zime.toast --es msg \"%s号仓库为空，没有取到消息\"" % repo_number_cate_id ).communicate( )
+                    z.sleep( 10 )
+                    return
             z.heartbeat( )
             QQnumber = numbers[0]['number']
             print(QQnumber)
@@ -193,8 +230,19 @@ class TIMAddFriendByShareCard:
                     z.toast( "频繁操作,跳出模块" )
                     return
                 else:
-                    count = count + 1
+                    count += 1
+                    if (args["time_delay"]):
+                        z.sleep( int( args["time_delay"] ) )
+                    if flag3:
+                        if count % 2 == 0:
+                            flag = True
+                            count -= 2
+                            flag3 = False
+                    else:
+                        if count % (add_count + to_count) == 0:
+                            flag = True
                     print( QQnumber + "请求发送成功" )
+                    flag = False
                 continue
 
             if switch=="是":
@@ -207,7 +255,7 @@ class TIMAddFriendByShareCard:
                     d.press.delete( )
                     t = t + 1
                 time.sleep( 2 )
-                z.input(message)
+                self.input(random_code,z,message)
             # d(index=2,className="android.widget.CompoundButton",resourceId="com.tencent.tim:id/name").click()
             if "是" in switch_card:
                 if d( index=2, className="android.widget.CompoundButton", resourceId="com.tencent.tim:id/name" ).exists:
@@ -247,6 +295,9 @@ class TIMAddFriendByShareCard:
             if d(text='下一步',resourceId='com.tencent.tim:id/ivTitleBtnRightText').exists:
                 z.heartbeat()
                 d(text='下一步',resourceId='com.tencent.tim:id/ivTitleBtnRightText').click()
+                if flag:
+                    count -= 1
+                    self.repo.UpdateNumberStauts(QQnumber,repo_number_cate_id2,'not_exist')
             z.sleep( 2 )
             if d(text='发送').exists:
                 d(text='发送').click()
@@ -255,15 +306,30 @@ class TIMAddFriendByShareCard:
                 z.toast("频繁操作,跳出模块")
                 return
             print(QQnumber+"请求发送成功")
+            if (args["time_delay"]):
+                z.sleep( int( args["time_delay"] ) )
+            count += 1
+            flag = False
             z.heartbeat()
-            if count == add_count:
-                break
-            count = count + 1
+            if flag3:
+                if count % 2 == 0:
+                    flag = True
+                    count -=2
+                    flag3 = False
+            else:
+                if count % (add_count+to_count)==0:
+                    flag = True
+
         z.sleep(1)
         z.toast( "模块完成" )
         if (args["time_delay"]):
             z.sleep(int(args["time_delay"]))
-
+    
+    def input(self,random_code,z,text):
+        if random_code=="乱码":
+            z.cmd( "shell", "am broadcast -a ZY_INPUT_TEXT --es text \\\"%s\\\"" % text )
+        else:
+            z.input(text)
 
 def getPluginClass():
     return TIMAddFriendByShareCard
@@ -274,10 +340,11 @@ if __name__ == "__main__":
     sys.setdefaultencoding('utf8')
     clazz = getPluginClass()
     o = clazz()
-    d = Device("9cae944e")
-    z = ZDevice("9cae944e")
+    d = Device("HT53ASK02287")
+    z = ZDevice("HT53ASK02287")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_number_cate_id":"119","repo_material_cate_id":"39",'gender':"男","add_count":"3","time_delay":"3","switch_card":"","switch":"否"}    #cate_id是仓库号，length是数量
+    args = {"repo_number_cate_id":"408","repo_number_cate_id2":"408","repo_material_cate_id":"382",'gender':"不限","add_count":"2-1","time_delay":"3","switch_card":"","switch":"是","random_code":"乱码","nuberLoop":"循环"}    #cate_id是仓库号，length是数量
+    # o.repo.UpdateNumberStauts( "13856143219", "283", 'not_exist' )
     try:
         o.action( d, z, args )
     except :

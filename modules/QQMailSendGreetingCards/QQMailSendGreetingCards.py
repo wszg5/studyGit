@@ -170,8 +170,16 @@ class QQMailSendGreetingCards:
                     while len(numbers) == 0:
                         numbers = self.repo.GetNumber(args["repo_number_id"], 0, sendPeCount)  # 去仓库获取号码
                         if len(numbers) == 0:
-                            z.toast(u"号码库为空")
-                            z.sleep(30)
+                            if args["nuberLoop"] == "循环":
+                                self.repo.UpdateNumberStauts( "", args["repo_number_id"], "normal" )
+                                numbers = self.repo.GetNumber( args["repo_number_id"], 120, sendCount )
+                                if len( numbers ) == 0:
+                                    z.toast( "%s号仓库没有号码" % args["repo_number_id"] )
+                                    return
+                            else:
+                                d.server.adb.cmd( "shell","am broadcast -a com.zunyun.zime.toast --es msg \"%s号仓库为空，没有取到消息\"" % args["repo_number_id"] ).communicate( )
+                                z.sleep( 10 )
+                                return
 
                 for s in range(len(numbers)):  # 发送给多少人
                     number = numbers[s]['number']
@@ -252,7 +260,7 @@ if __name__ == "__main__":
     # o.input(z,height,"fdsfs发的三分1345")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_number_id": "44", "repo_material_themes_id": "52", "repo_material_sign_id": "100",
-         "send_count": "3", "send_num_of_pe": "5", "time_delay": "3","nameFlag":"署名","themeFlag":"否","account_cateId":"358","failCount":"4"}
+         "send_count": "3", "send_num_of_pe": "5", "time_delay": "3","nameFlag":"署名","themeFlag":"否","account_cateId":"358","failCount":"4","nuberLoop":"循环"}
     o.action(d, z, args)
 
     # Str = d.info  # 获取屏幕大小等信息

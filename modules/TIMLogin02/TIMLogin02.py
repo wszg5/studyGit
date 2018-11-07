@@ -118,7 +118,8 @@ class TIMLogin02:
             z.heartbeat( )
             z.sleep( 5 )
             d.click( width * 300 / 540, height * 330 / 888 )
-            self.input( z, height, code )
+            random_code = args["random_code"]
+            self.input(random_code,z, code )
             z.sleep( 2 )
             d.click( width * 270 / 540, height * 525 / 888 )
             while d( className='android.widget.ProgressBar', index=0 ).exists:  # 网速不给力时，点击完成后仍然在加载时的状态
@@ -220,6 +221,7 @@ class TIMLogin02:
 
         cate_id = args["repo_cate_id"]
         time_limit1 = args['time_limit1']
+        random_code = args["random_code"]
         numbers = self.repo.GetAccount( cate_id, time_limit1, 1 )
         while len( numbers ) == 0:
             z.heartbeat( )
@@ -258,12 +260,12 @@ class TIMLogin02:
         z.sleep( 1 )
         # d(className='android.widget.EditText', index=0).set_text(QQNumber)  # ﻿1918697054----xiake1234.  QQNumber
         d(className='android.widget.EditText', index=0).click()  # ﻿1918697054----xiake1234.  QQNumber
-        self.input( z, height, QQNumber )
+        self.input(random_code,z, QQNumber )
 
         z.sleep( 1 )
         # d(resourceId='com.tencent.mobileqq:id/password').set_text(QQPassword)  # Bn2kJq5l     QQPassword
         d(resourceId='com.tencent.tim:id/password').click()  # Bn2kJq5l     QQPassword
-        self.input( z, height, QQPassword )
+        self.input(random_code,z, QQPassword )
         z.heartbeat()
         logger = util.logger
         # print('QQ号:%s,QQ密码：%s' % (QQNumber, QQPassword))
@@ -393,12 +395,6 @@ class TIMLogin02:
                 z.toast( "登陆失败，重新登陆" )
                 return
 
-    def input(self, z, height, text):
-        if height>888:
-            z.input(text)
-        else:
-            z.cmd( "shell", "am broadcast -a ZY_INPUT_TEXT --es text \\\"%s\\\"" % text )
-
 
     def action(self,d,z,args):
         Str = d.info  # 获取屏幕大小等信息
@@ -432,7 +428,12 @@ class TIMLogin02:
 
         if (args["time_delay"]):
             time.sleep(int(args["time_delay"]))
-
+    
+    def input(self,random_code,z,text):
+        if random_code=="乱码":
+            z.cmd( "shell", "am broadcast -a ZY_INPUT_TEXT --es text \\\"%s\\\"" % text )
+        else:
+            z.input(text)
 
 def getPluginClass():
     return TIMLogin02
@@ -445,11 +446,11 @@ if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
 
-    d = Device("9cae944e")
-    z = ZDevice("9cae944e")
+    d = Device("HT537SK00838")
+    z = ZDevice("HT537SK00838")
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_cate_id": "241", "time_limit1": "120","time_delay1":"10","time_delay": "3","failCount":"3"}  # cate_id是仓库号，length是数量
+    args = {"repo_cate_id": "264", "time_limit1": "120","time_delay1":"10","time_delay": "3","failCount":"3","random_code":"乱码"}  # cate_id是仓库号，length是数量
     o.action(d, z, args)
     # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
     # d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止

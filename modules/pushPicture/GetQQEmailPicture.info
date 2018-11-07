@@ -1,0 +1,40 @@
+{
+"id": "GetQQEmailPicture",
+"cate":"其他模块",
+"name":"截取QQ邮箱登陆验证码图片",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"GetQQEmailPicture",
+"icon": "vcard-o",
+"remark":"图片存储在/sdcard/Android",
+"setting":[
+	{
+"id": "repo_account_id",
+"name":"帐号库",
+"type":"repo",
+"source":"account",
+"top_cate_id":"1"
+},
+{
+"id": "againCount",
+"name":"登陆次数",
+"type":"textbox",
+"defaultValue":"10",
+"remark":"共登陆多少个帐号"
+},
+{
+"id": "account_time_limit",
+"name":"账号提取间隔",
+"type":"textbox",
+"defaultValue":"120",
+"remark":"单位：分钟；"
+},
+{
+"id": "num",
+"name":"一个帐号登陆验证码刷新次数",
+"type":"textbox",
+"defaultValue":"100",
+"remark":"长时间刷新可能会刷新不出新的图片了"
+}
+]
+}

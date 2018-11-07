@@ -1,0 +1,54 @@
+{
+"id": "QQZoneComment",
+"cate":"其他模块",
+"name":"QQ空间登陆评论",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"QQZoneComment",
+"icon":"vcard-o",
+"remark":"QQ空间登陆评论",
+"setting":[
+{
+"id": "repo_account_id",
+"name":"提取帐号库",
+"type":"repo",
+"source":"account",
+"top_cate_id":"1"
+},
+{
+"id": "repo_material_cateId",
+"name":"评论内容仓库",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
+{
+"id": "againCount",
+"name":"帐号密码错误重登次数",
+"type":"textbox",
+"defaultValue":"3",
+"remark":"帐号密码错误重登次数,直到次数达上限或登陆成功"
+},
+{
+"id": "sendCount",
+"name":"成功评论的个数",
+"type":"textbox",
+"defaultValue":"3",
+"remark":"成功评论的个数"
+},
+{
+"id": "repo_mail_cateId",
+"name":"号码库分类",
+"type":"repo",
+"source":"number",
+"top_cate_id":"22"
+},
+{
+"id": "account_time_limit",
+"name":"账号提取间隔",
+"type":"textbox",
+"defaultValue":"120",
+"remark":"单位：分钟；"
+}
+]
+}

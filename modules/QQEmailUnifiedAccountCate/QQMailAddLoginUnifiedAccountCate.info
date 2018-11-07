@@ -1,0 +1,47 @@
+{
+"id": "QQMailAddLoginUnifiedAccountCate",
+"cate":"其他模块",
+"name":"QQ邮箱添加其他帐号登录(指定服务器版)",
+"url": "http://www.bejson.com",
+"version": "1.1",
+"code":"QQMailAddLoginUnifiedAccountCate",
+"icon":"vcard-o",
+"remark":"QQ邮箱添加其他帐号登录(指定服务器版)",
+"setting":[
+{
+"id": "domain",
+"name":"指定服务器",
+"type":"textbox",
+"defaultValue":"http://192.168.1.108:8888",
+"remark":"格式如：http://192.168.1.108:8888"
+},
+{
+"id": "repo_account_id",
+"name":"对应域名上的帐号库",
+"defaultValue":"000",
+"type":"textbox",
+},
+{
+"id": "againCount",
+"name":"帐号密码错误重登次数",
+"type":"textbox",
+"defaultValue":"5",
+"remark":"帐号密码错误重登次数,直到次数达上限或登陆成功"
+},
+{
+"id": "mail_type",
+"name":"登陆的邮箱类型",
+"type":"select",
+"list":{"QQ邮箱登录":"QQ邮箱登录","163邮箱登录":"163邮箱登录","腾讯企业邮箱登录":"腾讯企业邮箱登录"},
+"defaultValue":"QQ邮箱登录",
+"remark":"需要登陆的邮箱类型"
+},
+{
+"id": "account_time_limit",
+"name":"账号提取间隔",
+"type":"textbox",
+"defaultValue":"120",
+"remark":"单位：分钟；"
+}
+]
+}

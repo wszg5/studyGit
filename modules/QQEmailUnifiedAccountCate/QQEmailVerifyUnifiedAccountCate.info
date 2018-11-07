@@ -1,0 +1,97 @@
+{
+"id": "QQEmailVerifyUnifiedAccountCate(统一帐号库版)",
+"cate":"其他模块",
+"name":"QQ邮箱根据另一个帐号的收信情况验货",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQEmailVerifyUnifiedAccountCate",
+"icon":"vcard-o",
+"remark":"QQ邮箱根据另一个帐号的收信情况验货(统一帐号库版)",
+"setting":[
+{
+    "id": "domain",
+    "name":"指定域名",
+    "type":"textbox",
+    "defaultValue":"192.168.1.102:8888",
+    "remark":"格式如：192.168.1.102:8888"
+    },
+    {
+    "id": "repo_account_A",
+    "name":"对应域名上的帐号库A",
+    "defaultValue":"100",
+    "type":"textbox",
+    },
+    {
+    "id": "repo_account_B",
+    "name":"对应域名上的帐号库B",
+    "defaultValue":"100",
+    "type":"textbox",
+    },
+	{
+    "id": "repo_material_cateId",
+    "name":"对应域名上的邮件内容仓库",
+    "defaultValue":"100",
+    "type":"textbox",
+    },
+    {
+    "id": "repo_material_cateId2",
+    "name":"对应域名上的邮件主题仓库",
+    "defaultValue":"100",
+    "type":"textbox",
+    },
+	{
+	"id": "train_cate_id",
+	"name":"小号号码库",
+	"type":"repo",
+	"source":"number",
+	"top_cate_id":"22"
+	},
+	{
+	"id": "nuberLoop",
+	"name":"是否循环号码库",
+	"type":"select",
+	"list":{"循环":"循环","不循环":"不循环"},
+	"defaultValue":"不循环",
+	"remark":"是否循环号码库"
+	},
+	{
+	"id": "addToText",
+	"name":"是否添加到正文",
+	"type":"select",
+	"list":{"添加":"添加","不添加":"不添加"},
+	"defaultValue":"添加",
+	"remark":"图片是否添加到正文"
+	},
+	{
+	"id": "selectContent",
+	"name":"发送主题或内容",
+	"type":"select",
+	"list":{"只发主题":"只发主题","只发内容":"只发内容","主题内容都发":"主题内容都发"},
+	"defaultValue":"主题内容都发",
+	"remark":"发送主题或内容"
+	},
+	{
+	"id": "size",
+	"name":"图片大小",
+	"type":"select",
+	"list":{"大":"大","小":"小","中":"中","实际大小":"实际大小"},
+	"defaultValue":"大",
+	"remark":"图片大小"
+	},
+	{
+	"id": "random_code",
+	"name":"乱码专用",
+	"type":"select",
+	"list":{"乱码":"乱码","不乱码":"不乱码"},
+	"defaultValue":"不乱码",
+	"remark":"出现乱码可修改该设置"
+	},
+    {
+    "id": "time_delay",
+    "name":"等待时间",
+    "type":"textbox",
+    "defaultValue":"3",
+    "remark":"发信后与进收件箱之间的等待时间"
+    }
+]
+}

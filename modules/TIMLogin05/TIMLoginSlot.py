@@ -659,7 +659,11 @@ if __name__ == "__main__":
 
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
     args = {"repo_cate_id": "358", "time_limit": "0", "time_limit1": "120","time_delay1":"10","time_delay": "3","failCount":"3"}  # cate_id是仓库号，length是数量
-    o.action(d, z, args)
+    # o.action(d, z, args)
+
+    # d.server.adb.cmd( "shell","su -c 'rm -r -f /storage/emulated/0/tencent/QQmail'")
+
+
     # d.server.adb.cmd( "shell", "pm clear com.tencent.tim" ).communicate( )  # 清除缓存
     # d.server.adb.cmd( "shell", "am force-stop com.tencent.tim" ).communicate( )  # 强制停止
     # z.server.adb.run_cmd( "shell", "am start -n com.tencent.tim/com.tencent.mobileqq.activity.SplashActivity" )

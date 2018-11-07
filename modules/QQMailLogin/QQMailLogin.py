@@ -25,7 +25,7 @@ class QQMailLogin:
         return uniqueNum
 
     def input(self,z,height,text):
-        if height>888:
+        if height>=888:
             z.input(text)
         else:
             z.cmd( "shell", "am broadcast -a ZY_INPUT_TEXT --es text \\\"%s\\\"" % text )
@@ -41,8 +41,8 @@ class QQMailLogin:
         im_id = ""
         code = ""
         for i in range(0, 2):  # 打码循环
-            # if i > 0:
-            #     icode.reportError(im_id)
+            if i > 0:
+                icode.reportError(im_id)
             obj = picObj.info
             obj = obj['bounds']  # 验证码处的信息
             left = obj["left"]  # 验证码的位置信息
@@ -114,6 +114,8 @@ class QQMailLogin:
         z.heartbeat( )
         z.heartbeat( )
         z.generate_serial( "com.tencent.androidqqmail" )  # 随机生成手机特征码
+        d.server.adb.cmd( "shell", "su -c 'rm -r -f /storage/emulated/0/tencent/QQmail'" )  # 删除/storage/emulated/0/tencent/QQmail文件夹
+        time.sleep(2)
         d.server.adb.cmd( "shell", "pm clear com.tencent.androidqqmail" ).communicate( )  # 清除QQ邮箱缓存
         d.server.adb.cmd( "shell",
                           "am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail" ).communicate( )  # 拉起QQ邮箱
@@ -127,8 +129,7 @@ class QQMailLogin:
                         z.sleep(1)
                         break
                     else:
-                        d.server.adb.cmd( "shell",
-                                          "am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail" ).communicate( )  # 拉起QQ邮箱
+                        d.server.adb.cmd( "shell","am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail" ).communicate( )  # 拉起QQ邮箱
                         time.sleep(25)
                         continue
 
@@ -154,20 +155,25 @@ class QQMailLogin:
                         time.sleep( 25 )
                         continue
 
-            accounts = self.repo.GetAccount(args['repo_account_id'], int( args['account_time_limit'] ),1 )  # 去仓库获取QQ邮箱帐号
-            if len( accounts ) == 0:
-                z.toast( u"帐号库为空" )
-                return
 
-            account = accounts[0]['number']
-            password = accounts[0]['password']
-            # account = "17094558161"
-            # password = "tifo5456"
 
             if d(text='帐号密码登录').exists:
                 d(text='帐号密码登录').click()
 
+
             if d(resourceId='com.tencent.androidqqmail:id/bi').exists:  # 输入邮箱帐号
+
+                accounts = self.repo.GetAccount( args['repo_account_id'], int( args['account_time_limit'] ),
+                                                 1 )  # 去仓库获取QQ邮箱帐号
+                if len( accounts ) == 0:
+                    z.toast( u"帐号库为空" )
+                    return
+
+                account = accounts[0]['number']
+                password = accounts[0]['password']
+                # account = "17094558161"
+                # password = "tifo5456"
+
                 d(resourceId='com.tencent.androidqqmail:id/bi').set_text(account)
                 # self.input( z,height,account )
             else:
@@ -363,12 +369,16 @@ class QQMailLogin:
                 elif d(textContains="未开启IMAP服务").exists:
                     z.toast( u"未开启IMAP服务，标记为异常" )
                     self.repo.BackupInfo( args["repo_account_id"], 'exception', account, '','' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
+                elif d(text='当前网络不可用').exists:
+                    z.toast('当前网络不可用,跳出模块')
+                    return True
                 self.action(d,z,args)
         except:
             logging.exception("exception")
             z.toast(u"程序出现异常，模块退出")
             d.server.adb.cmd("shell", "am force-stop com.tencent.androidqqmail").wait()  # 强制停止
             return False
+
 
     def againLogin(self,account,password,d,z,height):
         if d(text="确定",className="android.widget.Button").exists or d(text="重新输入",className="android.widget.Button").exists:
@@ -428,6 +438,9 @@ class QQMailLogin:
                     z.toast( u"未开启IMAP服务，标记为异常" )
                     self.repo.BackupInfo( args["repo_account_id"], 'exception', account, '','' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber
                     return False
+                elif d(text='当前网络不可用').exists:
+                    z.toast('当前网络不可用,跳出模块')
+                    return True
 
 
 
@@ -439,34 +452,22 @@ if __name__ == "__main__":
     import sys
     reload(sys)
     sys.setdefaultencoding("utf-8")
-    # codePng = "/home/zunyun/code/t.jpg"
-    # with open( codePng, 'rb' ) as f:
-    #     # file = f.read()
-    #     file = "data:image/jpeg;base64," + base64.b64encode( f.read( ) )
-    # da = {"IMAGES": file}
-    # path = "/ocr.index"
-    # headers = {"Content-Type": "application/x-www-form-urlencoded",
-    #            "Connection": "Keep-Alive"}
-    # conn = httplib.HTTPConnection( "162626i1w0.51mypc.cn", 10082, timeout=30 )
-    # params = urllib.urlencode( da )
-    # conn.request( method="POST", url=path, body=params, headers=headers )
-    # response = conn.getresponse( )
-    # if response.status == 200:
-    #     code = response.read( )
-    #     print code
+
     clazz = getPluginClass()
     o = clazz()
-    d = Device("9cae944e")
-    z = ZDevice("9cae944e")
+    d = Device("3c454f7f")
+    z = ZDevice("3c454f7f")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_account_id": "250", "account_time_limit": "15","mail_type": "QQ邮箱登录","repo_name_cateId":"234","againCount":"10"}
+    args = {"repo_account_id": "413", "account_time_limit": "15","mail_type": "QQ邮箱登录","repo_name_cateId":"234","againCount":"10"}
     # d.dump( 'test.xml' )
     # o.palyCode(d,z,"dsa")
-    o.action(d, z, args)
+    # o.action(d, z, args)
 
     # slot = Slot(d.server.adb.device_serial(),'qqmail')
     # slot.clear(2)
     # d.server.adb.cmd( "shell", "pm clear com.tencent.androidqqmail" ).communicate( )  # 清除缓存
     # slot.restore( 1 )
-    # d.server.adb.cmd( "shell",
-    #                   "am start -n com.tencent.androidqqmail/com.tencent.qqmail.LaunchComposeMail" ).communicate( )  # 拉起QQ邮箱
+    accounts = o.repo.GetAccount( '433', int( args['account_time_limit'] ),
+                                     1 )  # 去仓库获取QQ邮箱帐号
+    print accounts
+    # o.repo.BackupInfo( "433", 'using', '14556655', '', '' )  # 仓库号,使用中,QQ号,设备号_卡槽号QQNumber

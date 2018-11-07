@@ -1,0 +1,92 @@
+{
+"id": "QQMailSendGreetingCardsZ",
+"cate":"其他模块",
+"name":"QQ邮箱发送贺卡(乱码专用)",
+"url": "http://www.bejson.com",
+"version": "1.0",
+"code":"QQ-Mail-12Z",
+"icon":"vcard-o",
+"remark":"QQ邮箱发送贺卡(乱码专用)",
+"setting":[
+{
+"id": "repo_number_id",
+"name":"提取号码库",
+"type":"repo",
+"source":"number",
+"top_cate_id":"22"
+},
+{
+"id": "nuberLoop",
+"name":"是否循环号码库",
+"type":"select",
+"list":{"循环":"循环","不循环":"不循环"},
+"defaultValue":"不循环",
+"remark":"是否循环号码库"
+},
+{
+"id": "repo_material_sign_id",
+"name":"提取署名素材库",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
+{
+"id": "repo_material_themes_id",
+"name":"提取主题素材库",
+"type":"repo",
+"source":"material",
+"top_cate_id":"12"
+},
+{
+"id": "send_count",
+"name":"单个帐号发送次数",
+"type":"textbox",
+"defaultValue":"3",
+"remark":"单位：次"
+},
+{
+"id": "account_cateId",
+"name":"帐号库",
+"type":"repo",
+"source":"account",
+"top_cate_id":"1"
+},
+{
+"id": "send_num_of_pe",
+"name":"单次发送人数",
+"type":"textbox",
+"defaultValue":"1",
+"remark":"单位：个"
+},
+{
+"id": "failCount",
+"name":"待发送个数",
+"type":"textbox",
+"defaultValue":"4",
+"remark":"当待发送个数达到此个数时，跳出模块"
+},
+{
+"id": "nameFlag",
+"name":"是否署名",
+"type":"select",
+"list":{"署名":"署名","不署名":"不署名"},
+"defaultValue":"署名",
+"remark":"是否署名"
+},
+{
+"id": "themeFlag",
+"name":"是否修改主题",
+"type":"select",
+"list":{"是":"是","否":"否"},
+"defaultValue":"否",
+"remark":"是否修改主题"
+},
+{
+"id": "time_delay",
+"name":"单次发送结束延时",
+"type":"textbox",
+"defaultValue":"5",
+"remark":"单位：秒"
+}
+]
+}

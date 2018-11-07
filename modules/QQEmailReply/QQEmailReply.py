@@ -152,6 +152,7 @@ class QQEmailReply:
         else:
             z.toast("状态不正常")
             return
+        z.heartbeat( )
         # accountObj = d( resourceId="com.tencent.androidqqmail:id/ac", textContains="@",
         #                 className="android.widget.TextView" )
         # account = accountObj.info["text"]
@@ -160,30 +161,85 @@ class QQEmailReply:
             d( textContains="收件箱", className="android.widget.TextView" ).click( )
             time.sleep( 3 )
         while True:
-            obj = d( index=5, className="android.widget.RelativeLayout" ).child( index=0,
-                                                                                 className="android.widget.FrameLayout" )
+            z.heartbeat( )
+            obj = d( index=5, className="android.widget.RelativeLayout" ).child( index=0,className="android.widget.FrameLayout" )
             if obj.exists:
-                if obj.child( descriptionContains="来自qq.com的退信" ).exists:
-                    z.toast( "这是退信" )
+                if obj.child( descriptionContains="来自qq.com的退信" ).exists or obj.child(descriptionContains='主题是：Re').exists \
+                        or obj.child(descriptionContains='主题是：re').exists or obj.child(descriptionContains='主题是：RE').exists \
+                        or obj.child( descriptionContains='主题是：回复' ).exists or obj.child(descriptionContains='主题是：自动回复').exists:
+                    z.toast( "这是退信或带有回复的信" )
                     obj.long_click( )
                     time.sleep( 2 )
                     if d( textContains="删除", className="android.widget.Button" ).exists:
                         d( textContains="删除", className="android.widget.Button" ).click( )
                         time.sleep( 3 )
-                        obj = d( index=5, className="android.widget.RelativeLayout" ).child( index=0,
-                                                                                             className="android.widget.FrameLayout" )
-                        if obj.exists:
-                            obj.click( )
-                            time.sleep( 3 )
-                        else:
-                            z.toast( "没有邮件" )
-                            return False
+                        continue
+                        # obj = d( index=5, className="android.widget.RelativeLayout" ).child( index=0,
+                        #                                                                      className="android.widget.FrameLayout" )
+                        # if obj.exists:
+                        #     obj.click( )
+                        #     time.sleep( 3 )
+                        # else:
+                        #     z.toast( "没有邮件" )
+                        #     return False
                 else:
                     obj.click( )
-                    time.sleep( 3 )
-                    break
+                    time.sleep( 4 )
+                    z.heartbeat( )
+                    if d( description="回复和转发", resourceId="com.tencent.androidqqmail:id/g" ).exists:
+                        d( description="回复和转发", resourceId="com.tencent.androidqqmail:id/g" ).click( )
+                        time.sleep( 1 )
+                        if d( resourceId="com.tencent.androidqqmail:id/lj", text="回复" ).exists:
+                            d( resourceId="com.tencent.androidqqmail:id/lj", text="回复" ).click( )
+                            time.sleep( 4 )
+                            Material = self.repo.GetMaterial( repo_material_cateId, 0, 1 )
+                            if len( Material ) == 0:
+                                d.server.adb.cmd( "shell",
+                                                  "am broadcast -a com.zunyun.zime.toast --es msg \"%s号仓库为空，没有取到消息\"" % repo_material_cateId ).communicate( )
+                                z.sleep( 10 )
+                                return
+                            message = Material[0]['content']
+                            self.input( z, height, message )
+                            z.heartbeat( )
+                            if d( text="发送​", resourceId="com.tencent.androidqqmail:id/a_" ).exists:
+                                d( text="发送​", resourceId="com.tencent.androidqqmail:id/a_" ).click( )
+                                time.sleep( 3 )
+                            if d( description="删除邮件", resourceId="com.tencent.androidqqmail:id/c" ).exists:
+                                d( description="删除邮件", resourceId="com.tencent.androidqqmail:id/c" ).click( )
+                                time.sleep( 4 )
+                                d.press.back()
+                                time.sleep(1)
+                            else:
+                                result = self.deleteMail( d )
+                                if result:
+                                    continue
+                                else:
+                                    break
+                        else:
+                            if d( description="删除邮件", resourceId="com.tencent.androidqqmail:id/c" ).exists:
+                                d( description="删除邮件", resourceId="com.tencent.androidqqmail:id/c" ).click( )
+                                time.sleep( 1 )
+                                d.press.back( )
+                                time.sleep( 1 )
+                            else:
+                                result = self.deleteMail( d )
+                                if result:
+                                    continue
+                                else:
+                                    break
+
+                    else:
+                        if d( description="删除邮件", resourceId="com.tencent.androidqqmail:id/c" ).exists:
+                            d( description="删除邮件", resourceId="com.tencent.androidqqmail:id/c" ).click( )
+                            time.sleep( 1 )
+                        else:
+                            result = self.deleteMail( d )
+                            if result:
+                                continue
+                            else:
+                                break
             else:
-                z.toast("没有邮件")
+                z.toast("没有邮件了")
                 return
         while True:
             if d(description="回复和转发",resourceId="com.tencent.androidqqmail:id/g").exists:
@@ -200,6 +256,7 @@ class QQEmailReply:
                         return
                     message = Material[0]['content']
                     self.input(z,height,message)
+                    z.heartbeat( )
                     if d(text="发送​",resourceId="com.tencent.androidqqmail:id/a_").exists:
                         d( text="发送​", resourceId="com.tencent.androidqqmail:id/a_" ).click()
                         time.sleep(3)
@@ -253,7 +310,7 @@ class QQEmailReply:
                     return False
                 else:
                     z.toast( "状态正常，继续执行" )
-
+        z.heartbeat( )
         if d( textContains="收件箱", className="android.widget.TextView" ).exists:
             d( textContains="收件箱", className="android.widget.TextView" ).click( )
             time.sleep( 3 )
@@ -262,17 +319,10 @@ class QQEmailReply:
             if obj.exists:
                 obj.long_click( )
                 time.sleep(2)
+                z.heartbeat( )
                 if d( textContains="删除", className="android.widget.Button" ).exists:
                     d( textContains="删除", className="android.widget.Button" ).click( )
                     time.sleep( 3 )
-                    obj = d( index=5, className="android.widget.RelativeLayout" ).child( index=0,
-                                                                                         className="android.widget.FrameLayout" )
-                    if obj.exists:
-                        obj.click( )
-                        time.sleep( 3 )
-                    else:
-                        z.toast( "没有邮件" )
-                        return False
                     return True
 
             else:
@@ -286,10 +336,10 @@ def getPluginClass():
 if __name__ == "__main__":
     clazz = getPluginClass()
     o = clazz()
-    d = Device("9cae944e")
-    z = ZDevice("9cae944e")
+    d = Device("37f7b82f")
+    z = ZDevice("37f7b82f")
     d.server.adb.cmd("shell", "ime set com.zunyun.qk/.ZImeService").communicate()
-    args = {"repo_material_cateId": "237", "time_delay": "3"}
+    args = {"repo_material_cateId": "383", "time_delay": "3"}
     # Str = d.info  # 获取屏幕大小等信息
     # height = int( Str["displayHeight"] )
     # width = int( Str["displayWidth"] )
